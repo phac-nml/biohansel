@@ -12,7 +12,7 @@
     :trim:
 
 
-Subtype *Salmonella enterica* subsp. enterica serovar Heidelberg and Enteritidis genomes using *in-silico* 33 bp k-mer subtyping schemes developed by Genevieve Labbe et al.
+Subtype *Salmonella enterica* subsp. enterica serovar Heidelberg and Enteritidis genomes using *in-silico* 33 bp k-mer SNP subtyping schemes developed by Genevieve Labbe et al.
 
 Subtype *Salmonella* genome assemblies (FASTA files) and/or whole-genome sequencing reads (FASTQ files)!
 
