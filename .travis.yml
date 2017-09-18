@@ -27,15 +27,17 @@ before_install:
   - sudo apt-get -qq update;
 
 install:
-  #Install BLAST
-  - sudo apt-get install -y ncbi-blast+;
-  #Install Jellyfish
-  - wget https://github.com/gmarcais/Jellyfish/archive/v2.2.6.zip
-  - unzip v2.2.6.zip
-  - cd v2.2.6.zip
-  - ./configure --prefix=$HOME
-  - make -j 4
-  - make install
+  #Install BLAST and Conda
+  - wget http://repo.continuum.io/miniconda/Miniconda3-3.4.2-Linux-x86_64.sh -O miniconda.sh;
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda info -a
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION jellyfish blast
+  - source activate test-environment
+  - python setup.py install
 
 script:
   - pytest 
