@@ -1,0 +1,48 @@
+notifications: # set notification options
+  email:
+    recipients:
+      - mgopez95@gmail.com
+
+    # change is when the repo status goes from pass to fail or vice versa
+    on_success: change
+    on_failure: change
+
+language: python
+python:
+  - '3.5'
+  - '3.6'
+
+# Whitelist of branches to run CI Testing on.
+branches:
+  only:
+    - master
+
+# Blacklist of branches to not run CI testing on.
+# branches:
+#  except:
+#   - dontrunme 
+#   - test 
+
+before_install:
+  - sudo apt-get -qq update;
+
+install:
+  #Install Conda for BLAST & Jellyfish required for bio_hansel
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --add channels defaults
+  - conda config --add channels conda-forge
+  - conda config --add channels bioconda
+  - conda install jellyfish -y
+  - conda install blast -y
+  #Install requirements to build bio_hansel.
+  - pip install numpy
+  - pip install pandas
+  - pip install attrs
+  #Install pytest for testing.
+  - pip install pytest
+
+script:
+  - pytest

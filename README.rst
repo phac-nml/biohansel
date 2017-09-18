@@ -180,7 +180,6 @@ Contents of ``match_results.tab``:
     CAGGAGAAAGGATGCCAGGGTCAACACGTAAAC   33  SRR5646583 SRR5646583_forward.fastqsanger; SRR5646583_reverse.fastqsanger    944885-2.2.1.1.1    True    2.2.1.1.1   944885  True    heidelberg
     [Next 200 lines omitted.]
 
-
 Analysis of all FASTA/FASTQ files in a directory
 ------------------------------------------------
 
