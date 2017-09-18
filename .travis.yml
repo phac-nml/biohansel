@@ -1,0 +1,41 @@
+notifications: # set notification options
+  email:
+    recipients:
+      - mgopez95@gmail.com
+
+    # change is when the repo status goes from pass to fail or vice versa
+    on_success: change
+    on_failure: change
+
+language: python
+python:
+  - '3.5'
+  - '3.6'
+
+# Whitelist of branches to run CI Testing on.
+branches:
+  only:
+    - master
+
+# Blacklist of branches to not run CI testing on.
+# branches:
+#  except:
+#   - dontrunme 
+#   - test 
+
+before_install:
+  - sudo apt-get -qq update;
+
+install:
+  #Install BLAST
+  - sudo apt-get install -y ncbi-blast+;
+  #Install Jellyfish
+  - wget https://github.com/gmarcais/Jellyfish/archive/v2.2.6.zip
+  - unzip v2.2.6.zip
+  - cd v2.2.6.zip
+  - ./configure --prefix=$HOME
+  - make -j 4
+  - make install
+
+script:
+  - pytest 
