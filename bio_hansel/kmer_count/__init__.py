@@ -23,8 +23,10 @@ class Jellyfisher(object):
     tmp_dir = attr.ib(default='/tmp', validator=attr.validators.instance_of(str))
     threads = attr.ib(default=1, validator=attr.validators.instance_of(int))
     scheme = attr.ib(default='heidelberg', validator=attr.validators.instance_of(str))
-    scheme_fasta = attr.ib(default=SCHEME_FASTAS['heidelberg'],
+    scheme_fasta = attr.ib(default=SCHEME_FASTAS['heidelberg']['file'],
                            validator=attr.validators.instance_of(str))
+    scheme_version = attr.ib(default=SCHEME_FASTAS['heidelberg']['version'],
+                             validator=attr.validators.instance_of(str))
     jellyfish_exc = attr.ib(default='jellyfish', validator=attr.validators.instance_of(str))
     jf_file = attr.ib(default=None)
     jf_query_tiles_file = attr.ib(default=None)
@@ -221,7 +223,7 @@ class Jellyfisher(object):
         if self.df_results is None:
             self.parse_query()
         df = self.df_results
-        st = Subtype(sample=self.genome_name, file_path=self._reads_to_str(), scheme=self.scheme)
+        st = Subtype(sample=self.genome_name, file_path=self._reads_to_str(), scheme=self.scheme, scheme_version=self.scheme_version)
         self.subtype = st
         if df is None or df.shape[0] == 0:
             logging.warning('No "%s" subtyping scheme tile matches for "%s"', self.scheme, self.reads)
