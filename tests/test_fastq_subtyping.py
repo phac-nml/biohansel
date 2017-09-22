@@ -2,6 +2,7 @@ import pytest
 from pandas import DataFrame
 from bio_hansel.subtype import Subtype
 from bio_hansel.subtyper import subtype_reads
+from bio_hansel.utils import SCHEME_FASTAS
 
 
 @pytest.fixture
@@ -17,6 +18,7 @@ def test_fastq_subtyping(test_genome):
     assert isinstance(df, DataFrame)
 
     assert st.scheme == scheme
+    assert st.scheme_version == SCHEME_FASTAS[scheme]['version']
     assert st.sample == genome_name
     assert st.subtype == '2.2.1.1.1.1'
     assert st.are_subtypes_consistent is True

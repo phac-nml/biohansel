@@ -2,12 +2,14 @@
 ``bio_hansel`` - Heidelberg And eNteritidis Snp ELucidation
 ***********************************************************
 
-|pypi| |nbsp| |license| |nbsp|
+|pypi| |nbsp| |license| |citest| |nbsp|
 
-.. |pypi| image:: https://badge.fury.io/py/bio_hansel.svg
+.. |pypi| image:: https://badge.fury.io/py/bio-hansel.svg
     :target: https://pypi.python.org/pypi/bio_hansel/
 .. |license| image:: https://img.shields.io/badge/License-GPL%20v3-blue.svg
     :target: https://www.gnu.org/licenses/gpl-3.0
+.. |citest| image:: https://travis-ci.org/phac-nml/bio_hansel.svg?branch=master
+    :target: https://travis-ci.org/phac-nml/bio_hansel
 .. |nbsp| unicode:: 0xA0
     :trim:
 

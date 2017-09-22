@@ -3,6 +3,7 @@ from pandas import DataFrame, Series
 import numpy as np
 from bio_hansel.subtype import Subtype
 from bio_hansel.subtyper import subtype_fasta
+from bio_hansel.utils import SCHEME_FASTAS
 
 
 @pytest.fixture()
@@ -18,6 +19,7 @@ def test_fasta_subtyping(test_genome):
     assert isinstance(df, DataFrame)
 
     assert st.scheme == scheme
+    assert st.scheme_version == SCHEME_FASTAS[scheme]['version']
     assert st.sample == genome_name
     assert st.subtype == '2.2.2.2.1.4'
     assert st.inconsistent_subtypes is None
@@ -31,7 +33,7 @@ def test_fasta_subtyping(test_genome):
     exp_cols = ['tilename', 'stitle', 'pident', 'length', 'mismatch', 'gapopen',
        'qstart', 'qend', 'sstart', 'send', 'evalue', 'bitscore', 'qlen',
        'slen', 'seq', 'coverage', 'is_trunc', 'refposition', 'subtype',
-       'is_pos_tile', 'sample', 'file_path', 'scheme']
+       'is_pos_tile', 'sample', 'file_path', 'scheme', 'scheme_version']
     df_cols = df.columns # type: Series
     assert np.all(df_cols.isin(exp_cols))
 

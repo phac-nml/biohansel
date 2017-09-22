@@ -9,8 +9,10 @@ from pkg_resources import resource_filename
 
 from . import program_name
 
-SCHEME_FASTAS = {'heidelberg': resource_filename(program_name, 'data/heidelberg/tiles.fasta'),
-                 'enteritidis': resource_filename(program_name, 'data/enteritidis/tiles.fasta'), }
+SCHEME_FASTAS = {'heidelberg': {'file': resource_filename(program_name, 'data/heidelberg/tiles.fasta'),
+                                'version': '0.5.0'},
+                 'enteritidis': {'file': resource_filename(program_name, 'data/enteritidis/tiles.fasta'),
+                                 'version': '0.6.1'}, }
 
 
 def run_command(cmdlist: List[str]) -> (int, str, str):
@@ -102,9 +104,16 @@ def find_inconsistent_subtypes(subtypes: List[Any]) -> List[str]:
 
 def get_scheme_fasta(scheme: str) -> str:
     if scheme in SCHEME_FASTAS:
-        scheme_fasta = SCHEME_FASTAS[scheme]
+        scheme_fasta = SCHEME_FASTAS[scheme]['file']
     elif os.path.exists(scheme) and os.path.isfile(scheme):
         scheme_fasta = scheme
     else:
         raise FileNotFoundError('Could not find user-specified subtyping scheme fasta "%s"', scheme)
     return scheme_fasta
+
+
+def get_scheme_version(scheme: str) -> Optional[str]:
+    if scheme in SCHEME_FASTAS:
+        version = SCHEME_FASTAS[scheme]['version']  # type: str
+        return version
+    return None

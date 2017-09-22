@@ -6,6 +6,7 @@ class Subtype(object):
     sample = attr.ib(validator=attr.validators.instance_of(str))
     file_path = attr.ib(validator=attr.validators.instance_of(str))
     scheme = attr.ib(validator=attr.validators.instance_of(str))
+    scheme_version = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     subtype = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     all_subtypes = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     inconsistent_subtypes = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))

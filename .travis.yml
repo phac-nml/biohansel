@@ -27,15 +27,22 @@ before_install:
   - sudo apt-get -qq update;
 
 install:
-  #Install BLAST
-  - sudo apt-get install -y ncbi-blast+;
-  #Install Jellyfish
-  - wget https://github.com/gmarcais/Jellyfish/archive/v2.2.6.zip
-  - unzip v2.2.6.zip
-  - cd v2.2.6.zip
-  - ./configure --prefix=$HOME
-  - make -j 4
-  - make install
+  #Install Conda for BLAST & Jellyfish required for bio_hansel
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --add channels defaults
+  - conda config --add channels conda-forge
+  - conda config --add channels bioconda
+  - conda install jellyfish -y
+  - conda install blast -y
+  #Install requirements to build bio_hansel.
+  - pip install numpy
+  - pip install pandas
+  - pip install attrs
+  #Install pytest for testing.
+  - pip install pytest
 
 script:
-  - pytest 
+  - pytest
