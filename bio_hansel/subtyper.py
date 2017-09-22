@@ -14,12 +14,13 @@ from . import program_name
 from .blast_wrapper import BlastRunner, BlastReader
 from .kmer_count import Jellyfisher
 from .subtype import Subtype
-from .utils import find_inconsistent_subtypes, get_scheme_fasta
+from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version
 from .subtype_stats import subtype_counts
 
 SUBTYPE_SUMMARY_COLS = """
 sample
 scheme
+scheme_version
 subtype
 all_subtypes
 tiles_matching_subtype
@@ -48,12 +49,13 @@ def subtype_fasta(scheme: str,
     scheme_fasta = get_scheme_fasta(scheme)
     if scheme_subtype_counts is None:
         scheme_subtype_counts = subtype_counts(scheme_fasta)
+    scheme_version = get_scheme_version(scheme)
     with BlastRunner(fasta_path=fasta_path, tmp_work_dir=genome_tmp_dir) as brunner:
         blast_outfile = brunner.blast_against_query(scheme_fasta, word_size=33)
         with BlastReader(blast_outfile=blast_outfile) as breader:
             df = breader.parse()
 
-    st = Subtype(sample=genome_name, file_path=fasta_path, scheme=scheme_name or scheme)
+    st = Subtype(sample=genome_name, file_path=fasta_path, scheme=scheme_name or scheme, scheme_version=scheme_version)
     if df is None or df.shape[0] == 0:
         logging.warning('No Heidelberg subtyping tile matches for "%s"', fasta_path)
         st.are_subtypes_consistent = False
@@ -103,6 +105,7 @@ def subtype_fasta(scheme: str,
     df['sample'] = genome_name
     df['file_path'] = fasta_path
     df['scheme'] = scheme_name or scheme
+    df['scheme_version'] = scheme_version
     return st, df
 
 
@@ -122,7 +125,9 @@ def subtype_reads(scheme: str,
     scheme_fasta = get_scheme_fasta(scheme)
     if scheme_subtype_counts is None:
         scheme_subtype_counts = subtype_counts(scheme_fasta)
+    scheme_version = get_scheme_version(scheme)
     with Jellyfisher(scheme=scheme_name or scheme,
+                     scheme_version=scheme_version,
                      scheme_subtype_counts=scheme_subtype_counts,
                      scheme_fasta=scheme_fasta,
                      genome_name=genome_name,
@@ -133,4 +138,5 @@ def subtype_reads(scheme: str,
                      threads=threads) as jfer:
         st, df = jfer.summary()
         df['scheme'] = scheme_name or scheme
+        df['scheme_version'] = scheme_version
         return st, df

@@ -3,6 +3,7 @@
 
 import argparse
 import os
+import sys
 from typing import Optional
 
 import attr
@@ -89,6 +90,9 @@ def init_parser():
 
 def main():
     parser = init_parser()
+    if len(sys.argv[1:]) == 0:
+        parser.print_help()
+        parser.exit()
     args = parser.parse_args()
     init_console_logger(args.verbose)
     output_summary_path = args.output_summary
