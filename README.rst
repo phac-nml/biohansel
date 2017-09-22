@@ -49,6 +49,12 @@ Installation
 
 Ensure that BLAST+ and/or JELLYFISH are installed and accessible in your ``$PATH``.
 
+Install ``bio_hansel`` from Conda:
+
+.. code-block:: bash
+
+    conda install bio-hansel
+
 Install ``bio_hansel`` from PyPI:
 
 .. code-block:: bash
