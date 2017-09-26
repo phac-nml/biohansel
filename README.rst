@@ -53,7 +53,7 @@ Install ``bio_hansel`` from Conda:
 
 .. code-block:: bash
 
-    conda install bio-hansel
+    conda install bio_hansel
 
 Install ``bio_hansel`` from PyPI:
 
