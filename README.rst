@@ -2,17 +2,18 @@
 ``bio_hansel`` - Heidelberg And eNteritidis Snp ELucidation
 ***********************************************************
 
-|pypi| |nbsp| |license| |citest| |nbsp|
+|pypi| |nbsp| |license| |citest| |conda| |nbsp|
 
 .. |pypi| image:: https://badge.fury.io/py/bio-hansel.svg
     :target: https://pypi.python.org/pypi/bio_hansel/
 .. |license| image:: https://img.shields.io/badge/License-GPL%20v3-blue.svg
     :target: https://www.gnu.org/licenses/gpl-3.0
-.. |citest| image:: https://travis-ci.org/phac-nml/bio_hansel.svg?branch=master
+.. |citest|  image:: https://travis-ci.org/phac-nml/bio_hansel.svg?branch=master
     :target: https://travis-ci.org/phac-nml/bio_hansel
+.. |conda|   image:: https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square
+    :target: https://bioconda.github.io/recipes/bio_hansel/README.html
 .. |nbsp| unicode:: 0xA0
     :trim:
-
 
 Subtype *Salmonella enterica* subsp. enterica serovar Heidelberg and Enteritidis genomes using *in-silico* 33 bp k-mer SNP subtyping schemes developed by Genevieve Labbe et al.
 
@@ -53,7 +54,7 @@ Install ``bio_hansel`` from Conda:
 
 .. code-block:: bash
 
-    conda install bio-hansel
+    conda install bio_hansel
 
 Install ``bio_hansel`` from PyPI:
 
