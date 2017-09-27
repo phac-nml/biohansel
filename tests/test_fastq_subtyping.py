@@ -24,8 +24,8 @@ def test_fastq_subtyping(test_genome):
     assert st.are_subtypes_consistent is True
     assert st.inconsistent_subtypes is None
     assert st.n_tiles_matching_all == 202
-    assert st.n_tiles_matching_all_total == '202'
+    assert st.n_tiles_matching_all_expected == '202'
     assert st.n_tiles_matching_positive == 20
-    assert st.n_tiles_matching_positive_total == '20'
+    assert st.n_tiles_matching_positive_expected == '20'
     assert st.n_tiles_matching_subtype == 2
-    assert st.n_tiles_matching_subtype_total == '2'
+    assert st.n_tiles_matching_subtype_expected == '2'
