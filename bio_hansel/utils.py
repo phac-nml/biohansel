@@ -12,7 +12,7 @@ from . import program_name
 SCHEME_FASTAS = {'heidelberg': {'file': resource_filename(program_name, 'data/heidelberg/tiles.fasta'),
                                 'version': '0.5.0'},
                  'enteritidis': {'file': resource_filename(program_name, 'data/enteritidis/tiles.fasta'),
-                                 'version': '0.6.1'}, }
+                                 'version': '0.7.0'}, }
 
 
 def run_command(cmdlist: List[str]) -> (int, str, str):
