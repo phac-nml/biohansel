@@ -11,7 +11,7 @@
 .. |citest|  image:: https://travis-ci.org/phac-nml/bio_hansel.svg?branch=master
     :target: https://travis-ci.org/phac-nml/bio_hansel
 .. |conda|   image:: https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square
-    :target: http://bioconda.github.io/recipes/bio-hansel/README.html
+    :target: https://bioconda.github.io/recipes/bio_hansel/README.html
 .. |nbsp| unicode:: 0xA0
     :trim:
 
