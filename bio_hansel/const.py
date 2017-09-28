@@ -7,5 +7,13 @@ mismatch
 gapopen
 qstart
 qend
-etc
+sstart
+send
+evalue
+bitscore
+qlen
+slen
+seq
+coverage
+is_trunc
 '''.strip().split('\n')

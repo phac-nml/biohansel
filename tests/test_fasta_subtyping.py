@@ -30,8 +30,7 @@ def test_fasta_subtyping(test_genome):
     assert st.n_tiles_matching_subtype == 3
     assert st.n_tiles_matching_subtype_expected == '3'
 
-    exp_cols = ['tilename', 'stitle', 'sstart', 'send', 'evalue', 'bitscore', 'qlen',
-       'slen', 'seq', 'coverage', 'is_trunc', 'refposition', 'subtype',
+    exp_cols = ['tilename', 'stitle', 'refposition', 'subtype',
        'is_pos_tile', 'sample', 'file_path', 'scheme', 'scheme_version']
     df_cols = df.columns # type: Series
     assert np.all(df_cols.isin(exp_cols))
