@@ -16,6 +16,7 @@ from .kmer_count import Jellyfisher
 from .subtype import Subtype
 from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version
 from .subtype_stats import subtype_counts
+from .const import FASTA_COLUMNS_TO_REMOVE
 
 SUBTYPE_SUMMARY_COLS = """
 sample
@@ -33,7 +34,6 @@ n_tiles_matching_positive_expected
 n_tiles_matching_subtype
 n_tiles_matching_subtype_expected
 file_path""".strip().split('\n')
-
 
 
 def subtype_fasta(scheme: str,
@@ -106,6 +106,7 @@ def subtype_fasta(scheme: str,
     df['file_path'] = fasta_path
     df['scheme'] = scheme_name or scheme
     df['scheme_version'] = scheme_version
+    df = df[df.columns[~df.columns.isin(FASTA_COLUMNS_TO_REMOVE)]]
     return st, df
 
 
