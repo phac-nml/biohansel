@@ -95,7 +95,7 @@ def find_inconsistent_subtypes(subtypes: List[Any]) -> List[str]:
     c = Counter(l)
     incon_subtypes = []
     for subtype, freq in c.most_common():
-        if freq > 1:
+        if freq >= 1:
             incon_subtypes.append(subtype)
         else:
             break
