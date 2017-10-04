@@ -24,16 +24,13 @@ def test_fasta_subtyping(test_genome):
     assert st.subtype == '2.2.2.2.1.4'
     assert st.inconsistent_subtypes is None
     assert st.n_tiles_matching_all == 202
-    assert st.n_tiles_matching_all_total == '202'
+    assert st.n_tiles_matching_all_expected == '202'
     assert st.n_tiles_matching_positive == 17
-    assert st.n_tiles_matching_positive_total == '17'
+    assert st.n_tiles_matching_positive_expected == '17'
     assert st.n_tiles_matching_subtype == 3
-    assert st.n_tiles_matching_subtype_total == '3'
+    assert st.n_tiles_matching_subtype_expected == '3'
 
-    exp_cols = ['tilename', 'stitle', 'pident', 'length', 'mismatch', 'gapopen',
-       'qstart', 'qend', 'sstart', 'send', 'evalue', 'bitscore', 'qlen',
-       'slen', 'seq', 'coverage', 'is_trunc', 'refposition', 'subtype',
+    exp_cols = ['tilename', 'stitle', 'refposition', 'subtype',
        'is_pos_tile', 'sample', 'file_path', 'scheme', 'scheme_version']
     df_cols = df.columns # type: Series
     assert np.all(df_cols.isin(exp_cols))
-

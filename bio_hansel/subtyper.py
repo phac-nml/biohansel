@@ -16,6 +16,7 @@ from .kmer_count import Jellyfisher
 from .subtype import Subtype
 from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version
 from .subtype_stats import subtype_counts
+from .const import FASTA_COLUMNS_TO_REMOVE
 
 SUBTYPE_SUMMARY_COLS = """
 sample
@@ -27,13 +28,12 @@ tiles_matching_subtype
 are_subtypes_consistent
 inconsistent_subtypes
 n_tiles_matching_all
-n_tiles_matching_all_total
+n_tiles_matching_all_expected
 n_tiles_matching_positive
-n_tiles_matching_positive_total
+n_tiles_matching_positive_expected
 n_tiles_matching_subtype
-n_tiles_matching_subtype_total
+n_tiles_matching_subtype_expected
 file_path""".strip().split('\n')
-
 
 
 def subtype_fasta(scheme: str,
@@ -91,9 +91,9 @@ def subtype_fasta(scheme: str,
     st.all_subtypes = '; '.join(pos_subtypes_str)
     subtype_list = [x for x in dfpos_highest_res.subtype.unique()]
     st.subtype = '; '.join(subtype_list)
-    st.n_tiles_matching_all_total = ';'.join([str(scheme_subtype_counts[x].all_tile_count) for x in subtype_list])
-    st.n_tiles_matching_positive_total = ';'.join([str(scheme_subtype_counts[x].positive_tile_count) for x in subtype_list])
-    st.n_tiles_matching_subtype_total = ';'.join([str(scheme_subtype_counts[x].subtype_tile_count) for x in subtype_list])
+    st.n_tiles_matching_all_expected = ';'.join([str(scheme_subtype_counts[x].all_tile_count) for x in subtype_list])
+    st.n_tiles_matching_positive_expected = ';'.join([str(scheme_subtype_counts[x].positive_tile_count) for x in subtype_list])
+    st.n_tiles_matching_subtype_expected = ';'.join([str(scheme_subtype_counts[x].subtype_tile_count) for x in subtype_list])
     st.tiles_matching_subtype = '; '.join([x for x in dfpos_highest_res.tilename.unique()])
 
     if len(inconsistent_subtypes) > 0:
@@ -106,6 +106,7 @@ def subtype_fasta(scheme: str,
     df['file_path'] = fasta_path
     df['scheme'] = scheme_name or scheme
     df['scheme_version'] = scheme_version
+    df = df[df.columns[~df.columns.isin(FASTA_COLUMNS_TO_REMOVE)]]
     return st, df
 
 

@@ -12,7 +12,7 @@ from . import program_name
 SCHEME_FASTAS = {'heidelberg': {'file': resource_filename(program_name, 'data/heidelberg/tiles.fasta'),
                                 'version': '0.5.0'},
                  'enteritidis': {'file': resource_filename(program_name, 'data/enteritidis/tiles.fasta'),
-                                 'version': '0.6.1'}, }
+                                 'version': '0.7.0'}, }
 
 
 def run_command(cmdlist: List[str]) -> (int, str, str):
@@ -95,7 +95,7 @@ def find_inconsistent_subtypes(subtypes: List[Any]) -> List[str]:
     c = Counter(l)
     incon_subtypes = []
     for subtype, freq in c.most_common():
-        if freq > 1:
+        if freq >= 1:
             incon_subtypes.append(subtype)
         else:
             break
