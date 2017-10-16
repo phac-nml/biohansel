@@ -7,7 +7,10 @@ from typing import List, Dict, Any, Optional
 
 from pkg_resources import resource_filename
 
+from bio_hansel.const import OK_NUM_TILES, INSUFFICIENT_NUM_TILES, OK_SUBTYPE, MIXED_SUBTYPE_ERROR
 from . import program_name
+
+from .subtype import Subtype
 
 SCHEME_FASTAS = {'heidelberg': {'file': resource_filename(program_name, 'data/heidelberg/tiles.fasta'),
                                 'version': '0.5.0'},
@@ -100,6 +103,36 @@ def find_inconsistent_subtypes(subtypes: List[Any]) -> List[str]:
         else:
             break
     return incon_subtypes
+
+
+def check_for_mixed_subtypes(st: Subtype) -> str:
+    is_mixed_subtype = False
+
+    expected_tiles_matching = int(st.n_tiles_matching_all_expected.split(";")[0])
+
+    if st.are_subtypes_consistent is False or st.inconsistent_subtypes is True:
+        is_mixed_subtype = True
+    elif st.n_tiles_matching_all >= ((expected_tiles_matching * 0.01) +
+                                     expected_tiles_matching):
+        is_mixed_subtype = True
+
+    if is_mixed_subtype is True:
+        subtype_status = MIXED_SUBTYPE_ERROR
+    else:
+        subtype_status = OK_SUBTYPE
+
+    return subtype_status
+
+
+def check_min_tiles_reached(st: Subtype) -> str:
+    expected_tiles_matching = int(st.n_tiles_matching_all_expected.split(";")[0])
+
+    if st.n_tiles_matching_all < expected_tiles_matching:
+        subtype_status = INSUFFICIENT_NUM_TILES
+    else:
+        subtype_status = OK_NUM_TILES
+
+    return subtype_status
 
 
 def get_scheme_fasta(scheme: str) -> str:

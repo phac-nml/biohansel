@@ -14,7 +14,8 @@ from . import program_name
 from .blast_wrapper import BlastRunner, BlastReader
 from .kmer_count import Jellyfisher
 from .subtype import Subtype
-from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version
+from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version, check_for_mixed_subtypes, \
+    check_min_tiles_reached
 from .subtype_stats import subtype_counts
 from .const import FASTA_COLUMNS_TO_REMOVE
 
@@ -99,6 +100,9 @@ def subtype_fasta(scheme: str,
     if len(inconsistent_subtypes) > 0:
         st.are_subtypes_consistent = False
         st.inconsistent_subtypes = inconsistent_subtypes
+
+    st.confident_is_subtype = check_for_mixed_subtypes(st)
+    st.reached_min_tiles = check_min_tiles_reached(st)
 
     logging.info(st)
 
