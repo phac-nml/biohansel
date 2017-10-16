@@ -127,7 +127,7 @@ def check_for_mixed_subtypes(st: Subtype) -> str:
 def check_min_tiles_reached(st: Subtype) -> str:
     expected_tiles_matching = int(st.n_tiles_matching_all_expected.split(";")[0])
 
-    if st.n_tiles_matching_all < expected_tiles_matching:
+    if st.n_tiles_matching_all <= expected_tiles_matching - (expected_tiles_matching * 0.05):
         subtype_status = INSUFFICIENT_NUM_TILES
     else:
         subtype_status = OK_NUM_TILES
