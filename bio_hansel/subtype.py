@@ -18,5 +18,5 @@ class Subtype(object):
     n_tiles_matching_all_expected = attr.ib(default=0, validator=attr.validators.instance_of(int))
     n_tiles_matching_positive_expected = attr.ib(default=0, validator=attr.validators.instance_of(int))
     n_tiles_matching_subtype_expected = attr.ib(default=0, validator=attr.validators.instance_of(int))
-    confident_is_subtype = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
-    reached_min_tiles = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
+    confident_is_subtype = attr.ib(default=False, validator=attr.validators.instance_of(bool))
+    reached_min_tiles = attr.ib(default=False, validator=attr.validators.instance_of(bool))

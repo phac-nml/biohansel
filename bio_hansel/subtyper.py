@@ -14,8 +14,8 @@ from . import program_name
 from .blast_wrapper import BlastRunner, BlastReader
 from .kmer_count import Jellyfisher
 from .subtype import Subtype
-from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version, check_for_mixed_subtypes, \
-    check_min_tiles_reached
+from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version, check_is_confident_subtype, \
+    check_min_tiles_reached, translate_mixed_subtype_results, translate_min_tiles_results
 from .subtype_stats import subtype_counts
 from .const import FASTA_COLUMNS_TO_REMOVE
 
@@ -34,7 +34,8 @@ n_tiles_matching_positive
 n_tiles_matching_positive_expected
 n_tiles_matching_subtype
 n_tiles_matching_subtype_expected
-file_path""".strip().split('\n')
+file_path
+is_confident""".strip().split('\n')
 
 
 def subtype_fasta(scheme: str,
@@ -101,7 +102,7 @@ def subtype_fasta(scheme: str,
         st.are_subtypes_consistent = False
         st.inconsistent_subtypes = inconsistent_subtypes
 
-    st.confident_is_subtype = check_for_mixed_subtypes(st)
+    st.confident_is_subtype = check_is_confident_subtype(st)
     st.reached_min_tiles = check_min_tiles_reached(st)
 
     logging.info(st)
@@ -110,6 +111,8 @@ def subtype_fasta(scheme: str,
     df['file_path'] = fasta_path
     df['scheme'] = scheme_name or scheme
     df['scheme_version'] = scheme_version
+    df['reached_min_tiles'] = translate_mixed_subtype_results(st.reached_min_tiles)
+    df['is_confident'] = translate_min_tiles_results(st.confident_is_subtype)
     df = df[df.columns[~df.columns.isin(FASTA_COLUMNS_TO_REMOVE)]]
     return st, df
 
@@ -144,4 +147,5 @@ def subtype_reads(scheme: str,
         st, df = jfer.summary()
         df['scheme'] = scheme_name or scheme
         df['scheme_version'] = scheme_version
+
         return st, df

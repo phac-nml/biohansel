@@ -7,7 +7,6 @@ from typing import List, Dict, Any, Optional
 
 from pkg_resources import resource_filename
 
-from bio_hansel.const import OK_NUM_TILES, INSUFFICIENT_NUM_TILES, OK_SUBTYPE, MIXED_SUBTYPE_ERROR
 from . import program_name
 
 from .subtype import Subtype
@@ -105,34 +104,46 @@ def find_inconsistent_subtypes(subtypes: List[Any]) -> List[str]:
     return incon_subtypes
 
 
-def check_for_mixed_subtypes(st: Subtype) -> str:
-    is_mixed_subtype = False
+def check_is_confident_subtype(st: Subtype) -> bool:
+    confident_subtype = True
 
     expected_tiles_matching = int(st.n_tiles_matching_all_expected.split(";")[0])
 
-    if st.are_subtypes_consistent is False or st.inconsistent_subtypes is True:
-        is_mixed_subtype = True
+    if st.are_subtypes_consistent is False or (st.inconsistent_subtypes is not None and st.inconsistent_subtypes > 0):
+        confident_subtype = False
     elif st.n_tiles_matching_all >= ((expected_tiles_matching * 0.01) +
                                      expected_tiles_matching):
-        is_mixed_subtype = True
+        confident_subtype = False
 
-    if is_mixed_subtype is True:
-        subtype_status = MIXED_SUBTYPE_ERROR
-    else:
-        subtype_status = OK_SUBTYPE
-
-    return subtype_status
+    return confident_subtype
 
 
-def check_min_tiles_reached(st: Subtype) -> str:
+def check_min_tiles_reached(st: Subtype) -> bool:
     expected_tiles_matching = int(st.n_tiles_matching_all_expected.split(";")[0])
-
     if st.n_tiles_matching_all <= expected_tiles_matching - (expected_tiles_matching * 0.05):
-        subtype_status = INSUFFICIENT_NUM_TILES
+        subtype_status = False
     else:
-        subtype_status = OK_NUM_TILES
+        subtype_status = True
 
     return subtype_status
+
+
+def translate_mixed_subtype_results(result: bool) -> str:
+    if result is True:
+        result_message = "ERROR: MIXED SUBTYPES"
+    else:
+        result_message = "Subtypes not mixed"
+
+    return result_message
+
+
+def translate_min_tiles_results(result: bool) -> str:
+    if result is True:
+        result_message = "ERROR: Insufficient number of SNV targets found!"
+    else:
+        result_message = "Expected number of tiles reached"
+
+    return result_message
 
 
 def get_scheme_fasta(scheme: str) -> str:
