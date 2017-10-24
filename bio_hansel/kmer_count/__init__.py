@@ -7,6 +7,7 @@ from datetime import datetime
 import logging
 import pandas as pd
 
+from bio_hansel.quality_check import check_min_tiles_reached, check_is_confident_subtype
 from ..utils import exc_exists, run_command, find_inconsistent_subtypes, SCHEME_FASTAS
 from ..blast_wrapper.helpers import parse_fasta, revcomp
 from ..subtype import Subtype
@@ -258,6 +259,10 @@ class Jellyfisher(object):
         if len(inconsistent_subtypes) > 0:
             st.are_subtypes_consistent = False
             st.inconsistent_subtypes = inconsistent_subtypes
+
+        st.confident_is_subtype = check_is_confident_subtype(st)
+        st.reached_min_tiles = check_min_tiles_reached(st)
+
         logging.info(st)
         return st, df
 

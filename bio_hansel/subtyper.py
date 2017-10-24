@@ -5,6 +5,9 @@ import os
 import re
 from datetime import datetime
 from typing import Optional, List, Dict, Union, TYPE_CHECKING
+
+from bio_hansel.quality_check import check_is_confident_subtype, check_min_tiles_reached
+
 if TYPE_CHECKING:
     from .subtype_stats import SubtypeCounts
 
@@ -14,27 +17,9 @@ from . import program_name
 from .blast_wrapper import BlastRunner, BlastReader
 from .kmer_count import Jellyfisher
 from .subtype import Subtype
-from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version, check_for_mixed_subtypes, \
-    check_min_tiles_reached
+from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version
 from .subtype_stats import subtype_counts
 from .const import FASTA_COLUMNS_TO_REMOVE
-
-SUBTYPE_SUMMARY_COLS = """
-sample
-scheme
-scheme_version
-subtype
-all_subtypes
-tiles_matching_subtype
-are_subtypes_consistent
-inconsistent_subtypes
-n_tiles_matching_all
-n_tiles_matching_all_expected
-n_tiles_matching_positive
-n_tiles_matching_positive_expected
-n_tiles_matching_subtype
-n_tiles_matching_subtype_expected
-file_path""".strip().split('\n')
 
 
 def subtype_fasta(scheme: str,
@@ -93,15 +78,17 @@ def subtype_fasta(scheme: str,
     subtype_list = [x for x in dfpos_highest_res.subtype.unique()]
     st.subtype = '; '.join(subtype_list)
     st.n_tiles_matching_all_expected = ';'.join([str(scheme_subtype_counts[x].all_tile_count) for x in subtype_list])
-    st.n_tiles_matching_positive_expected = ';'.join([str(scheme_subtype_counts[x].positive_tile_count) for x in subtype_list])
-    st.n_tiles_matching_subtype_expected = ';'.join([str(scheme_subtype_counts[x].subtype_tile_count) for x in subtype_list])
+    st.n_tiles_matching_positive_expected = ';'.join(
+        [str(scheme_subtype_counts[x].positive_tile_count) for x in subtype_list])
+    st.n_tiles_matching_subtype_expected = ';'.join(
+        [str(scheme_subtype_counts[x].subtype_tile_count) for x in subtype_list])
     st.tiles_matching_subtype = '; '.join([x for x in dfpos_highest_res.tilename.unique()])
 
     if len(inconsistent_subtypes) > 0:
         st.are_subtypes_consistent = False
         st.inconsistent_subtypes = inconsistent_subtypes
 
-    st.confident_is_subtype = check_for_mixed_subtypes(st)
+    st.confident_is_subtype = check_is_confident_subtype(st)
     st.reached_min_tiles = check_min_tiles_reached(st)
 
     logging.info(st)
@@ -110,6 +97,8 @@ def subtype_fasta(scheme: str,
     df['file_path'] = fasta_path
     df['scheme'] = scheme_name or scheme
     df['scheme_version'] = scheme_version
+    df['reached_min_tiles'] = st.reached_min_tiles
+    df['is_confident'] = st.confident_is_subtype
     df = df[df.columns[~df.columns.isin(FASTA_COLUMNS_TO_REMOVE)]]
     return st, df
 
@@ -142,6 +131,12 @@ def subtype_reads(scheme: str,
                      tmp_dir=genome_tmp_dir,
                      threads=threads) as jfer:
         st, df = jfer.summary()
+        # Remember we do the checking within the __init__.py file.
         df['scheme'] = scheme_name or scheme
         df['scheme_version'] = scheme_version
+        df['reached_min_tiles'] = st.reached_min_tiles
+        df['is_confident'] = st.confident_is_subtype
+
+        df = df[df.columns[~df.columns.isin(FASTA_COLUMNS_TO_REMOVE)]]
+
         return st, df

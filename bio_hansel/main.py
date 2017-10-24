@@ -12,10 +12,11 @@ import re
 import pandas as pd
 from collections import defaultdict
 
-from . import program_name, program_desc, __version__
-from .subtyper import subtype_fasta, SUBTYPE_SUMMARY_COLS, subtype_reads
-from .subtype_stats import subtype_counts
-from .utils import genome_name_from_fasta_path, get_scheme_fasta
+from bio_hansel import program_name, program_desc, __version__
+from bio_hansel.const import OK_SUBTYPE, OK_NUM_TILES, SUBTYPE_SUMMARY_COLS, SIMPLE_SUMMARY_COLS
+from bio_hansel.subtyper import subtype_fasta, subtype_reads
+from bio_hansel.subtype_stats import subtype_counts
+from bio_hansel.utils import genome_name_from_fasta_path, get_scheme_fasta
 
 SCRIPT_NAME = 'hansel'
 LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
@@ -59,6 +60,8 @@ def init_parser():
                         help='Subtyping summary output path (tab-delimited)')
     parser.add_argument('-O', '--output-tile-results',
                         help='Subtyping tile matching output path (tab-delimited)')
+    parser.add_argument('-OS', '--output-simple-summary',
+                        help='Subtyping simple summary output path')
     parser.add_argument('--min-kmer-freq',
                         type=int,
                         default=10,
@@ -97,6 +100,7 @@ def main():
     init_console_logger(args.verbose)
     output_summary_path = args.output_summary
     output_tile_results = args.output_tile_results
+    output_simple_summary_path = args.output_simple_summary
 
     scheme = args.scheme  # type: str
     scheme_name = args.scheme_name  # type: Optional[str]
@@ -207,6 +211,10 @@ def main():
     dfsummary = pd.DataFrame(subtype_results)
     dfsummary = dfsummary[SUBTYPE_SUMMARY_COLS]
 
+    simple_results = generate_simple_output(subtype_results)
+    dfsimplesummary = pd.DataFrame(simple_results)
+    dfsimplesummary = dfsimplesummary[SIMPLE_SUMMARY_COLS]
+
     if output_summary_path:
         dfsummary.to_csv(output_summary_path, sep='\t', index=None)
         logging.info('Wrote subtyping output summary to %s', output_summary_path)
@@ -215,6 +223,35 @@ def main():
 
     if output_tile_results:
         dfall.to_csv(output_tile_results, sep='\t', index=None)
+
+    if output_simple_summary_path:
+        dfsimplesummary.to_csv(output_simple_summary_path, sep='\t', index=None)
+
+
+def generate_simple_output(subtype_results):
+    output = []
+    for result in subtype_results:
+        error_message = grab_error_message(result)
+
+        if len(error_message) > 0:
+            output.append({'sample': result['sample'], 'subtype': result['subtype'], 'result': error_message})
+        else:
+            output.append({'sample': result['sample'], 'subtype': result['subtype'], 'result': 'PASS'})
+
+    return output
+
+
+def grab_error_message(result):
+    error_message = ""
+    if result['confident_is_subtype'] != OK_SUBTYPE:
+        error_message = error_message + result['confident_is_subtype']
+    elif result['reached_min_tiles'] != OK_NUM_TILES:
+        if len(error_message) > 0:
+            error_message = error_message + ";" + result['reached_min_tiles']
+        else:
+            error_message = error_message + result['reached_min_tiles']
+
+    return error_message
 
 
 def collect_fasta_from_dir(input_directory):
