@@ -11,7 +11,7 @@ from bio_hansel.utils import SCHEME_FASTAS
 @pytest.fixture()
 def test_genomes():
     # The data to provided for false confidence is not here yet, substitute this file name with the correct data.
-    return ['tests/data/fwd_inconsistent.fastqsanger', 'tests/data/fwd_inconsistent.fastqsanger']
+    return ['tests/data/inconsistent_reads_fwd.fastq', 'tests/data/inconsistent_reads_rvs.fastq']
 
 
 def test_confidence_false(test_genomes):
@@ -24,14 +24,14 @@ def test_confidence_false(test_genomes):
     assert st.scheme == scheme
     assert st.scheme_version == SCHEME_FASTAS[scheme]['version']
     assert st.sample == genome_name
-    assert st.subtype == '2.1; 2.2'
+    assert st.subtype == '2.2.2.4.1'
     assert st.are_subtypes_consistent is False
-    assert st.n_tiles_matching_all == 186
-    assert st.n_tiles_matching_all_expected == '188;188'
-    assert st.n_tiles_matching_positive == 9
-    assert st.n_tiles_matching_positive_expected == '8;10'
-    assert st.n_tiles_matching_subtype == 3
-    assert st.n_tiles_matching_subtype_expected == '2;4'
+    assert st.n_tiles_matching_all == 208
+    assert st.n_tiles_matching_all_expected == '188'
+    assert st.n_tiles_matching_positive == 26
+    assert st.n_tiles_matching_positive_expected == '25'
+    assert st.n_tiles_matching_subtype == 5
+    assert st.n_tiles_matching_subtype_expected == '6'
     assert st.confident_is_subtype is MIXED_SUBTYPE_ERROR
     assert st.reached_min_tiles is OK_NUM_TILES
     exp_cols = ['tilename', 'freq', 'refposition', 'subtype',
