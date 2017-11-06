@@ -44,10 +44,3 @@ subtype
 qc_status
 qc_message
 """.strip().split('\n')
-
-MIXED_SUBTYPE_ERROR = "ERROR: Mixed subtypes detected"
-INSUFFICIENT_NUM_TILES = "ERROR: Insufficient number of SNV targets found!"
-CONFIDENT_SUBTYPE_WARNING = "WARNING: Subtype Confidence not checked, no matching tiles found"
-MIN_TILES_WARNING = "WARNING: Minimum tiles not checked, no matching tiles found"
-FAIL_MESSAGE = "FAIL"
-PASS_MESSAGE = "PASS"

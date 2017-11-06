@@ -2,7 +2,7 @@ import pytest
 from pandas import DataFrame
 import numpy as np
 
-from bio_hansel.const import PASS_MESSAGE
+from bio_hansel.quality_check.const import PASS_MESSAGE
 from bio_hansel.subtype import Subtype
 from bio_hansel.subtyper import subtype_reads
 from bio_hansel.utils import SCHEME_FASTAS

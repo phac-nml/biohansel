@@ -7,7 +7,7 @@ from datetime import datetime
 import logging
 import pandas as pd
 
-from bio_hansel.quality_check import check_min_tiles_reached, check_is_confident_subtype, perform_quality_check
+from bio_hansel.quality_check import perform_quality_check
 from ..utils import exc_exists, run_command, find_inconsistent_subtypes, SCHEME_FASTAS
 from ..blast_wrapper.helpers import parse_fasta, revcomp
 from ..subtype import Subtype

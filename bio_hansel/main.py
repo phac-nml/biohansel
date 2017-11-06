@@ -211,9 +211,7 @@ def main():
     dfsummary = pd.DataFrame(subtype_results)
     dfsummary = dfsummary[SUBTYPE_SUMMARY_COLS]
 
-    simple_results = generate_simple_output(subtype_results)
-    dfsimplesummary = pd.DataFrame(simple_results)
-    dfsimplesummary = dfsimplesummary[SIMPLE_SUMMARY_COLS]
+    df_simple_summary = dfsummary[['sample', 'subtype', 'qc_status', 'qc_message']]
 
     if output_summary_path:
         dfsummary.to_csv(output_summary_path, sep='\t', index=None)
@@ -225,15 +223,7 @@ def main():
         dfall.to_csv(output_tile_results, sep='\t', index=None)
 
     if output_simple_summary_path:
-        dfsimplesummary.to_csv(output_simple_summary_path, sep='\t', index=None)
-
-
-def generate_simple_output(subtype_results):
-    output = []
-    for result in subtype_results:
-            output.append({'sample': result['sample'], 'subtype': result['subtype'], 'qc_status': result['qc_status'],
-                           'qc_message': result['qc_message']})
-    return output
+        df_simple_summary.to_csv(output_simple_summary_path, sep='\t', index=None)
 
 
 def collect_fasta_from_dir(input_directory):

@@ -1,0 +1,7 @@
+MIXED_SUBTYPE_ERROR = "Mixed subtypes detected"
+INSUFFICIENT_NUM_TILES = "Insufficient number of SNV targets found!"
+CONFIDENT_SUBTYPE_WARNING = "Subtype Confidence not checked, no matching tiles found"
+MIN_TILES_WARNING = "Minimum tiles not checked, no matching tiles found"
+FAIL_MESSAGE = "FAIL"
+PASS_MESSAGE = "PASS"
+WARNING_MESSAGE = "WARNING"
