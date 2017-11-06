@@ -17,7 +17,7 @@ from . import program_name
 from .blast_wrapper import BlastRunner, BlastReader
 from .kmer_count import Jellyfisher
 from .subtype import Subtype
-from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version, apply_savgol_filt, find_maxima
+from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version
 from .subtype_stats import subtype_counts
 from .const import FASTA_COLUMNS_TO_REMOVE
 

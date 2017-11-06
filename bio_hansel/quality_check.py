@@ -1,5 +1,5 @@
 from bio_hansel.const import MIXED_SUBTYPE_ERROR, INSUFFICIENT_NUM_TILES,\
-    CONFIDENT_SUBTYPE_ERROR, FAIL_MESSAGE, PASS_MESSAGE, MIN_TILES_ERROR
+    CONFIDENT_SUBTYPE_WARNING, FAIL_MESSAGE, PASS_MESSAGE, MIN_TILES_WARNING
 from .subtype import Subtype
 
 
@@ -50,7 +50,7 @@ def check_is_confident_subtype(st: Subtype) -> str:
         else:
             does_subtype_pass = PASS_MESSAGE
     else:
-        error_messages = CONFIDENT_SUBTYPE_ERROR
+        error_messages = CONFIDENT_SUBTYPE_WARNING
         does_subtype_pass = FAIL_MESSAGE
 
     return does_subtype_pass, error_messages
@@ -74,6 +74,6 @@ def check_min_tiles_reached(st: Subtype) -> str:
             does_subtype_pass = PASS_MESSAGE
     else:
         does_subtype_pass = FAIL_MESSAGE
-        error_messages = MIN_TILES_ERROR
+        error_messages = MIN_TILES_WARNING
 
     return does_subtype_pass, error_messages
