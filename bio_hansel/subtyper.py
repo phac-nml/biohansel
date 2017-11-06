@@ -6,7 +6,7 @@ import re
 from datetime import datetime
 from typing import Optional, List, Dict, Union, TYPE_CHECKING
 
-from bio_hansel.quality_check import check_is_confident_subtype, check_min_tiles_reached
+from bio_hansel.quality_check import perform_quality_check
 
 if TYPE_CHECKING:
     from .subtype_stats import SubtypeCounts
@@ -17,7 +17,7 @@ from . import program_name
 from .blast_wrapper import BlastRunner, BlastReader
 from .kmer_count import Jellyfisher
 from .subtype import Subtype
-from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version
+from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version, apply_savgol_filt, find_maxima
 from .subtype_stats import subtype_counts
 from .const import FASTA_COLUMNS_TO_REMOVE
 
@@ -86,19 +86,17 @@ def subtype_fasta(scheme: str,
 
     if len(inconsistent_subtypes) > 0:
         st.are_subtypes_consistent = False
-        st.inconsistent_subtypes = inconsistent_subtypes
 
-    st.confident_is_subtype = check_is_confident_subtype(st)
-    st.reached_min_tiles = check_min_tiles_reached(st)
-
+    perform_quality_check(st)
     logging.info(st)
 
     df['sample'] = genome_name
     df['file_path'] = fasta_path
     df['scheme'] = scheme_name or scheme
     df['scheme_version'] = scheme_version
-    df['reached_min_tiles'] = st.reached_min_tiles
-    df['is_confident'] = st.confident_is_subtype
+    df['qc_status'] = st.qc_status
+    df['qc_message'] = st.qc_message
+
     df = df[df.columns[~df.columns.isin(FASTA_COLUMNS_TO_REMOVE)]]
     return st, df
 
@@ -134,8 +132,8 @@ def subtype_reads(scheme: str,
         # Remember we do the checking within the __init__.py file.
         df['scheme'] = scheme_name or scheme
         df['scheme_version'] = scheme_version
-        df['reached_min_tiles'] = st.reached_min_tiles
-        df['is_confident'] = st.confident_is_subtype
+        df['qc_status'] = st.qc_status
+        df['qc_message'] = st.qc_message
 
         df = df[df.columns[~df.columns.isin(FASTA_COLUMNS_TO_REMOVE)]]
 

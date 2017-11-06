@@ -35,16 +35,19 @@ n_tiles_matching_positive_expected
 n_tiles_matching_subtype
 n_tiles_matching_subtype_expected
 file_path
-confident_is_subtype
-reached_min_tiles""".strip().split('\n')
+qc_status
+qc_message""".strip().split('\n')
 
 SIMPLE_SUMMARY_COLS = """
 sample
 subtype
-result
+qc_status
+qc_message
 """.strip().split('\n')
 
-MIXED_SUBTYPE_ERROR = "ERROR: Mixed Subtypes"
-OK_SUBTYPE = "PASS: Subtypes not mixed"
+MIXED_SUBTYPE_ERROR = "ERROR: Mixed subtypes detected"
 INSUFFICIENT_NUM_TILES = "ERROR: Insufficient number of SNV targets found!"
-OK_NUM_TILES = "PASS: Expected number of tiles reached"
+CONFIDENT_SUBTYPE_ERROR = "ERROR: CONFIDENCE SUBTYPE TEST NOT RUN"
+MIN_TILES_ERROR = "ERROR: MINIMUM TILES TEST NOT RUN"
+FAIL_MESSAGE = "FAIL"
+PASS_MESSAGE = "PASS"

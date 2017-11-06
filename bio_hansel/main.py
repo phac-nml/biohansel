@@ -13,7 +13,7 @@ import pandas as pd
 from collections import defaultdict
 
 from bio_hansel import program_name, program_desc, __version__
-from bio_hansel.const import OK_SUBTYPE, OK_NUM_TILES, SUBTYPE_SUMMARY_COLS, SIMPLE_SUMMARY_COLS
+from bio_hansel.const import SUBTYPE_SUMMARY_COLS, SIMPLE_SUMMARY_COLS
 from bio_hansel.subtyper import subtype_fasta, subtype_reads
 from bio_hansel.subtype_stats import subtype_counts
 from bio_hansel.utils import genome_name_from_fasta_path, get_scheme_fasta
@@ -231,27 +231,9 @@ def main():
 def generate_simple_output(subtype_results):
     output = []
     for result in subtype_results:
-        error_message = grab_error_message(result)
-
-        if len(error_message) > 0:
-            output.append({'sample': result['sample'], 'subtype': result['subtype'], 'result': error_message})
-        else:
-            output.append({'sample': result['sample'], 'subtype': result['subtype'], 'result': 'PASS'})
-
+            output.append({'sample': result['sample'], 'subtype': result['subtype'], 'qc_status': result['qc_status'],
+                           'qc_message': result['qc_message']})
     return output
-
-
-def grab_error_message(result):
-    error_message = ""
-    if result['confident_is_subtype'] != OK_SUBTYPE:
-        error_message = error_message + result['confident_is_subtype']
-    elif result['reached_min_tiles'] != OK_NUM_TILES:
-        if len(error_message) > 0:
-            error_message = error_message + ";" + result['reached_min_tiles']
-        else:
-            error_message = error_message + result['reached_min_tiles']
-
-    return error_message
 
 
 def collect_fasta_from_dir(input_directory):

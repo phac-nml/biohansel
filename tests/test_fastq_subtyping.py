@@ -1,6 +1,8 @@
 import pytest
 from pandas import DataFrame
 import numpy as np
+
+from bio_hansel.const import PASS_MESSAGE
 from bio_hansel.subtype import Subtype
 from bio_hansel.subtyper import subtype_reads
 from bio_hansel.utils import SCHEME_FASTAS
@@ -30,9 +32,11 @@ def test_fastq_subtyping(test_genome):
     assert st.n_tiles_matching_positive_expected == '20'
     assert st.n_tiles_matching_subtype == 2
     assert st.n_tiles_matching_subtype_expected == '2'
+    assert st.qc_status == PASS_MESSAGE
+    assert len(st.qc_message) == 0
 
     exp_cols = ['tilename', 'freq', 'refposition', 'subtype',
                 'is_pos_tile', 'is_kmer_freq_okay', 'sample', 'file_path', 'scheme', 'scheme_version',
-                'reached_min_tiles', 'is_confident']
+                'qc_status', 'qc_message']
     df_cols = df.columns  # type: Series
     assert np.all(df_cols.isin(exp_cols))

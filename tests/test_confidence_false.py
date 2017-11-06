@@ -2,7 +2,7 @@ import pytest
 from pandas import DataFrame, Series
 import numpy as np
 
-from bio_hansel.const import MIXED_SUBTYPE_ERROR, OK_NUM_TILES
+from bio_hansel.const import FAIL_MESSAGE, MIXED_SUBTYPE_ERROR
 from bio_hansel.subtype import Subtype
 from bio_hansel.subtyper import subtype_fasta
 from bio_hansel.utils import SCHEME_FASTAS
@@ -32,9 +32,9 @@ def test_confidence_false(test_genome):
     assert st.n_tiles_matching_positive_expected == '8;10'
     assert st.n_tiles_matching_subtype == 3
     assert st.n_tiles_matching_subtype_expected == '2;4'
-    assert st.confident_is_subtype is MIXED_SUBTYPE_ERROR
-    assert st.reached_min_tiles is OK_NUM_TILES
+    assert st.qc_status is FAIL_MESSAGE
+    assert st.qc_message is MIXED_SUBTYPE_ERROR
     exp_cols = ['tilename', 'stitle', 'refposition', 'subtype',
-       'is_pos_tile', 'sample', 'file_path', 'scheme', 'scheme_version', 'reached_min_tiles', 'is_confident']
+       'is_pos_tile', 'sample', 'file_path', 'scheme', 'scheme_version', 'qc_status', 'qc_message']
     df_cols = df.columns # type: Series
     assert np.all(df_cols.isin(exp_cols))
