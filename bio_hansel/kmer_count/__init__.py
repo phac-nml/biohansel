@@ -220,6 +220,35 @@ class Jellyfisher(object):
         self.df_results = df
         return df
 
+    def create_histogram(self):
+        if self.jf_file is None:
+            self.kmer_count()
+
+        cmd_list = [self.jellyfish_exc,
+                    'histo',
+                    self.jf_file,
+                    ]
+
+        exit_code, stdout, stderr = run_command(cmd_list)
+
+        if exit_code == 0:
+            if stdout is None or stdout == '':
+                return None
+
+            dict_kmers = {}
+            for line in stdout.split('\n'):
+                if line is not None and len(line) > 0:
+                    temp_line = line.split()
+                    key = int(temp_line[0])
+                    val = int(temp_line[1])
+                    dict_kmers[key] = val
+            return dict_kmers
+
+        else:
+            raise Exception('Could not run "jellyfish query"! Exit code {}; stderr: {}'.format(
+                exit_code,
+                stderr))
+
     def summary(self):
         if self.df_results is None:
             self.parse_query()

@@ -5,9 +5,12 @@ import os
 import re
 from datetime import datetime
 from typing import Optional, List, Dict, Union, TYPE_CHECKING
+from scipy.stats import norm as pf
 
+from bio_hansel.kmer_val_calc import find_min_kmer_val
+from bio_hansel.kmer_val_calc.kmer_utils import apply_savgol_filt, find_maxima
 from bio_hansel.quality_check import perform_quality_check
-
+import numpy as np
 if TYPE_CHECKING:
     from .subtype_stats import SubtypeCounts
 
@@ -128,6 +131,9 @@ def subtype_reads(scheme: str,
                      max_kmer_freq=max_kmer_freq,
                      tmp_dir=genome_tmp_dir,
                      threads=threads) as jfer:
+        hist = jfer.create_histogram()
+        min_kmer_freq = find_min_kmer_val(hist)
+        jfer.min_kmer_freq = min_kmer_freq
         st, df = jfer.summary()
         # Remember we do the checking within the __init__.py file.
         df['scheme'] = scheme_name or scheme
