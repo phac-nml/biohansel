@@ -140,3 +140,6 @@ ENV/
 # Rope project settings
 .ropeproject
 
+# Output files
+match_results.tab
+results.tab

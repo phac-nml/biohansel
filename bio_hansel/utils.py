@@ -4,7 +4,6 @@ import logging
 
 import re
 from typing import List, Dict, Any, Optional
-
 from pkg_resources import resource_filename
 
 from . import program_name
