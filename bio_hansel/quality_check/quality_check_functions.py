@@ -1,5 +1,18 @@
-from bio_hansel.quality_check.const import FAIL_MESSAGE, MIXED_SUBTYPE_ERROR, PASS_MESSAGE, INSUFFICIENT_NUM_TILES
+from bio_hansel.quality_check.const import FAIL_MESSAGE, MIXED_SUBTYPE_ERROR, INSUFFICIENT_NUM_TILES, \
+    MAX_TILES_THRESHOLD, MIXED_SUBTYPE_WARNING, WARNING_MESSAGE, OVER_MAX_TILES, MIN_TILES_THRESHOLD
 from bio_hansel.subtype import Subtype
+from typing import Tuple, Optional
+
+
+''' 
+[does_subtype_result_exist]
+Input: Subtype 
+Output: Bool,
+        True: If the subtype contains any matching tiles.
+        False: If the subtype does not contain any matching tiles.
+Desc: This method verifies that there is an expected matching subtype so we can proceed
+with quality checking.
+'''
 
 
 def does_subtype_result_exist(st):
@@ -9,44 +22,90 @@ def does_subtype_result_exist(st):
         return False
 
 
-def check_is_confident_subtype(st: Subtype) -> str:
+''' 
+[check_is_consistent_subtype]
+Input: Subtype 
+Output: Tuple, containing two strings, 
+        error_status: Contains the status of the error, otherwise returns None.
+        error_messages: Contains the error messages, otherwise returns None.
+Desc: This method will verify that the subtype given to it is consistent by checking
+the consistent flag and if there are any inconsistent subtypes within the st object.
+'''
+
+
+def check_is_consistent_subtype(st: Subtype) -> Tuple[Optional[str], Optional[str]]:
     # Value is default false, unless checks below pass which is where it's set to true.
-    does_subtype_pass = FAIL_MESSAGE
-    error_messages = ''
-    # First we need to get the expected tiles that are matching, this is stored as a string.
-    if ';' in str(st.n_tiles_matching_all_expected):
-        expected_tiles_matching = int(st.n_tiles_matching_all_expected.split(";")[0])
-    else:
+    error_status = None
+    error_messages = None
+
+    if st.are_subtypes_consistent is False or (st.inconsistent_subtypes is not None
+                                               and st.inconsistent_subtypes > 0):
+        error_messages = MIXED_SUBTYPE_ERROR
+        error_status = FAIL_MESSAGE
+
+    return error_status, error_messages
+
+
+''' 
+[check_min_tiles_reached]
+Input: Subtype 
+Output: Tuple, containing two strings, 
+        error_status: Contains the status of the error, otherwise returns None.
+        error_messages: Contains the error messages, otherwise returns None.
+Desc: Checks if the minimum tiles have been reached within the subtype.
+The threshold for this is to see if the `tiles matching all` is at least within 5% of the
+expected tiles matching value. This method will return a FAIL and the offending tiles explanations
+if the minimum number of tiles were not reached. This method will return a WARNING and an explanation
+that the method was not run, if mixed subtypes were detected. 
+'''
+
+
+def check_min_tiles_reached(st: Subtype) -> Tuple[Optional[str], Optional[str]]:
+    error_status = None
+    error_messages = None
+
+    if ';' not in str(st.n_tiles_matching_all_expected):
         expected_tiles_matching = int(st.n_tiles_matching_all_expected)
 
-        # Now we need to make sure that the subtypes are consistent or provide an explanation of what is wrong.
-    if st.are_subtypes_consistent is False or (st.inconsistent_subtypes is not None and st.inconsistent_subtypes > 0):
-        error_messages = MIXED_SUBTYPE_ERROR
-    # Checking the max tiles threshold, to indicate whether there's a mixed subtype or not.
-    elif st.n_tiles_matching_all >= ((expected_tiles_matching * 0.01) +
-                                     expected_tiles_matching):
-        error_messages = MIXED_SUBTYPE_ERROR
+        # Then we verify that the subtype has the correct number of tiles.
+        if st.n_tiles_matching_all <= expected_tiles_matching - (expected_tiles_matching * MIN_TILES_THRESHOLD):
+            error_messages = INSUFFICIENT_NUM_TILES + " : Observed: {"+str(st.n_tiles_matching_all)+"} " \
+                                                        " Expected: {"+str(st.n_tiles_matching_all_expected)+"}"
+            error_status = FAIL_MESSAGE
     else:
-        does_subtype_pass = PASS_MESSAGE
+        error_messages = MIXED_SUBTYPE_WARNING
+        error_status = WARNING_MESSAGE + "Min Tiles QC"
 
-    return does_subtype_pass, error_messages
+    return error_status, error_messages
 
 
-def check_min_tiles_reached(st: Subtype) -> str:
-    does_subtype_pass = FAIL_MESSAGE
-    error_messages = ''
+''' 
+[check_max_tiles_reached]
+Input: Subtype 
+Output: Tuple, containing two strings, 
+        error_status: Contains the status of the error, otherwise returns None.
+        error_messages: Contains the error messages, otherwise returns None.
+Desc: Checks if the maximum number of tiles are exceeded ( 1% ), if this is true this method
+will return a FAIL status, and the error message containing the offending values.
+If this method sees that there was a mixed subtype, this method won't run it's checks
+and simply return a warning as the checks were not finished.
+'''
 
-    if ';' in str(st.n_tiles_matching_all_expected):
-        # Need to calculate the minimum tiles expected, which is stored as a string.
-        expected_tiles_matching = int(st.n_tiles_matching_all_expected.split(";")[0])
-    else:
+
+def check_max_tiles_reached(st: Subtype) -> Tuple[Optional[str], Optional[str]]:
+    error_status = None
+    error_messages = None
+
+    if ';' not in str(st.n_tiles_matching_all_expected):
         expected_tiles_matching = int(st.n_tiles_matching_all_expected)
 
-    # Then we verify that the subtype has the correct number of tiles.
-    if st.n_tiles_matching_all <= expected_tiles_matching - (expected_tiles_matching * 0.05):
-        error_messages = INSUFFICIENT_NUM_TILES
+        if st.n_tiles_matching_all >= ((expected_tiles_matching * MAX_TILES_THRESHOLD) +
+                                       expected_tiles_matching):
+            error_messages = OVER_MAX_TILES + " : Observed: {"+str(st.n_tiles_matching_all)+"}" \
+                                                " Expected: {"+str(st.n_tiles_matching_all_expected)+"}"
+            error_status = FAIL_MESSAGE
     else:
-        does_subtype_pass = PASS_MESSAGE
+        error_messages = MIXED_SUBTYPE_WARNING
+        error_status = WARNING_MESSAGE + "Max Tiles QC"
 
-    return does_subtype_pass, error_messages
-
+    return error_status, error_messages

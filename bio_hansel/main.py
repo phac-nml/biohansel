@@ -13,7 +13,7 @@ import pandas as pd
 from collections import defaultdict
 
 from bio_hansel import program_name, program_desc, __version__
-from bio_hansel.const import SUBTYPE_SUMMARY_COLS, SIMPLE_SUMMARY_COLS
+from bio_hansel.const import SUBTYPE_SUMMARY_COLS
 from bio_hansel.subtyper import subtype_fasta, subtype_reads
 from bio_hansel.subtype_stats import subtype_counts
 from bio_hansel.utils import genome_name_from_fasta_path, get_scheme_fasta
