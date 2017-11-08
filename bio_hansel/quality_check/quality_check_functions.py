@@ -76,7 +76,7 @@ def check_min_tiles_reached(st: Subtype) -> Tuple[Optional[str], Optional[str]]:
                                                         " Expected: {"+str(st.n_tiles_matching_all_expected)+"}"
             error_status = FAIL_MESSAGE
     else:
-        error_messages = MIXED_SUBTYPE_WARNING + "Min Tiles QC"
+        error_messages = MIXED_SUBTYPE_WARNING + "{Min Tiles QC}"
         error_status = WARNING_MESSAGE
 
     return error_status, error_messages
@@ -108,7 +108,7 @@ def check_max_tiles_reached(st: Subtype) -> Tuple[Optional[str], Optional[str]]:
                                                 " Expected: {"+str(st.n_tiles_matching_all_expected)+"}"
             error_status = FAIL_MESSAGE
     else:
-        error_messages = MIXED_SUBTYPE_WARNING + "Max Tiles QC"
+        error_messages = MIXED_SUBTYPE_WARNING + "{Max Tiles QC}"
         error_status = WARNING_MESSAGE
 
     return error_status, error_messages

@@ -86,6 +86,7 @@ def subtype_fasta(scheme: str,
 
     if len(inconsistent_subtypes) > 0:
         st.are_subtypes_consistent = False
+        st.inconsistent_subtypes = inconsistent_subtypes
 
     perform_quality_check(st)
     logging.info(st)
