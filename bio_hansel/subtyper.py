@@ -5,17 +5,13 @@ import os
 import re
 from datetime import datetime
 from typing import Optional, List, Dict, Union, TYPE_CHECKING
-from scipy.stats import norm as pf
-
 from bio_hansel.kmer_val_calc import find_min_kmer_val
-from bio_hansel.kmer_val_calc.kmer_utils import apply_savgol_filt, find_maxima
 from bio_hansel.quality_check import perform_quality_check
-import numpy as np
+
 if TYPE_CHECKING:
     from .subtype_stats import SubtypeCounts
 
 from pandas import DataFrame
-
 from . import program_name
 from .blast_wrapper import BlastRunner, BlastReader
 from .kmer_count import Jellyfisher
@@ -89,6 +85,7 @@ def subtype_fasta(scheme: str,
 
     if len(inconsistent_subtypes) > 0:
         st.are_subtypes_consistent = False
+        st.inconsistent_subtypes = inconsistent_subtypes
 
     perform_quality_check(st)
     logging.info(st)

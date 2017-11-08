@@ -38,9 +38,12 @@ def check_is_consistent_subtype(st: Subtype) -> Tuple[Optional[str], Optional[st
     error_status = None
     error_messages = None
 
-    if st.are_subtypes_consistent is False or (st.inconsistent_subtypes is not None
-                                               and st.inconsistent_subtypes > 0):
-        error_messages = MIXED_SUBTYPE_ERROR
+    if st.are_subtypes_consistent is False and (st.inconsistent_subtypes is not None
+                                                and len(st.inconsistent_subtypes) > 0):
+        mixed_subtypes = '; '.join(st.inconsistent_subtypes)
+        error_messages = MIXED_SUBTYPE_ERROR + ": {"+mixed_subtypes + "} detected in sample" \
+                                          '{' + st.sample + "}. A single subtype is expected. " \
+                                          "This result could be due to contamination resulting in a mixed sample."
         error_status = FAIL_MESSAGE
 
     return error_status, error_messages
@@ -73,8 +76,8 @@ def check_min_tiles_reached(st: Subtype) -> Tuple[Optional[str], Optional[str]]:
                                                         " Expected: {"+str(st.n_tiles_matching_all_expected)+"}"
             error_status = FAIL_MESSAGE
     else:
-        error_messages = MIXED_SUBTYPE_WARNING
-        error_status = WARNING_MESSAGE + "Min Tiles QC"
+        error_messages = MIXED_SUBTYPE_WARNING + "Min Tiles QC"
+        error_status = WARNING_MESSAGE
 
     return error_status, error_messages
 
@@ -105,7 +108,7 @@ def check_max_tiles_reached(st: Subtype) -> Tuple[Optional[str], Optional[str]]:
                                                 " Expected: {"+str(st.n_tiles_matching_all_expected)+"}"
             error_status = FAIL_MESSAGE
     else:
-        error_messages = MIXED_SUBTYPE_WARNING
-        error_status = WARNING_MESSAGE + "Max Tiles QC"
+        error_messages = MIXED_SUBTYPE_WARNING + "Max Tiles QC"
+        error_status = WARNING_MESSAGE
 
     return error_status, error_messages

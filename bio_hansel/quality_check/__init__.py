@@ -32,7 +32,7 @@ def perform_quality_check(st: Subtype):
         messages.append('{}: {}'.format(status, message))
         if status is FAIL_MESSAGE:
             overall_qc_status = 'FAIL'
-        elif overall_qc_status != 'FAIL' and status == WARNING_MESSAGE:
+        elif overall_qc_status != 'FAIL' and status == 'WARNING':
             overall_qc_status = 'WARNING'
 
     st.qc_status = overall_qc_status
