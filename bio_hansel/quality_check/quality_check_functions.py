@@ -15,7 +15,7 @@ with quality checking.
 '''
 
 
-def does_subtype_result_exist(st):
+def does_subtype_result_exist(st) -> bool:
     if st.n_tiles_matching_all_expected is not None and len(st.n_tiles_matching_all_expected) > 0:
         return True
     else:
