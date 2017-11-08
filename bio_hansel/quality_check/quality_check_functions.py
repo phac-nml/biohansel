@@ -8,18 +8,15 @@ from typing import Tuple, Optional
 [does_subtype_result_exist]
 Input: Subtype 
 Output: Bool,
-        True: If the subtype contains any matching tiles.
-        False: If the subtype does not contain any matching tiles.
+        True: If the subtype exists
+        False: If the subtype does not exist
 Desc: This method verifies that there is an expected matching subtype so we can proceed
 with quality checking.
 '''
 
 
 def does_subtype_result_exist(st) -> bool:
-    if st.n_tiles_matching_all_expected is not None and len(st.n_tiles_matching_all_expected) > 0:
-        return True
-    else:
-        return False
+    return st.subtype is not None and len(st.subtype) > 0
 
 
 ''' 
