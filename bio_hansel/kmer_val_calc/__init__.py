@@ -2,6 +2,28 @@ from bio_hansel.kmer_val_calc.kmer_utils import calc_error_rate, calc_avg_kmer_d
 from scipy.stats import norm as stats
 
 
+'''
+[find_min_kmer_val]
+    Input: 
+        A dictionary containing the results of running Jellyfish's histo on the kmer count data.
+    Output: 
+        The minimum kmer cut off value.
+    Desc: 
+        This method will find three things:
+            1) Error Rate 
+            2) The average k-mer coverage depth
+            3) The minimum kmer cut off value
+    
+    How does this work?
+        1) Estimate the expected k-mer coverage depth from observation.
+        2) (Slightly under-) estimate the k-mer error rate by assuming k-mers that appear once are errors.
+        3) Multiply those two things together to get the (slightly underestimated) 
+        expected k-mer coverage depth of errors.
+        4) Plug the expected k-mer coverage depth of errors into Poisson to pull out the minimum depth 
+        to be confident "the observation is not entirely cause by errors".
+'''
+
+
 def find_min_kmer_val(hist: dict) -> float:
     error_rate = calc_error_rate(hist)
     kmer_cov_freq = calc_avg_kmer_depth(hist)

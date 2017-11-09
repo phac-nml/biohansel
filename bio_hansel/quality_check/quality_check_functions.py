@@ -41,9 +41,9 @@ def check_is_consistent_subtype(st: Subtype) -> Tuple[Optional[str], Optional[st
     if st.are_subtypes_consistent is False and (st.inconsistent_subtypes is not None
                                                 and len(st.inconsistent_subtypes) > 0):
         mixed_subtypes = '; '.join(st.inconsistent_subtypes)
-        error_messages = MIXED_SUBTYPE_ERROR + ": {"+mixed_subtypes + "} detected in sample" \
-                                          '{' + st.sample + "}. A single subtype is expected. " \
-                                          "This result could be due to contamination resulting in a mixed sample."
+        error_messages = '{}: [{}] detected in sample: {}. A single subtype is expected.' \
+                         'This result could be due to a contamination ' \
+                         'resulting in a mixed sample.'.format(MIXED_SUBTYPE_ERROR, mixed_subtypes, st.sample)
         error_status = FAIL_MESSAGE
 
     return error_status, error_messages

@@ -36,7 +36,7 @@ setup(
     install_requires=[
         'numpy>=1.12.1',
         'pandas>=0.20.1',
-        'attrs',
+        'attrs', 'scipy',
     ],
     extras_require={
         'test': ['pytest>=3.0.7',],

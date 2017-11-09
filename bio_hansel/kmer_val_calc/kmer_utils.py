@@ -3,6 +3,24 @@ from typing import List
 import numpy as np
 
 
+'''
+[calc_avg_kmer_depth]
+    Input: A dictionary containing the result of running Jellyfish's histo method in the k-mer counts
+    Output: The estimated average kmer coverage value
+    Desc: To find the average kmer coverage value, we use the assumption that most data follows the following curve:
+    |.
+    | .       |------- Here is the average k-mer coverage depth value.
+    | .     . | .
+    | .    .  |  .
+    | .   .   |   .
+    |  . .    |    . .
+    |   .     |       . . .
+    |______________________________
+        
+    Where the maxima's value would be your average k-mer coverage value by accessing it's key. 
+'''
+
+
 def calc_avg_kmer_depth(kmers: dict) -> int:
     maximum = find_maxima(apply_savgol_filt(list(kmers.values())))
 
