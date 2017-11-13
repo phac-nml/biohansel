@@ -1,28 +1,31 @@
 from typing import List, Callable, Tuple, Optional
 
-from bio_hansel.quality_check.quality_check_functions import does_subtype_result_exist, check_min_tiles_reached, \
-    check_is_consistent_subtype, check_max_tiles_reached
+from pandas import DataFrame
+
+from bio_hansel.quality_check.qc_utils import get_hit_and_miss_tiles
+from bio_hansel.quality_check.quality_check_functions import check_intermediate_subtype
 from bio_hansel.quality_check.const import PASS_MESSAGE, FAIL_MESSAGE, WARNING_MESSAGE
 from bio_hansel.subtype import Subtype
 
 
 QC_FUNCS: List[Callable[[Subtype], Tuple[str, str]]] = \
 [
-    check_is_consistent_subtype,
-    check_min_tiles_reached,
-    check_max_tiles_reached
+
 ]
 
 
-def perform_quality_check(st: Subtype):
+def perform_quality_check(st: Subtype, df: DataFrame):
     overall_qc_status = 'PASS'
     messages = []
 
+    check_intermediate_subtype(st, df)
+    # This needs to be refactored.
+    '''
     if does_subtype_result_exist(st) is False:
         st.qc_status = 'FAIL'
         st.qc_message = 'FAIL: No matching tiles exist, quality checking was not run.'
         return None
-
+'''
     for func in QC_FUNCS:
         # Calls run_method to check that the qc function takes a Subtype, returns Tuple[Optional[str], Optional[str]]
         status, message = run_method(func, st)

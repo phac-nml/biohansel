@@ -261,7 +261,7 @@ class Jellyfisher(object):
             st.are_subtypes_consistent = False
             st.inconsistent_subtypes = inconsistent_subtypes
 
-        perform_quality_check(st)
+        perform_quality_check(st, df)
 
         logging.info(st)
         return st, df

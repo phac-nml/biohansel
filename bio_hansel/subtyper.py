@@ -88,7 +88,7 @@ def subtype_fasta(scheme: str,
         st.are_subtypes_consistent = False
         st.inconsistent_subtypes = inconsistent_subtypes
 
-    perform_quality_check(st)
+    perform_quality_check(st, df)
     logging.info(st)
 
     df['sample'] = genome_name
