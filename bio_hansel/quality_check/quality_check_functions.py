@@ -1,111 +1,81 @@
+from pandas import DataFrame
+
 from bio_hansel.quality_check.const import FAIL_MESSAGE, MIXED_SUBTYPE_ERROR, INSUFFICIENT_NUM_TILES, \
     MAX_TILES_THRESHOLD, MIXED_SUBTYPE_WARNING, WARNING_MESSAGE, OVER_MAX_TILES, MIN_TILES_THRESHOLD
 from bio_hansel.subtype import Subtype
 from typing import Tuple, Optional
 
 
-''' 
-[does_subtype_result_exist]
-Input: Subtype 
-Output: Bool,
-        True: If the subtype exists
-        False: If the subtype does not exist
-Desc: This method verifies that there is an expected matching subtype so we can proceed
-with quality checking.
-'''
-
-
-def does_subtype_result_exist(st) -> bool:
-    return st.subtype is not None and len(st.subtype) > 0
-
-
-''' 
-[check_is_consistent_subtype]
-Input: Subtype 
-Output: Tuple, containing two strings, 
-        error_status: Contains the status of the error, otherwise returns None.
-        error_messages: Contains the error messages, otherwise returns None.
-Desc: This method will verify that the subtype given to it is consistent by checking
-the consistent flag and if there are any inconsistent subtypes within the st object.
-'''
-
-
-def check_is_consistent_subtype(st: Subtype) -> Tuple[Optional[str], Optional[str]]:
-    # Value is default false, unless checks below pass which is where it's set to true.
+def check_missing_tiles(st: Subtype, df: DataFrame) -> Tuple[Optional[str], Optional[str]]:
     error_status = None
     error_messages = None
 
-    if st.are_subtypes_consistent is False and (st.inconsistent_subtypes is not None
-                                                and len(st.inconsistent_subtypes) > 0):
-        mixed_subtypes = '; '.join(st.inconsistent_subtypes)
-        error_messages = MIXED_SUBTYPE_ERROR + ": {" + mixed_subtypes + "} detected in sample " \
-                                "{" + st.sample + "}. A single subtype is expected. " \
-                                "This result could be due to contamination resulting in a mixed sample."
+    positive_tile_hits = df[(df['subtype'] == st.subtype) & (df['is_pos_tile']) & (df['is_kmer_freq_okay'])]
+    positive_tile_totals = df[(df['subtype'] == st.subtype) & (df['is_pos_tile'])]
+
+    negative_tile_hits = df[(df['subtype'] == st.subtype) & (df['is_pos_tile'] == False) & (df['is_kmer_freq_okay'])]
+    negative_tile_totals = df[(df['subtype'] == st.subtype) & (df['is_pos_tile'] == False)]
+
+    total_tiles = len(positive_tile_totals) + len(negative_tile_totals)
+
+    if (len(positive_tile_hits) + len(negative_tile_hits)) < (total_tiles - total_tiles * MIN_TILES_THRESHOLD):
+
         error_status = FAIL_MESSAGE
+        # TODO: Need to calculate genome coverage, display within this error message.
+        error_messages = "Missing tiles were detected. Calculated "
+    return True
 
+
+def check_mixed_subtype(st: Subtype, df: DataFrame) -> Tuple[Optional[str], Optional[str]]:
+    error_status = None
+    error_messages = []
+
+    positive_tile_hits = df[(df['subtype'] == st.subtype) & (df['is_pos_tile']) & (df['is_kmer_freq_okay'])]
+    negative_tile_hits = df[(df['subtype'] == st.subtype) & (df['is_pos_tile'] == False) & (df['is_kmer_freq_okay'])]
+
+    if st.are_subtypes_consistent is False or len(st.inconsistent_subtypes) > 0:
+        error_status = FAIL_MESSAGE
+        error_messages.append("Inconsistent subtypes detected. Subtypes found: {}.".format(st.inconsistent_subtypes))
+    if 0 < len(positive_tile_hits) and 0 < len(negative_tile_hits):
+        error_status = FAIL_MESSAGE
+        error_messages.append("Positive and negative tiles detected for the same subtype {}.".format(st.subtype))
+
+    error_messages = ' | '.join(error_messages)
     return error_status, error_messages
 
 
-''' 
-[check_min_tiles_reached]
-Input: Subtype 
-Output: Tuple, containing two strings, 
-        error_status: Contains the status of the error, otherwise returns None.
-        error_messages: Contains the error messages, otherwise returns None.
-Desc: Checks if the minimum tiles have been reached within the subtype.
-The threshold for this is to see if the `tiles matching all` is at least within 5% of the
-expected tiles matching value. This method will return a FAIL and the offending tiles explanations
-if the minimum number of tiles were not reached. This method will return a WARNING and an explanation
-that the method was not run, if mixed subtypes were detected. 
-'''
-
-
-def check_min_tiles_reached(st: Subtype) -> Tuple[Optional[str], Optional[str]]:
+def check_inconsistent_results(st: Subtype, df: DataFrame) -> Tuple[Optional[str], Optional[str]]:
     error_status = None
     error_messages = None
 
-    if ';' not in str(st.n_tiles_matching_all_expected):
-        expected_tiles_matching = int(st.n_tiles_matching_all_expected)
+    positive_tile_hits = len(df[(df['subtype'] == st.subtype) & (df['is_pos_tile']) & (df['is_kmer_freq_okay'])])
+    positive_tile_totals = len(df[(df['subtype'] == st.subtype) & (df['is_pos_tile'])])
+    negative_tile_hits = len(df[(df['subtype'] == st.subtype) & (df['is_pos_tile'] == False) & (df['is_kmer_freq_okay'])])
+    negative_tile_totals = len(df[(df['subtype'] == st.subtype) & (df['is_pos_tile'] == False)])
 
-        # Then we verify that the subtype has the correct number of tiles.
-        if st.n_tiles_matching_all <= expected_tiles_matching - (expected_tiles_matching * MIN_TILES_THRESHOLD):
-            error_messages = INSUFFICIENT_NUM_TILES + " : Observed: {"+str(st.n_tiles_matching_all)+"} " \
-                                                        " Expected: {"+str(st.n_tiles_matching_all_expected)+"}"
+    total_tiles = positive_tile_totals + negative_tile_totals
+    total_hits = positive_tile_hits + negative_tile_hits
+
+    if (total_tiles - total_tiles * 0.05) <= total_hits <= (total_tiles + total_tiles * 0.05):
+        total_missing_tiles = ((positive_tile_totals - positive_tile_hits) + (negative_tile_totals - negative_tile_hits))
+        if 3 <= total_missing_tiles:
             error_status = FAIL_MESSAGE
-    else:
-        error_messages = MIXED_SUBTYPE_WARNING + "{Min Tiles QC}"
-        error_status = WARNING_MESSAGE
+            error_messages = ("Inconsistent Results: %d missing tiles detected for subtype: {}.".format
+                                  (total_missing_tiles, st.subtype))
 
     return error_status, error_messages
 
 
-''' 
-[check_max_tiles_reached]
-Input: Subtype 
-Output: Tuple, containing two strings, 
-        error_status: Contains the status of the error, otherwise returns None.
-        error_messages: Contains the error messages, otherwise returns None.
-Desc: Checks if the maximum number of tiles are exceeded ( 1% ), if this is true this method
-will return a FAIL status, and the error message containing the offending values.
-If this method sees that there was a mixed subtype, this method won't run it's checks
-and simply return a warning as the checks were not finished.
 '''
+def check_intermediate_subtype(st: Subtype, df: DataFrame) -> Tuple[Optional[str], Optional[str]]:
+    positive_tile_hits = len(df[(df['subtype'] == st.subtype) & (df['is_pos_tile']) & (df['is_kmer_freq_okay'])])
+    positive_tile_totals = len(df[(df['subtype'] == st.subtype) & (df['is_pos_tile'])])
 
+    negative_tile_hits = len(df[(df['subtype'] == st.subtype) & (df['is_pos_tile'] == False) & (df['is_kmer_freq_okay'])])
+    negative_tile_totals = len(df[(df['subtype'] == st.subtype) & (df['is_pos_tile'] == False)])
 
-def check_max_tiles_reached(st: Subtype) -> Tuple[Optional[str], Optional[str]]:
-    error_status = None
-    error_messages = None
+    return True
 
-    if ';' not in str(st.n_tiles_matching_all_expected):
-        expected_tiles_matching = int(st.n_tiles_matching_all_expected)
-
-        if st.n_tiles_matching_all >= ((expected_tiles_matching * MAX_TILES_THRESHOLD) +
-                                       expected_tiles_matching):
-            error_messages = OVER_MAX_TILES + " : Observed: {"+str(st.n_tiles_matching_all)+"}" \
-                                                " Expected: {"+str(st.n_tiles_matching_all_expected)+"}"
-            error_status = FAIL_MESSAGE
-    else:
-        error_messages = MIXED_SUBTYPE_WARNING + "{Max Tiles QC}"
-        error_status = WARNING_MESSAGE
-
-    return error_status, error_messages
+    # check for 5% missing targets
+    # check for missing positive matches for expected targets
+'''
