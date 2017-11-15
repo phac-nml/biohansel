@@ -232,6 +232,7 @@ class Jellyfisher(object):
             return st, None
         dfgood = df[df.is_kmer_freq_okay]
         dfpos = dfgood[dfgood.is_pos_tile]
+        dfneg = dfgood[dfgood.is_pos_tile == False]
         logging.debug('dfpos: %s', dfpos)
         subtype_lens = dfpos.subtype.apply(len)
         max_subtype_strlen = subtype_lens.max()
@@ -245,6 +246,7 @@ class Jellyfisher(object):
         logging.debug('inconsistent_subtypes: %s', inconsistent_subtypes)
         st.n_tiles_matching_all = dfgood.shape[0]
         st.n_tiles_matching_positive = dfpos.shape[0]
+        st.n_tiles_matching_negative = dfneg.shape[0]
         st.n_tiles_matching_subtype = dfpos_highest_res.shape[0]
         pos_subtypes_str = [x for x in dfpos.subtype.unique()]
         pos_subtypes_str.sort(key=lambda x: len(x))
@@ -254,6 +256,8 @@ class Jellyfisher(object):
         st.n_tiles_matching_all_expected = ';'.join([str(self.scheme_subtype_counts[x].all_tile_count) for x in subtype_list])
         st.n_tiles_matching_positive_expected = ';'.join(
             [str(self.scheme_subtype_counts[x].positive_tile_count) for x in subtype_list])
+        st.n_tiles_matching_negative_expected = ';'.join(
+            [str(self.scheme_subtype_counts[x].negative_tile_count) for x in subtype_list])
         st.n_tiles_matching_subtype_expected = ';'.join([str(self.scheme_subtype_counts[x].subtype_tile_count) for x in subtype_list])
         st.tiles_matching_subtype = '; '.join([x for x in dfpos_highest_res.tilename])
 

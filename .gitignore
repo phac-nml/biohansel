@@ -143,3 +143,4 @@ ENV/
 # Output files
 match_results.tab
 results.tab
+test.tab

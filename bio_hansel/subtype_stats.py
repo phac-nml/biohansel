@@ -11,6 +11,7 @@ class SubtypeCounts:
     subtype = attr.ib()
     subtype_tile_count = attr.ib(default=0, validator=attr.validators.instance_of(int))
     positive_tile_count = attr.ib(default=0, validator=attr.validators.instance_of(int))
+    negative_tile_count = attr.ib(default=0, validator=attr.validators.instance_of(int))
     all_tile_count = attr.ib(default=0, validator=attr.validators.instance_of(int))
 
     @subtype.validator
@@ -78,7 +79,8 @@ def subtype_counts(scheme_fasta: str) -> Dict[str, SubtypeCounts]:
         st_neg_count = sum([len(v) for k,v in neg_tiles.items() if k not in subtypes_set])
         subtype_count = SubtypeCounts(subtype=k,
                                       subtype_tile_count=st_count,
-                                      positive_tile_count= st_count_pos,
+                                      positive_tile_count=st_count_pos,
+                                      negative_tile_count=st_neg_count,
                                       all_tile_count=st_neg_count + st_count_pos)
         subtype_counts[k] = subtype_count
     return subtype_counts
