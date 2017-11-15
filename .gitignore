@@ -144,3 +144,6 @@ ENV/
 match_results.tab
 results.tab
 test.tab
+
+# Test File
+Retro1000data/
