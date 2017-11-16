@@ -29,6 +29,7 @@ def test_ent_fasta_subtyping(test_genome):
     assert st.n_tiles_matching_positive_expected == '16'
     assert st.n_tiles_matching_subtype == 6
     assert st.n_tiles_matching_subtype_expected == '6'
+    assert st.qc_status == 'PASS'
 
     exp_cols = ['tilename', 'stitle', 'refposition', 'subtype',
        'is_pos_tile', 'sample', 'file_path', 'scheme', 'scheme_version', 'qc_status', 'qc_message']

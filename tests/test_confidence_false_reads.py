@@ -32,7 +32,8 @@ def test_confidence_false(test_genomes):
     assert st.n_tiles_matching_positive_expected == '25'
     assert st.n_tiles_matching_subtype == 5
     assert st.n_tiles_matching_subtype_expected == '6'
-    assert FAIL_MESSAGE in st.qc_status
+    assert st.qc_status == FAIL_MESSAGE
+
     exp_cols = ['tilename', 'freq', 'refposition', 'subtype',
                 'is_pos_tile', 'is_kmer_freq_okay', 'sample', 'file_path', 'scheme', 'scheme_version',
                 'qc_status', 'qc_message']

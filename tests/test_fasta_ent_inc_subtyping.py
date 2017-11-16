@@ -1,6 +1,8 @@
 import pytest
 from pandas import DataFrame, Series
 import numpy as np
+
+from bio_hansel.quality_check import FAIL_MESSAGE
 from bio_hansel.subtype import Subtype
 from bio_hansel.subtyper import subtype_fasta
 from bio_hansel.utils import SCHEME_FASTAS
@@ -28,6 +30,7 @@ def test_ent_fasta_subtyping(test_genome):
     assert st.n_tiles_matching_positive_expected == '8;10'
     assert st.n_tiles_matching_subtype == 3
     assert st.n_tiles_matching_subtype_expected == '2;4'
+    assert st.qc_status == FAIL_MESSAGE
 
     exp_cols = ['tilename', 'stitle', 'refposition', 'subtype',
        'is_pos_tile', 'sample', 'file_path', 'scheme', 'scheme_version', 'qc_status', 'qc_message']
