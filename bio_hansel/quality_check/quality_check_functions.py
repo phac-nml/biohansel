@@ -53,7 +53,7 @@ def check_missing_tiles(st: Subtype, df: DataFrame) -> Tuple[Optional[str], Opti
                                      " Low coverage detected, possibly need more whole genome sequencing data." \
                                      " Average calculated tile coverage = {}".format(str(average_freq_coverage_depth))
                 else:
-                    error_messages = "More than 5% missing tiles were detected." \
+                    error_messages = "More than 5% missing tiles were detected. " \
                                      "Adequate coverage detected, this may be the wrong serovar/species for scheme: {}"\
                             " Average calculated tile coverage = {}".format(str(st.scheme), average_freq_coverage_depth)
             else:
