@@ -61,8 +61,10 @@ Desc: The purpose of this method is to find if the possible subtypes exist withi
 def possible_subtypes_exist_in_df(st: Subtype, df: DataFrame) -> list:
     non_present_subtypes = []
     possible_subtypes = st.possible_downstream_subtypes
-    for subtype in possible_subtypes:
-        if subtype not in df['subtype']:
-            non_present_subtypes.append(subtype)
+
+    if possible_subtypes is not None and 0 < len(possible_subtypes):
+        for subtype in possible_subtypes:
+            if subtype not in df['subtype']:
+                non_present_subtypes.append(subtype)
 
     return non_present_subtypes
