@@ -8,6 +8,7 @@ class Subtype(object):
     scheme = attr.ib(validator=attr.validators.instance_of(str))
     scheme_version = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     subtype = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
+    possible_downstream_subtypes = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     all_subtypes = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     inconsistent_subtypes = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     tiles_matching_subtype = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))

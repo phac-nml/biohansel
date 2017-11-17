@@ -260,6 +260,8 @@ class Jellyfisher(object):
             [str(self.scheme_subtype_counts[x].negative_tile_count) for x in subtype_list])
         st.n_tiles_matching_subtype_expected = ';'.join([str(self.scheme_subtype_counts[x].subtype_tile_count) for x in subtype_list])
         st.tiles_matching_subtype = '; '.join([x for x in dfpos_highest_res.tilename])
+        st.possible_downstream_subtypes = [s for s in self.scheme_subtype_counts
+                                           if s.startswith(tuple(subtype_list)) and s not in subtype_list]
 
         if len(inconsistent_subtypes) > 0:
             st.are_subtypes_consistent = False

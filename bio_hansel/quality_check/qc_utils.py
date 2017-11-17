@@ -46,3 +46,23 @@ def get_num_pos_neg_tiles(st: Subtype, df: DataFrame) -> Tuple[int, int]:
         num_neg_tiles = dfst[dfst['is_pos_tile'] == False].shape[0]
 
     return num_pos_tiles, num_neg_tiles
+
+
+'''
+[possible_subtypes_exist_in_df]
+Input: Subtype, Dataframe
+Output: bool
+        True: Possible subtypes exist within the df, and their frequencies are okay.
+        False: Possible subtypes do not exist within the df, this is the pre-req of an inconsistent result.
+Desc: The purpose of this method is to find if the possible subtypes exist within the df.
+'''
+
+
+def possible_subtypes_exist_in_df(st: Subtype, df: DataFrame) -> list:
+    non_present_subtypes = []
+    possible_subtypes = st.possible_downstream_subtypes
+    for subtype in possible_subtypes:
+        if subtype not in df['subtype']:
+            non_present_subtypes.append(subtype)
+
+    return non_present_subtypes

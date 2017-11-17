@@ -1,7 +1,8 @@
 from pandas import DataFrame
 from bio_hansel.quality_check.const import FAIL_MESSAGE, WARNING_MESSAGE, MIN_TILES_THRESHOLD, MISSING_TILES_ERROR_1A, \
-    MISSING_TILES_ERROR_1B, MIXED_SAMPLE_ERROR_2A, INCONSISTENT_RESULTS_ERROR_3A, INTERMEDIATE_SUBTYPE_WARNING
-from bio_hansel.quality_check.qc_utils import get_conflicting_tiles, get_num_pos_neg_tiles
+    MISSING_TILES_ERROR_1B, MIXED_SAMPLE_ERROR_2A, INCONSISTENT_RESULTS_ERROR_3A, INTERMEDIATE_SUBTYPE_WARNING, \
+    INCONSISTENT_RESULTS_ERROR_3B
+from bio_hansel.quality_check.qc_utils import get_conflicting_tiles, get_num_pos_neg_tiles, possible_subtypes_exist_in_df
 from bio_hansel.subtype import Subtype
 from typing import Tuple, Optional
 import logging
@@ -138,21 +139,34 @@ def check_inconsistent_results(st: Subtype, df: DataFrame) -> Tuple[Optional[str
 
         total_missing_target_tiles = missing_subtype_tiles + missing_negative_subtype_tiles
         threshold_for_missing_tiles = int(st.n_tiles_matching_all_expected) - \
-                                      (int(st.n_tiles_matching_all_expected) * MIN_TILES_THRESHOLD)
+            (int(st.n_tiles_matching_all_expected) * MIN_TILES_THRESHOLD)
 
-        if 3 <= total_missing_target_tiles and (0 < missing_subtype_tiles and 0 < missing_negative_subtype_tiles) \
-                and threshold_for_missing_tiles <= int(st.n_tiles_matching_all):
-            error_status = FAIL_MESSAGE
-            error_messages = ("{}: {} missing tiles detected for subtype: {}."
-                              " {} positive tiles missing, {} negative tiles missing."
-                              .format(
-                                        INCONSISTENT_RESULTS_ERROR_3A,
-                                        total_missing_target_tiles,
-                                        st.subtype,
-                                        missing_subtype_tiles,
-                                        missing_negative_subtype_tiles
-                                     )
-                              )
+        if threshold_for_missing_tiles <= int(st.n_tiles_matching_all):
+            if 3 <= total_missing_target_tiles and (0 < missing_subtype_tiles and 0 < missing_negative_subtype_tiles):
+                error_status = FAIL_MESSAGE
+                error_messages = ("{}: {} missing tiles detected for subtype: {}."
+                                  " {} positive tiles missing, {} negative tiles missing."
+                                  .format(
+                                            INCONSISTENT_RESULTS_ERROR_3A,
+                                            total_missing_target_tiles,
+                                            st.subtype,
+                                            missing_subtype_tiles,
+                                            missing_negative_subtype_tiles
+                                         )
+                                  )
+            possible_ds_subtypes = possible_subtypes_exist_in_df(st, df)
+            if 0 < len(possible_ds_subtypes):
+                error_status = FAIL_MESSAGE
+                error_messages = ("{}: Subtype {} was found, but downstream subtype(s) {} tiles were missing."
+                                  " Therefore due to the missing downstream tiles, there is a lack of confidence in the"
+                                  "final subtype call."
+                                  .format(
+                                            INCONSISTENT_RESULTS_ERROR_3B,
+                                            st.subtype,
+                                            possible_ds_subtypes
+                                         )
+                                  )
+
     else:
         logging.debug("QC: Checking for inconsistent results not run, inconsistent subtype detected.")
         error_messages = "Subtype is inconsistent, quality checking for inconsistent results not run."
