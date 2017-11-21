@@ -44,34 +44,35 @@ def check_missing_tiles(st: Subtype, df: DataFrame) -> Tuple[Optional[str], Opti
     error_status = None
     error_messages = None
 
-    if st.are_subtypes_consistent:
-        total_tiles = int(st.n_tiles_matching_all_expected)
-        total_tiles_hits = int(st.n_tiles_matching_all)
-
-        if total_tiles_hits < (total_tiles - total_tiles * MIN_TILES_THRESHOLD):
-            tiles_with_hits = df[(df['is_kmer_freq_okay'] == True)]
-            average_freq_coverage_depth = tiles_with_hits['freq'].sum() / len(tiles_with_hits)
-
-            # Per scheme error tailored messages.
-            if str(st.scheme).lower() == 'heidelberg':
-                if average_freq_coverage_depth < 20:
-                    error_messages = " {}: More than 5% missing tiles were detected." \
-                                     " Low coverage detected, possibly need more whole genome sequencing data." \
-                                     " Average calculated tile coverage = {}"\
-                                     .format(MISSING_TILES_ERROR_1A, str(average_freq_coverage_depth))
-                else:
-                    error_messages = "{}: More than 5% missing tiles were detected. " \
-                                     "Adequate coverage detected, this may be the wrong serovar/species for scheme: {}"\
-                                     " Average calculated tile coverage = {}"\
-                                     .format(MISSING_TILES_ERROR_1B, str(st.scheme), average_freq_coverage_depth)
-            else:
-                error_messages = "More than 5% missing tiles were detected." \
-                                 " Average calculated tile coverage = {}".format(str(average_freq_coverage_depth))
-
-            error_status = FAIL_MESSAGE
-    else:
+    if not st.are_subtypes_consistent:
         logging.debug("QC: Checking for missing tiles not run, inconsistent subtype detected.")
         error_messages = "Subtype is inconsistent, quality checking for missing tiles not run."
+        error_status = FAIL_MESSAGE
+        return error_status, error_messages
+
+    total_tiles = int(st.n_tiles_matching_all_expected)
+    total_tiles_hits = int(st.n_tiles_matching_all)
+
+    if total_tiles_hits < (total_tiles - total_tiles * MIN_TILES_THRESHOLD):
+        tiles_with_hits = df[(df['is_kmer_freq_okay'] == True)]
+        average_freq_coverage_depth = tiles_with_hits['freq'].mean()
+
+        # Per scheme error tailored messages.
+        if str(st.scheme).lower() == 'heidelberg':
+            if average_freq_coverage_depth < 20:
+                error_messages = " {}: More than 5% missing tiles were detected." \
+                                 " Low coverage detected, possibly need more whole genome sequencing data." \
+                                 " Average calculated tile coverage = {}"\
+                                 .format(MISSING_TILES_ERROR_1A, str(average_freq_coverage_depth))
+            else:
+                error_messages = "{}: More than 5% missing tiles were detected. " \
+                                 "Adequate coverage detected, this may be the wrong serovar/species for scheme: {}"\
+                                 " Average calculated tile coverage = {}"\
+                                 .format(MISSING_TILES_ERROR_1B, str(st.scheme), average_freq_coverage_depth)
+        else:
+            error_messages = "More than 5% missing tiles were detected." \
+                             " Average calculated tile coverage = {}".format(str(average_freq_coverage_depth))
+
         error_status = FAIL_MESSAGE
 
     return error_status, error_messages
@@ -136,50 +137,49 @@ def check_inconsistent_results(st: Subtype, df: DataFrame) -> Tuple[Optional[str
     error_messages = None
 
     # We do this check as inconsistent subtypes fall within mixed subtypes. This checks for inconsistent results.
-    if st.are_subtypes_consistent:
-
-        tiles_matching_subtype = int(st.n_tiles_matching_positive)
-        tiles_matching_subtype_expected = int(st.n_tiles_matching_positive_expected)
-        missing_subtype_tiles = tiles_matching_subtype_expected - tiles_matching_subtype
-
-        negative_tiles_matching_subtype = int(st.n_tiles_matching_negative)
-        negative_tiles_matching_subtype_expected = int(st.n_tiles_matching_negative_expected)
-        missing_negative_subtype_tiles = negative_tiles_matching_subtype_expected - negative_tiles_matching_subtype
-
-        total_missing_target_tiles = missing_subtype_tiles + missing_negative_subtype_tiles
-        threshold_for_missing_tiles = int(st.n_tiles_matching_all_expected) - \
-            (int(st.n_tiles_matching_all_expected) * MIN_TILES_THRESHOLD)
-
-        if threshold_for_missing_tiles <= int(st.n_tiles_matching_all):
-            if 3 <= total_missing_target_tiles and missing_subtype_tiles and missing_negative_subtype_tiles:
-                error_status = FAIL_MESSAGE
-                error_messages = ("{}: {} missing tiles detected for subtype: {}."
-                                  " {} positive tiles missing, {} negative tiles missing."
-                                  .format(
-                                            INCONSISTENT_RESULTS_ERROR_3A,
-                                            total_missing_target_tiles,
-                                            st.subtype,
-                                            missing_subtype_tiles,
-                                            missing_negative_subtype_tiles
-                                         )
-                                  )
-            possible_ds_subtypes = possible_subtypes_exist_in_df(st, df)
-            if possible_ds_subtypes:
-                error_status = FAIL_MESSAGE
-                error_messages = ("{}: Subtype {} was found, but downstream subtype(s) {} tiles were missing."
-                                  " Therefore due to the missing downstream tiles, there is a lack of confidence in the"
-                                  "final subtype call."
-                                  .format(
-                                            INCONSISTENT_RESULTS_ERROR_3B,
-                                            st.subtype,
-                                            possible_ds_subtypes
-                                         )
-                                  )
-
-    else:
+    if not st.are_subtypes_consistent:
         logging.debug("QC: Checking for inconsistent results not run, inconsistent subtype detected.")
         error_messages = "Subtype is inconsistent, quality checking for inconsistent results not run."
         error_status = FAIL_MESSAGE
+        return error_status, error_messages
+
+    tiles_matching_subtype = int(st.n_tiles_matching_positive)
+    tiles_matching_subtype_expected = int(st.n_tiles_matching_positive_expected)
+    missing_subtype_tiles = tiles_matching_subtype_expected - tiles_matching_subtype
+
+    negative_tiles_matching_subtype = int(st.n_tiles_matching_negative)
+    negative_tiles_matching_subtype_expected = int(st.n_tiles_matching_negative_expected)
+    missing_negative_subtype_tiles = negative_tiles_matching_subtype_expected - negative_tiles_matching_subtype
+
+    total_missing_target_tiles = missing_subtype_tiles + missing_negative_subtype_tiles
+    threshold_for_missing_tiles = int(st.n_tiles_matching_all_expected) - \
+        (int(st.n_tiles_matching_all_expected) * MIN_TILES_THRESHOLD)
+
+    if threshold_for_missing_tiles <= int(st.n_tiles_matching_all):
+        if 3 <= total_missing_target_tiles and missing_subtype_tiles and missing_negative_subtype_tiles:
+            error_status = FAIL_MESSAGE
+            error_messages = ("{}: {} missing tiles detected for subtype: {}."
+                              " {} positive tiles missing, {} negative tiles missing."
+                              .format(
+                                        INCONSISTENT_RESULTS_ERROR_3A,
+                                        total_missing_target_tiles,
+                                        st.subtype,
+                                        missing_subtype_tiles,
+                                        missing_negative_subtype_tiles
+                                     )
+                              )
+        possible_ds_subtypes = possible_subtypes_exist_in_df(st, df)
+        if possible_ds_subtypes:
+            error_status = FAIL_MESSAGE
+            error_messages = ("{}: Subtype {} was found, but downstream subtype(s) {} tiles were missing."
+                              " Therefore due to the missing downstream tiles, there is a lack of confidence in the"
+                              "final subtype call."
+                              .format(
+                                        INCONSISTENT_RESULTS_ERROR_3B,
+                                        st.subtype,
+                                        possible_ds_subtypes
+                                     )
+                              )
 
     return error_status, error_messages
 
@@ -204,25 +204,26 @@ def check_intermediate_subtype(st: Subtype, df: DataFrame) -> Tuple[Optional[str
     error_status = None
     error_messages = None
 
-    if st.are_subtypes_consistent:
-        total_tiles = int(st.n_tiles_matching_all_expected)
-        total_tiles_hits = int(st.n_tiles_matching_all)
-        total_subtype_tiles = int(st.n_tiles_matching_subtype_expected)
-        total_subtype_tiles_hits = int(st.n_tiles_matching_subtype)
-        conflicting_tiles = get_conflicting_tiles(st, df)
-        num_pos_tiles, num_neg_tiles = get_num_pos_neg_tiles(st, df)
-
-        if (total_tiles - (total_tiles * MIN_TILES_THRESHOLD)) <= total_tiles_hits and not conflicting_tiles \
-                and total_subtype_tiles_hits < total_subtype_tiles and num_pos_tiles and num_neg_tiles:
-
-            error_status = WARNING_MESSAGE
-            error_messages = "{}: Possible intermediate subtype. All scheme tiles were found, " \
-                             "but a fraction were positive for the final subtype. " \
-                             "Total subtype hits: {} | Total subtype expected: {}." \
-                             .format(INTERMEDIATE_SUBTYPE_WARNING, total_subtype_tiles_hits, total_subtype_tiles)
-    else:
+    if not st.are_subtypes_consistent:
         logging.debug("QC: Checking for intermediate subtypes not run, inconsistent subtype detected.")
         error_messages = "Subtype is inconsistent, quality checking for intermediate subtype not run."
         error_status = FAIL_MESSAGE
+        return error_status, error_messages
+
+    total_tiles = int(st.n_tiles_matching_all_expected)
+    total_tiles_hits = int(st.n_tiles_matching_all)
+    total_subtype_tiles = int(st.n_tiles_matching_subtype_expected)
+    total_subtype_tiles_hits = int(st.n_tiles_matching_subtype)
+    conflicting_tiles = get_conflicting_tiles(st, df)
+    num_pos_tiles, num_neg_tiles = get_num_pos_neg_tiles(st, df)
+
+    if (total_tiles - (total_tiles * MIN_TILES_THRESHOLD)) <= total_tiles_hits and not conflicting_tiles \
+            and total_subtype_tiles_hits < total_subtype_tiles and num_pos_tiles and num_neg_tiles:
+
+        error_status = WARNING_MESSAGE
+        error_messages = "{}: Possible intermediate subtype. All scheme tiles were found, " \
+                         "but a fraction were positive for the final subtype. " \
+                         "Total subtype hits: {} | Total subtype expected: {}." \
+                         .format(INTERMEDIATE_SUBTYPE_WARNING, total_subtype_tiles_hits, total_subtype_tiles)
 
     return error_status, error_messages
