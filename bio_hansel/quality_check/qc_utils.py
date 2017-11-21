@@ -19,7 +19,7 @@ def get_conflicting_tiles(st: Subtype, df: DataFrame) -> list:
             dfst = df[(df['subtype'] == str(st.subtype))]
 
         pos_tiles = dfst[dfst['is_pos_tile']]
-        neg_tiles = dfst[dfst['is_pos_tile'] == False]
+        neg_tiles = dfst[~dfst['is_pos_tile']]
         pos_tile_values = '|'.join(pos_tiles['refposition'].values.tolist())
         conflicting_tiles = neg_tiles[neg_tiles['refposition'].str.contains(pos_tile_values)][
             'refposition'].values.tolist()
@@ -42,7 +42,7 @@ def get_num_pos_neg_tiles(st: Subtype, df: DataFrame) -> Tuple[int, int]:
     if st.subtype:
         dfst = df[(df['subtype'] == str(st.subtype))]
         num_pos_tiles = dfst[dfst['is_pos_tile']].shape[0]
-        num_neg_tiles = dfst[dfst['is_pos_tile'] == False].shape[0]
+        num_neg_tiles = dfst[~dfst['is_pos_tile']].shape[0]
 
     return num_pos_tiles, num_neg_tiles
 
