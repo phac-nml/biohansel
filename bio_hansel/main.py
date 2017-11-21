@@ -60,7 +60,7 @@ def init_parser():
                         help='Subtyping summary output path (tab-delimited)')
     parser.add_argument('-O', '--output-tile-results',
                         help='Subtyping tile matching output path (tab-delimited)')
-    parser.add_argument('-OS', '--output-simple-summary',
+    parser.add_argument('-S', '--output-simple-summary',
                         help='Subtyping simple summary output path')
     parser.add_argument('--min-kmer-freq',
                         type=int,
@@ -101,7 +101,7 @@ def main():
     output_summary_path = args.output_summary
     output_tile_results = args.output_tile_results
     output_simple_summary_path = args.output_simple_summary
-
+    # TODO: Add checking to see if files already exist at paths.
     scheme = args.scheme  # type: str
     scheme_name = args.scheme_name  # type: Optional[str]
     scheme_fasta = get_scheme_fasta(scheme)

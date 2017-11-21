@@ -1,4 +1,4 @@
-from typing import List, Callable, Tuple, Optional
+from typing import List, Callable, Tuple
 
 from pandas import DataFrame
 
@@ -41,7 +41,7 @@ def perform_quality_check(st: Subtype, df: DataFrame):
 
     for func in QC_FUNCS:
         # Calls run_method to check that the qc function takes a Subtype, returns Tuple[Optional[str], Optional[str]]
-        status, message = run_method(func, st, df)
+        status, message = func(st, df)
         if status is None:
             # If quality check function passes, move on to the next.
             continue
@@ -54,16 +54,3 @@ def perform_quality_check(st: Subtype, df: DataFrame):
     st.qc_status = overall_qc_status
     st.qc_message = ' | '.join(messages)
     logging.debug("QC: Finished!")
-
-
-'''
-[run_method]
-Input: Function which takes [Subtype, DataFrame] outputs str tuple, Subtype, DataFrame
-Output: Results of function Tuple[Optional[str], Optional[str]]
-Desc: Helper method used to ensure function being called is of the right type. 
-'''
-
-
-def run_method(func: Callable[[Subtype, DataFrame], Tuple[str, str]], st: Subtype, df: DataFrame)\
-        -> Tuple[Optional[str], Optional[str]]:
-    return func(st, df)

@@ -7,7 +7,7 @@ from datetime import datetime
 import logging
 import pandas as pd
 
-from bio_hansel.quality_check import perform_quality_check
+from ..quality_check import perform_quality_check
 from ..utils import exc_exists, run_command, find_inconsistent_subtypes, SCHEME_FASTAS
 from ..blast_wrapper.helpers import parse_fasta, revcomp
 from ..subtype import Subtype
@@ -232,7 +232,7 @@ class Jellyfisher(object):
             return st, None
         dfgood = df[df.is_kmer_freq_okay]
         dfpos = dfgood[dfgood.is_pos_tile]
-        dfneg = dfgood[dfgood.is_pos_tile == False]
+        dfneg = dfgood[~dfgood.is_pos_tile]
         logging.debug('dfpos: %s', dfpos)
         subtype_lens = dfpos.subtype.apply(len)
         max_subtype_strlen = subtype_lens.max()
