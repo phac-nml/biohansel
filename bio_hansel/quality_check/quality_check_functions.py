@@ -1,5 +1,7 @@
 from pandas import DataFrame
-from ..quality_check.const import FAIL_MESSAGE, WARNING_MESSAGE, MIN_TILES_THRESHOLD, MISSING_TILES_ERROR_1A, \
+
+from bio_hansel.subtyping_params import SubtypingParams
+from ..quality_check.const import FAIL_MESSAGE, WARNING_MESSAGE, MISSING_TILES_ERROR_1A, \
     MISSING_TILES_ERROR_1B, MIXED_SAMPLE_ERROR_2A, INCONSISTENT_RESULTS_ERROR_3A, INTERMEDIATE_SUBTYPE_WARNING, \
     INCONSISTENT_RESULTS_ERROR_3B
 from ..quality_check.qc_utils import get_conflicting_tiles, get_num_pos_neg_tiles, possible_subtypes_exist_in_df
@@ -25,7 +27,7 @@ def does_subtype_result_exist(st: Subtype) -> bool:
     return st.subtype is not None and 0 < len(st.subtype)
 
 
-def check_missing_tiles(st: Subtype, df: DataFrame) -> Tuple[Optional[str], Optional[str]]:
+def check_missing_tiles(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[Optional[str], Optional[str]]:
     """ Check if there's more than 5% missing tiles.
     Note:
             check_missing_tiles will check if more than 5% of the scheme's tiles are missing.
@@ -35,6 +37,7 @@ def check_missing_tiles(st: Subtype, df: DataFrame) -> Tuple[Optional[str], Opti
     Args:
             :param st: Subtyping results.
             :param df: DataFrame containing subtyping results.
+            :param p: Subtyping parameters for quality check thresholds.
 
     Returns:
             Tuple[Optional[str], Optional[str]]
@@ -54,13 +57,13 @@ def check_missing_tiles(st: Subtype, df: DataFrame) -> Tuple[Optional[str], Opti
     total_tiles = int(st.n_tiles_matching_all_expected)
     total_tiles_hits = int(st.n_tiles_matching_all)
 
-    if total_tiles_hits < (total_tiles - total_tiles * MIN_TILES_THRESHOLD):
+    if total_tiles_hits < (total_tiles - total_tiles * p.missing_total_tiles_max):
         tiles_with_hits = df[(df['is_kmer_freq_okay'] == True)]
         average_freq_coverage_depth = tiles_with_hits['freq'].mean()
 
         # Per scheme error tailored messages.
         if str(st.scheme).lower() == 'heidelberg':
-            if average_freq_coverage_depth < 20:
+            if average_freq_coverage_depth < p.low_coverage_depth_freq:
                 error_messages = " {}: More than 5% missing tiles were detected." \
                                  " Low coverage detected, possibly need more whole genome sequencing data." \
                                  " Average calculated tile coverage = {}"\
@@ -79,7 +82,7 @@ def check_missing_tiles(st: Subtype, df: DataFrame) -> Tuple[Optional[str], Opti
     return error_status, error_messages
 
 
-def check_mixed_subtype(st: Subtype, df: DataFrame) -> Tuple[Optional[str], Optional[str]]:
+def check_mixed_subtype(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[Optional[str], Optional[str]]:
     """ Check to see if the subtype is mixed.
     Note:
             check_mixed_subtype will check the results of the typing for:
@@ -90,6 +93,7 @@ def check_mixed_subtype(st: Subtype, df: DataFrame) -> Tuple[Optional[str], Opti
     Args:
             :param st: Subtyping results.
             :param df: DataFrame containing subtyping results.
+            :param p: Subtyping parameters for quality check thresholds.
 
     Returns:
             Tuple[Optional[str], Optional[str]]
@@ -118,7 +122,7 @@ def check_mixed_subtype(st: Subtype, df: DataFrame) -> Tuple[Optional[str], Opti
     return error_status, error_messages
 
 
-def check_inconsistent_results(st: Subtype, df: DataFrame) -> Tuple[Optional[str], Optional[str]]:
+def check_inconsistent_results(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[Optional[str], Optional[str]]:
     """ Check if the subtyping results are inconsistent results.
     Note:
             An inconsistent results error occurs when 3 or more tiles are missing (+ / -) for the subtype call,
@@ -128,6 +132,7 @@ def check_inconsistent_results(st: Subtype, df: DataFrame) -> Tuple[Optional[str
     Args:
             :param st: Subtyping results.
             :param df: DataFrame containing subtyping results.
+            :param p: Subtyping parameters for quality check thresholds.
 
     Returns:
             Tuple[Optional[str], Optional[str]]
@@ -155,10 +160,11 @@ def check_inconsistent_results(st: Subtype, df: DataFrame) -> Tuple[Optional[str
 
     total_missing_target_tiles = missing_subtype_tiles + missing_negative_subtype_tiles
     threshold_for_missing_tiles = int(st.n_tiles_matching_all_expected) - \
-        (int(st.n_tiles_matching_all_expected) * MIN_TILES_THRESHOLD)
+        (int(st.n_tiles_matching_all_expected) * p.missing_total_tiles_max)
 
     if threshold_for_missing_tiles <= int(st.n_tiles_matching_all):
-        if 3 <= total_missing_target_tiles and missing_subtype_tiles and missing_negative_subtype_tiles:
+        if p.inconsistent_tiles_max <= total_missing_target_tiles \
+                and missing_subtype_tiles and missing_negative_subtype_tiles:
             error_status = FAIL_MESSAGE
             error_messages = ("{}: {} missing tiles detected for subtype: {}."
                               " {} positive tiles missing, {} negative tiles missing."
@@ -186,7 +192,7 @@ def check_inconsistent_results(st: Subtype, df: DataFrame) -> Tuple[Optional[str
     return error_status, error_messages
 
 
-def check_intermediate_subtype(st: Subtype, df: DataFrame) -> Tuple[Optional[str], Optional[str]]:
+def check_intermediate_subtype(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[Optional[str], Optional[str]]:
     """ Check for intermediate subtypes within the result.
     Note:
             Check_intermediate_subtype will return a WARNING message if 95% of the scheme tiles are found, there are
@@ -196,6 +202,7 @@ def check_intermediate_subtype(st: Subtype, df: DataFrame) -> Tuple[Optional[str
     Args:
             :param st: Subtyping results.
             :param df: DataFrame containing subtyping results.
+            :param p: Subtyping parameters for quality check thresholds.
 
     Output:
             Tuple[Optional[str], Optional[str]]
@@ -219,8 +226,9 @@ def check_intermediate_subtype(st: Subtype, df: DataFrame) -> Tuple[Optional[str
     conflicting_tiles = get_conflicting_tiles(st, df)
     num_pos_tiles, num_neg_tiles = get_num_pos_neg_tiles(st, df)
 
-    if (total_tiles - (total_tiles * MIN_TILES_THRESHOLD)) <= total_tiles_hits and conflicting_tiles.shape[0] == 0 \
-            and total_subtype_tiles_hits < total_subtype_tiles and num_pos_tiles and num_neg_tiles:
+    if (total_tiles - (total_tiles * p.intermediate_subtype_tiles_max)) <= total_tiles_hits and \
+            conflicting_tiles.shape[0] == 0 and total_subtype_tiles_hits < total_subtype_tiles and \
+            num_pos_tiles and num_neg_tiles:
 
         error_status = WARNING_MESSAGE
         error_messages = "{}: Possible intermediate subtype. All scheme tiles were found, " \

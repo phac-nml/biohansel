@@ -17,12 +17,14 @@ from . import program_name
 from .blast_wrapper import BlastRunner, BlastReader
 from .kmer_count import Jellyfisher
 from .subtype import Subtype
+from .subtyping_params import SubtypingParams
 from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version
 from .subtype_stats import subtype_counts
 from .const import FASTA_COLUMNS_TO_REMOVE
 
 
-def subtype_fasta(scheme: str,
+def subtype_fasta(subtyping_params: SubtypingParams,
+                  scheme: str,
                   fasta_path: str,
                   genome_name: str,
                   tmp_dir: str = '/tmp',
@@ -88,7 +90,8 @@ def subtype_fasta(scheme: str,
         st.are_subtypes_consistent = False
         st.inconsistent_subtypes = inconsistent_subtypes
 
-    perform_quality_check(st, df)
+    perform_quality_check(st, df, subtyping_params)
+
     logging.info(st)
 
     df['sample'] = genome_name
@@ -102,7 +105,8 @@ def subtype_fasta(scheme: str,
     return st, df
 
 
-def subtype_reads(scheme: str,
+def subtype_reads(subtyping_params: SubtypingParams,
+                  scheme: str,
                   reads: Union[str, List[str]],
                   genome_name: str,
                   tmp_dir: str = '/tmp',
@@ -130,7 +134,9 @@ def subtype_reads(scheme: str,
                      tmp_dir=genome_tmp_dir,
                      threads=threads) as jfer:
         st, df = jfer.summary()
-        # Remember we do the checking within the __init__.py file.
+
+        perform_quality_check(st, df, subtyping_params)
+
         df['scheme'] = scheme_name or scheme
         df['scheme_version'] = scheme_version
         df['qc_status'] = st.qc_status

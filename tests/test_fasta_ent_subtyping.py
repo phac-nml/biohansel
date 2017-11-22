@@ -3,6 +3,7 @@ from pandas import DataFrame, Series
 import numpy as np
 from bio_hansel.subtype import Subtype
 from bio_hansel.subtyper import subtype_fasta
+from bio_hansel.subtyping_params import SubtypingParams
 from bio_hansel.utils import SCHEME_FASTAS
 
 
@@ -14,7 +15,7 @@ def test_genome():
 def test_ent_fasta_subtyping(test_genome):
     genome_name = 'test'
     scheme = 'enteritidis'
-    st, df = subtype_fasta(scheme='enteritidis', fasta_path=test_genome, genome_name=genome_name)
+    st, df = subtype_fasta(scheme='enteritidis', fasta_path=test_genome, genome_name=genome_name, subtyping_params=SubtypingParams())
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
     assert st.scheme == scheme

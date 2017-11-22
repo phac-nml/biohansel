@@ -4,6 +4,7 @@ import numpy as np
 
 from bio_hansel.subtype import Subtype
 from bio_hansel.subtyper import subtype_reads
+from bio_hansel.subtyping_params import SubtypingParams
 from bio_hansel.utils import SCHEME_FASTAS
 
 
@@ -15,7 +16,7 @@ def test_genome():
 def test_fastq_subtyping(test_genome):
     genome_name = 'test'
     scheme = 'heidelberg'
-    st, df = subtype_reads(scheme='heidelberg', reads=test_genome, genome_name=genome_name, threads=4)
+    st, df = subtype_reads(scheme='heidelberg', reads=test_genome, genome_name=genome_name, threads=4, subtyping_params=SubtypingParams())
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
 

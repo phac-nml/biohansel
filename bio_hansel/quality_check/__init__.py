@@ -2,6 +2,7 @@ from typing import List, Callable, Tuple
 
 from pandas import DataFrame
 
+from ..subtyping_params import SubtypingParams
 from ..quality_check.quality_check_functions import check_missing_tiles, does_subtype_result_exist, \
     check_mixed_subtype, check_intermediate_subtype, check_inconsistent_results
 from ..quality_check.const import FAIL_MESSAGE, WARNING_MESSAGE
@@ -9,7 +10,7 @@ from ..subtype import Subtype
 import logging
 
 
-QC_FUNCS: List[Callable[[Subtype, DataFrame], Tuple[str, str]]] = \
+QC_FUNCS: List[Callable[[Subtype, DataFrame, SubtypingParams], Tuple[str, str]]] = \
 [
     check_missing_tiles,
     check_mixed_subtype,
@@ -18,7 +19,7 @@ QC_FUNCS: List[Callable[[Subtype, DataFrame], Tuple[str, str]]] = \
 ]
 
 
-def perform_quality_check(st: Subtype, df: DataFrame):
+def perform_quality_check(st: Subtype, df: DataFrame, subtyping_params: SubtypingParams):
     """ Driver method to call all quality checking functions and handle their responses.
     Note:
             This is the driver method for the quality check module. Every method within the QC_FUNCS list will be run
@@ -44,7 +45,7 @@ def perform_quality_check(st: Subtype, df: DataFrame):
 
     for func in QC_FUNCS:
         # Calls run_method to check that the qc function takes a Subtype, returns Tuple[Optional[str], Optional[str]]
-        status, message = func(st, df)
+        status, message = func(st, df, subtyping_params)
         if status is None:
             # If quality check function passes, move on to the next.
             continue

@@ -16,6 +16,7 @@ from bio_hansel import program_name, program_desc, __version__
 from bio_hansel.const import SUBTYPE_SUMMARY_COLS
 from bio_hansel.subtyper import subtype_fasta, subtype_reads
 from bio_hansel.subtype_stats import subtype_counts
+from bio_hansel.subtyping_params import SubtypingParams
 from bio_hansel.utils import genome_name_from_fasta_path, get_scheme_fasta, out_files_exists
 
 SCRIPT_NAME = 'hansel'
@@ -73,6 +74,24 @@ def init_parser():
                         type=int,
                         default=200,
                         help='Max k-mer freq/coverage')
+    # Changes
+    parser.add_argument('--low-cov-depth-freq',
+                        type=int,
+                        default=20,
+                        help='Frequencies below this coverage are considered low coverage')
+    parser.add_argument('--missing-total-tiles-max',
+                        type=int,
+                        default=0.05,
+                        help='Value in percentage, the maximum amount of total allowed missing tiles before being considered an error.')
+    parser.add_argument('--inc-tiles-max',
+                        type=int,
+                        default=3,
+                        help='Minimum number of missing tiles to be considered an inconsistent result')
+    parser.add_argument('--int-subtype-tiles-max',
+                        type=int,
+                        default=0.05,
+                        help='Value in percentage, the maximum amount of missing tiles to be tolerated to consider the result as an intermediate subtype.')
+    # Changes
     parser.add_argument('-t', '--threads',
                         type=int,
                         default=1,
@@ -112,7 +131,11 @@ def main():
     input_genomes = []
     reads = []
     logging.debug(args)
-
+    subtyping_params = SubtypingParams(low_coverage_depth_freq=args.low_cov_depth_freq,
+                                       missing_total_tiles_max=args.missing_total_tiles_max,
+                                       inconsistent_tiles_max=args.inc_tiles_max,
+                                       intermediate_subtype_tiles_max=args.int_subtype_tiles_max
+                                       )
     if not output_force:
         if out_files_exists(output_summary_path, output_tile_results, output_simple_summary_path):
             return 0
@@ -172,7 +195,8 @@ def main():
     if input_genomes:
         if n_threads == 1:
             logging.info('Serial single threaded run mode on %s input genomes', len(input_genomes))
-            outputs = [subtype_fasta(scheme,
+            outputs = [subtype_fasta(subtyping_params,
+                                     scheme,
                                      input_fasta,
                                      genome_name,
                                      tmp_dir=tmp_dir,
@@ -184,7 +208,8 @@ def main():
             logging.info('Initializing thread pool with %s threads', n_threads)
             pool = Pool(processes=n_threads)
             logging.info('Running analysis asynchronously on %s input genomes', len(input_genomes))
-            res = [pool.apply_async(subtype_fasta, (scheme,
+            res = [pool.apply_async(subtype_fasta, (subtyping_params,
+                                                    scheme,
                                                     input_fasta,
                                                     genome_name,
                                                     tmp_dir,
@@ -201,7 +226,8 @@ def main():
             subtype_results.append(attr.asdict(subtype))
 
     if reads:
-        outputs = [subtype_reads(scheme=scheme,
+        outputs = [subtype_reads(subtyping_params,
+                                 scheme=scheme,
                                  reads=r,
                                  genome_name=genome_name,
                                  tmp_dir=tmp_dir,
