@@ -16,7 +16,7 @@ from bio_hansel import program_name, program_desc, __version__
 from bio_hansel.const import SUBTYPE_SUMMARY_COLS
 from bio_hansel.subtyper import subtype_fasta, subtype_reads
 from bio_hansel.subtype_stats import subtype_counts
-from bio_hansel.utils import genome_name_from_fasta_path, get_scheme_fasta
+from bio_hansel.utils import genome_name_from_fasta_path, get_scheme_fasta, out_files_exists
 
 SCRIPT_NAME = 'hansel'
 LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
@@ -62,6 +62,9 @@ def init_parser():
                         help='Subtyping tile matching output path (tab-delimited)')
     parser.add_argument('-S', '--output-simple-summary',
                         help='Subtyping simple summary output path')
+    parser.add_argument('--force',
+                        action='store_true',
+                        help='Force existing output files to be overwritten')
     parser.add_argument('--min-kmer-freq',
                         type=int,
                         default=10,
@@ -101,7 +104,7 @@ def main():
     output_summary_path = args.output_summary
     output_tile_results = args.output_tile_results
     output_simple_summary_path = args.output_simple_summary
-    # TODO: Add checking to see if files already exist at paths.
+    output_force = args.force
     scheme = args.scheme  # type: str
     scheme_name = args.scheme_name  # type: Optional[str]
     scheme_fasta = get_scheme_fasta(scheme)
@@ -109,6 +112,13 @@ def main():
     input_genomes = []
     reads = []
     logging.debug(args)
+
+    if not output_force:
+        if out_files_exists(output_summary_path, output_tile_results, output_simple_summary_path):
+            return 0
+    else:
+        logging.info("Previous output files will be over written with --force")
+
     if args.files:
         fastas = [x for x in args.files if re.match(r'^.+\.(fasta|fa|fna)$', x)]
         fastqs = [x for x in args.files if re.match(r'^.+\.(fastq|fq)$', x)]

@@ -1,9 +1,9 @@
 from pandas import DataFrame
-from bio_hansel.quality_check.const import FAIL_MESSAGE, WARNING_MESSAGE, MIN_TILES_THRESHOLD, MISSING_TILES_ERROR_1A, \
+from ..quality_check.const import FAIL_MESSAGE, WARNING_MESSAGE, MIN_TILES_THRESHOLD, MISSING_TILES_ERROR_1A, \
     MISSING_TILES_ERROR_1B, MIXED_SAMPLE_ERROR_2A, INCONSISTENT_RESULTS_ERROR_3A, INTERMEDIATE_SUBTYPE_WARNING, \
     INCONSISTENT_RESULTS_ERROR_3B
-from bio_hansel.quality_check.qc_utils import get_conflicting_tiles, get_num_pos_neg_tiles, possible_subtypes_exist_in_df
-from bio_hansel.subtype import Subtype
+from ..quality_check.qc_utils import get_conflicting_tiles, get_num_pos_neg_tiles, possible_subtypes_exist_in_df
+from ..subtype import Subtype
 from typing import Tuple, Optional
 import logging
 
@@ -22,12 +22,13 @@ def does_subtype_result_exist(st: Subtype) -> bool:
             Bool: False if the subtype does not exist
     """
     logging.debug("QC: Checking if subtype result exists.")
-    return st.subtype is not None and len(st.subtype) > 0
+    return st.subtype is not None and 0 < len(st.subtype)
 
 
 def check_missing_tiles(st: Subtype, df: DataFrame) -> Tuple[Optional[str], Optional[str]]:
     """ Check if there's more than 5% missing tiles.
-    Note:   check_missing_tiles will check if more than 5% of the scheme's tiles are missing.
+    Note:
+            check_missing_tiles will check if more than 5% of the scheme's tiles are missing.
             If they are, we calculate the average frequency coverage depth for the tiles that are present, and
             provide an adequate error message based on the coverage.
 
@@ -107,11 +108,12 @@ def check_mixed_subtype(st: Subtype, df: DataFrame) -> Tuple[Optional[str], Opti
     else:
         # Find the conflicting tiles
         conflicting_tiles = get_conflicting_tiles(st, df)
-        if conflicting_tiles:
+        if 0 < conflicting_tiles.shape[0]:
             error_status = FAIL_MESSAGE
             error_messages = "{}: Mixed subtype detected." \
                              " Positive and negative tiles detected for the same target site" \
-                             " {} for subtype {}.".format(MIXED_SAMPLE_ERROR_2A, conflicting_tiles, st.subtype)
+                             " {} for subtype {}.".format(MIXED_SAMPLE_ERROR_2A,
+                                                          conflicting_tiles['refposition'].tolist(), st.subtype)
 
     return error_status, error_messages
 
@@ -217,7 +219,7 @@ def check_intermediate_subtype(st: Subtype, df: DataFrame) -> Tuple[Optional[str
     conflicting_tiles = get_conflicting_tiles(st, df)
     num_pos_tiles, num_neg_tiles = get_num_pos_neg_tiles(st, df)
 
-    if (total_tiles - (total_tiles * MIN_TILES_THRESHOLD)) <= total_tiles_hits and not conflicting_tiles \
+    if (total_tiles - (total_tiles * MIN_TILES_THRESHOLD)) <= total_tiles_hits and conflicting_tiles.shape[0] == 0 \
             and total_subtype_tiles_hits < total_subtype_tiles and num_pos_tiles and num_neg_tiles:
 
         error_status = WARNING_MESSAGE

@@ -46,6 +46,24 @@ def exc_exists(exc_name: str) -> bool:
         return False
 
 
+def out_files_exists(output_summary_path: str, output_tile_results: str, output_simple_summary_path: str) -> bool:
+    files_exist = False
+    if os.path.isfile(output_summary_path):
+        logging.warning("{} already exists for output summary path ({})"
+                        .format(output_summary_path, "-o"))
+        files_exist = True
+    if os.path.isfile(output_tile_results):
+        logging.warning("{} already exists for output tile results. ({})"
+                        .format(output_tile_results, "-O"))
+        files_exist = True
+    if os.path.isfile(output_simple_summary_path):
+        logging.warning("{} already exists for output simple summary path. ({})"
+                        .format(output_simple_summary_path, "-S"))
+        files_exist = True
+
+    return files_exist
+
+
 def genome_name_from_fasta_path(fasta_path: str) -> str:
     """Extract genome name from fasta filename
 

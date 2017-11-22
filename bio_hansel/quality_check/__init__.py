@@ -2,10 +2,10 @@ from typing import List, Callable, Tuple
 
 from pandas import DataFrame
 
-from bio_hansel.quality_check.quality_check_functions import check_missing_tiles, does_subtype_result_exist, \
+from ..quality_check.quality_check_functions import check_missing_tiles, does_subtype_result_exist, \
     check_mixed_subtype, check_intermediate_subtype, check_inconsistent_results
-from bio_hansel.quality_check.const import FAIL_MESSAGE, WARNING_MESSAGE
-from bio_hansel.subtype import Subtype
+from ..quality_check.const import FAIL_MESSAGE, WARNING_MESSAGE
+from ..subtype import Subtype
 import logging
 
 
@@ -18,17 +18,20 @@ QC_FUNCS: List[Callable[[Subtype, DataFrame], Tuple[str, str]]] = \
 ]
 
 
-'''
-[perform_quality_check]
-Input: Subtype, DataFrame
-Output: None, modifies the subtype with the result.
-Desc: This is the driver method for the quality check module. Every method within the QC_FUNCS list will be run 
-with parameters ( SUBTYPE, DATAFRAME ). If a quality check module returns something other than None, then an Error,
-or Warning has occured. 
-'''
-
-
 def perform_quality_check(st: Subtype, df: DataFrame):
+    """ Driver method to call all quality checking functions and handle their responses.
+    Note:
+            This is the driver method for the quality check module. Every method within the QC_FUNCS list will be run
+            with parameters ( SUBTYPE, DATAFRAME ). If a quality check module returns something other than None, then
+            an Error, or Warning has occured.
+
+    Args:
+            :param st: Subtyping results.
+            :param df: DataFrame containing subtyping results.
+
+    Returns:
+            None, modifies the subtype with the result.
+    """
     logging.debug("Performing Quality Checking")
     overall_qc_status = 'PASS'
     messages = []
