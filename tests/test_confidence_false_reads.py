@@ -11,7 +11,6 @@ from bio_hansel.utils import SCHEME_FASTAS
 
 @pytest.fixture()
 def test_genomes():
-    # The data to provided for false confidence is not here yet, substitute this file name with the correct data.
     return ['tests/data/inconsistent_reads_fwd.fastq', 'tests/data/inconsistent_reads_rvs.fastq']
 
 

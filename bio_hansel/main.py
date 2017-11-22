@@ -134,8 +134,8 @@ def main():
     subtyping_params = SubtypingParams(low_coverage_depth_freq=args.low_cov_depth_freq,
                                        missing_total_tiles_max=args.missing_total_tiles_max,
                                        inconsistent_tiles_max=args.inc_tiles_max,
-                                       intermediate_subtype_tiles_max=args.int_subtype_tiles_max
-                                       )
+                                       intermediate_subtype_tiles_max=args.int_subtype_tiles_max)
+
     if not output_force:
         if out_files_exists(output_summary_path, output_tile_results, output_simple_summary_path):
             return 0
