@@ -4,7 +4,7 @@ import numpy as np
 from bio_hansel.subtype import Subtype
 from bio_hansel.subtyper import subtype_fasta
 from bio_hansel.subtyping_params import SubtypingParams
-from bio_hansel.utils import SCHEME_FASTAS
+from bio_hansel.const import SCHEME_FASTAS
 
 
 @pytest.fixture()
@@ -31,7 +31,6 @@ def test_ent_fasta_subtyping(test_genome):
     assert st.n_tiles_matching_subtype == 6
     assert st.n_tiles_matching_subtype_expected == '6'
     assert st.qc_status == 'PASS'
-
     exp_cols = ['tilename', 'stitle', 'refposition', 'subtype',
        'is_pos_tile', 'sample', 'file_path', 'scheme', 'scheme_version', 'qc_status', 'qc_message']
     df_cols = df.columns # type: Series

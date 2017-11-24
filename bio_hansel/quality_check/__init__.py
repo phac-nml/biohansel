@@ -4,19 +4,20 @@ from pandas import DataFrame
 
 from ..subtyping_params import SubtypingParams
 from ..quality_check.quality_check_functions import check_missing_tiles, does_subtype_result_exist, \
-    check_mixed_subtype, check_intermediate_subtype, check_inconsistent_results
+    check_mixed_subtype, check_intermediate_subtype, is_missing_target_sites, is_missing_downstream_targets
 from ..quality_check.const import FAIL_MESSAGE, WARNING_MESSAGE
 from ..subtype import Subtype
 import logging
 
 
-QC_FUNCS: List[Callable[[Subtype, DataFrame, SubtypingParams], Tuple[str, str]]] = \
+QC_FUNCS = \
 [
     check_missing_tiles,
     check_mixed_subtype,
-    check_inconsistent_results,
-    check_intermediate_subtype
-]
+    is_missing_target_sites,
+    is_missing_downstream_targets,
+    check_intermediate_subtype,
+] # type: List[Callable[[Subtype, DataFrame, SubtypingParams], Tuple[str, str]]]
 
 
 def perform_quality_check(st: Subtype, df: DataFrame, subtyping_params: SubtypingParams):

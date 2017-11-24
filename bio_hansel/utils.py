@@ -1,17 +1,11 @@
-import os
-from subprocess import Popen, PIPE
 import logging
-
+import os
 import re
-from typing import List, Dict, Any, Optional
-from pkg_resources import resource_filename
+from subprocess import Popen, PIPE
+from typing import List, Any, Optional
 
-from . import program_name
-
-SCHEME_FASTAS = {'heidelberg': {'file': resource_filename(program_name, 'data/heidelberg/tiles.fasta'),
-                                'version': '0.5.0'},
-                 'enteritidis': {'file': resource_filename(program_name, 'data/enteritidis/tiles.fasta'),
-                                 'version': '0.7.0'}, }
+from .const import SCHEME_FASTAS
+from .subtyping_params import SubtypingParams
 
 
 def run_command(cmdlist: List[str]) -> (int, str, str):
@@ -46,22 +40,14 @@ def exc_exists(exc_name: str) -> bool:
         return False
 
 
-def out_files_exists(output_summary_path: str, output_tile_results: str, output_simple_summary_path: str) -> bool:
-    files_exist = False
-    if os.path.isfile(output_summary_path):
-        logging.warning("{} already exists for output summary path ({})"
-                        .format(output_summary_path, "-o"))
-        files_exist = True
-    if os.path.isfile(output_tile_results):
-        logging.warning("{} already exists for output tile results. ({})"
-                        .format(output_tile_results, "-O"))
-        files_exist = True
-    if os.path.isfile(output_simple_summary_path):
-        logging.warning("{} already exists for output simple summary path. ({})"
-                        .format(output_simple_summary_path, "-S"))
-        files_exist = True
-
-    return files_exist
+def out_files_exists(filepath: str, force: bool):
+    if filepath:
+        file_exists_err_fmt = 'File "{}" already exists! If you want to overwrite this output file run with opt "--force"'
+        if os.path.exists(filepath):
+            if not force:
+                raise OSError(file_exists_err_fmt.format(filepath))
+            else:
+                logging.warning('File "{}" already exists, overwriting with "--force" - uh oh :S')
 
 
 def genome_name_from_fasta_path(fasta_path: str) -> str:
@@ -127,6 +113,11 @@ def get_scheme_fasta(scheme: str) -> str:
     else:
         raise FileNotFoundError('Could not find user-specified subtyping scheme fasta "%s"', scheme)
     return scheme_fasta
+
+
+def get_scheme_params(scheme: str) -> Optional[SubtypingParams]:
+    if scheme in SCHEME_FASTAS:
+        return SCHEME_FASTAS[scheme]['subtyping_params']
 
 
 def get_scheme_version(scheme: str) -> Optional[str]:

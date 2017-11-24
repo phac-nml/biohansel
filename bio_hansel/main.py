@@ -17,7 +17,7 @@ from bio_hansel.const import SUBTYPE_SUMMARY_COLS
 from bio_hansel.subtyper import subtype_fasta, subtype_reads
 from bio_hansel.subtype_stats import subtype_counts
 from bio_hansel.subtyping_params import SubtypingParams
-from bio_hansel.utils import genome_name_from_fasta_path, get_scheme_fasta, out_files_exists
+from bio_hansel.utils import genome_name_from_fasta_path, get_scheme_fasta, out_files_exists, get_scheme_params
 
 SCRIPT_NAME = 'hansel'
 LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
@@ -68,29 +68,23 @@ def init_parser():
                         help='Force existing output files to be overwritten')
     parser.add_argument('--min-kmer-freq',
                         type=int,
-                        default=10,
                         help='Min k-mer freq/coverage')
     parser.add_argument('--max-kmer-freq',
                         type=int,
-                        default=200,
                         help='Max k-mer freq/coverage')
     # Changes
     parser.add_argument('--low-cov-depth-freq',
                         type=int,
-                        default=20,
                         help='Frequencies below this coverage are considered low coverage')
-    parser.add_argument('--missing-total-tiles-max',
+    parser.add_argument('--max-missing-tiles',
+                        type=float,
+                        help='Decimal proportion of maximum allowable missing tiles before being considered an error. (0.0 - 1.0)')
+    parser.add_argument('--min-ambiguous-tiles',
                         type=int,
-                        default=0.05,
-                        help='Value in percentage, the maximum amount of total allowed missing tiles before being considered an error.')
-    parser.add_argument('--inc-tiles-max',
-                        type=int,
-                        default=3,
-                        help='Minimum number of missing tiles to be considered an inconsistent result')
-    parser.add_argument('--int-subtype-tiles-max',
-                        type=int,
-                        default=0.05,
-                        help='Value in percentage, the maximum amount of missing tiles to be tolerated to consider the result as an intermediate subtype.')
+                        help='Minimum number of missing tiles to be considered an ambiguous result')
+    parser.add_argument('--max-intermediate-tiles',
+                        type=float,
+                        help='Decimal proportion of maximum allowable missing tiles to be considered an intermediate subtype. (0.0 - 1.0)')
     # Changes
     parser.add_argument('-t', '--threads',
                         type=int,
@@ -123,7 +117,9 @@ def main():
     output_summary_path = args.output_summary
     output_tile_results = args.output_tile_results
     output_simple_summary_path = args.output_simple_summary
-    output_force = args.force
+    out_files_exists(output_simple_summary_path, args.force)
+    out_files_exists(output_summary_path, args.force)
+    out_files_exists(output_tile_results, args.force)
     scheme = args.scheme  # type: str
     scheme_name = args.scheme_name  # type: Optional[str]
     scheme_fasta = get_scheme_fasta(scheme)
@@ -131,16 +127,19 @@ def main():
     input_genomes = []
     reads = []
     logging.debug(args)
-    subtyping_params = SubtypingParams(low_coverage_depth_freq=args.low_cov_depth_freq,
-                                       missing_total_tiles_max=args.missing_total_tiles_max,
-                                       inconsistent_tiles_max=args.inc_tiles_max,
-                                       intermediate_subtype_tiles_max=args.int_subtype_tiles_max)
 
-    if not output_force:
-        if out_files_exists(output_summary_path, output_tile_results, output_simple_summary_path):
-            return 0
-    else:
-        logging.info("Previous output files will be over written with --force")
+    subtyping_params = get_scheme_params(scheme)
+    if not subtyping_params:
+        subtyping_params = SubtypingParams()
+
+    if args.low_cov_depth_freq:
+        subtyping_params.low_coverage_depth_freq = args.low_cov_depth_freq
+    if args.max_missing_tiles:
+        subtyping_params.max_perc_missing_tiles = args.max_missing_tiles
+    if args.min_ambiguous_tiles:
+        subtyping_params.min_ambiguous_tiles = args.min_ambiguous_tiles
+    if args.max_intermediate_tiles:
+        subtyping_params.max_perc_intermediate_tiles = args.max_intermediate_tiles
 
     if args.files:
         fastas = [x for x in args.files if re.match(r'^.+\.(fasta|fa|fna)$', x)]
@@ -232,8 +231,6 @@ def main():
                                  genome_name=genome_name,
                                  tmp_dir=tmp_dir,
                                  threads=n_threads,
-                                 min_kmer_freq=args.min_kmer_freq,
-                                 max_kmer_freq=args.max_kmer_freq,
                                  scheme_name=scheme_name,
                                  scheme_subtype_counts=scheme_subtype_counts)
                    for r, genome_name in reads]

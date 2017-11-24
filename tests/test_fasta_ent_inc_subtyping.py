@@ -6,7 +6,7 @@ from bio_hansel.quality_check import FAIL_MESSAGE
 from bio_hansel.subtype import Subtype
 from bio_hansel.subtyper import subtype_fasta
 from bio_hansel.subtyping_params import SubtypingParams
-from bio_hansel.utils import SCHEME_FASTAS
+from bio_hansel.const import SCHEME_FASTAS
 
 
 @pytest.fixture()

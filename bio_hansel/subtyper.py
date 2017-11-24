@@ -4,16 +4,15 @@ import logging
 import os
 import re
 from datetime import datetime
-from typing import Optional, List, Dict, Union, TYPE_CHECKING
+from typing import Optional, List, Dict, Union, TYPE_CHECKING, Tuple
 
-from bio_hansel.quality_check import perform_quality_check
+from pandas import DataFrame
 
 if TYPE_CHECKING:
     from .subtype_stats import SubtypeCounts
 
-from pandas import DataFrame
-
 from . import program_name
+from .quality_check import perform_quality_check
 from .blast_wrapper import BlastRunner, BlastReader
 from .kmer_count import Jellyfisher
 from .subtype import Subtype
@@ -43,7 +42,7 @@ def subtype_fasta(subtyping_params: SubtypingParams,
         with BlastReader(blast_outfile=blast_outfile) as breader:
             df = breader.parse()
 
-    st = Subtype(sample=genome_name, file_path=fasta_path, scheme=scheme_name or scheme, scheme_version=scheme_version)
+    st = Subtype(sample=genome_name, file_path=fasta_path, scheme=scheme_name or scheme, scheme_version=scheme_version, scheme_subtype_counts=scheme_subtype_counts)
     if df is None or df.shape[0] == 0:
         logging.warning('No Heidelberg subtyping tile matches for "%s"', fasta_path)
         st.are_subtypes_consistent = False
@@ -55,7 +54,7 @@ def subtype_fasta(subtyping_params: SubtypingParams,
 
     refpositions = [x for x, y in df.tilename.str.split('-')]
     subtypes = [y for x, y in df.tilename.str.split('-')]
-    df['refposition'] = refpositions
+    df['refposition'] = [int(x.replace('negative', '')) for x in refpositions]
     df['subtype'] = subtypes
     df['is_pos_tile'] = ~df.tilename.str.contains('negative')
     logging.debug('df: %s', df)
@@ -90,6 +89,18 @@ def subtype_fasta(subtyping_params: SubtypingParams,
         st.are_subtypes_consistent = False
         st.inconsistent_subtypes = inconsistent_subtypes
 
+    possible_downstream_subtypes = [s for s in scheme_subtype_counts
+                                       if re.search("^({})(\.)(\d)$".format(re.escape(st.subtype)), s)]
+    non_present_subtypes = []
+    if possible_downstream_subtypes:
+        for subtype in possible_downstream_subtypes:
+            blah = df['subtype']
+            # wtf is going on
+            if not any(df.subtype == subtype):
+                non_present_subtypes.append(subtype)
+
+    st.non_present_subtypes = non_present_subtypes
+
     perform_quality_check(st, df, subtyping_params)
 
     logging.info(st)
@@ -111,10 +122,8 @@ def subtype_reads(subtyping_params: SubtypingParams,
                   genome_name: str,
                   tmp_dir: str = '/tmp',
                   threads: int = 1,
-                  min_kmer_freq: int = 10,
-                  max_kmer_freq: int = 200,
                   scheme_name: Optional[str] = None,
-                  scheme_subtype_counts: Optional[Dict[str, 'SubtypeCounts']] = None) -> (Subtype, DataFrame):
+                  scheme_subtype_counts: Optional[Dict[str, 'SubtypeCounts']] = None) -> Tuple[Subtype, DataFrame]:
     dtnow = datetime.now()
     genome_name_no_spaces = re.sub(r'\W', '_', genome_name)
     genome_tmp_dir = os.path.join(tmp_dir,
@@ -129,8 +138,8 @@ def subtype_reads(subtyping_params: SubtypingParams,
                      scheme_fasta=scheme_fasta,
                      genome_name=genome_name,
                      reads=reads,
-                     min_kmer_freq=min_kmer_freq,
-                     max_kmer_freq=max_kmer_freq,
+                     min_kmer_freq=subtyping_params.min_kmer_freq,
+                     max_kmer_freq=subtyping_params.max_kmer_freq,
                      tmp_dir=genome_tmp_dir,
                      threads=threads) as jfer:
         st, df = jfer.summary()
