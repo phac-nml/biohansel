@@ -12,10 +12,12 @@ import re
 import pandas as pd
 from collections import defaultdict
 
-from . import program_name, program_desc, __version__
-from .subtyper import subtype_fasta, SUBTYPE_SUMMARY_COLS, subtype_reads
-from .subtype_stats import subtype_counts
-from .utils import genome_name_from_fasta_path, get_scheme_fasta
+from bio_hansel import program_name, program_desc, __version__
+from bio_hansel.const import SUBTYPE_SUMMARY_COLS
+from bio_hansel.subtyper import subtype_fasta, subtype_reads
+from bio_hansel.subtype_stats import subtype_counts
+from bio_hansel.subtyping_params import SubtypingParams
+from bio_hansel.utils import genome_name_from_fasta_path, get_scheme_fasta, out_files_exists, get_scheme_params
 
 SCRIPT_NAME = 'hansel'
 LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
@@ -59,14 +61,31 @@ def init_parser():
                         help='Subtyping summary output path (tab-delimited)')
     parser.add_argument('-O', '--output-tile-results',
                         help='Subtyping tile matching output path (tab-delimited)')
+    parser.add_argument('-S', '--output-simple-summary',
+                        help='Subtyping simple summary output path')
+    parser.add_argument('--force',
+                        action='store_true',
+                        help='Force existing output files to be overwritten')
     parser.add_argument('--min-kmer-freq',
                         type=int,
-                        default=10,
                         help='Min k-mer freq/coverage')
     parser.add_argument('--max-kmer-freq',
                         type=int,
-                        default=200,
                         help='Max k-mer freq/coverage')
+    # Changes
+    parser.add_argument('--low-cov-depth-freq',
+                        type=int,
+                        help='Frequencies below this coverage are considered low coverage')
+    parser.add_argument('--max-missing-tiles',
+                        type=float,
+                        help='Decimal proportion of maximum allowable missing tiles before being considered an error. (0.0 - 1.0)')
+    parser.add_argument('--min-ambiguous-tiles',
+                        type=int,
+                        help='Minimum number of missing tiles to be considered an ambiguous result')
+    parser.add_argument('--max-intermediate-tiles',
+                        type=float,
+                        help='Decimal proportion of maximum allowable missing tiles to be considered an intermediate subtype. (0.0 - 1.0)')
+    # Changes
     parser.add_argument('-t', '--threads',
                         type=int,
                         default=1,
@@ -97,7 +116,10 @@ def main():
     init_console_logger(args.verbose)
     output_summary_path = args.output_summary
     output_tile_results = args.output_tile_results
-
+    output_simple_summary_path = args.output_simple_summary
+    out_files_exists(output_simple_summary_path, args.force)
+    out_files_exists(output_summary_path, args.force)
+    out_files_exists(output_tile_results, args.force)
     scheme = args.scheme  # type: str
     scheme_name = args.scheme_name  # type: Optional[str]
     scheme_fasta = get_scheme_fasta(scheme)
@@ -105,6 +127,20 @@ def main():
     input_genomes = []
     reads = []
     logging.debug(args)
+
+    subtyping_params = get_scheme_params(scheme)
+    if not subtyping_params:
+        subtyping_params = SubtypingParams()
+
+    if args.low_cov_depth_freq:
+        subtyping_params.low_coverage_depth_freq = args.low_cov_depth_freq
+    if args.max_missing_tiles:
+        subtyping_params.max_perc_missing_tiles = args.max_missing_tiles
+    if args.min_ambiguous_tiles:
+        subtyping_params.min_ambiguous_tiles = args.min_ambiguous_tiles
+    if args.max_intermediate_tiles:
+        subtyping_params.max_perc_intermediate_tiles = args.max_intermediate_tiles
+
     if args.files:
         fastas = [x for x in args.files if re.match(r'^.+\.(fasta|fa|fna)$', x)]
         fastqs = [x for x in args.files if re.match(r'^.+\.(fastq|fq)$', x)]
@@ -158,7 +194,8 @@ def main():
     if input_genomes:
         if n_threads == 1:
             logging.info('Serial single threaded run mode on %s input genomes', len(input_genomes))
-            outputs = [subtype_fasta(scheme,
+            outputs = [subtype_fasta(subtyping_params,
+                                     scheme,
                                      input_fasta,
                                      genome_name,
                                      tmp_dir=tmp_dir,
@@ -170,7 +207,8 @@ def main():
             logging.info('Initializing thread pool with %s threads', n_threads)
             pool = Pool(processes=n_threads)
             logging.info('Running analysis asynchronously on %s input genomes', len(input_genomes))
-            res = [pool.apply_async(subtype_fasta, (scheme,
+            res = [pool.apply_async(subtype_fasta, (subtyping_params,
+                                                    scheme,
                                                     input_fasta,
                                                     genome_name,
                                                     tmp_dir,
@@ -187,13 +225,12 @@ def main():
             subtype_results.append(attr.asdict(subtype))
 
     if reads:
-        outputs = [subtype_reads(scheme=scheme,
+        outputs = [subtype_reads(subtyping_params,
+                                 scheme=scheme,
                                  reads=r,
                                  genome_name=genome_name,
                                  tmp_dir=tmp_dir,
                                  threads=n_threads,
-                                 min_kmer_freq=args.min_kmer_freq,
-                                 max_kmer_freq=args.max_kmer_freq,
                                  scheme_name=scheme_name,
                                  scheme_subtype_counts=scheme_subtype_counts)
                    for r, genome_name in reads]
@@ -207,6 +244,8 @@ def main():
     dfsummary = pd.DataFrame(subtype_results)
     dfsummary = dfsummary[SUBTYPE_SUMMARY_COLS]
 
+    df_simple_summary = dfsummary[['sample', 'subtype', 'qc_status', 'qc_message']]
+
     if output_summary_path:
         dfsummary.to_csv(output_summary_path, sep='\t', index=None)
         logging.info('Wrote subtyping output summary to %s', output_summary_path)
@@ -215,6 +254,9 @@ def main():
 
     if output_tile_results:
         dfall.to_csv(output_tile_results, sep='\t', index=None)
+
+    if output_simple_summary_path:
+        df_simple_summary.to_csv(output_simple_summary_path, sep='\t', index=None)
 
 
 def collect_fasta_from_dir(input_directory):
