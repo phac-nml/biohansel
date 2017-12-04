@@ -2,22 +2,22 @@ import pytest
 from pandas import DataFrame, Series
 import numpy as np
 
-from bio_hansel.quality_check.const import MIXED_SUBTYPE_ERROR, FAIL_MESSAGE
+from bio_hansel.quality_check.const import FAIL_MESSAGE
 from bio_hansel.subtype import Subtype
 from bio_hansel.subtyper import subtype_reads
-from bio_hansel.utils import SCHEME_FASTAS
+from bio_hansel.subtyping_params import SubtypingParams
+from bio_hansel.const import SCHEME_FASTAS
 
 
 @pytest.fixture()
 def test_genomes():
-    # The data to provided for false confidence is not here yet, substitute this file name with the correct data.
     return ['tests/data/inconsistent_reads_fwd.fastq', 'tests/data/inconsistent_reads_rvs.fastq']
 
 
 def test_confidence_false(test_genomes):
     genome_name = 'test'
     scheme = 'enteritidis'
-    st, df = subtype_reads(scheme='enteritidis', reads=test_genomes, genome_name=genome_name)
+    st, df = subtype_reads(scheme='enteritidis', reads=test_genomes, genome_name=genome_name, subtyping_params=SubtypingParams())
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
 
@@ -32,8 +32,8 @@ def test_confidence_false(test_genomes):
     assert st.n_tiles_matching_positive_expected == '25'
     assert st.n_tiles_matching_subtype == 5
     assert st.n_tiles_matching_subtype_expected == '6'
-    assert FAIL_MESSAGE in st.qc_status
-    assert MIXED_SUBTYPE_ERROR in st.qc_message
+    assert st.qc_status == FAIL_MESSAGE
+
     exp_cols = ['tilename', 'freq', 'refposition', 'subtype',
                 'is_pos_tile', 'is_kmer_freq_okay', 'sample', 'file_path', 'scheme', 'scheme_version',
                 'qc_status', 'qc_message']

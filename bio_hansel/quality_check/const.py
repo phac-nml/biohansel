@@ -1,12 +1,8 @@
-MIXED_SUBTYPE_ERROR = "Mixed subtypes detected"
-MIXED_SUBTYPE_WARNING = "Mixed subtypes detected, QC not run : "
-INSUFFICIENT_NUM_TILES = "Insufficient number of SNV targets found!"
-OVER_MAX_TILES = "More tiles were observed, than expected!"
-MIN_TILES_WARNING = "Minimum tiles not checked, no matching tiles found"
 FAIL_MESSAGE = "FAIL"
-PASS_MESSAGE = "PASS"
 WARNING_MESSAGE = "WARNING"
-
-# Thresholds for tile checking.
-MAX_TILES_THRESHOLD = 0.01
-MIN_TILES_THRESHOLD = 0.05
+# Errors for Hansel
+MISSING_TILES_ERROR_1 = "Missing Tiles Error 1"
+MIXED_SAMPLE_ERROR_2 = "Mixed Sample Error 2"
+AMBIGUOUS_RESULTS_ERROR_3 = "Ambiguous Results Error 3"
+NON_CONFIDENT_RESULTS_ERROR_4 = "Non Confident Results Error 4"
+INTERMEDIATE_SUBTYPE_WARNING = "Intermediate Subtype Warning"

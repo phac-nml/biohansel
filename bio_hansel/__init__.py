@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-__version__ = '0.2.0'
+__version__ = '1.0.0'
 program_name = 'bio_hansel'
 program_summary = 'Subtype Salmonella enterica genomes using 33bp k-mer typing schemes.'
 program_desc = program_summary + '''

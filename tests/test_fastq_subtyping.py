@@ -2,10 +2,10 @@ import pytest
 from pandas import DataFrame
 import numpy as np
 
-from bio_hansel.quality_check.const import PASS_MESSAGE
 from bio_hansel.subtype import Subtype
 from bio_hansel.subtyper import subtype_reads
-from bio_hansel.utils import SCHEME_FASTAS
+from bio_hansel.subtyping_params import SubtypingParams
+from bio_hansel.const import SCHEME_FASTAS
 
 
 @pytest.fixture
@@ -16,7 +16,7 @@ def test_genome():
 def test_fastq_subtyping(test_genome):
     genome_name = 'test'
     scheme = 'heidelberg'
-    st, df = subtype_reads(scheme='heidelberg', reads=test_genome, genome_name=genome_name, threads=4)
+    st, df = subtype_reads(scheme='heidelberg', reads=test_genome, genome_name=genome_name, threads=4, subtyping_params=SubtypingParams())
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
 
@@ -32,7 +32,7 @@ def test_fastq_subtyping(test_genome):
     assert st.n_tiles_matching_positive_expected == '20'
     assert st.n_tiles_matching_subtype == 2
     assert st.n_tiles_matching_subtype_expected == '2'
-    assert st.qc_status == PASS_MESSAGE
+    assert st.qc_status == 'PASS'
     assert len(st.qc_message) == 0
 
     exp_cols = ['tilename', 'freq', 'refposition', 'subtype',

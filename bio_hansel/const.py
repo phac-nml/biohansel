@@ -1,4 +1,16 @@
 # -*- coding: utf-8 -*-
+from pkg_resources import resource_filename
+
+from bio_hansel import program_name
+from bio_hansel.subtyping_params import SubtypingParams
+
+SCHEME_FASTAS = {'heidelberg': {'file': resource_filename(program_name, 'data/heidelberg/tiles.fasta'),
+                                'version': '0.5.0',
+                                'subtyping_params': SubtypingParams(low_coverage_depth_freq=20)},
+                 'enteritidis': {'file': resource_filename(program_name, 'data/enteritidis/tiles.fasta'),
+                                 'version': '0.7.0',
+                                 'subtyping_params': SubtypingParams(low_coverage_depth_freq=50)}}
+
 
 FASTA_COLUMNS_TO_REMOVE = '''
 pident
