@@ -9,7 +9,7 @@ class SubtypingParams(object):
     max_perc_intermediate_tiles = attr.ib(default=0.05, validator=attr.validators.instance_of(float))
     calc_min_kmer_freq = attr.ib(default=False, validator=attr.validators.instance_of(bool))
     min_kmer_freq = attr.ib(default=10, validator=attr.validators.instance_of(int))
-    max_kmer_freq = attr.ib(default=200, validator=attr.validators.instance_of(int))
+    max_kmer_freq = attr.ib(default=1000, validator=attr.validators.instance_of(int))
     savgol_window_len = attr.ib(default=3, validator=attr.validators.instance_of(int))
     savgol_poly_degree = attr.ib(default=2, validator=attr.validators.instance_of(int))
     kmer_cov_perc_confidence = attr.ib(default=0.95, validator=attr.validators.instance_of(float))
