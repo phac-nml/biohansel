@@ -27,11 +27,11 @@ def perform_quality_check(st: Subtype, df: DataFrame, subtyping_params: Subtypin
             with parameters ( SUBTYPE, DATAFRAME ). If a quality check module returns something other than None, then
             an Error, or Warning has occured.
 
-    Args:
+    :arg:
             :param st: Subtyping results.
             :param df: DataFrame containing subtyping results.
 
-    Returns:
+    :returns:
             None, modifies the subtype with the result.
     """
     logging.debug("Performing Quality Checking")

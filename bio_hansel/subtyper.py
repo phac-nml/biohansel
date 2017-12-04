@@ -8,6 +8,8 @@ from typing import Optional, List, Dict, Union, TYPE_CHECKING, Tuple
 
 from pandas import DataFrame
 
+from bio_hansel.kmer_val_calc import find_min_kmer_val
+
 if TYPE_CHECKING:
     from .subtype_stats import SubtypeCounts
 
@@ -94,8 +96,6 @@ def subtype_fasta(subtyping_params: SubtypingParams,
     non_present_subtypes = []
     if possible_downstream_subtypes:
         for subtype in possible_downstream_subtypes:
-            blah = df['subtype']
-            # wtf is going on
             if not any(df.subtype == subtype):
                 non_present_subtypes.append(subtype)
 
@@ -142,6 +142,12 @@ def subtype_reads(subtyping_params: SubtypingParams,
                      max_kmer_freq=subtyping_params.max_kmer_freq,
                      tmp_dir=genome_tmp_dir,
                      threads=threads) as jfer:
+
+        if subtyping_params.calc_min_kmer_freq:
+            hist = jfer.create_histogram()
+            min_kmer_freq = find_min_kmer_val(hist)
+            jfer.min_kmer_freq = min_kmer_freq
+
         st, df = jfer.summary()
 
         perform_quality_check(st, df, subtyping_params)

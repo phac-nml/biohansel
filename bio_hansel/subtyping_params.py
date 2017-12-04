@@ -7,6 +7,7 @@ class SubtypingParams(object):
     max_perc_missing_tiles = attr.ib(default=0.05, validator=attr.validators.instance_of(float))
     min_ambiguous_tiles = attr.ib(default=3, validator=attr.validators.instance_of(int))
     max_perc_intermediate_tiles = attr.ib(default=0.05, validator=attr.validators.instance_of(float))
+    calc_min_kmer_freq = attr.ib(default=False, validator=attr.validators.instance_of(bool))
     min_kmer_freq = attr.ib(default=10, validator=attr.validators.instance_of(int))
     max_kmer_freq = attr.ib(default=200, validator=attr.validators.instance_of(int))
 

@@ -34,7 +34,7 @@ def check_missing_tiles(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple
             If they are, we calculate the average frequency coverage depth for the tiles that are present, and
             provide an adequate error message based on the coverage.
 
-    Args:
+    :arg:
             :param st: Subtyping results.
             :param df: DataFrame containing subtyping results.
             :param p: Subtyping parameters for quality check thresholds.
@@ -82,7 +82,7 @@ def check_mixed_subtype(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple
             2) If the subtyping result came back with an inconsistent call.
             Then the method will provide an adequate error message to the user.
 
-    Args:
+    :arg:
             :param st: Subtyping results.
             :param df: DataFrame containing subtyping results.
             :param p: Subtyping parameters for quality check thresholds.
@@ -120,7 +120,7 @@ def is_missing_target_sites(st: Subtype, df: DataFrame, p: SubtypingParams) -> T
             This method will check if there are any refpositions missing from the subtyping scheme in the result.
             If there are missing refpositions, this is a missing target. If there are too many missing targets,
             this result is an Ambiguous Result.
-    Args:
+    :arg:
             :param st: Subtyping results.
             :param df: DataFrame containing subtyping results.
             :param p: Subtyping parameters for quality check thresholds.
@@ -167,10 +167,10 @@ def is_missing_downstream_targets(st: Subtype, df: DataFrame, p: SubtypingParams
             result. This is due to the fact if you have a subtyping result of `2.1.1.2` and you're missing `2.1.1.2.X`
             You can't be sure that the subtype's final call is 2.1.1.2 if you're missing information.
 
-    Args:
+    :arg:
             :param st: Subtyping results.
 
-    Output:
+    :returns:
             Tuple[Optional[str], Optional[str]]
             error_status: Contains any error statuses { FAIL_MESSAGE }
             error_messages: Contains the reasoning for any fail status.
@@ -201,12 +201,12 @@ def check_intermediate_subtype(st: Subtype, df: DataFrame, p: SubtypingParams) -
             0 contradicting tiles (tiles with same position but there exists + and -), total subtype tiles < expected,
             and +/- tiles exist in the result.
 
-    Args:
+    :arg:
             :param st: Subtyping results.
             :param df: DataFrame containing subtyping results.
             :param p: Subtyping parameters for quality check thresholds.
 
-    Output:
+    :returns:
             Tuple[Optional[str], Optional[str]]
             error_status: Contains any error statuses { Warning }
             error_messages: Contains the reasoning for any warning status.

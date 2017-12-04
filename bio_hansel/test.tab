@@ -1,2 +1,2 @@
 sample	subtype	qc_status	qc_message
-SRR1002850_smalltestdata	2.2.2.2.1.4	PASS	
+10-1358.fastq	2.1.1.2	WARNING	WARNING: Intermediate Subtype Warning: Possible intermediate subtype. All scheme tiles were found, but a fraction were positive for the final subtype. Total subtype hits: 3 | Total subtype expected: 6.

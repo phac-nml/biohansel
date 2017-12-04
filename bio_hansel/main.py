@@ -67,7 +67,7 @@ def init_parser():
                         action='store_true',
                         help='Force existing output files to be overwritten')
     parser.add_argument('--min-kmer-freq',
-                        type=int,
+                        type=str,
                         help='Min k-mer freq/coverage')
     parser.add_argument('--max-kmer-freq',
                         type=int,
@@ -140,6 +140,13 @@ def main():
         subtyping_params.min_ambiguous_tiles = args.min_ambiguous_tiles
     if args.max_intermediate_tiles:
         subtyping_params.max_perc_intermediate_tiles = args.max_intermediate_tiles
+    if args.min_kmer_freq:
+        if str(args.min_kmer_freq).lower() == "auto":
+            subtyping_params.calc_min_kmer_freq = True
+        else:
+            subtyping_params.min_kmer_freq = int(args.min_kmer_freq)
+    if args.max_kmer_freq:
+        subtyping_params.max_kmer_freq = args.max_kmer_freq
 
     if args.files:
         fastas = [x for x in args.files if re.match(r'^.+\.(fasta|fa|fna)$', x)]

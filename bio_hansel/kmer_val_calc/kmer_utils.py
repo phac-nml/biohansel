@@ -3,28 +3,30 @@ from typing import List
 import numpy as np
 
 
-'''
-[calc_avg_kmer_depth]
-    Input: A dictionary containing the result of running Jellyfish's histo method in the k-mer counts
-    Output: The estimated average kmer coverage value
-    Desc: To find the average kmer coverage value, we use the assumption that most data follows the following curve:
-    |.
-    | .       |------- Here is the average k-mer coverage depth value.
-    | .     . | .
-    | .    .  |  .
-    | .   .   |   .
-    |  . .    |    . .
-    |   .     |       . . .
-    |______________________________
-        
-    Where the maxima's value would be your average k-mer coverage value by accessing it's key. 
-'''
+def calc_avg_kmer_depth(hist: dict) -> int:
+    """Calculate the average k-mer depth
+    Note:
+            To find the average kmer coverage value, we use the assumption that most data follows the following curve:
+                |.
+                | .       |------- Here is the average k-mer coverage depth value.
+                | .     . | .
+                | .    .  |  .
+                | .   .   |   .
+                |  . .    |    . .
+                |   .     |       . . .
+                |______________________________
 
+            Where the maxima's value would be your average k-mer coverage value by accessing it's key.
 
-def calc_avg_kmer_depth(kmers: dict) -> int:
-    maximum = find_maxima(apply_savgol_filt(list(kmers.values())))
+    :arg:
+            :param hist: Dictionary containing the histogram of the observed kmer values.
 
-    for key, value in kmers.items():
+    :returns:
+            The average k-mer coverage depth.
+    """
+    maximum = find_maxima(apply_savgol_filt(list(hist.values())))
+
+    for key, value in hist.items():
         if maximum == value:
             kmer_coverage = key
 
@@ -32,6 +34,17 @@ def calc_avg_kmer_depth(kmers: dict) -> int:
 
 
 def calc_error_rate(hist: dict) -> float:
+    """Calculates the estimated error rate through observation.
+    Note:
+            As we assume that k-mers that appear once are errors, we simply calculate the error rate by
+            kmers that appear once / unique kmers.
+
+    :arg:
+            :param hist: Dictionary containing the histogram of the observed kmer values.
+
+    :return:
+            float value containing the error rate.
+    """
     num_kmers_appear_once = hist.get(2)
     num_unique_kmers = find_unique_kmers(hist)
     error_rate = num_kmers_appear_once/num_unique_kmers
@@ -43,15 +56,40 @@ def calc_error_rate(hist: dict) -> float:
 
 
 def find_unique_kmers(hist: dict) -> int:
+    """Find the number of unique k-mers within the observation
+    Note:
+            We can simply follow the "curve of the graph" to find the number of unique k-mers.
+
+    :arg:
+            :param hist: Dictionary containing the histogram of the observed kmer values.
+
+    :return:
+            int containing the number of unique kmers
+    """
     return sum(hist.values())
 
 
 def apply_savgol_filt(input: List[float]) -> List[float]:
-    # Questionable Values, but experimental nevertheless.
+    """Apply savgol filter to the observation to smooth out curve.
+
+    :arg:
+            :param input: List containing the values of the y-axis of the k-mer frequency graph.
+
+    :return:
+            List containing the smoothed values of the y-axis of the k-mer frequency graph.
+    """
     return savgol_filter(input, 3, 2)
 
 
 def find_maxima(input_values: List[int]) -> int:
+    """Finds the local maxima containing the average k-mer coverage depth value.
+
+    :arg:
+            :param input_values: List containing the values of the y-axis of the k-mer frequency graph.
+
+    :return:
+            average k-mer coverage depth value
+    """
     # Gives you a list of indexs where contains a maximum.
     list_of_maximas = argrelextrema(input_values, np.greater)[0]
 
