@@ -145,7 +145,7 @@ def subtype_reads(subtyping_params: SubtypingParams,
 
         if subtyping_params.calc_min_kmer_freq:
             hist = jfer.create_histogram()
-            min_kmer_freq = find_min_kmer_val(hist)
+            min_kmer_freq = find_min_kmer_val(hist, subtyping_params)
             jfer.min_kmer_freq = min_kmer_freq
 
         st, df = jfer.summary()

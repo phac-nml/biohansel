@@ -1,8 +1,10 @@
 from bio_hansel.kmer_val_calc.kmer_utils import calc_error_rate, calc_avg_kmer_depth
 from scipy.stats import norm as stats
 
+from bio_hansel.subtyping_params import SubtypingParams
 
-def find_min_kmer_val(hist: dict) -> float:
+
+def find_min_kmer_val(hist: dict, subtyping_params: SubtypingParams) -> float:
     """Find the minimum kmer frequency coverage value from observation
     Note:
             This method will find three things:
@@ -20,11 +22,12 @@ def find_min_kmer_val(hist: dict) -> float:
 
     :arg:
             :param hist: Dictionary containing the histogram of the observed kmer values.
+            :param subtyping_params: Parameters containing savgol and percent confidence values.
 
     :returns:
             The minimum kmer cut off value.
     """
     error_rate = calc_error_rate(hist)
-    kmer_cov_freq = calc_avg_kmer_depth(hist)
-    min_kmer_val = stats.ppf(0.95, kmer_cov_freq * error_rate)
+    kmer_cov_freq = calc_avg_kmer_depth(hist, subtyping_params)
+    min_kmer_val = stats.ppf(subtyping_params.kmer_cov_perc_confidence, kmer_cov_freq * error_rate)
     return min_kmer_val

@@ -72,7 +72,6 @@ def init_parser():
     parser.add_argument('--max-kmer-freq',
                         type=int,
                         help='Max k-mer freq/coverage')
-    # Changes
     parser.add_argument('--low-cov-depth-freq',
                         type=int,
                         help='Frequencies below this coverage are considered low coverage')
@@ -85,7 +84,15 @@ def init_parser():
     parser.add_argument('--max-intermediate-tiles',
                         type=float,
                         help='Decimal proportion of maximum allowable missing tiles to be considered an intermediate subtype. (0.0 - 1.0)')
-    # Changes
+    parser.add_argument('--savgol-window-len',
+                        type=int,
+                        help='Length of the window that the savgol filter should be applied. For use with --min-kmer-freq auto')
+    parser.add_argument('--savgol-poly-degree',
+                        type=int,
+                        help='Polynomial value that the savgol filter will use to approximate the observation. For use with --min-kmer-freq auto')
+    parser.add_argument('--kmer-cov-perc-confidence',
+                        type=float,
+                        help='Decimal proportion of k-mer percent confidence to be used with automating the min-k-mer value. For use with --min-kmer-freq auto. (0.0 - 1.0)')
     parser.add_argument('-t', '--threads',
                         type=int,
                         default=1,
@@ -147,6 +154,12 @@ def main():
             subtyping_params.min_kmer_freq = int(args.min_kmer_freq)
     if args.max_kmer_freq:
         subtyping_params.max_kmer_freq = args.max_kmer_freq
+    if args.savgol_window_len:
+        subtyping_params.savgol_window_len = args.savgol_window_len
+    if args.savgol_poly_degree:
+        subtyping_params.savgol_poly_degree = args.savgol_poly_degree
+    if args.kmer_cov_perc_confidence:
+        subtyping_params.kmer_cov_perc_confidence = args.kmer_cov_perc_confidence
 
     if args.files:
         fastas = [x for x in args.files if re.match(r'^.+\.(fasta|fa|fna)$', x)]

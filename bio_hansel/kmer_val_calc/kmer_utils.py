@@ -2,8 +2,10 @@ from scipy.signal import argrelextrema, savgol_filter
 from typing import List
 import numpy as np
 
+from bio_hansel.subtyping_params import SubtypingParams
 
-def calc_avg_kmer_depth(hist: dict) -> int:
+
+def calc_avg_kmer_depth(hist: dict, subtyping_params: SubtypingParams) -> int:
     """Calculate the average k-mer depth
     Note:
             To find the average kmer coverage value, we use the assumption that most data follows the following curve:
@@ -20,15 +22,18 @@ def calc_avg_kmer_depth(hist: dict) -> int:
 
     :arg:
             :param hist: Dictionary containing the histogram of the observed kmer values.
+            :param subtyping_params: Object containing parameters for savgol filter
 
     :returns:
             The average k-mer coverage depth.
     """
-    maximum = find_maxima(apply_savgol_filt(list(hist.values())))
+    maximum = find_maxima(apply_savgol_filt(list(hist.values()), subtyping_params))
+    kmer_coverage = -1
 
     for key, value in hist.items():
         if maximum == value:
             kmer_coverage = key
+            break
 
     return kmer_coverage
 
@@ -49,6 +54,7 @@ def calc_error_rate(hist: dict) -> float:
     num_unique_kmers = find_unique_kmers(hist)
     error_rate = num_kmers_appear_once/num_unique_kmers
 
+    # round up if there's a 0 error rate.
     if error_rate == 0:
         error_rate = 1
 
@@ -69,19 +75,21 @@ def find_unique_kmers(hist: dict) -> int:
     return sum(hist.values())
 
 
-def apply_savgol_filt(input: List[float]) -> List[float]:
+def apply_savgol_filt(input: List[float], subtyping_params: SubtypingParams) -> np.ndarray:
     """Apply savgol filter to the observation to smooth out curve.
 
     :arg:
             :param input: List containing the values of the y-axis of the k-mer frequency graph.
+            :param subtyping_params: Parameters for the savgol filter method.
 
     :return:
             List containing the smoothed values of the y-axis of the k-mer frequency graph.
     """
-    return savgol_filter(input, 3, 2)
+    # Savgol filter takes the input values, window length, and degree of polynomial.
+    return savgol_filter(input, subtyping_params.savgol_window_len, subtyping_params.savgol_poly_degree)
 
 
-def find_maxima(input_values: List[int]) -> int:
+def find_maxima(input_values: np.ndarray) -> int:
     """Finds the local maxima containing the average k-mer coverage depth value.
 
     :arg:
