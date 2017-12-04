@@ -41,6 +41,7 @@ install:
   - pip install numpy
   - pip install pandas
   - pip install attrs
+  - pip install scipy
   #Install pytest for testing.
   - pip install pytest
 
