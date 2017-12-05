@@ -1,7 +1,10 @@
-![alt text](https://s2.postimg.org/5m5hiakax/Selection_044.png)
+|logo|
+======
 
 |pypi| |nbsp| |license| |citest| |conda| |nbsp|
 
+.. |logo| image:: https://s2.postimg.org/5m5hiakax/Selection_044.png
+    :target: https://github.com/phac-nml/bio_hansel
 .. |pypi| image:: https://badge.fury.io/py/bio-hansel.svg
     :target: https://pypi.python.org/pypi/bio_hansel/
 .. |license| image:: https://img.shields.io/badge/License-GPL%20v3-blue.svg
@@ -145,6 +148,59 @@ If you run ``hansel -h``, you should see the following usage statement:
 
 
 
+
+Quality Checking
+================
+
+`bio_hansel` runs quality checking on files passed to it to provide feedback to the end user how the analysis went.
+Each analysis will have either a `QC_STATUS`: PASS, WARNING, or FAIL followed by the error code if one occured.
+
+Error Codes
+-----------
++-----------------------+------------+-------------------------------------------------------------------------------------------------+---------------------------------------------+
+| Type of Error         | Error Code | Description                                                                                     | How to Proceed                              |
++-----------------------+------------+-------------------------------------------------------------------------------------------------+---------------------------------------------+
+| Missing Tiles         | Error 1    | 5% of scheme tiles not found                                                                    | 1) Need more WGS data                       |
+|                       |            |                                                                                                 | 2) Wrong serovar/species                    |
++-----------------------+------------+-------------------------------------------------------------------------------------------------+---------------------------------------------+
+| Mixed Subtype         | Error 2    | 1) 2 subtypes present in final subtype call                                                     | 1) Potential Contaminated Data              |
+|                       |            | 2) There are conflicting tiles that match (+/-) for the same position                           | 2) Re-isolate Colony & Re-sequence          |
++-----------------------+------------+-------------------------------------------------------------------------------------------------+---------------------------------------------+
+| Ambiguous Results     | Error 3    | <5% scheme tiles are missing but there +/- tiles missing                                        | 1) Possible low geneome coverage            |
+|                       |            | for target sites.                                                                               | 2) Possible recombination events            |
+|                       |            | Ex. Final Subtype call = 2.1.2 but we're missing 2.1's subtyping tiles                          |                                             |
++-----------------------+------------+-------------------------------------------------------------------------------------------------+---------------------------------------------+
+| Non Confident Results | Error 4    | We have a final subtype call, but further downstream subtype's tiles are not present.           | 1) Need more WGS data                       |
+|                       |            | Ex. Final subtype = 2.1.2 but we're missing 2.1.2.X                                             | 2) Re-sequence                              |
++-----------------------+------------+-------------------------------------------------------------------------------------------------+---------------------------------------------+
+| Intermediate Subtypes | Warning    | Issue with subtyping scheme itself, where the analysis falls between two chairs of the scheme.  | 1) Requires further analysis of the scheme. |
+|                       |            | Requires further analysis                                                                       |                                             |
++-----------------------+------------+-------------------------------------------------------------------------------------------------+---------------------------------------------+
+
+Parameters
+----------
+The Quality Checking module within `bio_hansel` contains parameters which you can use to fine tune your quality checking results.
+
+.. code-block:: none
+
+            --min-kmer-freq MIN_KMER_FREQ
+                                  Min k-mer freq/coverage
+            --max-kmer-freq MAX_KMER_FREQ
+                                  Max k-mer freq/coverage
+            --low-cov-depth-freq LOW_COV_DEPTH_FREQ
+                                  Frequencies below this coverage are considered low
+                                  coverage
+            --max-missing-tiles MAX_MISSING_TILES
+                                  Decimal proportion of maximum allowable missing tiles
+                                  before being considered an error. (0.0 - 1.0)
+            --min-ambiguous-tiles MIN_AMBIGUOUS_TILES
+                                  Minimum number of missing tiles to be considered an
+                                  ambiguous result
+            --max-intermediate-tiles MAX_INTERMEDIATE_TILES
+                                  Decimal proportion of maximum allowable missing tiles
+                                  to be considered an intermediate subtype. (0.0 - 1.0)
+
+
 Example Usage
 =============
 
@@ -160,22 +216,23 @@ Contents of ``results.tab``:
 
 .. code-block:: none
 
-    sample  scheme  subtype all_subtypes    tiles_matching_subtype  are_subtypes_consistent inconsistent_subtypes   n_tiles_matching_all    n_tiles_matching_all_total  n_tiles_matching_positive   n_tiles_matching_positive_total n_tiles_matching_subtype    n_tiles_matching_subtype_total  file_path
-    SRR1002850  heidelberg  2.2.2.2.1.4 2; 2.2; 2.2.2; 2.2.2.2; 2.2.2.2.1; 2.2.2.2.1.4  1037658-2.2.2.2.1.4; 2154958-2.2.2.2.1.4; 3785187-2.2.2.2.1.4   True        202 202 17  17  3   3   SRR1002850.fasta
+    sample  scheme  scheme_version  subtype all_subtypes  tiles_matching_subtype  are_subtypes_consistent inconsistent_subtypes n_tiles_matching_all  n_tiles_matching_all_expected n_tiles_matching_positive n_tiles_matching_positive_expected  n_tiles_matching_subtype  n_tiles_matching_subtype_expected file_path qc_status qc_message  
+    SRR1002850  heidelberg  0.5.0 2.2.2.2.1.4 2;  2.2;  2.2.2;  2.2.2.2;  2.2.2.2.1;  2.2.2.2.1.4 1037658-2.2.2.2.1.4;  2154958-2.2.2.2.1.4;  3785187-2.2.2.2.1.4 True  202 202 17  17  3 3 SRR1002850.fasta  PASS  
 
 
 Contents of ``match_results.tab``:
 
 .. code-block:: none
 
-    tilename    stitle  pident  length  mismatch    gapopen qstart  qend    sstart  send    evalue  bitscore    qlen    slen    seq coverage    is_trunc    refposition subtype is_pos_tile sample  file_path   scheme
-    775920-2.2.2.2  NODE_2_length_512016_cov_46.4737_ID_3   100.0   33  0   0   1   33  474875  474907  2.0000000000000002e-11  62.1    33  512016  GTTCAGGTGCTACCGAGGATCGTTTTTGGTGCG   1.0 False   775920  2.2.2.2 True    SRR1002850  SRR1002850.fasta   heidelberg
-    negative3305400-2.1.1.1 NODE_3_length_427905_cov_48.1477_ID_5   100.0   33  0   0   1   33  276235  276267  2.0000000000000002e-11  62.1    33  427905  CATCGTGAAGCAGAACAGACGCGCATTCTTGCT   1.0 False   negative3305400 2.1.1.1 False   SRR1002850  SRR1002850.fasta   heidelberg
-    negative3200083-2.1 NODE_3_length_427905_cov_48.1477_ID_5   100.0   33  0   0   1   33  170918  170950  2.0000000000000002e-11  62.1    33  427905  ACCCGGTCTACCGCAAAATGGAAAGCGATATGC   1.0 False   negative3200083 2.1 False   SRR1002850  SRR1002850.fasta   heidelberg
-    negative3204925-2.2.3.1.5   NODE_3_length_427905_cov_48.1477_ID_5   100.0   33  0   0   1   33  175760  175792  2.0000000000000002e-11  62.1    33  427905  CTCGCTGGCAAGCAGTGCGGGTACTATCGGCGG   1.0 False   negative3204925 2.2.3.1.5   False   SRR1002850  SRR1002850.fasta   heidelberg
-    negative3230678-2.2.2.1.1.1 NODE_3_length_427905_cov_48.1477_ID_5   100.0   33  0   0   1   33  201513  201545  2.0000000000000002e-11  62.1    33  427905  AGCGGTGCGCCAAACCACCCGGAATGATGAGTG   1.0 False   negative3230678 2.2.2.1.1.1 False   SRR1002850  SRR1002850.fasta   heidelberg
-    negative3233869-2.1.1.1.1   NODE_3_length_427905_cov_48.1477_ID_5   100.0   33  0   0   1   33  204704  204736  2.0000000000000002e-11  62.1    33  427905  CAGCGCTGGTATGTGGCTGCACCATCGTCATTA   1.0 False   
-    [Next 196 lines omitted.]
+    tilename  stitle  refposition subtype is_pos_tile sample  file_path scheme  scheme_version  qc_status qc_message
+    775920-2.2.2.2  NODE_2_length_512016_cov_46.4737_ID_3 775920  2.2.2.2 True  SRR1002850_smalltestdata  /home/mgopez/hansel_test_data/old_test_data/SRR1002850_smalltestdata.fasta  heidelberg  0.5.0 PASS  
+    negative3305400-2.1.1.1 NODE_3_length_427905_cov_48.1477_ID_5 3305400 2.1.1.1 False SRR1002850_smalltestdata  /home/mgopez/hansel_test_data/old_test_data/SRR1002850_smalltestdata.fasta  heidelberg  0.5.0 PASS  
+    negative3200083-2.1 NODE_3_length_427905_cov_48.1477_ID_5 3200083 2.1 False SRR1002850_smalltestdata  /home/mgopez/hansel_test_data/old_test_data/SRR1002850_smalltestdata.fasta  heidelberg  0.5.0 PASS  
+    negative3204925-2.2.3.1.5 NODE_3_length_427905_cov_48.1477_ID_5 3204925 2.2.3.1.5 False SRR1002850_smalltestdata  /home/mgopez/hansel_test_data/old_test_data/SRR1002850_smalltestdata.fasta  heidelberg  0.5.0 PASS  
+    negative3230678-2.2.2.1.1.1 NODE_3_length_427905_cov_48.1477_ID_5 3230678 2.2.2.1.1.1 False SRR1002850_smalltestdata  /home/mgopez/hansel_test_data/old_test_data/SRR1002850_smalltestdata.fasta  heidelberg  0.5.0 PASS  
+    negative3233869-2.1.1.1.1 NODE_3_length_427905_cov_48.1477_ID_5 3233869 2.1.1.1.1 False SRR1002850_smalltestdata  /home/mgopez/hansel_test_data/old_test_data/SRR1002850_smalltestdata.fasta  heidelberg  0.5.0 PASS  
+    negative3254229-2.2.3.1.3 NODE_3_length_427905_cov_48.1477_ID_5 3254229 2.2.3.1.3 False SRR1002850_smalltestdata/home/mgopez/hansel_test_data/old_test_data/SRR1002850_smalltestdata.fasta  heidelberg  0.5.0 PASS  
+    [Following lines ommitted.]
 
 
 Analysis of a single FASTQ readset
@@ -206,6 +263,15 @@ Contents of ``match_results.tab``:
     CAGTTTTACATCCTGCGAAATGCGCAGCGTCAA   87  SRR5646583 SRR5646583_forward.fastqsanger; SRR5646583_reverse.fastqsanger    691203-2.2.1.1  True    2.2.1.1 691203  True    heidelberg
     CAGGAGAAAGGATGCCAGGGTCAACACGTAAAC   33  SRR5646583 SRR5646583_forward.fastqsanger; SRR5646583_reverse.fastqsanger    944885-2.2.1.1.1    True    2.2.1.1.1   944885  True    heidelberg
     [Next 200 lines omitted.]
+
+
+Contents of ``tech_results.tab``:
+
+..code-block:: none
+
+    sample  subtype qc_status qc_message
+    SRR1002850 2.2.2.2.1.4 PASS  
+
 
 Analysis of all FASTA/FASTQ files in a directory
 ------------------------------------------------
