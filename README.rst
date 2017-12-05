@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="https://s2.postimg.org/5m5hiakax/Selection_044.png" alt="Bio_Hansel"/>
-</p>
+![alt text](https://s2.postimg.org/5m5hiakax/Selection_044.png)
 
 |pypi| |nbsp| |license| |citest| |conda| |nbsp|
 
