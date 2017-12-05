@@ -19,7 +19,7 @@ from .subtype import Subtype
 from .subtyping_params import SubtypingParams
 from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version
 from .subtype_stats import subtype_counts
-from .const import FASTA_COLUMNS_TO_REMOVE
+from .const import COLUMNS_TO_FILTER_OUT
 
 
 def subtype_fasta(subtyping_params: SubtypingParams,
@@ -112,7 +112,7 @@ def subtype_fasta(subtyping_params: SubtypingParams,
     df['qc_status'] = st.qc_status
     df['qc_message'] = st.qc_message
 
-    df = df[df.columns[~df.columns.isin(FASTA_COLUMNS_TO_REMOVE)]]
+    df = df[df.columns[~df.columns.isin(COLUMNS_TO_FILTER_OUT)]]
     return st, df
 
 
@@ -151,6 +151,6 @@ def subtype_reads(subtyping_params: SubtypingParams,
         df['qc_status'] = st.qc_status
         df['qc_message'] = st.qc_message
 
-        df = df[df.columns[~df.columns.isin(FASTA_COLUMNS_TO_REMOVE)]]
+        df = df[df.columns[~df.columns.isin(COLUMNS_TO_FILTER_OUT)]]
 
         return st, df

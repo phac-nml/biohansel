@@ -12,7 +12,7 @@ SCHEME_FASTAS = {'heidelberg': {'file': resource_filename(program_name, 'data/he
                                  'subtyping_params': SubtypingParams(low_coverage_depth_freq=50)}}
 
 
-FASTA_COLUMNS_TO_REMOVE = '''
+COLUMNS_TO_FILTER_OUT = '''
 pident
 length
 mismatch
@@ -25,7 +25,7 @@ evalue
 bitscore
 qlen
 slen
-seq
+sseq
 coverage
 is_trunc
 '''.strip().split('\n')
