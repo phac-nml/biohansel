@@ -1,7 +1,10 @@
-![alt text](https://s2.postimg.org/5m5hiakax/Selection_044.png)
+|logo|
+
 
 |pypi| |nbsp| |license| |citest| |conda| |nbsp|
 
+.. |logo| image:: https://s2.postimg.org/5m5hiakax/Selection_044.png
+    :target: https://github.com/phac-nml/bio_hansel
 .. |pypi| image:: https://badge.fury.io/py/bio-hansel.svg
     :target: https://pypi.python.org/pypi/bio_hansel/
 .. |license| image:: https://img.shields.io/badge/License-GPL%20v3-blue.svg
