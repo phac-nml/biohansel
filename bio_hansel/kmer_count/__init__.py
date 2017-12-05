@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 import re
+import os
 import shutil
+from datetime import datetime
+import logging
 from typing import Tuple, Optional
 
 import attr
-import os
-from datetime import datetime
-import logging
+from six import StringIO
 import pandas as pd
 
 from ..utils import exc_exists, run_command, find_inconsistent_subtypes
-from bio_hansel.const import SCHEME_FASTAS
+from ..const import SCHEME_FASTAS
 from ..blast_wrapper.helpers import parse_fasta, revcomp
 from ..subtype import Subtype
 from ..subtype_stats import subtype_counts
@@ -223,7 +224,7 @@ class Jellyfisher(object):
         self.df_results = df
         return df
 
-    def create_histogram(self):
+    def histogram(self) -> Optional[pd.DataFrame]:
 
         if self.jf_file is None:
             self.kmer_count()
@@ -235,23 +236,20 @@ class Jellyfisher(object):
 
         exit_code, stdout, stderr = run_command(cmd_list)
 
-        if exit_code == 0:
-            if stdout is None or stdout == '':
-                return None
-
-            dict_kmers = {}
-            for line in stdout.split('\n'):
-                if line is not None and len(line) > 0:
-                    temp_line = line.split()
-                    key = int(temp_line[0])
-                    val = int(temp_line[1])
-                    dict_kmers[key] = val
-            return dict_kmers
-
-        else:
-            raise Exception('Could not run "jellyfish query"! Exit code {}; stderr: {}'.format(
+        if exit_code != 0:
+            raise Exception('Could not run "{}"! Exit code {}; stderr: {}'.format(
+                " ".join(cmd_list),
                 exit_code,
                 stderr))
+
+        if isinstance(stdout, bytes):
+            stdout = stdout.decode()
+        if stdout is None or stdout == '':
+            return None
+        df = pd.read_table(StringIO(stdout), sep='\s+', header=None)
+        df.columns = ['freq', 'obs']
+        return df
+
 
     def summary(self) -> Tuple[Subtype, Optional[pd.DataFrame]]:
         if self.df_results is None:
@@ -324,5 +322,3 @@ class Jellyfisher(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.cleanup()
-
-
