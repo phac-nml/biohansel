@@ -147,8 +147,6 @@ If you run ``hansel -h``, you should see the following usage statement:
             -V, --version         show program's version number and exit
 
 
-
-
 Quality Checking
 ================
 
