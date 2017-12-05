@@ -210,6 +210,14 @@ Analysis of a single FASTA file
     hansel -s heidelberg -vv -o results.tab -O match_results.tab -S tech_results.tab /path/to/SRR1002850.fasta
 
 
+Contents of ``tech_results.tab``:
+
+.. code-block:: none
+
+    sample  subtype qc_status qc_message
+    SRR1002850 2.2.2.2.1.4 PASS
+
+
 Contents of ``results.tab``:
 
 .. code-block:: none
@@ -233,20 +241,20 @@ Contents of ``match_results.tab``:
     [Following lines ommitted.]
 
 
-Contents of ``tech_results.tab``:
-
-.. code-block:: none
-
-    sample  subtype qc_status qc_message
-    SRR1002850 2.2.2.2.1.4 PASS
-
-
 Analysis of a single FASTQ readset
 ----------------------------------
 
 .. code-block:: bash
 
     hansel -s heidelberg -vv -t 4 -o results.tab -O match_results.tab -S tech_results.tab -p SRR5646583_forward.fastqsanger SRR5646583_reverse.fastqsanger
+
+
+Contents of ``tech_results.tab``:
+
+.. code-block:: none
+
+    sample  subtype qc_status qc_message
+    SRR5646583.fastq  2.2.1.1.1.1 PASS
 
 
 Contents of ``results.tab``:
@@ -268,14 +276,6 @@ Contents of ``match_results.tab``:
     GAATAACAGCAAAGTGATCATGATGCCGCTGGA 62  SRR5646583_SMALL.fastq  SRR5646583_1.fastq; SRR5646583_2.fastq  607438-2.2.1  True  2.2.1 607438  True  heidelberg  0.5.0 PASS
     CAGTTTTACATCCTGCGAAATGCGCAGCGTCAA 38  SRR5646583_SMALL.fastq  SRR5646583_1.fastq; SRR5646583_2.fastq  691203-2.2.1.1  True  2.2.1.1 691203  True  heidelberg  0.5.0 PASS
     [Following lines ommitted.]
-
-
-Contents of ``tech_results.tab``:
-
-.. code-block:: none
-
-    sample  subtype qc_status qc_message
-    SRR5646583.fastq  2.2.1.1.1.1 PASS
 
 
 Analysis of all FASTA/FASTQ files in a directory
