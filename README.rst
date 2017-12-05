@@ -91,7 +91,7 @@ If you run ``hansel -h``, you should see the following usage statement:
 
           Subtype Salmonella enterica genomes using 33bp k-mer typing schemes.
           Includes schemes for Heidelberg and Enteritidis subtyping.
-          Developed by Genevi�ve Labb�, James Robertson, Peter Kruczkiewicz, Chad R. Laing, Kim Ziebell, Marisa Rankin, Aleisha R. Reimer, Lorelee Tschetter, Gary Van Domselaar, Eduardo N. Taboada, Sadjia Bekal, Kimberley A. MacDonald, Linda Hoang, Linda Chui, Danielle Daignault, Durda Slavic, Frank Pollari, E. Jane Parmley, Philip Mabon, Elissa Giang, Lok Kan Lee, Jonathan Moffat, Joanne MacKinnon, Benjamin M. Hetman, Roger Johnson, John H.E. Nash.
+          Developed by Genevieve Labbe, James Robertson, Peter Kruczkiewicz, Chad R. Laing, Kim Ziebell, Marisa Rankin, Aleisha R. Reimer, Lorelee Tschetter, Gary Van Domselaar, Eduardo N. Taboada, Sadjia Bekal, Kimberley A. MacDonald, Linda Hoang, Linda Chui, Danielle Daignault, Durda Slavic, Frank Pollari, E. Jane Parmley, Philip Mabon, Elissa Giang, Lok Kan Lee, Jonathan Moffat, Joanne MacKinnon, Benjamin M. Hetman, Roger Johnson, John H.E. Nash.
 
           positional arguments:
             F                     Input genome FASTA/FASTQ files
@@ -237,7 +237,7 @@ Contents of ``match_results.tab``:
 
 Contents of ``tech_results.tab``:
 
-..code-block:: none
+.. code-block:: none
 
     sample  subtype qc_status qc_message
     SRR1002850 2.2.2.2.1.4 PASS
@@ -274,7 +274,7 @@ Contents of ``match_results.tab``:
 
 Contents of ``tech_results.tab``:
 
-  ..code-block:: none
+.. code-block:: none
 
     sample  subtype qc_status qc_message
     SRR5646583.fastq  2.2.1.1.1.1 PASS
