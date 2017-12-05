@@ -207,7 +207,7 @@ Analysis of a single FASTA file
 
 .. code-block:: bash
 
-    hansel -s heidelberg -vv -o results.tab -O match_results.tab /path/to/SRR1002850.fasta
+    hansel -s heidelberg -vv -o results.tab -O match_results.tab -S tech_results.tab /path/to/SRR1002850.fasta
 
 
 Contents of ``results.tab``:
@@ -246,7 +246,7 @@ Analysis of a single FASTQ readset
 
 .. code-block:: bash
 
-    hansel -s heidelberg -vv -t 4 -o results.tab -O match_results.tab -p SRR5646583_forward.fastqsanger SRR5646583_reverse.fastqsanger
+    hansel -s heidelberg -vv -t 4 -o results.tab -O match_results.tab -S tech_results.tab -p SRR5646583_forward.fastqsanger SRR5646583_reverse.fastqsanger
 
 
 Contents of ``results.tab``:
