@@ -34,7 +34,7 @@ def test_confidence_false(test_genomes):
     assert st.n_tiles_matching_subtype_expected == '6'
     assert st.qc_status == FAIL_MESSAGE
 
-    exp_cols = ['tilename', 'freq', 'refposition', 'subtype',
+    exp_cols = ['tilename', 'freq', 'refposition', 'subtype', 'min_kmer_freq_threshold', 'seq',
                 'is_pos_tile', 'is_kmer_freq_okay', 'sample', 'file_path', 'scheme', 'scheme_version',
                 'qc_status', 'qc_message']
     df_cols = df.columns  # type: Series
