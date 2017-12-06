@@ -1,2 +1,2 @@
 sample	subtype	qc_status	qc_message
-10-1358.fastq	2.1.1.2	WARNING	WARNING: Intermediate Subtype Warning: Possible intermediate subtype. All scheme tiles were found, but a fraction were positive for the final subtype. Total subtype hits: 3 | Total subtype expected: 6.
+SRR1002850_R	2.2.2.2.1.4	FAIL	FAIL: Missing Tiles Error 1: More than 5.00% missing tiles were detected. Adequate coverage detected, this may be the wrong serovar/species for scheme: heidelberg Avg calculated tile coverage = 63.27710843373494

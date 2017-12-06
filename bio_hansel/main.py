@@ -151,7 +151,11 @@ def main():
         if str(args.min_kmer_freq).lower() == "auto":
             subtyping_params.calc_min_kmer_freq = True
         else:
-            subtyping_params.min_kmer_freq = int(args.min_kmer_freq)
+            try:
+                subtyping_params.min_kmer_freq = int(args.min_kmer_freq)
+            except ValueError:
+                logging.warning("Unknown value {} for --min-kmer-freq, reverting to default {}."
+                                .format(args.min_kmer_freq, subtyping_params.min_kmer_freq))
     if args.max_kmer_freq:
         subtyping_params.max_kmer_freq = args.max_kmer_freq
     if args.savgol_window_len:
