@@ -2,7 +2,7 @@ import logging
 
 import numpy as np
 import pandas as pd
-from scipy.stats import poisson
+from scipy.stats import poisson as poisson
 from scipy.signal import argrelextrema, savgol_filter
 
 from ..subtyping_params import SubtypingParams
@@ -54,17 +54,19 @@ def error_rate(hist: pd.DataFrame) -> float:
     :return:
             float value containing the error rate.
     """
-    n_singleton_kmers = float(hist[hist.freq == 2].obs)
+    n_singleton_kmers = float(hist[hist.freq == 1].obs)
     logging.debug('n_singleton_kmers %s', n_singleton_kmers)
     # get the number of unique k-mers within the observation
     #   We can simply follow the "curve of the graph" to find the number of unique k-mers.
-    n_unique_kmers = hist.obs.sum()
+    n_unique_kmers = (hist['freq'] * hist['obs']).sum()
     logging.debug('n_unique_kmers %s', n_unique_kmers)
+    # case by / 0
+    if n_unique_kmers == 0:
+        n_unique_kmers = 1
     e = n_singleton_kmers / n_unique_kmers
     logging.debug('error_rate %s', e)
     # round up if there's a 0 error rate.
-    if e == 0.0:
-        return 1.0
+
     return e
 
 

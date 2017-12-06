@@ -250,7 +250,6 @@ class Jellyfisher(object):
         df.columns = ['freq', 'obs']
         return df
 
-
     def summary(self) -> Tuple[Subtype, Optional[pd.DataFrame]]:
         if self.df_results is None:
             self.parse_query()
