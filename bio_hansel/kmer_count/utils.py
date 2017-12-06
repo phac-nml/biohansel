@@ -61,9 +61,13 @@ def error_rate(hist: pd.DataFrame) -> float:
     n_unique_kmers = (hist['freq'] * hist['obs']).sum()
     logging.debug('n_unique_kmers %s', n_unique_kmers)
     # case by / 0
-    if n_unique_kmers == 0:
-        n_unique_kmers = 1
-    e = n_singleton_kmers / n_unique_kmers
+    try:
+        e = n_singleton_kmers / n_unique_kmers
+    except ZeroDivisionError:
+        logging.warning("Could not calculate error rate. {} = n_singleton_kmers, {} = n_unique_kmers"
+                        .format(n_singleton_kmers, n_unique_kmers))
+        raise ValueError('Could not calculate error_rate.')
+
     logging.debug('error_rate %s', e)
     # round up if there's a 0 error rate.
 

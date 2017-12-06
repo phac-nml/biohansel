@@ -147,7 +147,11 @@ def subtype_reads(subtyping_params: SubtypingParams,
         if subtyping_params.calc_min_kmer_freq:
             hist = jfer.histogram()
             if hist is not None:
-                jfer.min_kmer_freq = min_kmer_freq_threshold(hist, subtyping_params)
+                try:
+                    jfer.min_kmer_freq = min_kmer_freq_threshold(hist, subtyping_params)
+                except ValueError:
+                    logging.warning("Could not calculate min kmer threshold, reverting to default: {}."
+                                    .format(subtyping_params.min_kmer_freq))
             else:
                 logging.warning('Could not calculate min kmer threshold; Jellyfish histo output null!')
 
