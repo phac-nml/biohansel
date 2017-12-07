@@ -1,2 +1,0 @@
-sample	subtype	qc_status	qc_message
-SRR1002850_R	2.2.2.2.1.4	FAIL	FAIL: Missing Tiles Error 1: More than 5.00% missing tiles were detected. Adequate coverage detected, this may be the wrong serovar/species for scheme: heidelberg Avg calculated tile coverage = 63.27710843373494
