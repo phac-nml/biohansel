@@ -6,7 +6,10 @@ import re
 from datetime import datetime
 from typing import Optional, List, Dict, Union, TYPE_CHECKING, Tuple
 
-from pandas import DataFrame
+import numpy as np
+import pandas as pd
+
+from bio_hansel.kmer_count.utils import min_kmer_freq_threshold
 
 if TYPE_CHECKING:
     from .subtype_stats import SubtypeCounts
@@ -19,7 +22,7 @@ from .subtype import Subtype
 from .subtyping_params import SubtypingParams
 from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version
 from .subtype_stats import subtype_counts
-from .const import FASTA_COLUMNS_TO_REMOVE
+from .const import COLUMNS_TO_REMOVE
 
 
 def subtype_fasta(subtyping_params: SubtypingParams,
@@ -28,7 +31,7 @@ def subtype_fasta(subtyping_params: SubtypingParams,
                   genome_name: str,
                   tmp_dir: str = '/tmp',
                   scheme_name: Optional[str] = None,
-                  scheme_subtype_counts: Optional[Dict[str, 'SubtypeCounts']] = None) -> (Subtype, DataFrame):
+                  scheme_subtype_counts: Optional[Dict[str, 'SubtypeCounts']] = None) -> (Subtype, pd.DataFrame):
     dtnow = datetime.now()
     genome_name_no_spaces = re.sub(r'\W', '_', genome_name)
     genome_tmp_dir = os.path.join(tmp_dir,
@@ -89,14 +92,12 @@ def subtype_fasta(subtyping_params: SubtypingParams,
         st.are_subtypes_consistent = False
         st.inconsistent_subtypes = inconsistent_subtypes
 
-    possible_downstream_subtypes = [s for s in scheme_subtype_counts
+    possible_downstream_subtypes = [s for s in scheme_subtype_counts.keys()
                                        if re.search("^({})(\.)(\d)$".format(re.escape(st.subtype)), s)]
     non_present_subtypes = []
     if possible_downstream_subtypes:
         for subtype in possible_downstream_subtypes:
-            blah = df['subtype']
-            # wtf is going on
-            if not any(df.subtype == subtype):
+            if not np.any(df.subtype == subtype):
                 non_present_subtypes.append(subtype)
 
     st.non_present_subtypes = non_present_subtypes
@@ -112,7 +113,7 @@ def subtype_fasta(subtyping_params: SubtypingParams,
     df['qc_status'] = st.qc_status
     df['qc_message'] = st.qc_message
 
-    df = df[df.columns[~df.columns.isin(FASTA_COLUMNS_TO_REMOVE)]]
+    df = df[df.columns[~df.columns.isin(COLUMNS_TO_REMOVE)]]
     return st, df
 
 
@@ -123,7 +124,7 @@ def subtype_reads(subtyping_params: SubtypingParams,
                   tmp_dir: str = '/tmp',
                   threads: int = 1,
                   scheme_name: Optional[str] = None,
-                  scheme_subtype_counts: Optional[Dict[str, 'SubtypeCounts']] = None) -> Tuple[Subtype, DataFrame]:
+                  scheme_subtype_counts: Optional[Dict[str, 'SubtypeCounts']] = None) -> Tuple[Subtype, pd.DataFrame]:
     dtnow = datetime.now()
     genome_name_no_spaces = re.sub(r'\W', '_', genome_name)
     genome_tmp_dir = os.path.join(tmp_dir,
@@ -142,15 +143,29 @@ def subtype_reads(subtyping_params: SubtypingParams,
                      max_kmer_freq=subtyping_params.max_kmer_freq,
                      tmp_dir=genome_tmp_dir,
                      threads=threads) as jfer:
+
+        if subtyping_params.calc_min_kmer_freq:
+            hist = jfer.histogram()
+            if hist is not None:
+                try:
+                    jfer.min_kmer_freq = min_kmer_freq_threshold(hist, subtyping_params)
+                except ValueError:
+                    logging.warning("Could not calculate min kmer threshold, reverting to default: {}."
+                                    .format(subtyping_params.min_kmer_freq))
+            else:
+                logging.warning('Could not calculate min kmer threshold; Jellyfish histo output null!')
+
         st, df = jfer.summary()
 
         perform_quality_check(st, df, subtyping_params)
 
-        df['scheme'] = scheme_name or scheme
-        df['scheme_version'] = scheme_version
-        df['qc_status'] = st.qc_status
-        df['qc_message'] = st.qc_message
+        if df is not None:
+            df['scheme'] = scheme_name or scheme
+            df['scheme_version'] = scheme_version
+            df['qc_status'] = st.qc_status
+            df['qc_message'] = st.qc_message
+            df['min_kmer_freq_threshold'] = jfer.min_kmer_freq
 
-        df = df[df.columns[~df.columns.isin(FASTA_COLUMNS_TO_REMOVE)]]
+            df = df[df.columns[~df.columns.isin(COLUMNS_TO_REMOVE)]]
 
         return st, df

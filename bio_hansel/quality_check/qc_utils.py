@@ -11,11 +11,11 @@ def get_conflicting_tiles(st: Subtype, df: DataFrame) -> list:
             The purpose of this method is to find positive and negative tiles for the same refposition in the DataFrame.
             The method will return a list with the conflicting tiles.
 
-    Args:
+    :arg:
             :param st: Subtyping results.
             :param df: DataFrame containing subtyping results.
 
-    Returns:
+    :returns:
             DataFrame containing the conflicting positive and negative tiles.
     """
     if st.subtype:
@@ -37,11 +37,11 @@ def get_num_pos_neg_tiles(st: Subtype, df: DataFrame) -> Tuple[int, int]:
             The purpose of this method is to find the count of positive and negative tiles, and return them to the
             caller.
 
-    Args:
+    :arg:
             :param st: Subtyping results.
             :param df: DataFrame containing subtyping results.
 
-    Returns:
+    :returns:
             Tuple[int,int] containing the count of positive and negative tiles.
     """
     num_pos_tiles = 0

@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 import re
+import os
 import shutil
+from datetime import datetime
+import logging
 from typing import Tuple, Optional
 
 import attr
-import os
-from datetime import datetime
-import logging
+from six import StringIO
 import pandas as pd
 
 from ..utils import exc_exists, run_command, find_inconsistent_subtypes
-from bio_hansel.const import SCHEME_FASTAS
+from ..const import SCHEME_FASTAS
 from ..blast_wrapper.helpers import parse_fasta, revcomp
 from ..subtype import Subtype
 from ..subtype_stats import subtype_counts
@@ -223,6 +224,32 @@ class Jellyfisher(object):
         self.df_results = df
         return df
 
+    def histogram(self) -> Optional[pd.DataFrame]:
+
+        if self.jf_file is None:
+            self.kmer_count()
+
+        cmd_list = [self.jellyfish_exc,
+                    'histo',
+                    self.jf_file,
+                    ]
+
+        exit_code, stdout, stderr = run_command(cmd_list)
+
+        if exit_code != 0:
+            raise Exception('Could not run "{}"! Exit code {}; stderr: {}'.format(
+                " ".join(cmd_list),
+                exit_code,
+                stderr))
+
+        if isinstance(stdout, bytes):
+            stdout = stdout.decode()
+        if stdout is None or stdout == '':
+            return None
+        df = pd.read_table(StringIO(stdout), sep='\s+', header=None)
+        df.columns = ['freq', 'obs']
+        return df
+
     def summary(self) -> Tuple[Subtype, Optional[pd.DataFrame]]:
         if self.df_results is None:
             self.parse_query()
@@ -294,5 +321,3 @@ class Jellyfisher(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.cleanup()
-
-
