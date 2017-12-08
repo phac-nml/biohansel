@@ -35,7 +35,7 @@ def test_fastq_subtyping(test_genome):
     assert st.qc_status == 'PASS'
     assert len(st.qc_message) == 0
 
-    exp_cols = ['tilename', 'freq', 'refposition', 'subtype',
+    exp_cols = ['tilename', 'freq', 'refposition', 'subtype', 'seq',
                 'is_pos_tile', 'is_kmer_freq_okay', 'sample', 'file_path', 'scheme', 'scheme_version',
                 'qc_status', 'qc_message']
     df_cols = df.columns  # type: Series

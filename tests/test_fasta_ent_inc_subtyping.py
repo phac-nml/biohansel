@@ -33,7 +33,7 @@ def test_ent_fasta_subtyping(test_genome):
     assert st.n_tiles_matching_subtype_expected == '2;4'
     assert st.qc_status == FAIL_MESSAGE
 
-    exp_cols = ['tilename', 'stitle', 'refposition', 'subtype',
+    exp_cols = ['tilename', 'stitle', 'refposition', 'subtype', 'seq',
        'is_pos_tile', 'sample', 'file_path', 'scheme', 'scheme_version', 'qc_status', 'qc_message']
     df_cols = df.columns # type: Series
     assert np.all(df_cols.isin(exp_cols))

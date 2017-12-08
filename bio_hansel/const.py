@@ -56,3 +56,6 @@ subtype
 qc_status
 qc_message
 """.strip().split('\n')
+
+TYPE_READS = "reads"
+TYPE_CONTIGS = "contigs"

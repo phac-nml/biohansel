@@ -2,6 +2,7 @@ from typing import Tuple
 
 from pandas import DataFrame
 
+from bio_hansel.const import TYPE_READS
 from ..subtype import Subtype
 
 
@@ -19,7 +20,7 @@ def get_conflicting_tiles(st: Subtype, df: DataFrame) -> list:
             DataFrame containing the conflicting positive and negative tiles.
     """
     if st.subtype:
-        if 'is_kmer_freq_okay' in df:
+        if st.type_of_analysis == TYPE_READS:
             dfst = df[(df['subtype'] == str(st.subtype)) & (df['is_kmer_freq_okay'])]
         else:  # fasta files
             dfst = df[(df['subtype'] == str(st.subtype))]
