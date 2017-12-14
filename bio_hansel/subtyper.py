@@ -12,15 +12,15 @@ import pandas as pd
 from . import program_name
 from .aho_corasick import init_automaton, find_in_fasta, find_in_fastqs
 from .blast_wrapper import BlastRunner, BlastReader
-from .const import FASTA_COLUMNS_TO_REMOVE
+from .const import COLUMNS_TO_REMOVE, TYPE_CONTIGS
 from .kmer_count import Jellyfisher
 from .quality_check import perform_quality_check
 from .subtype import Subtype
 from .subtype_stats import SubtypeCounts
 from .subtype_stats import subtype_counts
 from .subtyping_params import SubtypingParams
-from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version, is_gzipped, gunzip_to_tmp_dir, \
-    uncompress_gzipped_files, init_subtyping_params
+from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version, uncompress_gzipped_files, \
+    init_subtyping_params
 
 
 def subtype_contigs_blastn(fasta_path: str,
@@ -81,6 +81,7 @@ def subtype_contigs_blastn(fasta_path: str,
     logging.debug('pos_subtypes: %s', pos_subtypes)
     inconsistent_subtypes = find_inconsistent_subtypes(pos_subtypes)
     logging.debug('inconsistent_subtypes: %s', inconsistent_subtypes)
+    st.type_of_analysis = TYPE_CONTIGS
     st.n_tiles_matching_all = df.tilename.unique().size
     st.n_tiles_matching_positive = dfpos.tilename.unique().size
     st.n_tiles_matching_subtype = dfpos_highest_res.tilename.unique().size
@@ -123,7 +124,7 @@ def subtype_contigs_blastn(fasta_path: str,
     df['qc_status'] = st.qc_status
     df['qc_message'] = st.qc_message
 
-    df = df[df.columns[~df.columns.isin(FASTA_COLUMNS_TO_REMOVE)]]
+    df = df[df.columns[~df.columns.isin(COLUMNS_TO_REMOVE)]]
     return st, df
 
 
@@ -166,7 +167,7 @@ def subtype_reads_jellyfish(reads: Union[str, List[str]],
         df['qc_status'] = st.qc_status
         df['qc_message'] = st.qc_message
 
-        df = df[df.columns[~df.columns.isin(FASTA_COLUMNS_TO_REMOVE)]]
+        df = df[df.columns[~df.columns.isin(COLUMNS_TO_REMOVE)]]
 
         return st, df
 
@@ -261,7 +262,8 @@ def subtype_contigs_ac(input_fasta: str,
                        scheme: str,
                        subtyping_params: Optional[SubtypingParams] = None,
                        scheme_name: Optional[str] = None,
-                       scheme_subtype_counts: Optional[Dict[str, SubtypeCounts]] = None) -> Tuple[Subtype, Optional[pd.DataFrame]]:
+                       scheme_subtype_counts: Optional[Dict[str, SubtypeCounts]] = None) -> Tuple[
+    Subtype, Optional[pd.DataFrame]]:
     scheme_fasta = get_scheme_fasta(scheme)
     if scheme_subtype_counts is None:
         scheme_subtype_counts = subtype_counts(scheme_fasta)
@@ -342,7 +344,7 @@ def subtype_contigs_ac(input_fasta: str,
     df['qc_status'] = st.qc_status
     df['qc_message'] = st.qc_message
 
-    df = df[df.columns[~df.columns.isin(FASTA_COLUMNS_TO_REMOVE)]]
+    df = df[df.columns[~df.columns.isin(COLUMNS_TO_REMOVE)]]
     return st, df
 
 
@@ -503,7 +505,7 @@ def subtype_reads_ac(reads: Union[str, List[str]],
     df['scheme_version'] = scheme_version
     df['qc_status'] = st.qc_status
     df['qc_message'] = st.qc_message
-    df = df[df.columns[~df.columns.isin(FASTA_COLUMNS_TO_REMOVE)]]
+    df = df[df.columns[~df.columns.isin(COLUMNS_TO_REMOVE)]]
     return st, df
 
 

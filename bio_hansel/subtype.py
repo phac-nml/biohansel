@@ -28,3 +28,4 @@ class Subtype(object):
     qc_status = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     qc_message = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     scheme_subtype_counts = attr.ib(default=None, repr=False)
+    type_of_analysis = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))

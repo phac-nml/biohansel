@@ -16,10 +16,10 @@ qc_status
 """.strip().split('\n')
 
 
-exp_fasta_cols = ['tilename', 'contig_id', 'refposition', 'subtype', 'match_index', 'is_revcomp',
+exp_fasta_cols = ['tilename', 'contig_id', 'refposition', 'seq', 'subtype', 'match_index', 'is_revcomp',
             'is_pos_tile', 'sample', 'file_path', 'scheme', 'scheme_version', 'qc_status', 'qc_message']
 
-exp_fastq_cols = ['tilename', 'contig_id', 'refposition', 'subtype', 'freq', 'is_pos_tile', 'is_kmer_freq_okay',
+exp_fastq_cols = ['tilename', 'refposition', 'subtype', 'seq', 'freq', 'is_pos_tile', 'is_kmer_freq_okay',
                   'sample', 'file_path', 'scheme', 'scheme_version', 'qc_status', 'qc_message']
 
 def check_subtype_attrs(*sts):

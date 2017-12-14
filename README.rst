@@ -1,9 +1,10 @@
-***********************************************************
-``bio_hansel`` - Heidelberg And eNteritidis Snp ELucidation
-***********************************************************
+|logo|
+
 
 |pypi| |nbsp| |license| |citest| |conda| |nbsp|
 
+.. |logo| image:: https://s2.postimg.org/5m5hiakax/Selection_044.png
+    :target: https://github.com/phac-nml/bio_hansel
 .. |pypi| image:: https://badge.fury.io/py/bio-hansel.svg
     :target: https://pypi.python.org/pypi/bio_hansel/
 .. |license| image:: https://img.shields.io/badge/License-GPL%20v3-blue.svg
@@ -76,55 +77,75 @@ If you run ``hansel -h``, you should see the following usage statement:
 
 .. code-block:: none
 
-    usage: hansel [-h] [-s SCHEME] [--scheme-name SCHEME_NAME]
-                  [-p forward_reads reverse_reads] [-i fasta_path genome_name]
-                  [-D INPUT_DIRECTORY] [-o OUTPUT_SUMMARY]
-                  [-O OUTPUT_TILE_RESULTS] [--min-kmer-freq MIN_KMER_FREQ]
-                  [--max-kmer-freq MAX_KMER_FREQ] [-t THREADS] [-T TMP_DIR] [-K]
-                  [-v] [-V]
-                  [F [F ...]]
+          usage: hansel [-h] [-s SCHEME] [--scheme-name SCHEME_NAME]
+                        [-p forward_reads reverse_reads] [-i fasta_path genome_name]
+                        [-D INPUT_DIRECTORY] [-o OUTPUT_SUMMARY]
+                        [-O OUTPUT_TILE_RESULTS] [-S OUTPUT_SIMPLE_SUMMARY] [--force]
+                        [--min-kmer-freq MIN_KMER_FREQ] [--max-kmer-freq MAX_KMER_FREQ]
+                        [--low-cov-depth-freq LOW_COV_DEPTH_FREQ]
+                        [--max-missing-tiles MAX_MISSING_TILES]
+                        [--min-ambiguous-tiles MIN_AMBIGUOUS_TILES]
+                        [--max-intermediate-tiles MAX_INTERMEDIATE_TILES] [-t THREADS]
+                        [-T TMP_DIR] [-K] [-v] [-V]
+                        [F [F ...]]
 
-    Subtype Salmonella enterica genomes using 33bp k-mer typing schemes.
-    Includes schemes for Heidelberg and Enteritidis subtyping.
-    Developed by Geneviève Labbé, James Robertson, Peter Kruczkiewicz, Chad R. Laing, Kim Ziebell, Marisa Rankin, Aleisha R. Reimer, Lorelee Tschetter, Gary Van Domselaar, Eduardo N. Taboada, Sadjia Bekal, Kimberley A. MacDonald, Linda Hoang, Linda Chui, Danielle Daignault, Durda Slavic, Frank Pollari, E. Jane Parmley, Philip Mabon, Elissa Giang, Lok Kan Lee, Jonathan Moffat, Joanne MacKinnon, Benjamin M. Hetman, Roger Johnson, John H.E. Nash.
+          Subtype Salmonella enterica genomes using 33bp k-mer typing schemes.
+          Includes schemes for Heidelberg and Enteritidis subtyping.
+          Developed by Genevi�ve Labb�, James Robertson, Peter Kruczkiewicz, Chad R. Laing, Kim Ziebell, Marisa Rankin, Aleisha R. Reimer, Lorelee Tschetter, Gary Van Domselaar, Eduardo N. Taboada, Sadjia Bekal, Kimberley A. MacDonald, Linda Hoang, Linda Chui, Danielle Daignault, Durda Slavic, Frank Pollari, E. Jane Parmley, Philip Mabon, Elissa Giang, Lok Kan Lee, Jonathan Moffat, Joanne MacKinnon, Benjamin M. Hetman, Roger Johnson, John H.E. Nash.
 
-    positional arguments:
-      F                     Input genome FASTA/FASTQ files
+          positional arguments:
+            F                     Input genome FASTA/FASTQ files
 
-    optional arguments:
-      -h, --help            show this help message and exit
-      -s SCHEME, --scheme SCHEME
-                            Scheme to use for subtyping (built-in: "heidelberg",
-                            "enteritidis"; OR user-specified:
-                            /path/to/user/scheme)
-      --scheme-name SCHEME_NAME
-                            Custom user-specified SNP substyping scheme name
-      -p forward_reads reverse_reads, --paired-reads forward_reads reverse_reads
-                            FASTQ paired-end reads
-      -i fasta_path genome_name, --input-fasta-genome-name fasta_path genome_name
-                            fasta file path to genome name pair
-      -D INPUT_DIRECTORY, --input-directory INPUT_DIRECTORY
-                            directory of input fasta files (.fasta|.fa|.fna) or
-                            FASTQ files (paired FASTQ should have same basename
-                            with "_\d\.(fastq|fq)" postfix to be automatically
-                            paired)
-      -o OUTPUT_SUMMARY, --output-summary OUTPUT_SUMMARY
-                            Subtyping summary output path (tab-delimited)
-      -O OUTPUT_TILE_RESULTS, --output-tile-results OUTPUT_TILE_RESULTS
-                            Subtyping tile matching output path (tab-delimited)
-      --min-kmer-freq MIN_KMER_FREQ
-                            Min k-mer freq/coverage
-      --max-kmer-freq MAX_KMER_FREQ
-                            Max k-mer freq/coverage
-      -t THREADS, --threads THREADS
-                            Number of parallel threads to run analysis (default=1)
-      -T TMP_DIR, --tmp-dir TMP_DIR
-                            Base temporary working directory for intermediate
-                            analysis files
-      -K, --keep-tmp        Keep temporary analysis files
-      -v, --verbose         Logging verbosity level (-v == show warnings; -vvv ==
-                            show debug info)
-      -V, --version         show program's version number and exit
+          optional arguments:
+            -h, --help            show this help message and exit
+            -s SCHEME, --scheme SCHEME
+                                  Scheme to use for subtyping (built-in: "heidelberg",
+                                  "enteritidis"; OR user-specified:
+                                  /path/to/user/scheme)
+            --scheme-name SCHEME_NAME
+                                  Custom user-specified SNP substyping scheme name
+            -p forward_reads reverse_reads, --paired-reads forward_reads reverse_reads
+                                  FASTQ paired-end reads
+            -i fasta_path genome_name, --input-fasta-genome-name fasta_path genome_name
+                                  fasta file path to genome name pair
+            -D INPUT_DIRECTORY, --input-directory INPUT_DIRECTORY
+                                  directory of input fasta files (.fasta|.fa|.fna) or
+                                  FASTQ files (paired FASTQ should have same basename
+                                  with "_\d\.(fastq|fq)" postfix to be automatically
+                                  paired)
+            -o OUTPUT_SUMMARY, --output-summary OUTPUT_SUMMARY
+                                  Subtyping summary output path (tab-delimited)
+            -O OUTPUT_TILE_RESULTS, --output-tile-results OUTPUT_TILE_RESULTS
+                                  Subtyping tile matching output path (tab-delimited)
+            -S OUTPUT_SIMPLE_SUMMARY, --output-simple-summary OUTPUT_SIMPLE_SUMMARY
+                                  Subtyping simple summary output path
+            --force               Force existing output files to be overwritten
+            --min-kmer-freq MIN_KMER_FREQ
+                                  Min k-mer freq/coverage
+            --max-kmer-freq MAX_KMER_FREQ
+                                  Max k-mer freq/coverage
+            --low-cov-depth-freq LOW_COV_DEPTH_FREQ
+                                  Frequencies below this coverage are considered low
+                                  coverage
+            --max-missing-tiles MAX_MISSING_TILES
+                                  Decimal proportion of maximum allowable missing tiles
+                                  before being considered an error. (0.0 - 1.0)
+            --min-ambiguous-tiles MIN_AMBIGUOUS_TILES
+                                  Minimum number of missing tiles to be considered an
+                                  ambiguous result
+            --max-intermediate-tiles MAX_INTERMEDIATE_TILES
+                                  Decimal proportion of maximum allowable missing tiles
+                                  to be considered an intermediate subtype. (0.0 - 1.0)
+            -t THREADS, --threads THREADS
+                                  Number of parallel threads to run analysis (default=1)
+            -T TMP_DIR, --tmp-dir TMP_DIR
+                                  Base temporary working directory for intermediate
+                                  analysis files
+            -K, --keep-tmp        Keep temporary analysis files
+            -v, --verbose         Logging verbosity level (-v == show warnings; -vvv ==
+                                  show debug info)
+            -V, --version         show program's version number and exit
+
 
 
 Example Usage
