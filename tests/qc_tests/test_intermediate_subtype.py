@@ -3,7 +3,7 @@ from pandas import DataFrame
 
 from bio_hansel.quality_check.const import INTERMEDIATE_SUBTYPE_WARNING, AMBIGUOUS_RESULTS_ERROR_3
 from bio_hansel.subtype import Subtype
-from bio_hansel.subtyper import subtype_reads
+from bio_hansel.subtyper import subtype_reads_jellyfish
 from bio_hansel.subtyping_params import SubtypingParams
 
 
@@ -15,7 +15,8 @@ def test_genomes():
 def test_intermediate_subtype(test_genomes):
     genome_name = 'test'
     scheme = 'enteritidis'
-    st, df = subtype_reads(scheme='enteritidis', reads=test_genomes, genome_name=genome_name, subtyping_params=SubtypingParams())
+    st, df = subtype_reads_jellyfish(reads=test_genomes, genome_name=genome_name, scheme='enteritidis',
+                                     subtyping_params=SubtypingParams())
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
     assert st.scheme == scheme

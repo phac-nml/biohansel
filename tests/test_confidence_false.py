@@ -4,7 +4,7 @@ import numpy as np
 
 from bio_hansel.quality_check.const import FAIL_MESSAGE
 from bio_hansel.subtype import Subtype
-from bio_hansel.subtyper import subtype_fasta
+from bio_hansel.subtyper import subtype_contigs_blastn
 from bio_hansel.subtyping_params import SubtypingParams
 from bio_hansel.const import SCHEME_FASTAS
 
@@ -18,7 +18,8 @@ def test_genome():
 def test_confidence_false(test_genome):
     genome_name = 'test'
     scheme = 'enteritidis'
-    st, df = subtype_fasta(scheme='enteritidis', fasta_path=test_genome, genome_name=genome_name, subtyping_params=SubtypingParams())
+    st, df = subtype_contigs_blastn(fasta_path=test_genome, genome_name=genome_name, scheme='enteritidis',
+                                    subtyping_params=SubtypingParams())
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
 
@@ -34,7 +35,3 @@ def test_confidence_false(test_genome):
     assert st.n_tiles_matching_subtype == 3
     assert st.n_tiles_matching_subtype_expected == '2;4'
     assert st.qc_status == FAIL_MESSAGE
-    exp_cols = ['tilename', 'stitle', 'refposition', 'subtype',
-       'is_pos_tile', 'sample', 'file_path', 'scheme', 'scheme_version', 'qc_status', 'qc_message']
-    df_cols = df.columns # type: Series
-    assert np.all(df_cols.isin(exp_cols))

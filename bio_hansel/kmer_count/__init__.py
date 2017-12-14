@@ -10,8 +10,9 @@ import logging
 import pandas as pd
 
 from ..utils import exc_exists, run_command, find_inconsistent_subtypes
-from bio_hansel.const import SCHEME_FASTAS
-from ..blast_wrapper.helpers import parse_fasta, revcomp
+from ..utils import revcomp
+from ..parsers import parse_fasta
+from ..const import SCHEME_FASTAS
 from ..subtype import Subtype
 from ..subtype_stats import subtype_counts
 

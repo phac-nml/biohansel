@@ -1,37 +1,61 @@
 import pytest
-from pandas import DataFrame, Series
-import numpy as np
+from pandas import DataFrame
 from bio_hansel.subtype import Subtype
-from bio_hansel.subtyper import subtype_fasta
-from bio_hansel.subtyping_params import SubtypingParams
+from bio_hansel.subtyper import subtype_contigs_blastn, subtype_contigs_ac
 from bio_hansel.const import SCHEME_FASTAS
+
+from . import check_subtype_attrs, check_df_fasta_cols
+
+genome_name = 'test'
+scheme = 'enteritidis'
 
 
 @pytest.fixture()
-def test_genome():
+def fasta():
     return 'tests/data/SRR6126859.fasta'
 
 
-def test_ent_fasta_subtyping(test_genome):
-    genome_name = 'test'
-    scheme = 'enteritidis'
-    st, df = subtype_fasta(scheme='enteritidis', fasta_path=test_genome, genome_name=genome_name, subtyping_params=SubtypingParams())
+@pytest.fixture()
+def fasta_gz():
+    return 'tests/data/SRR6126859.fasta.gz'
+
+
+@pytest.fixture()
+def exp_subtype(fasta):
+    return Subtype(scheme=scheme,
+                   scheme_version=SCHEME_FASTAS[scheme]['version'],
+                   sample=genome_name,
+                   subtype='2.2.2',
+                   file_path=fasta,
+                   are_subtypes_consistent=True,
+                   n_tiles_matching_all=188,
+                   n_tiles_matching_all_expected='188',
+                   n_tiles_matching_positive=16,
+                   n_tiles_matching_positive_expected='16',
+                   n_tiles_matching_subtype=6,
+                   n_tiles_matching_subtype_expected='6',
+                   qc_status='PASS')
+
+
+def test_ent_fasta_subtyping_blastn(fasta, fasta_gz, exp_subtype):
+    st, df = subtype_contigs_blastn(fasta_path=fasta, genome_name=genome_name, scheme=scheme)
+    stgz, dfgz = subtype_contigs_blastn(fasta_path=fasta_gz, genome_name=genome_name, scheme=scheme)
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
-    assert st.scheme == scheme
-    assert st.scheme_version == SCHEME_FASTAS[scheme]['version']
-    assert st.sample == genome_name
-    assert st.subtype == '2.2.2'
-    assert st.are_subtypes_consistent == True
-    assert st.inconsistent_subtypes is None
-    assert st.n_tiles_matching_all == 188
-    assert st.n_tiles_matching_all_expected == '188'
-    assert st.n_tiles_matching_positive == 16
-    assert st.n_tiles_matching_positive_expected == '16'
-    assert st.n_tiles_matching_subtype == 6
-    assert st.n_tiles_matching_subtype_expected == '6'
-    assert st.qc_status == 'PASS'
-    exp_cols = ['tilename', 'stitle', 'refposition', 'subtype',
-       'is_pos_tile', 'sample', 'file_path', 'scheme', 'scheme_version', 'qc_status', 'qc_message']
-    df_cols = df.columns # type: Series
-    assert np.all(df_cols.isin(exp_cols))
+    assert isinstance(stgz, Subtype)
+    assert isinstance(dfgz, DataFrame)
+    check_subtype_attrs(st, stgz, exp_subtype)
+    check_df_fasta_cols(df)
+    check_df_fasta_cols(dfgz)
+
+
+def test_ent_fasta_subtyping_ac(fasta, fasta_gz, exp_subtype):
+    st, df = subtype_contigs_ac(input_fasta=fasta, genome_name=genome_name, scheme=scheme)
+    stgz, dfgz = subtype_contigs_ac(input_fasta=fasta_gz, genome_name=genome_name, scheme=scheme)
+    assert isinstance(st, Subtype)
+    assert isinstance(df, DataFrame)
+    assert isinstance(stgz, Subtype)
+    assert isinstance(dfgz, DataFrame)
+    check_subtype_attrs(st, stgz, exp_subtype)
+    check_df_fasta_cols(df)
+    check_df_fasta_cols(dfgz)

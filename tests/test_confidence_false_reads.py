@@ -4,7 +4,7 @@ import numpy as np
 
 from bio_hansel.quality_check.const import FAIL_MESSAGE
 from bio_hansel.subtype import Subtype
-from bio_hansel.subtyper import subtype_reads
+from bio_hansel.subtyper import subtype_reads_jellyfish
 from bio_hansel.subtyping_params import SubtypingParams
 from bio_hansel.const import SCHEME_FASTAS
 
@@ -17,7 +17,8 @@ def test_genomes():
 def test_confidence_false(test_genomes):
     genome_name = 'test'
     scheme = 'enteritidis'
-    st, df = subtype_reads(scheme='enteritidis', reads=test_genomes, genome_name=genome_name, subtyping_params=SubtypingParams())
+    st, df = subtype_reads_jellyfish(reads=test_genomes, genome_name=genome_name, scheme='enteritidis',
+                                     subtyping_params=SubtypingParams())
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
 

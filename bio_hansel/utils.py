@@ -1,10 +1,12 @@
 import logging
+from subprocess import Popen, PIPE
+from typing import List, Any, Optional, Tuple, Union
+
 import os
 import re
-from subprocess import Popen, PIPE
-from typing import List, Any, Optional
+from collections import defaultdict
 
-from .const import SCHEME_FASTAS
+from .const import SCHEME_FASTAS, REGEX_FASTQ, REGEX_FASTA
 from .subtyping_params import SubtypingParams
 
 
@@ -40,14 +42,13 @@ def exc_exists(exc_name: str) -> bool:
         return False
 
 
-def out_files_exists(filepath: str, force: bool):
-    if filepath:
-        file_exists_err_fmt = 'File "{}" already exists! If you want to overwrite this output file run with opt "--force"'
-        if os.path.exists(filepath):
-            if not force:
-                raise OSError(file_exists_err_fmt.format(filepath))
-            else:
-                logging.warning('File "{}" already exists, overwriting with "--force" - uh oh :S')
+def does_file_exist(filepath: str, force: bool):
+    if filepath and os.path.exists(filepath):
+        if not force:
+            file_exists_err_fmt = 'File "{}" already exists! If you want to overwrite this output file run with opt "--force"'
+            raise OSError(file_exists_err_fmt.format(filepath))
+        else:
+            logging.warning('File "{}" already exists, overwriting with "--force" - uh oh :S')
 
 
 def genome_name_from_fasta_path(fasta_path: str) -> str:
@@ -70,7 +71,8 @@ def genome_name_from_fasta_path(fasta_path: str) -> str:
         str: genome name
     """
     filename = os.path.basename(fasta_path)
-    return re.sub(r'(\.fa$)|(\.fas$)|(\.fasta$)|(\.fna$)|(\.\w{1,}$)', '', filename)
+    filename = re.sub(r'\.gz$', '', filename)
+    return re.sub(r'\.(fa|fas|fasta|fna|\w{1,})(\.gz)?$', '', filename)
 
 
 def compare_subtypes(a: List[Any], b: List[Any]) -> bool:
@@ -125,3 +127,137 @@ def get_scheme_version(scheme: str) -> Optional[str]:
         version = SCHEME_FASTAS[scheme]['version']  # type: str
         return version
     return None
+
+
+def collect_fastq_from_dir(input_directory):
+    fastqs = []
+    for x in os.listdir(input_directory):
+        full_file_path = os.path.abspath(os.path.join(input_directory, x))
+        if os.path.isfile(full_file_path) and REGEX_FASTQ.match(x):
+            fastqs.append(full_file_path)
+    if len(fastqs) > 0:
+        logging.info('Found %s FASTQ files in %s',
+                     len(fastqs),
+                     input_directory)
+        reads_from_dir = group_fastqs(fastqs)
+        logging.info('Collected %s read sets from %s FASTQ files in %s',
+                     len(reads_from_dir),
+                     len(fastqs),
+                     input_directory)
+        return reads_from_dir
+    return []
+
+
+def group_fastqs(fastqs: List[str]) -> List[Tuple[List[str], str]]:
+    """Group FASTQs based on common base filename
+
+    For example, if you have 2 FASTQs:
+
+    - reads_1.fastq
+    - reads_2.fastq
+
+    The common name would be `reads` and the files would be grouped based on that common name.
+
+    Args:
+        fastqs: FASTQ file paths
+
+    Returns:
+        list of grouped FASTQs grouped by common base filename
+    """
+    genome_fastqs = defaultdict(list)
+    for fastq in fastqs:
+        filename = os.path.basename(fastq)
+        basefilename = re.sub(r'_\d', '', REGEX_FASTQ.sub(r'\1', filename))
+        genome_fastqs[basefilename].append(fastq)
+    return [(fastq_paths, genome_name) for genome_name, fastq_paths in genome_fastqs.items()]
+
+
+def collect_fasta_from_dir(input_directory: str) -> List[Tuple[str, str]]:
+    input_genomes = []
+    for x in os.listdir(input_directory):
+        full_file_path = os.path.abspath(os.path.join(input_directory, x))
+        if os.path.isfile(full_file_path) and REGEX_FASTA.match(x):
+            genome_name = genome_name_from_fasta_path(full_file_path)
+            input_genomes.append((full_file_path, genome_name))
+    return input_genomes
+
+
+NT_SUB = {x: y for x, y in zip('acgtrymkswhbvdnxACGTRYMKSWHBVDNX', 'tgcayrkmswdvbhnxTGCAYRKMSWDVBHNX')}
+
+
+def revcomp(s):
+    """Reverse complement nucleotide sequence
+
+    Args:
+        s (str): nucleotide sequence
+
+    Returns:
+        str: reverse complement of `s` nucleotide sequence
+    """
+    return ''.join([NT_SUB[c] for c in s[::-1]])
+
+
+def is_gzipped(p: str) -> bool:
+    return bool(re.match(r'^.+\.gz$', p))
+
+
+def gunzip_to_tmp_dir(src, outdir):
+    import gzip
+    import shutil
+    filename = os.path.basename(src)
+    filename = re.sub(r'\.gz$', '', filename)
+    try:
+        if not os.path.exists(outdir):
+            os.makedirs(outdir)
+    except Exception as e:
+        logging.exception(e)
+    outpath = os.path.join(outdir, filename)
+    with gzip.open(src, 'rb') as f_in:
+        with open(outpath, 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
+    assert os.path.exists(outpath)
+    return outpath
+
+
+def uncompress_gzipped_files(files: Union[str, List[str]], tmp_dir: str) -> Union[str, List[str]]:
+    if isinstance(files, str):
+        if is_gzipped(files):
+            return gunzip_to_tmp_dir(files, tmp_dir)
+        else:
+            return files
+    elif isinstance(files, list):
+        tmp = []
+        for r in files:
+            if is_gzipped(r):
+                tmp.append(gunzip_to_tmp_dir(r, tmp_dir))
+            else:
+                tmp.append(r)
+        return tmp
+    else:
+        raise ValueError('Unexpected type of "files"="{}". Expected "str" or "List[str]"'.format(files))
+
+
+def init_subtyping_params(args: Optional[Any] = None,
+                          scheme: Optional[str] = None) -> SubtypingParams:
+    """Initialize subtyping parameters based on command-line arguments and scheme defaults
+
+    Args:
+        args: ArgumentParser.parse_args() output
+        scheme: Scheme name e.g. "heidelberg"
+
+    Returns:
+        SubtypingParams with user-supplied values then scheme defaults then global defaults loaded
+    """
+    subtyping_params = get_scheme_params(scheme)
+    if subtyping_params is None:
+        subtyping_params = SubtypingParams()
+    if args is not None:
+        if args.low_cov_depth_freq:
+            subtyping_params.low_coverage_depth_freq = args.low_cov_depth_freq
+        if args.max_missing_tiles:
+            subtyping_params.max_perc_missing_tiles = args.max_missing_tiles
+        if args.min_ambiguous_tiles:
+            subtyping_params.min_ambiguous_tiles = args.min_ambiguous_tiles
+        if args.max_intermediate_tiles:
+            subtyping_params.max_perc_intermediate_tiles = args.max_intermediate_tiles
+    return subtyping_params

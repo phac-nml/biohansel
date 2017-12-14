@@ -58,16 +58,20 @@ def check_missing_tiles(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple
     obs = int(st.n_tiles_matching_all)
 
     if (exp - obs) / exp > p.max_perc_missing_tiles:
-        tiles_with_hits = df[df['is_kmer_freq_okay']] # type: DataFrame
-        avg_depth = tiles_with_hits['freq'].mean()
-
-        error_messages = "{}: More than {:.2%} missing tiles were detected. {} Avg calculated tile coverage = {}".format(
-            MISSING_TILES_ERROR_1, p.max_perc_missing_tiles,
-            "Low coverage detected, possibly need more whole genome sequencing data."
-            if avg_depth < p.low_coverage_depth_freq
-            else "Adequate coverage detected, this may be the wrong serovar/species for scheme: {}".format(st.scheme),
-            avg_depth
-        )
+        try:
+            tiles_with_hits = df[df['is_kmer_freq_okay']] # type: DataFrame
+            avg_depth = tiles_with_hits['freq'].mean()
+            error_messages = "{}: More than {:.2%} missing tiles were detected. {} Avg calculated tile coverage = {}".format(
+                MISSING_TILES_ERROR_1, p.max_perc_missing_tiles,
+                "Low coverage detected, possibly need more whole genome sequencing data."
+                if avg_depth < p.low_coverage_depth_freq
+                else "Adequate coverage detected, this may be the wrong serovar/species for scheme: {}".format(st.scheme),
+                avg_depth
+            )
+        except:
+            error_messages = "{}: More than {:.2%} missing tiles were detected.".format(
+                MISSING_TILES_ERROR_1,
+                p.max_perc_missing_tiles)
 
         error_status = FAIL_MESSAGE
 
