@@ -26,7 +26,8 @@ from .utils import \
     collect_fastq_from_dir, \
     group_fastqs, \
     collect_fasta_from_dir, \
-    init_subtyping_params
+    init_subtyping_params, \
+    exc_exists
 
 SCRIPT_NAME = 'hansel'
 LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
@@ -179,6 +180,13 @@ def collect_inputs(args: Any) -> Tuple[List[Tuple[str, str]], List[Tuple[List[st
     return input_genomes, reads
 
 
+def check_ext_deps_for_slow_mode():
+    install_blast_msg = 'Please install NCBI BLAST+ if you want to use {} in slow mode'.format(SCRIPT_NAME)
+    assert exc_exists('makeblastdb'), install_blast_msg
+    assert exc_exists('blastn'), install_blast_msg
+    assert exc_exists('jellyfish'), 'Please install Jellyfish if you want to use {} in slow mode'.format(SCRIPT_NAME)
+
+
 def main():
     parser = init_parser()
     if len(sys.argv[1:]) == 0:
@@ -186,6 +194,8 @@ def main():
         parser.exit()
     args = parser.parse_args()
     init_console_logger(args.verbose)
+    if args.slow:
+        check_ext_deps_for_slow_mode()
     output_summary_path = args.output_summary
     output_tile_results = args.output_tile_results
     output_simple_summary_path = args.output_simple_summary
