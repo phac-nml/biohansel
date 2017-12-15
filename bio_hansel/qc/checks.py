@@ -42,10 +42,10 @@ def is_missing_tiles(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[Op
                     depth,
                     float(p.low_coverage_depth_freq))
             else:
-                coverage_msg = 'Okay coverage depth ({:.1} >= {:.1} expected), but this may be the wrong ' \
+                coverage_msg = 'Okay coverage depth ({:.1f} >= {:.1f} expected), but this may be the wrong ' \
                                'serovar or species for scheme "{}"'.format(
                     depth,
-                    p.low_coverage_depth_freq,
+                    float(p.low_coverage_depth_freq),
                     st.scheme)
             error_messages = '{status}: {p_missing:.2%} missing tiles; more than {p_missing_threshold:.2%} missing ' \
                              'tiles threshold. {coverage_msg}'.format(
@@ -146,10 +146,9 @@ def is_missing_downstream_targets(st: Subtype, *args) -> Tuple[Optional[str], Op
     """
     if st.non_present_subtypes:
         return QC.FAIL, \
-               '{}: Subtype {} was found, but downstream subtype(s) {} tiles were missing.' \
-               ' Therefore due to the missing downstream tiles, there is a lack of confidence in the' \
-               'final subtype call.'.format(
-                   QC.NON_CONFIDENT_RESULTS_ERROR_4,
+               '{}: Subtype {} was found, but tiles for downstream subtype(s) "{}" were missing. ' \
+               'Due to missing downstream tiles, there is a lack of confidence in the final subtype call.'.format(
+                   QC.UNCONFIDENT_RESULTS_ERROR_4,
                    st.subtype,
                    st.non_present_subtypes)
 

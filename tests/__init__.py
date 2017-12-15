@@ -24,7 +24,10 @@ exp_fastq_cols = ['tilename', 'refposition', 'subtype', 'seq', 'freq', 'is_pos_t
 
 def check_subtype_attrs(*sts):
     for a in attrs_to_check:
-        assert len({st.__getattribute__(a) for st in sts}) == 1
+        assert len({st.__getattribute__(a) for st in sts}) == 1, \
+            'Mismatching values for attr "{}": "{}"\n{}'.format(a,
+                                                                [st.__getattribute__(a) for st in sts],
+                                                                sts)
 
 
 def check_df_fasta_cols(df):

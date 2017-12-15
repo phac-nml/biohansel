@@ -30,7 +30,7 @@ def test_missing_tiles():
     assert st.is_fastq_input()
     assert st.scheme == scheme
     assert QC.MISSING_TILES_ERROR_1 in st.qc_message
-    assert 'Low coverage depth (12.5 < 20.0 expected)' in st.qc_message
+    assert 'Low coverage depth (10.9 < 20.0 expected)' in st.qc_message
     assert st.qc_status == QC.FAIL
 
 

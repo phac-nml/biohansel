@@ -100,8 +100,7 @@ def subtype_contigs_blastn(fasta_path: str,
 
     possible_downstream_subtypes = [s for s in scheme_subtype_counts
                                     if re.search("^({})(\.)(\d)$".format(re.escape(st.subtype)), s)]
-    non_present_subtypes = [ x for x in possible_downstream_subtypes if not any(df.subtype == x)]
-    st.non_present_subtypes = non_present_subtypes
+    st.non_present_subtypes = [x for x in possible_downstream_subtypes if x not in df['subtype']]
 
     st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
 
@@ -311,11 +310,9 @@ def subtype_contigs_ac(fasta_path: str,
 
     possible_downstream_subtypes = [s for s in scheme_subtype_counts
                                     if re.search("^({})(\.)(\d)$".format(re.escape(st.subtype)), s)]
-    non_present_subtypes = [x for x in possible_downstream_subtypes if not any(df.subtype == x)]
-    st.non_present_subtypes = non_present_subtypes
+    st.non_present_subtypes = [x for x in possible_downstream_subtypes if x not in df['subtype']]
 
     st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
-
 
     logging.info(st)
 
@@ -417,7 +414,7 @@ def subtype_reads_ac(reads: Union[str, List[str]],
     scheme_version = get_scheme_version(scheme)
 
     st = Subtype(sample=genome_name,
-                 file_path=str(reads),
+                 file_path=reads,
                  scheme=scheme_name or scheme,
                  scheme_version=scheme_version,
                  scheme_subtype_counts=scheme_subtype_counts)
@@ -473,12 +470,7 @@ def subtype_reads_ac(reads: Union[str, List[str]],
         st.inconsistent_subtypes = inconsistent_subtypes
     possible_downstream_subtypes = [s for s in scheme_subtype_counts
                                     if re.search("^({})(\.)(\d)$".format(re.escape(st.subtype)), s)]
-    non_present_subtypes = []
-    if possible_downstream_subtypes:
-        for subtype in possible_downstream_subtypes:
-            if not any(df.subtype == subtype):
-                non_present_subtypes.append(subtype)
-    st.non_present_subtypes = non_present_subtypes
+    st.non_present_subtypes = [x for x in possible_downstream_subtypes if x not in df['subtype']]
     st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
     df['sample'] = genome_name
     df['scheme'] = scheme_name or scheme

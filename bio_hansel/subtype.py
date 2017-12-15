@@ -2,6 +2,7 @@
 from typing import List, Optional
 
 import attr
+import os
 
 from .const import REGEX_FASTQ
 
@@ -9,7 +10,7 @@ from .const import REGEX_FASTQ
 @attr.s
 class Subtype(object):
     sample = attr.ib(validator=attr.validators.instance_of(str))
-    file_path = attr.ib(validator=attr.validators.instance_of(str))
+    file_path = attr.ib()
     scheme = attr.ib(validator=attr.validators.instance_of(str))
     scheme_version = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     subtype = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
@@ -32,7 +33,18 @@ class Subtype(object):
     qc_status = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     qc_message = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     scheme_subtype_counts = attr.ib(default=None, repr=False)
-    input_type = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
+
+    @file_path.validator
+    def _file_path_validator(self, attribute, value):
+        if isinstance(value, str):
+            if not os.path.exists(self.file_path):
+                raise OSError('Input file "{}" does not exist!'.format(value))
+        elif isinstance(value, list):
+            for x in value:
+                if not os.path.exists(x):
+                    raise OSError('Input file "{}" does not exist!'.format(x))
+        else:
+            raise ValueError('Unexpected type for input file path "{}": {}'.format(type(value), value))
 
     def is_fastq_input(self):
         if isinstance(self.file_path, str):

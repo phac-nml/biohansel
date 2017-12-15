@@ -15,9 +15,9 @@ scheme_enteritidis = 'enteritidis'
 fasta_heidelberg_pass = 'tests/data/SRR1002850_SMALL.fasta'
 fasta_gz_heidelberg_pass = 'tests/data/SRR1002850_SMALL.fasta.gz'
 
-# input contigs that should give a good result and QC pass
-fasta_enteritidis_pass = 'tests/data/SRR6126859.fasta'
-fasta_gz_enteritidis_pass = 'tests/data/SRR6126859.fasta.gz'
+# input contigs that should give an unconfident result and a QC fail
+fasta_enteritidis_unconfident = 'tests/data/SRR6126859.fasta'
+fasta_gz_enteritidis_unconfident = 'tests/data/SRR6126859.fasta.gz'
 # input contigs that should give an inconsistent result and a QC fail
 fasta_enteritidis_fail = 'tests/data/SRR1958005.fasta'
 fasta_gz_enteritidis_fail = 'tests/data/SRR1958005.fasta.gz'
@@ -42,12 +42,12 @@ def subtype_heidelberg_pass():
 
 
 @pytest.fixture()
-def subtype_enteritidis_pass():
+def subtype_enteritidis_fail_unconfident():
     return Subtype(scheme=scheme_enteritidis,
                    scheme_version=SCHEME_FASTAS[scheme_enteritidis]['version'],
                    sample=genome_name,
                    subtype='2.2.2',
-                   file_path=fasta_enteritidis_pass,
+                   file_path=fasta_enteritidis_unconfident,
                    are_subtypes_consistent=True,
                    n_tiles_matching_all=188,
                    n_tiles_matching_all_expected='188',
@@ -55,7 +55,7 @@ def subtype_enteritidis_pass():
                    n_tiles_matching_positive_expected='16',
                    n_tiles_matching_subtype=6,
                    n_tiles_matching_subtype_expected='6',
-                   qc_status=QC.PASS)
+                   qc_status=QC.FAIL)
 
 
 @pytest.fixture()
@@ -107,34 +107,38 @@ def test_heidelberg_fasta_blastn(subtype_heidelberg_pass):
     check_df_fasta_cols(dfgz)
 
 
-def test_blastn_vs_good_contigs(subtype_enteritidis_pass):
-    st, df = subtype_contigs_blastn(fasta_path=fasta_enteritidis_pass,
+def test_enteritidis_scheme_vs_qc_failing_contigs_unconfident_blastn(subtype_enteritidis_fail_unconfident):
+    st, df = subtype_contigs_blastn(fasta_path=fasta_enteritidis_unconfident,
                                     genome_name=genome_name,
                                     scheme=scheme_enteritidis)
-    stgz, dfgz = subtype_contigs_blastn(fasta_path=fasta_gz_enteritidis_pass,
+    stgz, dfgz = subtype_contigs_blastn(fasta_path=fasta_gz_enteritidis_unconfident,
                                         genome_name=genome_name,
                                         scheme=scheme_enteritidis)
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
     assert isinstance(stgz, Subtype)
     assert isinstance(dfgz, DataFrame)
-    check_subtype_attrs(st, stgz, subtype_enteritidis_pass)
+    check_subtype_attrs(st, stgz, subtype_enteritidis_fail_unconfident)
+    assert 'Unconfident Results Error 4' in st.qc_message
+    assert 'Unconfident Results Error 4' in stgz.qc_message
     check_df_fasta_cols(df)
     check_df_fasta_cols(dfgz)
 
 
-def test_ac_vs_good_contigs(subtype_enteritidis_pass):
-    st, df = subtype_contigs_ac(fasta_path=fasta_enteritidis_pass,
+def test_enteritidis_scheme_vs_qc_failing_contigs_unconfident_ac(subtype_enteritidis_fail_unconfident):
+    st, df = subtype_contigs_ac(fasta_path=fasta_enteritidis_unconfident,
                                 genome_name=genome_name,
                                 scheme=scheme_enteritidis)
-    stgz, dfgz = subtype_contigs_ac(fasta_path=fasta_gz_enteritidis_pass,
+    stgz, dfgz = subtype_contigs_ac(fasta_path=fasta_gz_enteritidis_unconfident,
                                     genome_name=genome_name,
                                     scheme=scheme_enteritidis)
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
     assert isinstance(stgz, Subtype)
     assert isinstance(dfgz, DataFrame)
-    check_subtype_attrs(st, stgz, subtype_enteritidis_pass)
+    check_subtype_attrs(st, stgz, subtype_enteritidis_fail_unconfident)
+    assert 'Unconfident Results Error 4' in st.qc_message
+    assert 'Unconfident Results Error 4' in stgz.qc_message
     check_df_fasta_cols(df)
     check_df_fasta_cols(dfgz)
 

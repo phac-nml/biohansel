@@ -19,9 +19,9 @@ def init_automaton(scheme_fasta):
          Aho-Corasick Automaton with kmers loaded
     """
     A = Automaton()
-    for h, s in parse_fasta(scheme_fasta):
-        A.add_word(s, (h, s, False))
-        A.add_word(revcomp(s), (h, s, True))
+    for header, sequence in parse_fasta(scheme_fasta):
+        A.add_word(sequence, (header, sequence, False))
+        A.add_word(revcomp(sequence), (header, sequence, True))
     A.make_automaton()
     return A
 
@@ -37,9 +37,9 @@ def find_in_fasta(A: Automaton, fasta: str) -> pd.DataFrame:
         Dataframe with any matches found in input fasta file
     """
     res = []
-    for h, s in parse_fasta(fasta):
-        for idx, (tilename, seq, is_revcomp) in A.iter(s):
-            res.append((tilename, seq, is_revcomp, h, idx))
+    for contig_header, sequence in parse_fasta(fasta):
+        for idx, (tilename, tile_seq, is_revcomp) in A.iter(sequence):
+            res.append((tilename, tile_seq, is_revcomp, contig_header, idx))
     df = pd.DataFrame(res, columns=['tilename', 'seq', 'is_revcomp', 'contig_id', 'match_index'])
     return df
 
@@ -54,14 +54,14 @@ def find_in_fastqs(A: Automaton, *fastqs):
     Returns:
         Dataframe with any matches found in input fastq files
     """
-    res = defaultdict(int)
-    for fq in fastqs:
-        for h, s in parse_fastq(fq):
-            for idx, (tilename, seq, is_revcomp) in A.iter(s):
-                res[seq] += 1
-    tmp = []
-    for seq, freq in res.items():
-        tilename, s, _ = A.get(seq)
-        tmp.append((tilename, seq, freq))
-    df = pd.DataFrame(tmp, columns=['tilename', 'seq', 'freq'])
+    tile_seq_counts = defaultdict(int)
+    for fastq in fastqs:
+        for _, sequence in parse_fastq(fastq):
+            for idx, (_, tile_seq, _) in A.iter(sequence):
+                tile_seq_counts[tile_seq] += 1
+    res = []
+    for tile_seq, freq in tile_seq_counts.items():
+        tilename, sequence, _ = A.get(tile_seq)
+        res.append((tilename, tile_seq, freq))
+    df = pd.DataFrame(res, columns=['tilename', 'seq', 'freq'])
     return df
