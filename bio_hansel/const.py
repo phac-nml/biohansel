@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import re
 from pkg_resources import resource_filename
 
@@ -59,6 +60,3 @@ qc_message
 
 REGEX_FASTQ = re.compile(r'^(.+)\.(fastq|fq)(\.gz)?$')
 REGEX_FASTA = re.compile(r'^.+\.(fasta|fa|fna|fas)(\.gz)?$')
-
-TYPE_READS = "reads"
-TYPE_CONTIGS = "contigs"

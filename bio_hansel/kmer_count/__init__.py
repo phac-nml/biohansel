@@ -12,7 +12,7 @@ import pandas as pd
 from ..utils import exc_exists, run_command, find_inconsistent_subtypes
 from ..utils import revcomp
 from ..parsers import parse_fasta
-from ..const import SCHEME_FASTAS, TYPE_READS
+from ..const import SCHEME_FASTAS
 from ..subtype import Subtype
 from ..subtype_stats import subtype_counts
 
@@ -239,7 +239,6 @@ class Jellyfisher(object):
         dfgood = df[df.is_kmer_freq_okay]
         dfpos = dfgood[dfgood.is_pos_tile]
         dfneg = dfgood[~dfgood.is_pos_tile]
-        logging.debug('dfpos: %s', dfpos)
         subtype_lens = dfpos.subtype.apply(len)
         max_subtype_strlen = subtype_lens.max()
         logging.debug('max substype str len: %s', max_subtype_strlen)
@@ -250,7 +249,6 @@ class Jellyfisher(object):
         logging.debug('pos_subtypes: %s', pos_subtypes)
         inconsistent_subtypes = find_inconsistent_subtypes(pos_subtypes)
         logging.debug('inconsistent_subtypes: %s', inconsistent_subtypes)
-        st.type_of_analysis = TYPE_READS
         st.n_tiles_matching_all = dfgood.shape[0]
         st.n_tiles_matching_positive = dfpos.shape[0]
         st.n_tiles_matching_negative = dfneg.shape[0]

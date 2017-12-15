@@ -12,9 +12,9 @@ import pandas as pd
 from . import program_name
 from .aho_corasick import init_automaton, find_in_fasta, find_in_fastqs
 from .blast_wrapper import BlastRunner, BlastReader
-from .const import COLUMNS_TO_REMOVE, TYPE_CONTIGS
+from .const import COLUMNS_TO_REMOVE
 from .kmer_count import Jellyfisher
-from .quality_check import perform_quality_check
+from .qc import perform_quality_check
 from .subtype import Subtype
 from .subtype_stats import SubtypeCounts
 from .subtype_stats import subtype_counts
@@ -68,9 +68,7 @@ def subtype_contigs_blastn(fasta_path: str,
     df['refposition'] = [int(x.replace('negative', '')) for x in refpositions]
     df['subtype'] = subtypes
     df['is_pos_tile'] = ~df.tilename.str.contains('negative')
-    logging.debug('df: %s', df)
     dfpos = df[df.is_pos_tile]
-    logging.debug('dfpos: %s', dfpos)
     subtype_lens = dfpos.subtype.apply(len)
     max_subtype_strlen = subtype_lens.max()
     logging.debug('max substype str len: %s', max_subtype_strlen)
@@ -81,7 +79,6 @@ def subtype_contigs_blastn(fasta_path: str,
     logging.debug('pos_subtypes: %s', pos_subtypes)
     inconsistent_subtypes = find_inconsistent_subtypes(pos_subtypes)
     logging.debug('inconsistent_subtypes: %s', inconsistent_subtypes)
-    st.type_of_analysis = TYPE_CONTIGS
     st.n_tiles_matching_all = df.tilename.unique().size
     st.n_tiles_matching_positive = dfpos.tilename.unique().size
     st.n_tiles_matching_subtype = dfpos_highest_res.tilename.unique().size
@@ -103,19 +100,12 @@ def subtype_contigs_blastn(fasta_path: str,
 
     possible_downstream_subtypes = [s for s in scheme_subtype_counts
                                     if re.search("^({})(\.)(\d)$".format(re.escape(st.subtype)), s)]
-    non_present_subtypes = []
-    if possible_downstream_subtypes:
-        for subtype in possible_downstream_subtypes:
-            blah = df['subtype']
-            # wtf is going on
-            if not any(df.subtype == subtype):
-                non_present_subtypes.append(subtype)
-
+    non_present_subtypes = [ x for x in possible_downstream_subtypes if not any(df.subtype == x)]
     st.non_present_subtypes = non_present_subtypes
 
-    perform_quality_check(st, df, subtyping_params)
+    st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
 
-    logging.info(st)
+    logging.debug(st)
 
     df['sample'] = genome_name
     df['file_path'] = fasta_path
@@ -160,7 +150,7 @@ def subtype_reads_jellyfish(reads: Union[str, List[str]],
                      threads=threads) as jfer:
         st, df = jfer.summary()
 
-        perform_quality_check(st, df, subtyping_params)
+        st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
 
         df['scheme'] = scheme_name or scheme
         df['scheme_version'] = scheme_version
@@ -257,7 +247,7 @@ def parallel_blastn_query_contigs(input_genomes: List[Tuple[str, str]],
     return outputs
 
 
-def subtype_contigs_ac(input_fasta: str,
+def subtype_contigs_ac(fasta_path: str,
                        genome_name: str,
                        scheme: str,
                        subtyping_params: Optional[SubtypingParams] = None,
@@ -271,16 +261,16 @@ def subtype_contigs_ac(input_fasta: str,
         subtyping_params = init_subtyping_params(scheme=scheme)
     scheme_version = get_scheme_version(scheme)
     st = Subtype(sample=genome_name,
-                 file_path=input_fasta,
+                 file_path=fasta_path,
                  scheme=scheme_name or scheme,
                  scheme_version=scheme_version,
                  scheme_subtype_counts=scheme_subtype_counts)
 
     A = init_automaton(scheme_fasta)
-    df = find_in_fasta(A, input_fasta)
+    df = find_in_fasta(A, fasta_path)
 
     if df is None or df.shape[0] == 0:
-        logging.warning('No subtyping tile matches for input "%s" for scheme "%s"', input_fasta, scheme)
+        logging.warning('No subtyping tile matches for input "%s" for scheme "%s"', fasta_path, scheme)
         st.are_subtypes_consistent = False
         return st, None
 
@@ -289,9 +279,7 @@ def subtype_contigs_ac(input_fasta: str,
     df['refposition'] = [int(x.replace('negative', '')) for x in refpositions]
     df['subtype'] = subtypes
     df['is_pos_tile'] = ~df.tilename.str.contains('negative')
-    logging.debug('df: %s', df)
     dfpos = df[df.is_pos_tile]
-    logging.debug('dfpos: %s', dfpos)
     subtype_lens = dfpos.subtype.apply(len)
     max_subtype_strlen = subtype_lens.max()
     logging.debug('max substype str len: %s', max_subtype_strlen)
@@ -323,22 +311,16 @@ def subtype_contigs_ac(input_fasta: str,
 
     possible_downstream_subtypes = [s for s in scheme_subtype_counts
                                     if re.search("^({})(\.)(\d)$".format(re.escape(st.subtype)), s)]
-    non_present_subtypes = []
-    if possible_downstream_subtypes:
-        for subtype in possible_downstream_subtypes:
-            blah = df['subtype']
-            # wtf is going on
-            if not any(df.subtype == subtype):
-                non_present_subtypes.append(subtype)
-
+    non_present_subtypes = [x for x in possible_downstream_subtypes if not any(df.subtype == x)]
     st.non_present_subtypes = non_present_subtypes
 
-    perform_quality_check(st, df, subtyping_params)
+    st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
+
 
     logging.info(st)
 
     df['sample'] = genome_name
-    df['file_path'] = input_fasta
+    df['file_path'] = fasta_path
     df['scheme'] = scheme_name or scheme
     df['scheme_version'] = scheme_version
     df['qc_status'] = st.qc_status
@@ -380,7 +362,7 @@ def query_contigs_ac(subtype_results: List[Subtype],
                      n_threads: int = 1) -> None:
     if n_threads == 1:
         logging.info('Serial single threaded run mode on %s input genomes', len(input_genomes))
-        outputs = [subtype_contigs_ac(input_fasta=input_fasta,
+        outputs = [subtype_contigs_ac(fasta_path=input_fasta,
                                       genome_name=genome_name,
                                       scheme=scheme,
                                       scheme_name=scheme_name,
@@ -460,10 +442,8 @@ def subtype_reads_ac(reads: Union[str, List[str]],
     df['is_pos_tile'] = ~df.tilename.str.contains('negative')
     df['is_kmer_freq_okay'] = (df.freq >= subtyping_params.min_kmer_freq) & (df.freq <= subtyping_params.max_kmer_freq)
     dfgood = df[df.is_kmer_freq_okay]
-    logging.debug('df: %s', df)
     dfpos = dfgood[dfgood.is_pos_tile]
     dfneg = dfgood[~dfgood.is_pos_tile]
-    logging.debug('dfpos: %s', dfpos)
     subtype_lens = dfpos.subtype.apply(len)
     max_subtype_strlen = subtype_lens.max()
     logging.debug('max substype str len: %s', max_subtype_strlen)
@@ -499,7 +479,7 @@ def subtype_reads_ac(reads: Union[str, List[str]],
             if not any(df.subtype == subtype):
                 non_present_subtypes.append(subtype)
     st.non_present_subtypes = non_present_subtypes
-    perform_quality_check(st, df, subtyping_params)
+    st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
     df['sample'] = genome_name
     df['scheme'] = scheme_name or scheme
     df['scheme_version'] = scheme_version

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from bio_hansel.utils import exc_exists
 
 
