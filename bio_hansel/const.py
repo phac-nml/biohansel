@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+import re
 from pkg_resources import resource_filename
 
 from bio_hansel import program_name
@@ -10,7 +12,6 @@ SCHEME_FASTAS = {'heidelberg': {'file': resource_filename(program_name, 'data/he
                  'enteritidis': {'file': resource_filename(program_name, 'data/enteritidis/tiles.fasta'),
                                  'version': '0.7.0',
                                  'subtyping_params': SubtypingParams(low_coverage_depth_freq=50)}}
-
 
 COLUMNS_TO_REMOVE = '''
 pident
@@ -57,5 +58,5 @@ qc_status
 qc_message
 """.strip().split('\n')
 
-TYPE_READS = "reads"
-TYPE_CONTIGS = "contigs"
+REGEX_FASTQ = re.compile(r'^(.+)\.(fastq|fq)(\.gz)?$')
+REGEX_FASTA = re.compile(r'^.+\.(fasta|fa|fna|fas)(\.gz)?$')

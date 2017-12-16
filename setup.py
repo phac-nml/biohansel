@@ -13,7 +13,6 @@ License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
 Intended Audience :: Science/Research
 Topic :: Scientific/Engineering
 Topic :: Scientific/Engineering :: Bio-Informatics
-Programming Language :: Python
 Programming Language :: Python :: 3.5
 Programming Language :: Python :: 3.6
 Programming Language :: Python :: Implementation :: CPython
@@ -36,6 +35,7 @@ setup(
     install_requires=[
         'numpy>=1.12.1',
         'pandas>=0.20.1',
+        'pyahocorasick>=1.1.6',
         'attrs',
     ],
     extras_require={

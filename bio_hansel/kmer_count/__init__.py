@@ -10,8 +10,9 @@ import logging
 import pandas as pd
 
 from ..utils import exc_exists, run_command, find_inconsistent_subtypes
-from bio_hansel.const import SCHEME_FASTAS, TYPE_READS
-from ..blast_wrapper.helpers import parse_fasta, revcomp
+from ..utils import revcomp
+from ..parsers import parse_fasta
+from ..const import SCHEME_FASTAS
 from ..subtype import Subtype
 from ..subtype_stats import subtype_counts
 
@@ -170,16 +171,6 @@ class Jellyfisher(object):
                 exit_code,
                 stderr))
 
-    def _reads_to_str(self):
-        reads_str = ''
-        if isinstance(self.reads, str):
-            reads_str = self.reads
-        elif isinstance(self.reads, (list, tuple)):
-            reads_str = '; '.join(self.reads)
-        else:
-            reads_str = '{}'.format(self.reads)
-        return reads_str
-
     def parse_query(self):
         jf_query_file = self.jf_query_tiles_file
         if jf_query_file is None:
@@ -206,7 +197,7 @@ class Jellyfisher(object):
             logging.error('%s/%s not found in "%s"!', x, x_rc, self.scheme_fasta)
         df['sample'] = self.genome_name
 
-        df['file_path'] = self._reads_to_str()
+        df['file_path'] = str(self.reads)
         df['tilename'] = tiles
         df['is_pos_tile'] = [not x.startswith('negative') for x in tiles]
         df['subtype'] = [y for x, y in df.tilename.str.split('-')]
@@ -227,7 +218,7 @@ class Jellyfisher(object):
         if self.df_results is None:
             self.parse_query()
         df = self.df_results
-        st = Subtype(sample=self.genome_name, file_path=self._reads_to_str(), scheme=self.scheme,
+        st = Subtype(sample=self.genome_name, file_path=self.reads, scheme=self.scheme,
                      scheme_version=self.scheme_version)
         st.scheme_subtype_counts = self.scheme_subtype_counts
         self.subtype = st
@@ -238,18 +229,15 @@ class Jellyfisher(object):
         dfgood = df[df.is_kmer_freq_okay]
         dfpos = dfgood[dfgood.is_pos_tile]
         dfneg = dfgood[~dfgood.is_pos_tile]
-        logging.debug('dfpos: %s', dfpos)
         subtype_lens = dfpos.subtype.apply(len)
         max_subtype_strlen = subtype_lens.max()
         logging.debug('max substype str len: %s', max_subtype_strlen)
         dfpos_highest_res = dfpos[subtype_lens == max_subtype_strlen]
-        logging.debug('dfpos_highest_res: %s', dfpos_highest_res)
         pos_subtypes = [[int(y) for y in x.split('.')] for x in dfpos.subtype.unique()]
         pos_subtypes.sort(key=lambda a: len(a))
         logging.debug('pos_subtypes: %s', pos_subtypes)
         inconsistent_subtypes = find_inconsistent_subtypes(pos_subtypes)
         logging.debug('inconsistent_subtypes: %s', inconsistent_subtypes)
-        st.type_of_analysis = TYPE_READS
         st.n_tiles_matching_all = dfgood.shape[0]
         st.n_tiles_matching_positive = dfpos.shape[0]
         st.n_tiles_matching_negative = dfneg.shape[0]
@@ -271,13 +259,7 @@ class Jellyfisher(object):
 
         possible_downstream_subtypes = [s for s in self.scheme_subtype_counts
                                            if re.search("^({})(\.)(\d)$".format(re.escape(st.subtype)), s)]
-        non_present_subtypes = []
-        if possible_downstream_subtypes:
-            for subtype in possible_downstream_subtypes:
-                if subtype not in df['subtype']:
-                    non_present_subtypes.append(subtype)
-
-        st.non_present_subtypes = non_present_subtypes
+        st.non_present_subtypes = [x for x in possible_downstream_subtypes if x not in df['subtype']]
 
         if len(inconsistent_subtypes) > 0:
             st.are_subtypes_consistent = False
