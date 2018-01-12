@@ -89,7 +89,7 @@ def is_mixed_subtype(st: Subtype, df: DataFrame, *args) -> Tuple[Optional[str], 
     return QC.FAIL, '{}: Mixed subtype detected. Positive and negative tiles detected for ' \
                     'the same target site "{}" for subtype "{}".'.format(
         QC.MIXED_SAMPLE_ERROR_2,
-        '; '.join(conflicting_tiles['refposition'].tolist()),
+        '; '.join(conflicting_tiles['refposition'].astype(str).tolist()),
         st.subtype)
 
 
