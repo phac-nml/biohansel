@@ -260,7 +260,7 @@ class Jellyfisher(object):
         possible_downstream_subtypes = [s for s in self.scheme_subtype_counts
                                            if re.search("^({})(\.)(\d)$".format(re.escape(st.subtype)), s)]
         st.non_present_subtypes = [x for x in possible_downstream_subtypes
-                                   if not (df['subtype'].str.contains("^{}$".format(x)).any())]
+                                   if not (df.subtype == x).any()]
         if len(inconsistent_subtypes) > 0:
             st.are_subtypes_consistent = False
             st.inconsistent_subtypes = inconsistent_subtypes

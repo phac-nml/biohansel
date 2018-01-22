@@ -101,7 +101,7 @@ def subtype_contigs_blastn(fasta_path: str,
     possible_downstream_subtypes = [s for s in scheme_subtype_counts
                                     if re.search("^({})(\.)(\d)$".format(re.escape(st.subtype)), s)]
     st.non_present_subtypes = [x for x in possible_downstream_subtypes
-                               if not (df['subtype'].str.contains("^{}$".format(x)).any())]
+                               if not (df.subtype == x).any()]
     st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
 
     logging.debug(st)
@@ -311,7 +311,7 @@ def subtype_contigs_ac(fasta_path: str,
     possible_downstream_subtypes = [s for s in scheme_subtype_counts
                                     if re.search("^({})(\.)(\d)$".format(re.escape(st.subtype)), s)]
     st.non_present_subtypes = [x for x in possible_downstream_subtypes
-                               if not (df['subtype'].str.contains("^{}$".format(x)).any())]
+                               if not (df.subtype == x).any()]
     st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
 
     logging.info(st)
@@ -471,7 +471,7 @@ def subtype_reads_ac(reads: Union[str, List[str]],
     possible_downstream_subtypes = [s for s in scheme_subtype_counts
                                     if re.search("^({})(\.)(\d)$".format(re.escape(st.subtype)), s)]
     st.non_present_subtypes = [x for x in possible_downstream_subtypes
-                               if not (df['subtype'].str.contains("^{}$".format(x)).any())]
+                               if not (df.subtype == x).any()]
     st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
     df['sample'] = genome_name
     df['scheme'] = scheme_name or scheme
