@@ -233,18 +233,17 @@ def parallel_blastn_query_contigs(input_genomes: List[Tuple[str, str]],
     logging.info('Initializing thread pool with %s threads', n_threads)
     pool = Pool(processes=n_threads)
     logging.info('Running analysis asynchronously on %s input genomes', len(input_genomes))
-    res = [pool.apply_async(subtype_contigs_blastn, (subtyping_params,
-                                                     scheme,
-                                                     input_fasta,
+    res = [pool.apply_async(subtype_contigs_blastn, (input_fasta,
                                                      genome_name,
-                                                     tmp_dir,
+                                                     scheme,
+                                                     subtyping_params,
                                                      scheme_name,
-                                                     scheme_subtype_counts))
+                                                     scheme_subtype_counts,
+                                                     tmp_dir))
            for input_fasta, genome_name in input_genomes]
     logging.info('Parallel analysis complete! Retrieving analysis results')
     outputs = [x.get() for x in res]
     return outputs
-
 
 def subtype_contigs_ac(fasta_path: str,
                        genome_name: str,
