@@ -48,8 +48,11 @@ n_tiles_matching_positive_expected
 n_tiles_matching_subtype
 n_tiles_matching_subtype_expected
 file_path
+coverage
 qc_status
-qc_message""".strip().split('\n')
+qc_message
+""".strip().split('\n')
+
 
 SIMPLE_SUMMARY_COLS = """
 sample

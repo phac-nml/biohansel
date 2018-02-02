@@ -151,6 +151,7 @@ def subtype_reads_jellyfish(reads: Union[str, List[str]],
 
         st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
 
+        st.coverage = "{0:.3f}".format(df['freq'].mean())
         df['scheme'] = scheme_name or scheme
         df['scheme_version'] = scheme_version
         df['qc_status'] = st.qc_status
@@ -473,6 +474,7 @@ def subtype_reads_ac(reads: Union[str, List[str]],
     st.non_present_subtypes = [x for x in possible_downstream_subtypes
                                if not (df.subtype == x).any()]
     st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
+    st.coverage = "{0:.3f}".format(df['freq'].mean())
     df['sample'] = genome_name
     df['scheme'] = scheme_name or scheme
     df['scheme_version'] = scheme_version
