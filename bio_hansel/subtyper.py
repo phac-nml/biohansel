@@ -245,6 +245,7 @@ def parallel_blastn_query_contigs(input_genomes: List[Tuple[str, str]],
     outputs = [x.get() for x in res]
     return outputs
 
+
 def subtype_contigs_ac(fasta_path: str,
                        genome_name: str,
                        scheme: str,

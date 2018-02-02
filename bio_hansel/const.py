@@ -58,5 +58,5 @@ qc_status
 qc_message
 """.strip().split('\n')
 
-REGEX_FASTQ = re.compile(r'^(.+)\.(fastq|fq)(\.gz)?$')
+REGEX_FASTQ = re.compile(r'^(.+)\.(fastq|fq|fastqsanger)(\.gz)?$')
 REGEX_FASTA = re.compile(r'^.+\.(fasta|fa|fna|fas)(\.gz)?$')
