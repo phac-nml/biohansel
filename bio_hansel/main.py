@@ -84,6 +84,9 @@ def init_parser():
     parser.add_argument('--force',
                         action='store_true',
                         help='Force existing output files to be overwritten')
+    parser.add_argument('--json',
+                        action='store_true',
+                        help='Output JSON representation of output files')
     parser.add_argument('--min-kmer-freq',
                         type=int,
                         help='Min k-mer freq/coverage')
@@ -260,8 +263,12 @@ def main():
 
     dfsummary = pd.DataFrame(subtype_results)
     dfsummary = dfsummary[SUBTYPE_SUMMARY_COLS]
+
     if output_summary_path:
-        dfsummary.to_csv(output_summary_path, sep='\t', index=None)
+        if args.json:
+            dfsummary.to_json("{}.json".format(output_summary_path))
+        else:
+            dfsummary.to_csv(output_summary_path, sep='\t', index=None)
         logging.info('Wrote subtyping output summary to %s', output_summary_path)
     else:
         # if no output path specified for the summary results, then print to stdout
@@ -269,11 +276,17 @@ def main():
 
     if output_tile_results:
         dfall = pd.concat(dfs)  # type: pd.DataFrame
-        dfall.to_csv(output_tile_results, sep='\t', index=None)
+        if args.json:
+            dfall.to_json("{}.json".format(output_tile_results))
+        else:
+            dfall.to_csv(output_tile_results, sep='\t', index=None)
 
     if output_simple_summary_path:
         df_simple_summary = dfsummary[['sample', 'subtype', 'qc_status', 'qc_message']]
-        df_simple_summary.to_csv(output_simple_summary_path, sep='\t', index=None)
+        if args.json:
+            df_simple_summary.to_json("{}.json".format(output_simple_summary_path))
+        else:
+            df_simple_summary.to_csv(output_simple_summary_path, sep='\t', index=None)
 
 
 if __name__ == '__main__':
