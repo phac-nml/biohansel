@@ -11,7 +11,7 @@ import pandas as pd
 import re
 
 from . import program_desc, __version__
-from .const import SUBTYPE_SUMMARY_COLS, REGEX_FASTQ, REGEX_FASTA
+from .const import SUBTYPE_SUMMARY_COLS, REGEX_FASTQ, REGEX_FASTA, JSON_EXT_TMPL
 from .subtype import Subtype
 from .subtype_stats import subtype_counts
 from .subtyper import \
@@ -268,10 +268,13 @@ def main():
     dfsummary = dfsummary[SUBTYPE_SUMMARY_COLS]
     dfsummary = dfsummary.dropna(axis=1, how='all')
 
+    kwargs_for_pd_to_table = dict(sep='\t', index=None, float_format='%.3f')
+    kwargs_for_pd_to_json = dict(orient='records')
+
     if output_summary_path:
-        dfsummary.to_csv(output_summary_path, sep='\t', index=None, float_format='%.3f')
+        dfsummary.to_csv(output_summary_path, **kwargs_for_pd_to_table)
         if args.json:
-            dfsummary.to_json("{}.json".format(output_summary_path), orient='records')
+            dfsummary.to_json(JSON_EXT_TMPL.format(output_summary_path), **kwargs_for_pd_to_json)
         logging.info('Wrote subtyping output summary to %s', output_summary_path)
     else:
         # if no output path specified for the summary results, then print to stdout
@@ -279,15 +282,15 @@ def main():
 
     if output_tile_results:
         dfall = pd.concat(dfs)  # type: pd.DataFrame
-        dfall.to_csv(output_tile_results, sep='\t', index=None, float_format='%.3f')
+        dfall.to_csv(output_tile_results, **kwargs_for_pd_to_table)
         if args.json:
-            dfall.to_json("{}.json".format(output_tile_results), orient='records')
+            dfall.to_json(JSON_EXT_TMPL.format(output_tile_results), **kwargs_for_pd_to_json)
 
     if output_simple_summary_path:
         df_simple_summary = dfsummary[['sample', 'subtype', 'coverage', 'qc_status', 'qc_message']]
-        df_simple_summary.to_csv(output_simple_summary_path, sep='\t', index=None, float_format='%.3f')
+        df_simple_summary.to_csv(output_simple_summary_path, **kwargs_for_pd_to_table)
         if args.json:
-            df_simple_summary.to_json("{}.json".format(output_simple_summary_path), orient='records')
+            df_simple_summary.to_json(JSON_EXT_TMPL.format(output_simple_summary_path), **kwargs_for_pd_to_json)
 
 
 if __name__ == '__main__':

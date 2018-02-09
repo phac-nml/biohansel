@@ -64,3 +64,5 @@ qc_message
 
 REGEX_FASTQ = re.compile(r'^(.+)\.(fastq|fq|fastqsanger)(\.gz)?$')
 REGEX_FASTA = re.compile(r'^.+\.(fasta|fa|fna|fas)(\.gz)?$')
+
+JSON_EXT_TMPL = '{}.json'
