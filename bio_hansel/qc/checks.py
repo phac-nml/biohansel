@@ -10,6 +10,24 @@ from ..qc.utils import get_conflicting_tiles, get_num_pos_neg_tiles
 from ..subtype import Subtype
 
 
+def is_overall_coverage_low(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[Optional[str], Optional[str]]:
+    if not st.are_subtypes_consistent:
+        return None, None
+    if st.subtype is None:
+        return None, None
+    if not st.is_fastq_input():
+        return None, None
+
+    if st.coverage < p.min_coverage_warning:
+        return QC.WARNING, '{}: Low coverage for all tiles ({:.3f} < {} expected)'.format(
+            QC.LOW_COVERAGE_WARNING,
+            st.coverage,
+            p.min_coverage_warning
+        )
+
+    return None, None
+
+
 def is_missing_tiles(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[Optional[str], Optional[str]]:
     """Are there more missing tiles than tolerated?
 

@@ -27,8 +27,8 @@ bitscore
 qlen
 slen
 sseq
-coverage
 is_trunc
+coverage
 '''.strip().split('\n')
 
 # These are present within the subtype module.
@@ -57,6 +57,7 @@ qc_message
 SIMPLE_SUMMARY_COLS = """
 sample
 subtype
+coverage
 qc_status
 qc_message
 """.strip().split('\n')

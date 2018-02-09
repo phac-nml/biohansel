@@ -84,6 +84,9 @@ def init_parser():
     parser.add_argument('--force',
                         action='store_true',
                         help='Force existing output files to be overwritten')
+    parser.add_argument('--json',
+                        action='store_true',
+                        help='Output JSON representation of output files')
     parser.add_argument('--min-kmer-freq',
                         type=int,
                         help='Min k-mer freq/coverage')
@@ -260,8 +263,12 @@ def main():
 
     dfsummary = pd.DataFrame(subtype_results)
     dfsummary = dfsummary[SUBTYPE_SUMMARY_COLS]
+    dfsummary = dfsummary.dropna(axis=1, how='all')
+
     if output_summary_path:
-        dfsummary.to_csv(output_summary_path, sep='\t', index=None)
+        dfsummary.to_csv(output_summary_path, sep='\t', index=None, float_format='%.3f')
+        if args.json:
+            dfsummary.to_json("{}.json".format(output_summary_path), orient='records')
         logging.info('Wrote subtyping output summary to %s', output_summary_path)
     else:
         # if no output path specified for the summary results, then print to stdout
@@ -269,11 +276,15 @@ def main():
 
     if output_tile_results:
         dfall = pd.concat(dfs)  # type: pd.DataFrame
-        dfall.to_csv(output_tile_results, sep='\t', index=None)
+        dfall.to_csv(output_tile_results, sep='\t', index=None, float_format='%.3f')
+        if args.json:
+            dfall.to_json("{}.json".format(output_tile_results), orient='records')
 
     if output_simple_summary_path:
-        df_simple_summary = dfsummary[['sample', 'subtype', 'qc_status', 'qc_message']]
-        df_simple_summary.to_csv(output_simple_summary_path, sep='\t', index=None)
+        df_simple_summary = dfsummary[['sample', 'subtype', 'coverage', 'qc_status', 'qc_message']]
+        df_simple_summary.to_csv(output_simple_summary_path, sep='\t', index=None, float_format='%.3f')
+        if args.json:
+            df_simple_summary.to_json("{}.json".format(output_simple_summary_path), orient='records')
 
 
 if __name__ == '__main__':

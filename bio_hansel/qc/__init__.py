@@ -12,7 +12,8 @@ from ..qc.checks import \
     is_mixed_subtype, \
     is_maybe_intermediate_subtype, \
     is_missing_too_many_target_sites, \
-    is_missing_downstream_targets
+    is_missing_downstream_targets, \
+    is_overall_coverage_low
 
 
 CHECKS = [is_missing_tiles,
@@ -20,6 +21,7 @@ CHECKS = [is_missing_tiles,
           is_missing_too_many_target_sites,
           is_missing_downstream_targets,
           is_maybe_intermediate_subtype,
+          is_overall_coverage_low
           ] # type: List[Callable[[Subtype, DataFrame, SubtypingParams], Tuple[str, str]]]
 
 

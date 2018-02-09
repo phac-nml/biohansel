@@ -9,6 +9,19 @@ from bio_hansel.subtyper import subtype_reads_ac, subtype_contigs_ac
 genome_name = 'test'
 
 
+def test_low_coverage():
+    scheme = 'heidelberg'
+    fastq = 'tests/data/SRR1696752/SRR1696752.fastq'
+    st, df = subtype_reads_ac(reads=fastq, genome_name=genome_name, scheme=scheme)
+    assert isinstance(st, Subtype)
+    assert isinstance(df, DataFrame)
+    assert st.is_fastq_input()
+    assert st.scheme == scheme
+    assert QC.LOW_COVERAGE_WARNING in st.qc_message
+    assert 'Low Coverage: Low coverage for all tiles (7.439 < 20 expected)' in st.qc_message
+    assert st.qc_status == QC.FAIL
+
+
 def test_intermediate_subtype():
     scheme = 'enteritidis'
     fastq = 'tests/data/Retro1000data/10-1358.fastq'
