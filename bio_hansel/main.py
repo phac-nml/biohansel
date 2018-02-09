@@ -102,6 +102,9 @@ def init_parser():
     parser.add_argument('--min-ambiguous-tiles',
                         type=int,
                         help='Minimum number of missing tiles to be considered an ambiguous result')
+    parser.add_argument('--low-cov-warning',
+                        type=int,
+                        help='Overall tile coverage below this value will trigger a low coverage warning')
     parser.add_argument('--max-intermediate-tiles',
                         type=float,
                         help='Decimal proportion of maximum allowable missing tiles to be considered an intermediate subtype. (0.0 - 1.0)')
