@@ -10,6 +10,22 @@ from ..qc.utils import get_conflicting_tiles, get_num_pos_neg_tiles
 from ..subtype import Subtype
 
 
+def is_overall_coverage_low(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[Optional[str], Optional[str]]:
+    if not st.are_subtypes_consistent \
+            or st.subtype is None \
+            or not st.is_fastq_input():
+        return None, None
+
+    if st.avg_tile_coverage < p.min_coverage_warning:
+        return QC.WARNING, '{}: Low coverage for all tiles ({:.3f} < {} expected)'.format(
+            QC.LOW_COVERAGE_WARNING,
+            st.avg_tile_coverage,
+            p.min_coverage_warning
+        )
+
+    return None, None
+
+
 def is_missing_tiles(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[Optional[str], Optional[str]]:
     """Are there more missing tiles than tolerated?
 
@@ -109,9 +125,8 @@ def is_missing_too_many_target_sites(st: Subtype, df: DataFrame, p: SubtypingPar
     Returns:
         None, None if less missing targets than tolerated; otherwise, "FAIL", error message
     """
-    if not st.are_subtypes_consistent:
-        return None, None
-    if st.subtype is None:
+    if not st.are_subtypes_consistent \
+            or st.subtype is None:
         return None, None
 
     potential_subtypes = st.all_subtypes.split('; ')
@@ -173,9 +188,8 @@ def is_maybe_intermediate_subtype(st: Subtype, df: DataFrame, p: SubtypingParams
     Returns:
         None, None if no intermediate subtype possible; otherwise, "FAIL", error message
     '''
-    if not st.are_subtypes_consistent:
-        return None, None
-    if st.subtype is None:
+    if not st.are_subtypes_consistent \
+            or st.subtype is None:
         return None, None
 
     total_subtype_tiles = int(st.n_tiles_matching_subtype_expected)

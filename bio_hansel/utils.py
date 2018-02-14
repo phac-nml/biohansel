@@ -260,4 +260,7 @@ def init_subtyping_params(args: Optional[Any] = None,
             subtyping_params.min_ambiguous_tiles = args.min_ambiguous_tiles
         if args.max_intermediate_tiles:
             subtyping_params.max_perc_intermediate_tiles = args.max_intermediate_tiles
+        if args.low_cov_warning:
+            subtyping_params.min_coverage_warning = args.low_cov_warning
+
     return subtyping_params

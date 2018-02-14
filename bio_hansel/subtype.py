@@ -30,6 +30,7 @@ class Subtype(object):
     n_tiles_matching_negative_expected = attr.ib(default=0)
     n_tiles_matching_subtype_expected = attr.ib(default=0)
     n_negative_tiles_matching_subtype_expected = attr.ib(default=0)
+    avg_tile_coverage = attr.ib(default=None)
     qc_status = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     qc_message = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     scheme_subtype_counts = attr.ib(default=None, repr=False)

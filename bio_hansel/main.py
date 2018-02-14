@@ -11,7 +11,7 @@ import pandas as pd
 import re
 
 from . import program_desc, __version__
-from .const import SUBTYPE_SUMMARY_COLS, REGEX_FASTQ, REGEX_FASTA
+from .const import SUBTYPE_SUMMARY_COLS, REGEX_FASTQ, REGEX_FASTA, JSON_EXT_TMPL
 from .subtype import Subtype
 from .subtype_stats import subtype_counts
 from .subtyper import \
@@ -84,6 +84,9 @@ def init_parser():
     parser.add_argument('--force',
                         action='store_true',
                         help='Force existing output files to be overwritten')
+    parser.add_argument('--json',
+                        action='store_true',
+                        help='Output JSON representation of output files')
     parser.add_argument('--min-kmer-freq',
                         type=int,
                         help='Min k-mer freq/coverage')
@@ -99,6 +102,9 @@ def init_parser():
     parser.add_argument('--min-ambiguous-tiles',
                         type=int,
                         help='Minimum number of missing tiles to be considered an ambiguous result')
+    parser.add_argument('--low-cov-warning',
+                        type=int,
+                        help='Overall tile coverage below this value will trigger a low coverage warning')
     parser.add_argument('--max-intermediate-tiles',
                         type=float,
                         help='Decimal proportion of maximum allowable missing tiles to be considered an intermediate subtype. (0.0 - 1.0)')
@@ -260,8 +266,15 @@ def main():
 
     dfsummary = pd.DataFrame(subtype_results)
     dfsummary = dfsummary[SUBTYPE_SUMMARY_COLS]
+    dfsummary = dfsummary.dropna(axis=1, how='all')
+
+    kwargs_for_pd_to_table = dict(sep='\t', index=None, float_format='%.3f')
+    kwargs_for_pd_to_json = dict(orient='records')
+
     if output_summary_path:
-        dfsummary.to_csv(output_summary_path, sep='\t', index=None)
+        dfsummary.to_csv(output_summary_path, **kwargs_for_pd_to_table)
+        if args.json:
+            dfsummary.to_json(JSON_EXT_TMPL.format(output_summary_path), **kwargs_for_pd_to_json)
         logging.info('Wrote subtyping output summary to %s', output_summary_path)
     else:
         # if no output path specified for the summary results, then print to stdout
@@ -269,11 +282,19 @@ def main():
 
     if output_tile_results:
         dfall = pd.concat(dfs)  # type: pd.DataFrame
-        dfall.to_csv(output_tile_results, sep='\t', index=None)
+        dfall.to_csv(output_tile_results, **kwargs_for_pd_to_table)
+        if args.json:
+            dfall.to_json(JSON_EXT_TMPL.format(output_tile_results), **kwargs_for_pd_to_json)
 
     if output_simple_summary_path:
-        df_simple_summary = dfsummary[['sample', 'subtype', 'qc_status', 'qc_message']]
-        df_simple_summary.to_csv(output_simple_summary_path, sep='\t', index=None)
+        if 'avg_tile_coverage' in dfsummary.columns:
+            df_simple_summary = dfsummary[['sample', 'subtype', 'avg_tile_coverage', 'qc_status', 'qc_message']]
+        else:
+            df_simple_summary = dfsummary[['sample', 'subtype', 'qc_status', 'qc_message']]
+
+        df_simple_summary.to_csv(output_simple_summary_path, **kwargs_for_pd_to_table)
+        if args.json:
+            df_simple_summary.to_json(JSON_EXT_TMPL.format(output_simple_summary_path), **kwargs_for_pd_to_json)
 
 
 if __name__ == '__main__':

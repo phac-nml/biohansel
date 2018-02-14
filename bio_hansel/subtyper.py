@@ -149,8 +149,8 @@ def subtype_reads_jellyfish(reads: Union[str, List[str]],
                      threads=threads) as jfer:
         st, df = jfer.summary()
 
+        st.avg_tile_coverage = df['freq'].mean()
         st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
-
         df['scheme'] = scheme_name or scheme
         df['scheme_version'] = scheme_version
         df['qc_status'] = st.qc_status
@@ -233,13 +233,13 @@ def parallel_blastn_query_contigs(input_genomes: List[Tuple[str, str]],
     logging.info('Initializing thread pool with %s threads', n_threads)
     pool = Pool(processes=n_threads)
     logging.info('Running analysis asynchronously on %s input genomes', len(input_genomes))
-    res = [pool.apply_async(subtype_contigs_blastn, (subtyping_params,
-                                                     scheme,
-                                                     input_fasta,
+    res = [pool.apply_async(subtype_contigs_blastn, (input_fasta,
                                                      genome_name,
-                                                     tmp_dir,
+                                                     scheme,
+                                                     subtyping_params,
                                                      scheme_name,
-                                                     scheme_subtype_counts))
+                                                     scheme_subtype_counts,
+                                                     tmp_dir))
            for input_fasta, genome_name in input_genomes]
     logging.info('Parallel analysis complete! Retrieving analysis results')
     outputs = [x.get() for x in res]
@@ -472,6 +472,7 @@ def subtype_reads_ac(reads: Union[str, List[str]],
                                     if re.search("^({})(\.)(\d)$".format(re.escape(st.subtype)), s)]
     st.non_present_subtypes = [x for x in possible_downstream_subtypes
                                if not (df.subtype == x).any()]
+    st.avg_tile_coverage = df['freq'].mean()
     st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
     df['sample'] = genome_name
     df['scheme'] = scheme_name or scheme

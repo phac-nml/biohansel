@@ -27,8 +27,8 @@ bitscore
 qlen
 slen
 sseq
-coverage
 is_trunc
+coverage
 '''.strip().split('\n')
 
 # These are present within the subtype module.
@@ -48,15 +48,21 @@ n_tiles_matching_positive_expected
 n_tiles_matching_subtype
 n_tiles_matching_subtype_expected
 file_path
-qc_status
-qc_message""".strip().split('\n')
-
-SIMPLE_SUMMARY_COLS = """
-sample
-subtype
+avg_tile_coverage
 qc_status
 qc_message
 """.strip().split('\n')
 
-REGEX_FASTQ = re.compile(r'^(.+)\.(fastq|fq)(\.gz)?$')
+
+SIMPLE_SUMMARY_COLS = """
+sample
+subtype
+coverage
+qc_status
+qc_message
+""".strip().split('\n')
+
+REGEX_FASTQ = re.compile(r'^(.+)\.(fastq|fq|fastqsanger)(\.gz)?$')
 REGEX_FASTA = re.compile(r'^.+\.(fasta|fa|fna|fas)(\.gz)?$')
+
+JSON_EXT_TMPL = '{}.json'
