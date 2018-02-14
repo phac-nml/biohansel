@@ -14,7 +14,7 @@ def is_overall_coverage_low(st: Subtype, df: DataFrame, p: SubtypingParams) -> T
     if not st.are_subtypes_consistent \
             or st.subtype is None \
             or not st.is_fastq_input():
-                return None, None
+        return None, None
 
     if st.avg_tile_coverage < p.min_coverage_warning:
         return QC.WARNING, '{}: Low coverage for all tiles ({:.3f} < {} expected)'.format(
@@ -127,7 +127,7 @@ def is_missing_too_many_target_sites(st: Subtype, df: DataFrame, p: SubtypingPar
     """
     if not st.are_subtypes_consistent \
             or st.subtype is None:
-                return None, None
+        return None, None
 
     potential_subtypes = st.all_subtypes.split('; ')
     uniq_positions = {y for x in potential_subtypes for y in st.scheme_subtype_counts[x].refpositions}
@@ -190,7 +190,7 @@ def is_maybe_intermediate_subtype(st: Subtype, df: DataFrame, p: SubtypingParams
     '''
     if not st.are_subtypes_consistent \
             or st.subtype is None:
-                return None, None
+        return None, None
 
     total_subtype_tiles = int(st.n_tiles_matching_subtype_expected)
     total_subtype_tiles_hits = int(st.n_tiles_matching_subtype)
