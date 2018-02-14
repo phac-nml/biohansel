@@ -287,7 +287,11 @@ def main():
             dfall.to_json(JSON_EXT_TMPL.format(output_tile_results), **kwargs_for_pd_to_json)
 
     if output_simple_summary_path:
-        df_simple_summary = dfsummary[['sample', 'subtype', 'coverage', 'qc_status', 'qc_message']]
+        if 'avg_tile_coverage' in dfsummary.columns:
+            df_simple_summary = dfsummary[['sample', 'subtype', 'avg_tile_coverage', 'qc_status', 'qc_message']]
+        else:
+            df_simple_summary = dfsummary[['sample', 'subtype', 'qc_status', 'qc_message']]
+
         df_simple_summary.to_csv(output_simple_summary_path, **kwargs_for_pd_to_table)
         if args.json:
             df_simple_summary.to_json(JSON_EXT_TMPL.format(output_simple_summary_path), **kwargs_for_pd_to_json)

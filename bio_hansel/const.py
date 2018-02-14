@@ -48,7 +48,7 @@ n_tiles_matching_positive_expected
 n_tiles_matching_subtype
 n_tiles_matching_subtype_expected
 file_path
-coverage
+avg_tile_coverage
 qc_status
 qc_message
 """.strip().split('\n')
