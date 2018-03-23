@@ -266,7 +266,9 @@ def main():
 
     dfsummary = pd.DataFrame(subtype_results)
     dfsummary = dfsummary[SUBTYPE_SUMMARY_COLS]
-    dfsummary = dfsummary.dropna(axis=1, how='all')
+
+    if dfsummary['avg_tile_coverage'].isnull().all():
+        dfsummary = dfsummary.drop(labels='avg_tile_coverage', axis=1)
 
     kwargs_for_pd_to_table = dict(sep='\t', index=None, float_format='%.3f')
     kwargs_for_pd_to_json = dict(orient='records')

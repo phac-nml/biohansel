@@ -6,7 +6,7 @@ from pandas import DataFrame
 
 from ..subtyping_params import SubtypingParams
 from ..qc.const import QC
-from ..qc.utils import get_conflicting_tiles, get_num_pos_neg_tiles
+from ..qc.utils import get_conflicting_tiles, get_num_pos_neg_tiles, get_mixed_subtype_tile_counts
 from ..subtype import Subtype
 
 
@@ -41,16 +41,56 @@ def is_missing_tiles(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[Op
     Returns:
         None, None if less missing tiles than tolerate; otherwise, "FAIL", error message
     """
-    if not st.are_subtypes_consistent:
-        return None, None
-
     error_status = None
     error_messages = None
-    exp = int(st.n_tiles_matching_all_expected)
-    obs = int(st.n_tiles_matching_all)
-    p_missing = (exp - obs) / exp # type: float
+
+    if st.are_subtypes_consistent:
+        error_status, error_messages = check_for_missing_tiles(is_fastq=st.is_fastq_input(),
+                                                               curr_subtype=st.subtype,
+                                                               df=df,
+                                                               exp=int(st.n_tiles_matching_all_expected),
+                                                               obs=int(st.n_tiles_matching_all),
+                                                               p=p)
+    else:
+        error_status = []
+        error_messages = []
+
+        subtype_list = st.subtype.split(';')
+        n_tiles_matching_all_expected = st.n_tiles_matching_all_expected.split(';')
+        n_tiles_matching_subtype_exp = st.n_tiles_matching_positive_expected.split(';')
+
+        dfpos = df[df.is_pos_tile]
+        mixed_subtype_counts = get_mixed_subtype_tile_counts(dfpos=dfpos,
+                                                             subtype_list=subtype_list)
+        for curr_subtype, exp, st_exp in zip(subtype_list, n_tiles_matching_all_expected, n_tiles_matching_subtype_exp):
+
+            curr_status, curr_messages = check_for_missing_tiles(is_fastq=st.is_fastq_input(),
+                                                                 curr_subtype=curr_subtype,
+                                                                 df=df,
+                                                                 exp=(int(exp) + int(st_exp)),
+                                                                 obs=(mixed_subtype_counts.get(curr_subtype) +
+                                                                      int(st.n_tiles_matching_all)),
+                                                                 p=p)
+            error_status.append(curr_status)
+            error_messages.append(curr_messages)
+
+        if QC.FAIL in error_status:
+            error_status = QC.FAIL
+        else:
+            error_status = None
+
+        error_messages = ' | '.join(filter(None.__ne__, error_messages))
+
+    return error_status, error_messages
+
+
+def check_for_missing_tiles(is_fastq: bool, curr_subtype: str, df: DataFrame, exp: int, obs: int, p: SubtypingParams):
+    error_status = None
+    error_messages = None
+
+    p_missing = (exp - obs) / exp  # type: float
     if p_missing > p.max_perc_missing_tiles:
-        if st.is_fastq_input():
+        if is_fastq:
             tiles_with_hits = df[df['is_kmer_freq_okay']]  # type: DataFrame
             depth = tiles_with_hits['freq'].mean()
             if depth < p.low_coverage_depth_freq:
@@ -70,11 +110,13 @@ def is_missing_tiles(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[Op
                 p_missing_threshold=p.max_perc_missing_tiles,
                 coverage_msg=coverage_msg)
         else:
-            error_messages = '{}: {:.2%} missing tiles; more than {:.2%} missing tile threshold'.format(
+            error_messages = '{}: {:.2%} missing tiles for subtype {}; more than {:.2%} missing tile threshold'.format(
                 QC.MISSING_TILES_ERROR_1,
                 p_missing,
+                curr_subtype,
                 p.max_perc_missing_tiles)
         error_status = QC.FAIL
+
     return error_status, error_messages
 
 
