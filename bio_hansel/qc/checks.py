@@ -45,6 +45,7 @@ def is_missing_tiles(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[Op
     if st.are_subtypes_consistent:
         return check_for_missing_tiles(is_fastq=st.is_fastq_input(),
                                        curr_subtype=st.subtype,
+                                       scheme=st.scheme,
                                        df=df,
                                        exp=int(st.n_tiles_matching_all_expected),
                                        obs=int(st.n_tiles_matching_all),
@@ -53,21 +54,21 @@ def is_missing_tiles(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[Op
         message_list = []
 
         subtype_list = st.subtype.split(';')
-        n_tiles_matching_all_expected = st.n_tiles_matching_all_expected.split(';')
-        n_tiles_matching_subtype_exp = st.n_tiles_matching_positive_expected.split(';')
+        n_tiles_matching_expected = st.n_tiles_matching_all_expected.split(';')
 
         dfpos = df[df.is_pos_tile]
         mixed_subtype_counts = get_mixed_subtype_tile_counts(dfpos=dfpos,
                                                              subtype_list=subtype_list)
-        for curr_subtype, exp, st_exp in zip(subtype_list, n_tiles_matching_all_expected, n_tiles_matching_subtype_exp):
+
+        for curr_subtype, exp in zip(subtype_list, n_tiles_matching_expected):
             # We can omit the status because there will be a fail status already from non consistent subtypes.
             _, curr_messages = check_for_missing_tiles(is_fastq=st.is_fastq_input(),
                                                        curr_subtype=curr_subtype,
                                                        scheme=st.scheme,
                                                        df=df,
-                                                       exp=(int(exp) + int(st_exp)),
+                                                       exp=int(exp),
                                                        obs=(mixed_subtype_counts.get(curr_subtype) +
-                                                       int(st.n_tiles_matching_all)),
+                                                            int(st.n_tiles_matching_negative)),
                                                        p=p)
 
             message_list.append(curr_messages)
