@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
+from bio_hansel.qc import is_maybe_intermediate_subtype
 
+from bio_hansel.utils import init_subtyping_params
 from pandas import DataFrame
 
 from bio_hansel.qc.const import QC
 from bio_hansel.subtype import Subtype
 from bio_hansel.subtyper import subtype_reads_ac, subtype_contigs_ac
+import pandas as pd
 
 genome_name = 'test'
 
@@ -24,8 +27,32 @@ def test_low_coverage():
 
 def test_intermediate_subtype():
     scheme = 'enteritidis'
-    fastq = 'tests/data/Retro1000data/10-1358.fastq'
-    st, df = subtype_reads_ac(reads=fastq, genome_name=genome_name, scheme='enteritidis')
+    st = Subtype(sample='test',
+                 file_path='tests/data/Retro1000data/10-1358.fastq',
+                 scheme='enteritidis',
+                 scheme_version='0.8.0',
+                 subtype='2.1.1.2',
+                 non_present_subtypes=[],
+                 all_subtypes='2; 2.1; 2.1.1; 2.1.1.2',
+                 inconsistent_subtypes=None,
+                 tiles_matching_subtype='308238-2.1.1.2; 2469336-2.1.1.2; 3872935-2.1.1.2',
+                 negative_tiles_matching_subtype=None,
+                 are_subtypes_consistent=True,
+                 n_tiles_matching_all=183,
+                 n_tiles_matching_positive=12,
+                 n_tiles_matching_negative=171,
+                 n_tiles_matching_subtype=3,
+                 n_tiles_matching_all_expected='188',
+                 n_tiles_matching_positive_expected='15',
+                 n_tiles_matching_negative_expected=0,
+                 n_tiles_matching_subtype_expected='6',
+                 n_negative_tiles_matching_subtype_expected=0,
+                 avg_tile_coverage=37.04102564102564,
+                 qc_status=None,
+                 qc_message=None)
+    df = pd.read_csv('tests/data/se_intermediate_subtype_df.csv')
+    p = init_subtyping_params(args=None, scheme=scheme)
+    st.qc_status, st.qc_message = is_maybe_intermediate_subtype(st, df, p)
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
     assert st.scheme == scheme
