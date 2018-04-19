@@ -18,9 +18,9 @@ fasta_gz_heidelberg_pass = 'tests/data/SRR1002850_SMALL.fasta.gz'
 # input contigs that should give an unconfident result and a QC fail
 fasta_enteritidis_unconfident = 'tests/data/fail-qc-unconfident-subtype.fasta'
 fasta_gz_enteritidis_unconfident = 'tests/data/fail-qc-unconfident-subtype.fasta.gz'
-# input contigs that should give an inconsistent result and a QC fail
-fasta_enteritidis_fail = 'tests/data/SRR1958005.fasta'
-fasta_gz_enteritidis_fail = 'tests/data/SRR1958005.fasta.gz'
+# input contigs that should give a QC fail
+fasta_enteritidis_fail = 'tests/data/fail-qc-unconfident-subtype.fasta'
+fasta_gz_enteritidis_fail = 'tests/data/fail-qc-unconfident-subtype.fasta.gz'
 
 
 @pytest.fixture()
@@ -49,8 +49,8 @@ def subtype_enteritidis_fail_unconfident():
                    subtype='2.1.1',
                    file_path=fasta_enteritidis_unconfident,
                    are_subtypes_consistent=True,
-                   n_tiles_matching_all=176,
-                   n_tiles_matching_all_expected='188',
+                   n_tiles_matching_all=154,
+                   n_tiles_matching_all_expected='224',
                    n_tiles_matching_positive=9,
                    n_tiles_matching_positive_expected='9',
                    n_tiles_matching_subtype=1,
@@ -63,15 +63,15 @@ def subtype_enteritidis_fail():
     return Subtype(scheme=scheme_enteritidis,
                    scheme_version=SCHEME_FASTAS[scheme_enteritidis]['version'],
                    sample=genome_name,
-                   subtype='2.1; 2.2',
+                   subtype='2.1.1',
                    file_path=fasta_enteritidis_fail,
-                   are_subtypes_consistent=False,
-                   n_tiles_matching_all=188,
-                   n_tiles_matching_all_expected='188;188',
+                   are_subtypes_consistent=True,
+                   n_tiles_matching_all=154,
+                   n_tiles_matching_all_expected='224',
                    n_tiles_matching_positive=9,
-                   n_tiles_matching_positive_expected='8;10',
-                   n_tiles_matching_subtype=3,
-                   n_tiles_matching_subtype_expected='2;4',
+                   n_tiles_matching_positive_expected='9',
+                   n_tiles_matching_subtype=1,
+                   n_tiles_matching_subtype_expected='1',
                    qc_status=QC.FAIL)
 
 
