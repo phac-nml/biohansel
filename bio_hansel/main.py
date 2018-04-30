@@ -283,10 +283,15 @@ def main():
         print(dfsummary.to_csv(sep='\t', index=None))
 
     if output_tile_results:
-        dfall = pd.concat(dfs)  # type: pd.DataFrame
-        dfall.to_csv(output_tile_results, **kwargs_for_pd_to_table)
-        if args.json:
-            dfall.to_json(JSON_EXT_TMPL.format(output_tile_results), **kwargs_for_pd_to_json)
+        if len(dfs) > 0:
+            dfall = pd.concat(dfs)  # type: pd.DataFrame
+            dfall.to_csv(output_tile_results, **kwargs_for_pd_to_table)
+            logging.info('Tile results written to "{}".'.format(output_tile_results))
+            if args.json:
+                dfall.to_json(JSON_EXT_TMPL.format(output_tile_results), **kwargs_for_pd_to_json)
+                logging.info('Tile results written to "{}" in JSON format.'.format(JSON_EXT_TMPL.format(output_tile_results)))
+        else:
+            logging.error('No tile results generated. No tile results file written to "{}".'.format(output_tile_results))
 
     if output_simple_summary_path:
         if 'avg_tile_coverage' in dfsummary.columns:
