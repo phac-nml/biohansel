@@ -134,7 +134,7 @@ def is_mixed_subtype(st: Subtype, df: DataFrame, *args) -> Tuple[Optional[str], 
         return QC.FAIL, \
                '{}: Mixed subtypes found: "{}".'.format(
                    QC.MIXED_SAMPLE_ERROR_2,
-                   '; '.join(st.inconsistent_subtypes))
+                   '; '.join(sorted(st.inconsistent_subtypes)))
     conflicting_tiles = get_conflicting_tiles(st, df)
     if conflicting_tiles is None or conflicting_tiles.shape[0] == 0:
         return None, None

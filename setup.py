@@ -4,7 +4,7 @@ from distutils.core import setup
 
 from setuptools import find_packages
 
-from bio_hansel import __version__, program_summary, program_name, program_desc
+from bio_hansel import __version__, program_name, program_desc
 
 classifiers = """
 Development Status :: 3 - Alpha

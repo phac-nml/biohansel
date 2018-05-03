@@ -15,12 +15,12 @@ n_tiles_matching_subtype_expected
 qc_status
 """.strip().split('\n')
 
-
 exp_fasta_cols = ['tilename', 'contig_id', 'refposition', 'seq', 'subtype', 'match_index', 'is_revcomp',
-            'is_pos_tile', 'sample', 'file_path', 'scheme', 'scheme_version', 'qc_status', 'qc_message']
+                  'is_pos_tile', 'sample', 'file_path', 'scheme', 'scheme_version', 'qc_status', 'qc_message']
 
 exp_fastq_cols = ['tilename', 'refposition', 'subtype', 'seq', 'freq', 'is_pos_tile', 'is_kmer_freq_okay',
                   'sample', 'file_path', 'scheme', 'scheme_version', 'qc_status', 'qc_message']
+
 
 def check_subtype_attrs(*sts):
     for a in attrs_to_check:

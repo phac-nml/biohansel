@@ -2,7 +2,7 @@ import pytest
 from pandas import DataFrame, Series
 import numpy as np
 from bio_hansel.subtype import Subtype
-from bio_hansel.subtyper import subtype_contigs_blastn, subtype_contigs_ac
+from bio_hansel.subtyper import subtype_contigs_ac
 from bio_hansel.const import SCHEME_FASTAS
 from bio_hansel.qc.const import QC
 
@@ -91,40 +91,6 @@ def test_heidelberg_fasta_ac(subtype_heidelberg_pass):
     check_df_fasta_cols(dfgz)
 
 
-def test_heidelberg_fasta_blastn(subtype_heidelberg_pass):
-    st, df = subtype_contigs_blastn(fasta_path=fasta_heidelberg_pass,
-                                    genome_name=genome_name,
-                                    scheme=scheme_heidelberg)
-    stgz, dfgz = subtype_contigs_blastn(fasta_path=fasta_gz_heidelberg_pass,
-                                        genome_name=genome_name,
-                                        scheme=scheme_heidelberg)
-    assert isinstance(st, Subtype)
-    assert isinstance(df, DataFrame)
-    assert isinstance(stgz, Subtype)
-    assert isinstance(dfgz, DataFrame)
-    check_subtype_attrs(st, stgz, subtype_heidelberg_pass)
-    check_df_fasta_cols(df)
-    check_df_fasta_cols(dfgz)
-
-
-def test_enteritidis_scheme_vs_qc_failing_contigs_unconfident_blastn(subtype_enteritidis_fail_unconfident):
-    st, df = subtype_contigs_blastn(fasta_path=fasta_enteritidis_unconfident,
-                                    genome_name=genome_name,
-                                    scheme=scheme_enteritidis)
-    stgz, dfgz = subtype_contigs_blastn(fasta_path=fasta_gz_enteritidis_unconfident,
-                                        genome_name=genome_name,
-                                        scheme=scheme_enteritidis)
-    assert isinstance(st, Subtype)
-    assert isinstance(df, DataFrame)
-    assert isinstance(stgz, Subtype)
-    assert isinstance(dfgz, DataFrame)
-    check_subtype_attrs(st, stgz, subtype_enteritidis_fail_unconfident)
-    assert 'Unconfident Results Error 4' in st.qc_message
-    assert 'Unconfident Results Error 4' in stgz.qc_message
-    check_df_fasta_cols(df)
-    check_df_fasta_cols(dfgz)
-
-
 def test_enteritidis_scheme_vs_qc_failing_contigs_unconfident_ac(subtype_enteritidis_fail_unconfident):
     st, df = subtype_contigs_ac(fasta_path=fasta_enteritidis_unconfident,
                                 genome_name=genome_name,
@@ -139,22 +105,6 @@ def test_enteritidis_scheme_vs_qc_failing_contigs_unconfident_ac(subtype_enterit
     check_subtype_attrs(st, stgz, subtype_enteritidis_fail_unconfident)
     assert 'Unconfident Results Error 4' in st.qc_message
     assert 'Unconfident Results Error 4' in stgz.qc_message
-    check_df_fasta_cols(df)
-    check_df_fasta_cols(dfgz)
-
-
-def test_blastn_vs_bad_contigs(subtype_enteritidis_fail):
-    st, df = subtype_contigs_blastn(fasta_path=fasta_enteritidis_fail,
-                                    genome_name=genome_name,
-                                    scheme=scheme_enteritidis)
-    stgz, dfgz = subtype_contigs_blastn(fasta_path=fasta_gz_enteritidis_fail,
-                                        genome_name=genome_name,
-                                        scheme=scheme_enteritidis)
-    assert isinstance(st, Subtype)
-    assert isinstance(df, DataFrame)
-    assert isinstance(stgz, Subtype)
-    assert isinstance(dfgz, DataFrame)
-    check_subtype_attrs(st, stgz, subtype_enteritidis_fail)
     check_df_fasta_cols(df)
     check_df_fasta_cols(dfgz)
 

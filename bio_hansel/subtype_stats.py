@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Set
+
 import attr
 from collections import defaultdict
 
