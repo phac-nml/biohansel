@@ -4,19 +4,16 @@
 import argparse
 import logging
 import sys
-from typing import Optional, List, Any, Tuple
-
 import os
-import pandas as pd
 import re
+from typing import Optional, List, Any, Tuple
+import pandas as pd
 
 from . import program_desc, __version__
 from .const import SUBTYPE_SUMMARY_COLS, REGEX_FASTQ, REGEX_FASTA, JSON_EXT_TMPL
 from .subtype import Subtype
 from .subtype_stats import subtype_counts
 from .subtyper import \
-    query_reads_jellyfish, \
-    query_contigs_blastn, \
     query_contigs_ac, \
     query_reads_ac
 from .utils import \
@@ -26,8 +23,7 @@ from .utils import \
     collect_fastq_from_dir, \
     group_fastqs, \
     collect_fasta_from_dir, \
-    init_subtyping_params, \
-    exc_exists
+    init_subtyping_params
 
 SCRIPT_NAME = 'hansel'
 LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
@@ -76,11 +72,6 @@ def init_parser():
                         help='Subtyping tile matching output path (tab-delimited)')
     parser.add_argument('-S', '--output-simple-summary',
                         help='Subtyping simple summary output path')
-    parser.add_argument('--slow',
-                        default=False,
-                        action='store_true',
-                        help='Count all kmers in reads with Jellyfish or find all tiles in contigs using blastn. '
-                             'Default is to use Aho-Corasick algorithm to scan reads/contigs for matching tiles.')
     parser.add_argument('--force',
                         action='store_true',
                         help='Force existing output files to be overwritten')
@@ -112,13 +103,6 @@ def init_parser():
                         type=int,
                         default=1,
                         help='Number of parallel threads to run analysis (default=1)')
-    parser.add_argument('-T', '--tmp-dir',
-                        default='/tmp',
-                        help='Base temporary working directory for intermediate analysis files')
-    parser.add_argument('-K', '--keep-tmp',
-                        default=False,
-                        action='store_true',
-                        help='Keep temporary analysis files')
     parser.add_argument('-v', '--verbose',
                         action='count',
                         default=0,
@@ -186,13 +170,6 @@ def collect_inputs(args: Any) -> Tuple[List[Tuple[str, str]], List[Tuple[List[st
     return input_genomes, reads
 
 
-def check_ext_deps_for_slow_mode():
-    install_blast_msg = 'Please install NCBI BLAST+ if you want to use {} in slow mode'.format(SCRIPT_NAME)
-    assert exc_exists('makeblastdb'), install_blast_msg
-    assert exc_exists('blastn'), install_blast_msg
-    assert exc_exists('jellyfish'), 'Please install Jellyfish if you want to use {} in slow mode'.format(SCRIPT_NAME)
-
-
 def main():
     parser = init_parser()
     if len(sys.argv[1:]) == 0:
@@ -200,8 +177,6 @@ def main():
         parser.exit()
     args = parser.parse_args()
     init_console_logger(args.verbose)
-    if args.slow:
-        check_ext_deps_for_slow_mode()
     output_summary_path = args.output_summary
     output_tile_results = args.output_tile_results
     output_simple_summary_path = args.output_simple_summary
@@ -219,50 +194,27 @@ def main():
         raise Exception('No input files specified!')
 
     n_threads = args.threads
-    tmp_dir = args.tmp_dir
 
     subtype_results = []  # type: List[Subtype]
     dfs = []  # type: List[pd.DataFrame]
-    if args.slow:
-        if len(input_genomes) > 0:
-            query_contigs_blastn(subtype_results=subtype_results,
-                                 dfs=dfs,
-                                 input_genomes=input_genomes,
-                                 scheme=scheme,
-                                 subtyping_params=subtyping_params,
-                                 scheme_name=scheme_name,
-                                 scheme_subtype_counts=scheme_subtype_counts,
-                                 tmp_dir=tmp_dir,
-                                 n_threads=n_threads)
-        if len(reads) > 0:
-            query_reads_jellyfish(subtype_results=subtype_results,
-                                  dfs=dfs,
-                                  reads=reads,
-                                  scheme=scheme,
-                                  scheme_name=scheme_name,
-                                  subtyping_params=subtyping_params,
-                                  scheme_subtype_counts=scheme_subtype_counts,
-                                  tmp_dir=tmp_dir,
-                                  n_threads=n_threads)
-    else:
-        if len(input_genomes) > 0:
-            query_contigs_ac(subtype_results=subtype_results,
-                             dfs=dfs,
-                             input_genomes=input_genomes,
-                             scheme=scheme,
-                             scheme_name=scheme_name,
-                             subtyping_params=subtyping_params,
-                             scheme_subtype_counts=scheme_subtype_counts,
-                             n_threads=n_threads)
-        if len(reads) > 0:
-            query_reads_ac(subtype_results=subtype_results,
-                           dfs=dfs,
-                           reads=reads,
-                           scheme=scheme,
-                           scheme_name=scheme_name,
-                           subtyping_params=subtyping_params,
-                           scheme_subtype_counts=scheme_subtype_counts,
-                           n_threads=n_threads)
+    if len(input_genomes) > 0:
+        query_contigs_ac(subtype_results=subtype_results,
+                         dfs=dfs,
+                         input_genomes=input_genomes,
+                         scheme=scheme,
+                         scheme_name=scheme_name,
+                         subtyping_params=subtyping_params,
+                         scheme_subtype_counts=scheme_subtype_counts,
+                         n_threads=n_threads)
+    if len(reads) > 0:
+        query_reads_ac(subtype_results=subtype_results,
+                       dfs=dfs,
+                       reads=reads,
+                       scheme=scheme,
+                       scheme_name=scheme_name,
+                       subtyping_params=subtyping_params,
+                       scheme_subtype_counts=scheme_subtype_counts,
+                       n_threads=n_threads)
 
     dfsummary = pd.DataFrame(subtype_results)
     dfsummary = dfsummary[SUBTYPE_SUMMARY_COLS]
@@ -289,9 +241,11 @@ def main():
             logging.info('Tile results written to "{}".'.format(output_tile_results))
             if args.json:
                 dfall.to_json(JSON_EXT_TMPL.format(output_tile_results), **kwargs_for_pd_to_json)
-                logging.info('Tile results written to "{}" in JSON format.'.format(JSON_EXT_TMPL.format(output_tile_results)))
+                logging.info(
+                    'Tile results written to "{}" in JSON format.'.format(JSON_EXT_TMPL.format(output_tile_results)))
         else:
-            logging.error('No tile results generated. No tile results file written to "{}".'.format(output_tile_results))
+            logging.error(
+                'No tile results generated. No tile results file written to "{}".'.format(output_tile_results))
 
     if output_simple_summary_path:
         if 'avg_tile_coverage' in dfsummary.columns:

@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
+
 import logging
-from subprocess import Popen, PIPE
-from typing import List, Any, Optional, Tuple, Union
+from typing import List, Any, Optional, Tuple
 
 import os
 import re
@@ -8,38 +9,6 @@ from collections import defaultdict
 
 from .const import SCHEME_FASTAS, REGEX_FASTQ, REGEX_FASTA
 from .subtyping_params import SubtypingParams
-
-
-def run_command(cmdlist: List[str]) -> (int, str, str):
-    p = Popen(cmdlist,
-              stdout=PIPE,
-              stderr=PIPE)
-    exit_code = p.wait()
-    stdout, stderr = p.communicate()
-    if isinstance(stdout, bytes):
-        stdout = stdout.decode()
-    if isinstance(stderr, bytes):
-        stderr = stderr.decode()
-    return exit_code, stdout, stderr
-
-
-def exc_exists(exc_name: str) -> bool:
-    """Check if an executable exists
-
-    Args:
-        exc_name (str): Executable name or path (e.g. "blastn")
-
-    Returns:
-        bool: Does the executable exists in the user's $PATH?
-    """
-    cmd = ['which', exc_name]
-    exit_code, stdout, stderr = run_command(cmd)
-    if exit_code == 0:
-        return True
-    else:
-        logging.warning('which exited with non-zero code {} with command "{}"'.format(exit_code, ' '.join(cmd)))
-        logging.warning(stderr)
-        return False
 
 
 def does_file_exist(filepath: str, force: bool):
@@ -199,42 +168,6 @@ def revcomp(s):
 
 def is_gzipped(p: str) -> bool:
     return bool(re.match(r'^.+\.gz$', p))
-
-
-def gunzip_to_tmp_dir(src, outdir):
-    import gzip
-    import shutil
-    filename = os.path.basename(src)
-    filename = re.sub(r'\.gz$', '', filename)
-    try:
-        if not os.path.exists(outdir):
-            os.makedirs(outdir)
-    except Exception as e:
-        logging.exception(e)
-    outpath = os.path.join(outdir, filename)
-    with gzip.open(src, 'rb') as f_in:
-        with open(outpath, 'wb') as f_out:
-            shutil.copyfileobj(f_in, f_out)
-    assert os.path.exists(outpath)
-    return outpath
-
-
-def uncompress_gzipped_files(files: Union[str, List[str]], tmp_dir: str) -> Union[str, List[str]]:
-    if isinstance(files, str):
-        if is_gzipped(files):
-            return gunzip_to_tmp_dir(files, tmp_dir)
-        else:
-            return files
-    elif isinstance(files, list):
-        tmp = []
-        for r in files:
-            if is_gzipped(r):
-                tmp.append(gunzip_to_tmp_dir(r, tmp_dir))
-            else:
-                tmp.append(r)
-        return tmp
-    else:
-        raise ValueError('Unexpected type of "files"="{}". Expected "str" or "List[str]"'.format(files))
 
 
 def init_subtyping_params(args: Optional[Any] = None,
