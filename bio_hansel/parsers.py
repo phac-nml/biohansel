@@ -39,7 +39,7 @@ def parse_fasta(filepath):
         # http://aripollak.com/pythongzipbenchmarks/
         # assumes Linux os with zcat installed
         import os
-        with os.popen('zcat {}'.format(filepath)) as f:
+        with os.popen('zcat < {}'.format(filepath)) as f:
             yield from _parse_fasta(f, filepath)
     else:
         with open(filepath, 'r') as f:
@@ -91,7 +91,7 @@ def parse_fastq(filepath):
         # http://aripollak.com/pythongzipbenchmarks/
         # assumes Linux os with zcat installed
         import os
-        with os.popen('zcat {}'.format(filepath)) as f:
+        with os.popen('zcat < {}'.format(filepath)) as f:
             yield from _parse_fastq(f)
     else:
         with open(filepath, 'rU') as f:
