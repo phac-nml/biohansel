@@ -52,14 +52,14 @@ These are the dependencies required for ``bio_hansel``:
 Installation
 ============
 
-With Conda
-----------
+With Conda_
+-----------
 
-Install ``bio_hansel`` from Conda with `conda` (`Conda installation instructions <https://bioconda.github.io/#install-conda>`_):
+Install ``bio_hansel`` from Bioconda_ with Conda_ (`Conda installation instructions <https://bioconda.github.io/#install-conda>`_):
 
 .. code-block:: bash
 
-    # setup Conda channels for BioConda and Conda-Forge (https://bioconda.github.io/#set-up-channels)
+    # setup Conda channels for Bioconda and Conda-Forge (https://bioconda.github.io/#set-up-channels)
     conda config --add channels defaults
     conda config --add channels conda-forge
     conda config --add channels bioconda
@@ -240,7 +240,7 @@ Analysis of all FASTA/FASTQ files in a directory
 
 
 Legal
------
+=====
 
 Copyright Government of Canada 2017
 
@@ -258,12 +258,14 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 
 Contact
--------
+=======
 
 **Gary van Domselaar**: gary.vandomselaar@phac-aspc.gc.ca
 
 
 .. _PyPI: https://pypi.org/project/bio-hansel/
+.. _Conda: https://conda.io/docs/
+.. _Bioconda: https://bioconda.github.io/
 .. _pip: https://pip.pypa.io/en/stable/quickstart/
 .. _numpy: http://www.numpy.org/
 .. _pandas: http://pandas.pydata.org/
