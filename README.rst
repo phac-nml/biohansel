@@ -84,6 +84,13 @@ Or install the latest master branch version directly from Github:
 
     pip install git+https://github.com/phac-nml/bio_hansel.git@master
 
+Install into Galaxy_ (version >= 17.01)
+---------------------------------------
+
+Install ``bio_hansel`` from the main Galaxy_ toolshed:
+
+https://toolshed.g2.bx.psu.edu/repository?repository_id=59b90ef18cc5dbbc&changeset_revision=4654c51dae72
+
 
 Usage
 =====
@@ -272,3 +279,4 @@ Contact
 .. _pyahocorasick: http://pyahocorasick.readthedocs.io/en/latest/
 .. _attrs: http://www.attrs.org/en/stable/
 .. _Python: https://www.python.org/
+.. _Galaxy: https://galaxyproject.org/
