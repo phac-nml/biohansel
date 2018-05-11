@@ -1,14 +1,14 @@
 |logo|
 
 
-|pypi| |nbsp| |license| |citest| |conda| |nbsp|
+|license| |nbsp| |citest| |nbsp| |pypi| |nbsp| |conda| 
 
 .. |logo| image:: https://i.imgur.com/yYOkFlH.png
     :target: https://github.com/phac-nml/bio_hansel
 .. |pypi| image:: https://badge.fury.io/py/bio-hansel.svg
     :target: https://pypi.python.org/pypi/bio_hansel/
-.. |license| image:: https://img.shields.io/badge/License-GPL%20v3-blue.svg
-    :target: https://www.gnu.org/licenses/gpl-3.0
+.. |license| image:: https://img.shields.io/badge/License-Apache%20v2.0-blue.svg
+    :target: http://www.apache.org/licenses/LICENSE-2.0
 .. |citest|  image:: https://travis-ci.org/phac-nml/bio_hansel.svg?branch=master
     :target: https://travis-ci.org/phac-nml/bio_hansel
 .. |conda|   image:: https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square
@@ -42,27 +42,41 @@ This tool has only been tested on Linux (specifically Arch Linux). It may or may
 
 These are the dependencies required for ``bio_hansel``:
 
-- Python (>=v3.5)
-    - `numpy>=1.12.1`
-    - `pandas>=0.20.1`
-    - `pyahocorasick>=1.1.6`
-    - `attrs`
+- Python_ (>=v3.5)
+    - numpy_ >=1.12.1
+    - pandas_ >=0.20.1
+    - pyahocorasick_ >=1.1.6
+    - attrs_
 
 
 Installation
 ============
 
-Install ``bio_hansel`` from Conda with `conda`:
+With Conda
+----------
+
+Install ``bio_hansel`` from Conda with `conda` (`Conda installation instructions <https://bioconda.github.io/#install-conda>`_):
 
 .. code-block:: bash
 
+    # setup Conda channels for BioConda and Conda-Forge (https://bioconda.github.io/#set-up-channels)
+    conda config --add channels defaults
+    conda config --add channels conda-forge
+    conda config --add channels bioconda
+    # install bio_hansel
     conda install bio_hansel
 
-Install ``bio_hansel`` from PyPI with `pip`:
+With pip_ from PyPI_
+---------------------
+
+Install ``bio_hansel`` from PyPI_ with pip_:
 
 .. code-block:: bash
 
     pip install bio_hansel
+
+With pip_ from Github
+---------------------
 
 Or install the latest master branch version directly from Github:
 
@@ -247,3 +261,12 @@ Contact
 -------
 
 **Gary van Domselaar**: gary.vandomselaar@phac-aspc.gc.ca
+
+
+.. _PyPI: https://pypi.org/project/bio-hansel/
+.. _pip: https://pip.pypa.io/en/stable/quickstart/
+.. _numpy: http://www.numpy.org/
+.. _pandas: http://pandas.pydata.org/
+.. _pyahocorasick: http://pyahocorasick.readthedocs.io/en/latest/
+.. _attrs: http://www.attrs.org/en/stable/
+.. _Python: https://www.python.org/
