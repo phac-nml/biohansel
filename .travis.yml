@@ -14,7 +14,7 @@ python:
   - '3.6'
 os:
   - linux
-  - osx
+#  - osx
 
 # Whitelist of branches to run CI Testing on.
 branches:
