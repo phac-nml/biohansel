@@ -7,8 +7,7 @@ Welcome to Bio_Hansel's Read the Docs Testing!
 ==============================================
 
 
-Indices and tables
-==================
+The documentation for bio_hansel is organized in the following sections:
 
 * :ref:`user-docs`
 * :ref:`installation-docs`
@@ -22,11 +21,11 @@ Indices and tables
    :maxdepth: 2
    :caption: User Documentation
 
-   usage
-   input
-   output
-   parameters
-   command-line
+   user-docs/usage
+   user-docs/input
+   user-docs/output
+   user-docs/parameters
+   user-docs/command-line
 
 .. _installation-docs:
 
@@ -34,10 +33,10 @@ Indices and tables
    :maxdepth: 2
    :caption: Installation
 
-   home
-   virtual_machine
-   galaxy
-   versions
+   installation-docs/home
+   installation-docs/virtual_machine
+   installation-docs/galaxy
+   installation-docs/versions
 
 .. _examples-docs:
 
@@ -45,7 +44,7 @@ Indices and tables
    :maxdepth: 2
    :caption: Examples
    
-   certain_bacteria
+   examples-docs/certain_bacteria
 
 .. _evaluation-docs:
 
@@ -53,7 +52,7 @@ Indices and tables
    :maxdepth: 2
    :caption: Evaluation
 
-   benchmarking
+   evaluation-docs/benchmarking
 
 
 
