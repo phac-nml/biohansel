@@ -66,12 +66,15 @@ Works on genome assemblies (FASTA files) or reads (FASTQ files)! Accepts Gzipped
    :maxdepth: 2
    :caption: Legal
 
-   legal.rst
+   legal
 
-Contact
-=======
+.. _contact:
 
-**Gary van Domselaar**: gary.vandomselaar@phac-aspc.gc.ca
+.. toctree::
+   :maxdepth: 2
+   :caption: Contact
+
+   contact
 
 
 
