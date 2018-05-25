@@ -17,6 +17,8 @@ Works on genome assemblies (FASTA files) or reads (FASTQ files)! Accepts Gzipped
 * :ref:`installation-docs`
 * :ref:`examples-docs`
 * :ref:`evaluation-docs`
+* :ref:`legal`
+* :ref:`contact`
 
 
 .. _user-docs:
@@ -58,7 +60,18 @@ Works on genome assemblies (FASTA files) or reads (FASTQ files)! Accepts Gzipped
 
    evaluation-docs/benchmarking
 
+.. _legal:
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Legal
+
+   legal.rst
+
+Contact
+=======
+
+**Gary van Domselaar**: gary.vandomselaar@phac-aspc.gc.ca
 
 
 

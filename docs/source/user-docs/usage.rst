@@ -1,6 +1,19 @@
 Usage
 =====
 
+Requirements and Dependencies
+-----------------------------
+
+This tool has only been tested on Linux (specifically Arch Linux). It may or may not work on OSX.
+
+These are the dependencies required for ``bio_hansel``:
+
+- Python_ (>=v3.5)
+    - numpy_ >=1.12.1
+    - pandas_ >=0.20.1
+    - pyahocorasick_ >=1.1.6
+    - attrs_
+
 Installation
 ------------
 
