@@ -7,7 +7,11 @@ Welcome to Bio_Hansel's Read the Docs Testing!
 ==============================================
 
 
-The documentation for bio_hansel is organized in the following sections:
+Subtype microbial whole-genome sequencing (WGS) data using SNV targeting k-mer subtyping schemes.
+
+Includes 33 bp k-mer SNV subtyping schemes for Salmonella enterica subsp. enterica serovar Heidelberg and Enteritidis genomes developed by Genevieve Labbe et al.
+
+Works on genome assemblies (FASTA files) or reads (FASTQ files)! Accepts Gzipped FASTA/FASTQ files as input!
 
 * :ref:`user-docs`
 * :ref:`installation-docs`
