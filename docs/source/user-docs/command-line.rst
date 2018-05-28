@@ -3,7 +3,7 @@ Command-Line
 
 If you run ``hansel -h``, you should see the following usage statement:
 
-.. code-block::
+.. code-block:: bash
 
     usage: hansel [-h] [-s SCHEME] [--scheme-name SCHEME_NAME]
                   [-p forward_reads reverse_reads] [-i fasta_path genome_name]
@@ -74,4 +74,4 @@ If you run ``hansel -h``, you should see the following usage statement:
                             Number of parallel threads to run analysis (default=1)
       -v, --verbose         Logging verbosity level (-v == show warnings; -vvv ==
                             show debug info)
-      -V, --version         show program's version number and exit
+      -V, --version         shows the program version number and exit
