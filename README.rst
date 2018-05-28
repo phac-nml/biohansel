@@ -168,7 +168,7 @@ If you run ``hansel -h``, you should see the following usage statement:
                             Number of parallel threads to run analysis (default=1)
       -v, --verbose         Logging verbosity level (-v == show warnings; -vvv ==
                             show debug info)
-      -V, --version         show program's version number and exit
+      -V, --version         shows the program version number and exit
 
 
 
