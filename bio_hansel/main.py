@@ -7,6 +7,7 @@ import sys
 import os
 import re
 from typing import Optional, List, Any, Tuple
+import numpy as np
 import pandas as pd
 
 from . import program_desc, __version__
@@ -52,6 +53,8 @@ def init_parser():
                              '/path/to/user/scheme)')
     parser.add_argument('--scheme-name',
                         help='Custom user-specified SNP substyping scheme name')
+    parser.add_argument('-M', '--scheme-metadata',
+                        help='Scheme subtype metadata table (CSV or tab-delimited format; must contain "subtype" column)')
     parser.add_argument('-p', '--paired-reads',
                         nargs=2,
                         metavar=('forward_reads', 'reverse_reads'),
@@ -170,6 +173,26 @@ def collect_inputs(args: Any) -> Tuple[List[Tuple[str, str]], List[Tuple[List[st
     return input_genomes, reads
 
 
+def read_metadata_table(path: str) -> Optional[pd.DataFrame]:
+    FILE_EXT_TO_PD_READ_FUNC = {
+        '.tab': pd.read_table,
+        '.tsv': pd.read_table,
+        '.csv': pd.read_csv
+    }
+    _, file_ext = os.path.splitext(os.path.basename(path))
+    file_ext = file_ext.lower()
+    if file_ext not in FILE_EXT_TO_PD_READ_FUNC:
+        logging.error('File extension of metadata file "{}" not one of the expected "{}"'.format(
+            path,
+            list(FILE_EXT_TO_PD_READ_FUNC.keys())
+        ))
+        return None
+    dfmd = FILE_EXT_TO_PD_READ_FUNC[file_ext](path) # type: pd.DataFrame
+    assert np.any(dfmd.columns == 'subtype'), 'Column with name "subtype" expected in metadata file "{}"'.format(path)
+    logging.info('Read scheme metadata file "{}" into DataFrame with shape {}'.format(path, dfmd.shape))
+    return dfmd
+
+
 def main():
     parser = init_parser()
     if len(sys.argv[1:]) == 0:
@@ -192,7 +215,9 @@ def main():
     input_genomes, reads = collect_inputs(args)
     if len(input_genomes) == 0 and len(reads) == 0:
         raise Exception('No input files specified!')
-
+    df_md = None
+    if args.scheme_metadata:
+        df_md = read_metadata_table(args.scheme_metadata)
     n_threads = args.threads
 
     subtype_results = []  # type: List[Subtype]
@@ -221,6 +246,9 @@ def main():
 
     if dfsummary['avg_tile_coverage'].isnull().all():
         dfsummary = dfsummary.drop(labels='avg_tile_coverage', axis=1)
+
+    if df_md is not None:
+        dfsummary = pd.merge(dfsummary, df_md, how='left', on='subtype')
 
     kwargs_for_pd_to_table = dict(sep='\t', index=None, float_format='%.3f')
     kwargs_for_pd_to_json = dict(orient='records')
@@ -252,6 +280,9 @@ def main():
             df_simple_summary = dfsummary[['sample', 'subtype', 'avg_tile_coverage', 'qc_status', 'qc_message']]
         else:
             df_simple_summary = dfsummary[['sample', 'subtype', 'qc_status', 'qc_message']]
+
+        if df_md is not None:
+            df_simple_summary = pd.merge(df_simple_summary, df_md, how='left', on='subtype')
 
         df_simple_summary.to_csv(output_simple_summary_path, **kwargs_for_pd_to_table)
         if args.json:
