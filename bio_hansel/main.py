@@ -7,7 +7,6 @@ import sys
 import os
 import re
 from typing import Optional, List, Any, Tuple
-import numpy as np
 import pandas as pd
 
 from . import program_desc, __version__
@@ -17,6 +16,7 @@ from .subtype_stats import subtype_counts
 from .subtyper import \
     query_contigs_ac, \
     query_reads_ac
+from .metadata import read_metadata_table, merge_metadata_with_summary_results
 from .utils import \
     genome_name_from_fasta_path, \
     get_scheme_fasta, \
@@ -173,26 +173,6 @@ def collect_inputs(args: Any) -> Tuple[List[Tuple[str, str]], List[Tuple[List[st
     return input_genomes, reads
 
 
-def read_metadata_table(path: str) -> Optional[pd.DataFrame]:
-    FILE_EXT_TO_PD_READ_FUNC = {
-        '.tab': pd.read_table,
-        '.tsv': pd.read_table,
-        '.csv': pd.read_csv
-    }
-    _, file_ext = os.path.splitext(os.path.basename(path))
-    file_ext = file_ext.lower()
-    if file_ext not in FILE_EXT_TO_PD_READ_FUNC:
-        logging.error('File extension of metadata file "{}" not one of the expected "{}"'.format(
-            path,
-            list(FILE_EXT_TO_PD_READ_FUNC.keys())
-        ))
-        return None
-    dfmd = FILE_EXT_TO_PD_READ_FUNC[file_ext](path) # type: pd.DataFrame
-    assert np.any(dfmd.columns == 'subtype'), 'Column with name "subtype" expected in metadata file "{}"'.format(path)
-    logging.info('Read scheme metadata file "{}" into DataFrame with shape {}'.format(path, dfmd.shape))
-    return dfmd
-
-
 def main():
     parser = init_parser()
     if len(sys.argv[1:]) == 0:
@@ -248,7 +228,7 @@ def main():
         dfsummary = dfsummary.drop(labels='avg_tile_coverage', axis=1)
 
     if df_md is not None:
-        dfsummary = pd.merge(dfsummary, df_md, how='left', on='subtype')
+        dfsummary = merge_metadata_with_summary_results(dfsummary, df_md)
 
     kwargs_for_pd_to_table = dict(sep='\t', index=None, float_format='%.3f')
     kwargs_for_pd_to_json = dict(orient='records')
@@ -282,7 +262,7 @@ def main():
             df_simple_summary = dfsummary[['sample', 'subtype', 'qc_status', 'qc_message']]
 
         if df_md is not None:
-            df_simple_summary = pd.merge(df_simple_summary, df_md, how='left', on='subtype')
+            df_simple_summary = merge_metadata_with_summary_results(df_simple_summary, df_md)
 
         df_simple_summary.to_csv(output_simple_summary_path, **kwargs_for_pd_to_table)
         if args.json:
