@@ -16,7 +16,7 @@ def read_vcf():
 def main():
     data_frame=read_vcf()
     # print(data_frame)
-    data_frame=data_frame[data_frame['ALT'].str.len()>1]
+    data_frame=data_frame[data_frame['ALT'].str.len()<=1]
     print(data_frame)
 
     header = """##fileformat=VCFv4.1
