@@ -1,0 +1,16 @@
+genomes 	group
+mysnpsSRR7221720	A
+mysnpsSRR7170730	A
+mysnpsSRR7168670	A
+mysnpsSRR7167142	A
+mysnpsSRR7135200	B
+mysnpsSRR7130351	A
+mysnpsSRR6967786	C
+mysnpsSRR7128411	A
+mysnpsSRR7168116	A
+mysnpsSRR6703297	A
+mysnpsSRR6683916	C
+mysnpsSRR6683914	C
+mysnpsSRR6683736	C
+mysnpsSRR6683541	C
+Reference	A
