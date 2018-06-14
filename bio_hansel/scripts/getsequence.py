@@ -6,7 +6,7 @@ def getSequences(data_frame, group):
 
     max_sequence= data_frame.loc[data_frame['POS'].idxmax()]
     max_sequence_value=max_sequence['POS']
-    file=open("example.fasta", "w")
+    file=open("schema.fasta", "w")
     for index, row in data_frame.iterrows():
         position=row['POS']
         reference_snv=row['REF']
