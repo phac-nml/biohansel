@@ -3,7 +3,6 @@ import logging
 import os
 import sys
 import pandas as pd
-import allel
 # import numpy
 # import scipy
 
@@ -39,7 +38,7 @@ def main():
     #     parser.exit()
     args = parser.parse_args()
     # init_console_logger(args.verbose)
-    data_frame=allel.vcf_to_dataframe('core.vcf')
+    # data_frame=allel.vcf_to_dataframe('core.vcf')
    
     data_frame=data_frame.query('ALT_1.len()>1')
     data_frame.to_csv('output.csv',sep='\t')
