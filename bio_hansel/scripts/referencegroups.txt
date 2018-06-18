@@ -1,4 +1,4 @@
-genomes 	group
+genomes group
 mysnpsSRR7221720	A
 mysnpsSRR7170730	A
 mysnpsSRR7168670	A

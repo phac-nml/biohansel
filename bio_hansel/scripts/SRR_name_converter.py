@@ -3,6 +3,8 @@ import argparse
 import logging
 import wget
 import os 
+from executeSnippy import executeSnippy
+from filtervcf import filter_vcf
 
 SCRIPT_NAME='SRR_name_conversion'
 LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
@@ -35,41 +37,48 @@ def init_parser():
     return parser
 
 def main():
+    home_folder = os.path.expanduser('~')
     parser = init_parser()
     if len(sys.argv[1:]) == 0:
         parser.print_help()
         parser.exit()
     args = parser.parse_args()
     init_console_logger(3)
-    filename=args.input_genomes
-    print(filename)
-    file= open(filename,'r')
+    input_genomes=args.input_genomes
+    reference_genome_path=home_folder+args.reference_genome_file
+   
+   
+    with open (input_genomes, 'r') as file:
+        # reference_genome_file=open(reference_genome_path, 'r')
+        # print(reference_genome_file.readline())
+        
+        
+
+        print('Beginning file download with wget module')
+
+        ##import files into home directory
+        # genome_file=args.reference_genome_file
+        home_directory=os.path.expanduser('~')
+        if args.output_folder_name is not None:
+            
+            output_directory=home_directory+'/'+args.output_folder_name
+        else:
+            output_directory=home_directory+'/'+'genomes'
+
+        if not os.path.exists(output_directory):
+            os.makedirs(output_directory)
+
+
+        # for line in file:
+        #     line=line.rstrip()
+        #     newString1='ftp://ftp.sra.ebi.ac.uk/vol1/fastq/'+line[0:6]+'/00'+line[len(line)-1]+'/'+line+'/'+line+'_1.fastq.gz'
+        #     newString2='ftp://ftp.sra.ebi.ac.uk/vol1/fastq/'+line[0:6]+'/00'+line[len(line)-1]+'/'+line+'/'+line+'_2.fastq.gz'
+        #     wget.download(newString1, out=output_directory)
+        #     wget.download(newString2, out=output_directory)
+            
+    groups_file=executeSnippy(output_directory, reference_genome_path, input_genomes)
+    filter_vcf(output_directory, input_genomes, groups_file)
     
-
-    print('Beginning file download with wget module')
-
-    ##import files into home directory
-    home_directory=os.path.expanduser('~')
-    if args.output_folder_name is not None:
-        
-        output_directory=home_directory+'/'+args.output_folder_name
-    else:
-        output_directory=home_directory+'/'+'genomes'
-
-    if not os.path.exists(output_directory):
-        os.makedirs(output_directory)
-
-
-    for line in file:
-        line=line.rstrip()
-        newString1='ftp://ftp.sra.ebi.ac.uk/vol1/fastq/'+line[0:6]+'/00'+line[len(line)-1]+'/'+line+'/'+line+'_1.fastq.gz '
-        newString2='ftp://ftp.sra.ebi.ac.uk/vol1/fastq/'+line[0:6]+'/00'+line[len(line)-1]+'/'+line+'/'+line+'_2.fastq.gz'
-        wget.download(newString1, out=output_directory)
-        wget.download(newString2, out=output_directory)
-        
-
-
-    file.close()
     
 
 if __name__ == '__main__':
