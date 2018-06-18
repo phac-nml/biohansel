@@ -1,0 +1,3 @@
+ID	Aligned Bases	Reference bases	% Aligned Bases
+mysnpsSRR7170730	5029182	5498450	91.47
+mysnpsSRR7221720	5165718	5498450	93.95

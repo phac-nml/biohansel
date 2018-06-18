@@ -7,21 +7,21 @@ import math
 
 
 
-def split():
+def split(input_genomes):
     samples=[]
-    with open('List_EcoliO157_genomes.txt') as my_file:
+    with open(input_genomes) as my_file:
+    # with open("List_EcoliO157_genomes.txt") as my_file:
      for line in my_file:
         samples.append(line.strip())
     
-    
-
-   
     np.random.seed(42)
     indices=[]
     indices = np.random.permutation(samples)
     n_train = math.floor(len(indices)*0.75)
   
     train_indices, test_indices = indices[:n_train], indices[n_train:]
+
+
     
     return (train_indices, test_indices)
 
