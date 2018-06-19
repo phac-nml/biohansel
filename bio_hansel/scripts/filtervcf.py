@@ -17,7 +17,7 @@ def read_vcf(output_directory):
                'QUAL': str, 'FILTER': str, 'INFO': str}
     ).rename(columns={'#CHROM': 'CHROM'})
 
-def filter_vcf(output_directory, input_genomes, reference_groups):
+def filter_vcf(output_directory, input_genomes, reference_groups, reference_genome_path):
     data_frame=read_vcf(output_directory)
     # print(data_frame)
     ##take out any columns that contains more than one state
@@ -39,10 +39,10 @@ def filter_vcf(output_directory, input_genomes, reference_groups):
     train_indices, test_indices=split(input_genomes)
     print(train_indices)
 
-    createSeparateVCF(data_frame, test_indices, output_directory, reference_groups)
+    createSeparateVCF(data_frame, test_indices, output_directory, reference_groups, reference_genome_path)
 
 
-def createSeparateVCF(data_frame, test_indices, output_directory, reference_groups):
+def createSeparateVCF(data_frame, test_indices, output_directory, reference_groups, reference_genome_path):
     new_data_frame=data_frame
     
     test_group=pd.read_table(reference_groups, sep='\t')
@@ -60,7 +60,7 @@ def createSeparateVCF(data_frame, test_indices, output_directory, reference_grou
    
     modified_df=new_data_frame.drop(['CHROM','ID','REF', 'ALT', 'QUAL', 'FILTER', 'INFO', 'FORMAT'], 1)
     results_list=conductFisherTest(modified_df, output_directory, test_group)
-    generate_schema(output_directory, results_list)
+    generate_schema(output_directory, results_list, reference_genome_path)
 
     
 

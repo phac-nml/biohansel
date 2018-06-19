@@ -5,7 +5,7 @@ from getsequence import getSequences
 import uuid
 
 
-def generate_schema(output_directory,results_list):
+def generate_schema(output_directory,results_list, reference_genome_path):
     random_id=uuid.uuid4()
     print(f"random if is {random_id}")
 
@@ -32,5 +32,5 @@ def generate_schema(output_directory,results_list):
 
         new_data=data_frame.rename(columns={'Name':'POS'})
         result=new_data.merge(vcf[['POS','REF','ALT','CHROM']],how='left',on ='POS')
-        getSequences(result, character, random_id, output_directory)
-      
+        getSequences(result, character, random_id, output_directory, reference_genome_path)
+    print(f"job completed: output generated at schema-{random_id}.fasta")
