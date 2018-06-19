@@ -77,7 +77,7 @@ def main():
         #     wget.download(newString2, out=output_directory)
             
     groups_file=executeSnippy(output_directory, reference_genome_path, input_genomes)
-    filter_vcf(output_directory, input_genomes, groups_file)
+    filter_vcf(output_directory, input_genomes, groups_file, reference_genome_path)
     
     
 
