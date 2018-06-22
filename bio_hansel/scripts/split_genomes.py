@@ -19,11 +19,12 @@ def split(input_genomes):
     indices = np.random.permutation(samples)
     n_train = math.floor(len(indices)*0.75)
   
-    train_indices, test_indices = indices[:n_train], indices[n_train:]
-
+    # train_indices, test_indices = indices[:n_train], indices[n_train:]
+    test_indices=indices[n_train:]
 
     
-    return (train_indices, test_indices)
+    # return (train_indices, test_indices)
+    return test_indices
 
 
 if __name__ == '__split__':
