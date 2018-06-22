@@ -3,16 +3,21 @@ import pandas as pd
 import os
 
 
-def getSequences(data_frame, group, random_id, output_directory, reference_genome_path):
-     """Generates the schema to be used as input for biohansel, goes through the results list and adds each group's individual SNVs into a schema file
+def getSequences(data_frame: pd.DataFrame, group:str, random_id:int, output_directory:str, reference_genome_path:str):
+    """Collects the sequences from the from the reference genome by going through the dataframe and finding the appropriate SNV location
     Args: 
     output_directory:directory where the schema would be located as indicated by the user
-    results_list: the list of file paths that lead to the results of each group's fisher exact test ratio values
-    reference_genome_path: the path to the genbank reference genome file
+    data_frame: filtered data frame with list of SNVs and their location
+    group: specific group in which the SNV belongs to
+    random_id: id that is assigned to the schema file
+    output_directory: directory in which output files are stored
+    reference_genome_path: file path to where the reference genome is located
+
+    Output:
+    Creates schema file in the output directory
+
 
     """
-    
-    home_folder=os.path.expanduser('~')
     max_sequence= data_frame.loc[data_frame['POS'].idxmax()]
     gb_file = reference_genome_path
     max_sequence_value=max_sequence['POS']
