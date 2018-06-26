@@ -25,9 +25,9 @@ def conductFisherTest(modified_data_frame: pd.DataFrame, output_directory: str, 
             
                 file_output=output_directory+"/feht_results"+group_values[i]+".txt"
                 with open(file_output, 'w') as current_file:
-                argument_list=["feht", "-i", output_directory+"/testreference.txt", "-d", output_directory+"/fishertest.txt", "--one", "group "+ group_values[i], "-f", "1"]
-                call(argument_list, stdout=current_file)
-                list_of_results.append(file_output)
+                    argument_list=["feht", "-i", output_directory+"/testreference.txt", "-d", output_directory+"/fishertest.txt", "--one", "group "+ group_values[i], "-f", "1"]
+                    call(argument_list, stdout=current_file)
+                    list_of_results.append(file_output)
             
             return list_of_results 
         else:

@@ -6,7 +6,7 @@ import uuid
 
 
 def generate_schema(output_directory: str,results_list: list, reference_genome_path: str):
-     """Generates the schema to be used as input for biohansel, goes through the results list and adds each group's individual SNVs into a schema file
+    """Generates the schema to be used as input for biohansel, goes through the results list and adds each group's individual SNVs into a schema file
     Args: 
     output_directory:directory where the schema would be located as indicated by the user
     results_list: the list of file paths that lead to the results of each group's fisher exact test ratio values

@@ -15,8 +15,9 @@ def executeSnippy(output_directory: str, reference_genome: str, inputgenomes: st
     
     """
     snippy_command="snippy"
+    feht_command="./FastTree"
     try:
-        if(shutil.which(snippy_command)) is not None:
+        if(shutil.which(snippy_command) and shutil.which(feht_command)) is not None:
             with open(inputgenomes,'r') as file:
                 for line in file:
                     line=line.rstrip()
@@ -29,6 +30,10 @@ def executeSnippy(output_directory: str, reference_genome: str, inputgenomes: st
                     argument_list.append(f"{output_directory}/mysnps{line}")
                     
                 call(argument_list) 
+            with open (f"{output_directory}/tree_file.tree)") as tree_file:
+                feht_argument_list=["./FastTree", "-gtr", "nt", "f{output_directory}/core.aln" ]
+                call(feht_argument_list, stdout=tree_file)
+            return tree_file
         else:
             raise Exception("snippy not installed on this machine, cannot proceed any further")
             
