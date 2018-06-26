@@ -1,4 +1,0 @@
-genomes	group
-Reference	1
-mysnpsSRR7170730	2
-mysnpsSRR7221720	3
