@@ -126,8 +126,10 @@ def main():
     tree_file=executeSnippy(output_directory, reference_genome_path, input_genomes)
     groups_file=findClusters(tree_file, input_genomes, output_directory)
     data_frame=read_vcf(output_directory)
+   
     test_indices=split(input_genomes)
     data_frame=filter_vcf(output_directory, data_frame)
+   
 
     modified_data_frame, test_group=createSeparateVCF(data_frame, test_indices,groups_file)
     results_list=conductFisherTest(modified_data_frame, output_directory, test_group)
