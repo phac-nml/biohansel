@@ -28,14 +28,14 @@ def generate_schema(output_directory: str,results_list: list, reference_genome_p
         character=needed_string[len(needed_string)-1:]
 
 
-        print (character)
+        
         data_frame=pd.read_table(
             io.StringIO(str.join(os.linesep, lines)),
             dtype={'Name': int, 'GroupOne(+)': int, 'GroupOne(-)': int, 'GroupTwo(+)': int, 'GroupTwo(-)': int,
                 'pValue': int, 'Ratio': int}
         )
 
-        vcf=pd.read_table(output_directory+'/filtered.vcf')
+        vcf=pd.read_table(f"{output_directory}/filtered.vcf")
 
         new_data=data_frame.rename(columns={'Name':'POS'})
         result=new_data.merge(vcf[['POS','REF','ALT','CHROM']],how='left',on ='POS')

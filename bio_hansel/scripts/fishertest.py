@@ -1,6 +1,7 @@
 import pandas as pd
 from subprocess import call
 import shutil
+import sys
 
 
 def conductFisherTest(modified_data_frame: pd.DataFrame, output_directory: str, test_groups:list):
@@ -14,18 +15,18 @@ def conductFisherTest(modified_data_frame: pd.DataFrame, output_directory: str, 
     """
     feht_command="feht"
     try:
-        if(shutil.which(snippy_command)) is not None:
+        if(shutil.which(feht_command)) is not None:
 
-            modified_data_frame.to_csv(output_directory+'/fishertest.txt', mode='w', index=False,sep="\t" )
-            test_groups.to_csv(output_directory+'/testreference.txt', mode='w', index=False,sep="\t" )
+            modified_data_frame.to_csv(f"{output_directory}/fishertest.txt", mode='w+', index=False,sep="\t" )
+            test_groups.to_csv(f"{output_directory}/testreference.txt", mode='w+', index=False,sep="\t" )
             group_values=test_groups.group.unique()
             list_of_results=[]
 
             for i in range(len(group_values)):
             
-                file_output=output_directory+"/feht_results"+group_values[i]+".txt"
+                file_output=f"{output_directory}/feht_results{group_values[i]}.txt"
                 with open(file_output, 'w') as current_file:
-                    argument_list=["feht", "-i", output_directory+"/testreference.txt", "-d", output_directory+"/fishertest.txt", "--one", "group "+ group_values[i], "-f", "1"]
+                    argument_list=["feht", "-i", f"{output_directory}/testreference.txt", "-d", f"{output_directory}/fishertest.txt", "--one", f"group {group_values[i]}", "-f", "1"]
                     call(argument_list, stdout=current_file)
                     list_of_results.append(file_output)
             
