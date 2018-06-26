@@ -36,18 +36,14 @@ def getSequences(data_frame: pd.DataFrame, group:str, random_id:int, output_dire
 
                 record_1=gb_record.seq[seq_start1:seq_stop1]
                 record_2=gb_record.seq[seq_start2:seq_stop2]
-                #     SeqIO.write(record, output_handle, "fasta")
-                #if the reatio is above 1, then it means that it is positive and takes the alternate snv form 
+                #if the ratio is above 1, then it means that it is positive and takes the alternate snv form 
                 if(row['Ratio']>0): 
                     file.write('>'+str(position)+'-'+group+'\n')
                     file.write(str(record_1)+alternate_snv+str(record_2)+'\n')
                     file.write('>negative'+str(position)+'-'+group+'\n')
                     file.write(str(record_1)+reference_snv+str(record_2)+'\n')
 
-                    # print('>'+str(position)+group+'\n')
-                    # print(str(record_1)+alternate_snv+str(record_2)+'\n')
-                    # print('>negative'+str(position)+group+'\n')
-                    # print(str(record_1)+reference_snv+str(record_2)+'\n')
+    
                     
                 # if the ratio is below 1, then it means that it remains negative
                 else:
@@ -56,8 +52,5 @@ def getSequences(data_frame: pd.DataFrame, group:str, random_id:int, output_dire
                     file.write('>negative'+str(position)+'-'+group+'\n')
                     file.write(str(record_1)+alternate_snv+str(record_2)+'\n')
 
-                    # print('>'+str(position)+'-'+group+'\n')
-                    # print(str(record_1)+reference_snv+str(record_2)+'\n')
-                    # print('>negative'+str(position)+'-'+group+'\n')
-                    # print(str(record_1)+alternate_snv+str(record_2)+'\n')
+           
 
