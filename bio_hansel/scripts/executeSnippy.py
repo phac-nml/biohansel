@@ -16,8 +16,7 @@ def executeSnippy(output_directory: str, reference_genome: str, inputgenomes: st
     """
     snippy_command="snippy"
     feht_command="./FastTree"
-    # inputgenomes='testgenomes.txt'
-    # print(reference_genome)
+    
     try:
         if(shutil.which(snippy_command)) is not None:
             with open(inputgenomes,'r') as file:
