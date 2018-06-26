@@ -10,6 +10,7 @@ from split_genomes import split
 from getsequence import getSequences
 from generateschema import generate_schema
 from fishertest import conductFisherTest
+from findcluster import findClusters
 
 
 SCRIPT_NAME='schema_creation'
@@ -119,7 +120,8 @@ def main():
     output_directory, input_genomes=downloadFastqs(input_genomes,output_folder_name)
     print(f"using genbank file from {reference_genome_path}")
 
-    groups_file=executeSnippy(output_directory, reference_genome_path, input_genomes)
+    tree_file=executeSnippy(output_directory, reference_genome_path, input_genomes)
+    groups_file=findClusters(tree_file, input_genomes, output_directory)
     data_frame=read_vcf(output_directory)
     test_indices=split(input_genomes)
     data_frame=filter_vcf(output_directory, groups_file, reference_genome_path, data_frame)
