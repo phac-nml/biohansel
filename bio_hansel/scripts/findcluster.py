@@ -8,12 +8,12 @@ import numpy as np
 from itertools import combinations
 from scipy import cluster
 
-def findClusters(tree_file, input_genomes, output_directory):
+def findClusters(tree_file: str, input_genomes: str, output_directory: str):
     """
 
     Returns a groups file that indicates the group membership of each of the genomes based on their tree distance
     """
-    
+    # homedirectory=os.path.expanduser('~')
     # tree_file=f"{homedirectory}/ecoli-genomes/e-coliO157-tree_file.tree"
     # input_genomes=f"{homedirectory}/ecoli-genomes/List_EcoliO157_genomes.txt"
     with open(tree_file, 'r') as file:
@@ -52,12 +52,13 @@ def findClusters(tree_file, input_genomes, output_directory):
         for i in range(len(leaves)):
                 cluster_dict[leaves[i]]=clusters[i]
         
-        with open('newfile.txt', 'w+') as groupsfile:
-            groupsfile.write("genomes\tgroup\n")
+        cluster_filepath=f"{output_directory}/clusterfile.txt"
+        
+        with open(cluster_filepath, 'w+') as clusterfile:
+            clusterfile.write("genomes\tgroup\n")
             for key, value in cluster_dict.items():
-                groupsfile.write(f"{key}\t{value}\n")
+                clusterfile.write(f"{key}\t{value}\n")
                 
         
         print (cluster_dict)
-        return groupsfile
-findClusters(3,2,3)
+        return cluster_filepath

@@ -70,6 +70,7 @@ def createSeparateVCF(data_frame: pd.DataFrame, test_indices: list, reference_gr
 
     new_data_frame=data_frame
 
+    print(reference_groups)
     test_group=pd.read_table(reference_groups, sep='\t')
     test_group.columns=test_group.columns.str.strip()
     for index in range(len(test_indices)):

@@ -73,7 +73,8 @@ def downloadFastqs(input_genomes: str, output_folder_name: str):
             
             if not os.path.exists(output_directory):
                 os.makedirs(output_directory)
-            with open (f"{output_directory}/genomes_used.txt", "w") as genomes_file:
+            genomes_path=f"{output_directory}/genomes_used.txt"
+            with open (genomes_path, "w") as genomes_file:
                 for i in range(2):
                     while True:
                         try:  
@@ -87,9 +88,9 @@ def downloadFastqs(input_genomes: str, output_folder_name: str):
                                 
                                 file1=wget.download(fastq1_string, out=output_directory)
                                 file2=wget.download(fastq2_string, out=output_directory)
-                            if file1 is not None:
-                                genomes_file.write(f"{line}\n")
-                            return output_directory, genomes_file
+                                if file1 is not None:
+                                    genomes_file.write(f"{line}\n")
+                            return output_directory, genomes_path
 
 
             # handle error if files are not downloadable through wget
@@ -107,6 +108,7 @@ def downloadFastqs(input_genomes: str, output_folder_name: str):
             
 
 def main():
+    
     home_folder = os.path.expanduser('~')
     parser = init_parser()
     if len(sys.argv[1:]) == 0:
@@ -117,7 +119,7 @@ def main():
     init_console_logger(3)
     input_genomes=args.input_genomes
     reference_genome_path=f"{home_folder}{args.reference_genome_file}"
-   
+    print(f"using genbank file from {reference_genome_path}")
     output_directory, input_genomes=downloadFastqs(input_genomes,output_folder_name)
     print(f"using genbank file from {reference_genome_path}")
 
@@ -127,7 +129,7 @@ def main():
     test_indices=split(input_genomes)
     data_frame=filter_vcf(output_directory, data_frame)
 
-    modified_data_frame, test_group=createSeparateVCF(data_frame, test_indices, output_directory, reference_groups, reference_genome_path)
+    modified_data_frame, test_group=createSeparateVCF(data_frame, test_indices,groups_file)
     results_list=conductFisherTest(modified_data_frame, output_directory, test_group)
     generate_schema(output_directory, results_list, reference_genome_path)
     
