@@ -101,7 +101,7 @@ def downloadFastqs(input_genomes: str, output_folder_name: str):
         
     #handle error for file input
     except IOError as e:
-    # print(f"{e} was not found as a valid file name input")
+    
         print("I/O error({0}): {1}".format(e.errno, e.strerror, input_genomes))
         print(e)
         sys.exit(1)
