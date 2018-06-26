@@ -59,51 +59,52 @@ def downloadFastqs(input_genomes: str, output_folder_name: str):
     
     """
     output_directory=""
-    # try:
+    try:
    
-    with open (input_genomes, 'r') as file:
-        print('Beginning file download with wget module')
+        with open (input_genomes, 'r') as file:
+            print('Beginning file download with wget module')
 
-        if output_folder_name is not None:
+            if output_folder_name is not None:
+                
+                output_directory=f"{home_folder}/{output_folder_name}"
+            else:
+                output_directory=f"{home_folder}/genomes"
+                
             
-            output_directory=f"{home_folder}/{output_folder_name}"
-        else:
-            output_directory=f"{home_folder}/genomes"
-            
+            if not os.path.exists(output_directory):
+                os.makedirs(output_directory)
+            with open (f"{output_directory}/genomes_used.txt", "w") as genomes_file:
+                for i in range(2):
+                    while True:
+                        try:  
+                            for line in file:
+
+                                print(f"output files will be stored in {output_directory}")
+                                line=line.rstrip()
+                                fastq1_string=f"ftp://ftp.sra.ebi.ac.uk/vol1/fastq/{line[0:6]}/00{line[len(line)-1]}/{line}/{line}_1.fastq.gz"
+                                fastq2_string=f"ftp://ftp.sra.ebi.ac.uk/vol1/fastq/{line[0:6]}/00{line[len(line)-1]}/{line}/{line}_2.fastq.gz"
+                                print(f"Reading in SRR name and attempting FastQ download for: {line}")
+                                
+                                file1=wget.download(fastq1_string, out=output_directory)
+                                file2=wget.download(fastq2_string, out=output_directory)
+                            if file1 is not None:
+                                genomes_file.write(f"{line}\n")
+                            return output_directory, genomes_file
+
+
+            # handle error if files are not downloadable through wget
+                        except IOError as err:
+                            print("I/O error({0}): {1}".format(err.errno, err.strerror, input_genomes))
+                        
+                            print(f"There was a problem downloading the FastQ, {line} was not downloaded")
         
-        if not os.path.exists(output_directory):
-            os.makedirs(output_directory)
-        with open (f"{output_directory}/genomes_used.txt", "w") as genomes_file:
-    #         for i in range(2):
-    #             while True:
-    #                 try:  
-    #                     # for line in file:
-
-    #                         # print(f"output files will be stored in {output_directory}")
-    #                         # line=line.rstrip()
-    #                         # fastq1_string=f"ftp://ftp.sra.ebi.ac.uk/vol1/fastq/{line[0:6]}/00{line[len(line)-1]}/{line}/{line}_1.fastq.gz"
-    #                         # fastq2_string=f"ftp://ftp.sra.ebi.ac.uk/vol1/fastq/{line[0:6]}/00{line[len(line)-1]}/{line}/{line}_2.fastq.gz"
-    #                         # print(f"Reading in SRR name and attempting FastQ download for: {line}")
-                            
-    #                         # file1=wget.download(fastq1_string, out=output_directory)
-    #                         # file2=wget.download(fastq2_string, out=output_directory)
-    # if file1 is not None:
-    #     genomes_file.write(f"{line}\n)
-
-
-    #     # handle error if files are not downloadable through wget
-    #                 except IOError as err:
-    #                     print("I/O error({0}): {1}".format(err.errno, err.strerror, input_genomes))
-                    
-    #                     print(f"There was a problem downloading the FastQ, {line} was not downloaded")
-    
-    # #handle error for file input
-    # except IOError as e:
-    # # print(f"{e} was not found as a valid file name input")
-    #     print("I/O error({0}): {1}".format(e.errno, e.strerror, input_genomes))
-    #     print(e)
-    #     sys.exit(1)
-            return output_directory, genomes_file
+    #handle error for file input
+    except IOError as e:
+    # print(f"{e} was not found as a valid file name input")
+        print("I/O error({0}): {1}".format(e.errno, e.strerror, input_genomes))
+        print(e)
+        sys.exit(1)
+            
 
 def main():
     home_folder = os.path.expanduser('~')
@@ -124,7 +125,7 @@ def main():
     groups_file=findClusters(tree_file, input_genomes, output_directory)
     data_frame=read_vcf(output_directory)
     test_indices=split(input_genomes)
-    data_frame=filter_vcf(output_directory, groups_file, reference_genome_path, data_frame)
+    data_frame=filter_vcf(output_directory, data_frame)
 
     modified_data_frame, test_group=createSeparateVCF(data_frame, test_indices, output_directory, reference_groups, reference_genome_path)
     results_list=conductFisherTest(modified_data_frame, output_directory, test_group)

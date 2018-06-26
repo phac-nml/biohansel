@@ -8,13 +8,13 @@ from generateschema import generate_schema
 
 
 def read_vcf(output_directory: str):
-"""Reads in the generated vcf file
-Args: 
-Output_directory: where the output files are stored
+    """Reads in the generated vcf file
+    Args: 
+    Output_directory: where the output files are stored
 
-Returns:
-data_frame: returns the dataframe version of the generated vcf file from snippy
-"""
+    Returns:
+    data_frame: returns the dataframe version of the generated vcf file from snippy
+    """
     vcf_file=output_directory+"/core.vcf"
     with open(vcf_file, 'r') as file:
         lines = [line for line in file if not line.startswith('##')]
@@ -57,7 +57,7 @@ def filter_vcf(output_directory: str, data_frame:pd.DataFrame):
 
 
 def createSeparateVCF(data_frame: pd.DataFrame, test_indices: list, reference_groups: str):
-     """Removes any SNVs that have more than than two states, i.e. A, T, G
+    """Removes any SNVs that have more than than two states, i.e. A, T, G
     Args: 
     reference_groups: the groups file path that indicates the group that each genome belongs to
     data_frame: dataframe after filtering only for two-state SNVs
@@ -67,13 +67,13 @@ def createSeparateVCF(data_frame: pd.DataFrame, test_indices: list, reference_gr
 
 
     """
-    
+
     new_data_frame=data_frame
-    
+
     test_group=pd.read_table(reference_groups, sep='\t')
     test_group.columns=test_group.columns.str.strip()
     for index in range(len(test_indices)):
-        
+
         current_value='mysnps'+test_indices[index]
         new_data_frame=new_data_frame.drop(current_value, 1)
         test_group=test_group[test_group.genomes!=current_value]
