@@ -20,8 +20,7 @@ def test_low_coverage():
     assert isinstance(df, DataFrame)
     assert st.is_fastq_input()
     assert st.scheme == scheme
-    assert QC.LOW_COVERAGE_WARNING in st.qc_message
-    assert 'Low Coverage: Low coverage for all tiles (7.439 < 20 expected)' in st.qc_message
+    assert 'Low coverage for all tiles (7.439 < 20 expected)' in st.qc_message
     assert st.qc_status == QC.FAIL
 
 
@@ -56,7 +55,6 @@ def test_intermediate_subtype():
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
     assert st.scheme == scheme
-    assert QC.INTERMEDIATE_SUBTYPE_WARNING in st.qc_message
     assert "Total subtype matches observed (n=3) vs expected (n=6)" in st.qc_message
     assert st.qc_status == QC.WARNING
 
@@ -69,7 +67,6 @@ def test_missing_tiles():
     assert isinstance(df, DataFrame)
     assert st.is_fastq_input()
     assert st.scheme == scheme
-    assert QC.MISSING_TILES_ERROR_1 in st.qc_message
     assert 'Low coverage depth (10.9 < 20.0 expected)' in st.qc_message
     assert st.qc_status == QC.FAIL
 
@@ -81,7 +78,6 @@ def test_mixed_tiles():
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
     assert st.scheme == scheme
-    assert QC.MIXED_SAMPLE_ERROR_2 in st.qc_message
     assert 'Mixed subtypes found: "1; 2; 2.1"' in st.qc_message
     assert st.qc_status == QC.FAIL
 
@@ -94,8 +90,8 @@ def test_mixed_subtype_positive_negative_tiles_same_target():
     assert isinstance(df, DataFrame)
     assert st.scheme == scheme
     assert st.qc_status == QC.FAIL
-    assert QC.MIXED_SAMPLE_ERROR_2 in st.qc_message
-    expected_qc_msg = 'FAIL: Mixed Sample Error 2: Mixed subtype detected. ' \
+    assert 'Mixed subtype detected' in st.qc_message
+    expected_qc_msg = 'FAIL: Mixed subtype detected. ' \
                       'Positive and negative tiles detected for the same ' \
                       'target site ' \
                       '"202001; 600783; 1049933; 1193219; 2778621; 2904061; ' \

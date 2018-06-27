@@ -17,8 +17,7 @@ def is_overall_coverage_low(st: Subtype, df: DataFrame, p: SubtypingParams) -> T
         return None, None
 
     if st.avg_tile_coverage < p.min_coverage_warning:
-        return QC.WARNING, '{}: Low coverage for all tiles ({:.3f} < {} expected)'.format(
-            QC.LOW_COVERAGE_WARNING,
+        return QC.WARNING, 'Low coverage for all tiles ({:.3f} < {} expected)'.format(
             st.avg_tile_coverage,
             p.min_coverage_warning
         )
@@ -93,20 +92,18 @@ def check_for_missing_tiles(is_fastq: bool, curr_subtype: str, scheme: str,
                     depth,
                     float(p.low_coverage_depth_freq))
             else:
-                coverage_msg = 'Okay coverage depth ({:.1f} >= {:.1f} expected), but this may be the wrong ' \
-                               'serovar or species for scheme "{}"'.format(
-                                depth,
-                                float(p.low_coverage_depth_freq),
-                                scheme)
-            error_messages = '{status}: {p_missing:.2%} missing tiles; more than {p_missing_threshold:.2%} missing ' \
-                             'tiles threshold. {coverage_msg}'.format(
-                                status=QC.MISSING_TILES_ERROR_1,
-                                p_missing=p_missing,
-                                p_missing_threshold=p.max_perc_missing_tiles,
-                                coverage_msg=coverage_msg)
+                coverage_msg = ('Okay coverage depth ({:.1f} >= {:.1f} expected), but this may be the wrong '
+                                'serovar or species for scheme "{}"').format(
+                    depth,
+                    float(p.low_coverage_depth_freq),
+                    scheme)
+            error_messages = ('{p_missing:.2%} missing tiles; more than {p_missing_threshold:.2%} missing '
+                              'tiles threshold. {coverage_msg}').format(
+                p_missing=p_missing,
+                p_missing_threshold=p.max_perc_missing_tiles,
+                coverage_msg=coverage_msg)
         else:
-            error_messages = '{}: {:.2%} missing tiles for subtype {}; more than {:.2%} missing tile threshold'.format(
-                QC.MISSING_TILES_ERROR_1,
+            error_messages = '{:.2%} missing tiles for subtype {}; more than {:.2%} missing tile threshold'.format(
                 p_missing,
                 curr_subtype,
                 p.max_perc_missing_tiles)
@@ -132,18 +129,16 @@ def is_mixed_subtype(st: Subtype, df: DataFrame, *args) -> Tuple[Optional[str], 
     """
     if not st.are_subtypes_consistent:
         return QC.FAIL, \
-               '{}: Mixed subtypes found: "{}".'.format(
-                   QC.MIXED_SAMPLE_ERROR_2,
+               'Mixed subtypes found: "{}".'.format(
                    '; '.join(sorted(st.inconsistent_subtypes)))
     conflicting_tiles = get_conflicting_tiles(st, df)
     if conflicting_tiles is None or conflicting_tiles.shape[0] == 0:
         return None, None
 
-    return QC.FAIL, '{}: Mixed subtype detected. Positive and negative tiles detected for ' \
-                    'the same target site "{}" for subtype "{}".'.format(
-                        QC.MIXED_SAMPLE_ERROR_2,
-                        '; '.join(conflicting_tiles['refposition'].astype(str).tolist()),
-                        st.subtype)
+    return QC.FAIL, ('Mixed subtype detected. Positive and negative tiles detected for '
+                     'the same target site "{}" for subtype "{}".').format(
+        '; '.join(conflicting_tiles['refposition'].astype(str).tolist()),
+        st.subtype)
 
 
 def is_missing_too_many_target_sites(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[
@@ -209,7 +204,7 @@ def is_missing_downstream_targets(st: Subtype, *args) -> Tuple[Optional[str], Op
 
 def is_maybe_intermediate_subtype(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[
     Optional[str], Optional[str]]:
-    '''Is the result a possible intermediate subtype?
+    """Is the result a possible intermediate subtype?
 
     Return a WARNING message if all the conditions are true:
     - 95% of the scheme tiles are found
@@ -224,7 +219,7 @@ def is_maybe_intermediate_subtype(st: Subtype, df: DataFrame, p: SubtypingParams
 
     Returns:
         None, None if no intermediate subtype possible; otherwise, "FAIL", error message
-    '''
+    """
     if not st.are_subtypes_consistent \
             or st.subtype is None:
         return None, None
@@ -236,7 +231,7 @@ def is_maybe_intermediate_subtype(st: Subtype, df: DataFrame, p: SubtypingParams
     obs = int(st.n_tiles_matching_all)
     exp = int(st.n_tiles_matching_all_expected)
     if (exp - obs) / exp <= p.max_perc_intermediate_tiles and conflicting_tiles.shape[0] == 0 and \
-                    total_subtype_tiles_hits < total_subtype_tiles and num_pos_tiles and num_neg_tiles:
+            total_subtype_tiles_hits < total_subtype_tiles and num_pos_tiles and num_neg_tiles:
         return QC.WARNING, \
                '{}: Possible intermediate subtype. All scheme tiles were found, but a fraction ' \
                'were positive for the final subtype. Total subtype matches observed (n={}) vs expected (n={})'.format(
