@@ -90,14 +90,13 @@ def test_mixed_subtype_positive_negative_tiles_same_target():
     assert isinstance(df, DataFrame)
     assert st.scheme == scheme
     assert st.qc_status == QC.FAIL
-    assert 'Mixed subtype detected' in st.qc_message
-    expected_qc_msg = 'FAIL: Mixed subtype detected. ' \
-                      'Positive and negative tiles detected for the same ' \
-                      'target site ' \
-                      '"202001; 600783; 1049933; 1193219; 2778621; 2904061; ' \
-                      '3278067; 3867228; 4499501; 4579224; 4738855; 202001; ' \
-                      '600783; 1049933; 1193219; 2778621; 2904061; 3278067; ' \
-                      '3867228; 4499501; 4579224; 4738855" for subtype "1.1".'
+    expected_qc_msg = ('FAIL: Mixed subtype; the positive and negative tiles were found for the same '
+                      'target sites 202001, 600783, 1049933, 1193219, 2778621, 2904061, '
+                      '3278067, 3867228, 4499501, 4579224, 4738855, 202001, '
+                      '600783, 1049933, 1193219, 2778621, 2904061, 3278067, '
+                      '3867228, 4499501, 4579224, 4738855 for subtype "1.1".')
+    print(st.qc_message)
+    print(expected_qc_msg)
     assert expected_qc_msg in st.qc_message
 
 
