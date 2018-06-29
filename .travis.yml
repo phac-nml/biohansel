@@ -17,6 +17,7 @@ python:
 branches:
   only:
     - master
+    - development
 
 # Blacklist of branches to not run CI testing on.
 # branches:
