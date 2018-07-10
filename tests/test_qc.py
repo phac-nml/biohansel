@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
+
+import pandas as pd
+
 from bio_hansel.qc import is_maybe_intermediate_subtype
-
-from bio_hansel.utils import init_subtyping_params
-from pandas import DataFrame
-
 from bio_hansel.qc.const import QC
 from bio_hansel.subtype import Subtype
-from bio_hansel.subtyper import subtype_reads_ac, subtype_contigs_ac
-import pandas as pd
+from bio_hansel.subtyper import subtype_reads, subtype_contigs
+from bio_hansel.utils import init_subtyping_params
 
 genome_name = 'test'
 
@@ -15,9 +14,9 @@ genome_name = 'test'
 def test_low_coverage():
     scheme = 'heidelberg'
     fastq = 'tests/data/SRR1696752/SRR1696752.fastq'
-    st, df = subtype_reads_ac(reads=fastq, genome_name=genome_name, scheme=scheme)
+    st, df = subtype_reads(reads=fastq, genome_name=genome_name, scheme=scheme)
     assert isinstance(st, Subtype)
-    assert isinstance(df, DataFrame)
+    assert isinstance(df, pd.DataFrame)
     assert st.is_fastq_input()
     assert st.scheme == scheme
     assert 'Low coverage for all tiles (7.439 < 20 expected)' in st.qc_message
@@ -53,7 +52,7 @@ def test_intermediate_subtype():
     p = init_subtyping_params(args=None, scheme=scheme)
     st.qc_status, st.qc_message = is_maybe_intermediate_subtype(st, df, p)
     assert isinstance(st, Subtype)
-    assert isinstance(df, DataFrame)
+    assert isinstance(df, pd.DataFrame)
     assert st.scheme == scheme
     assert "Total subtype matches observed (n=3) vs expected (n=6)" in st.qc_message
     assert st.qc_status == QC.WARNING
@@ -62,9 +61,9 @@ def test_intermediate_subtype():
 def test_missing_tiles():
     scheme = 'heidelberg'
     fastq = 'tests/data/SRR1696752/SRR1696752.fastq'
-    st, df = subtype_reads_ac(reads=fastq, genome_name=genome_name, scheme=scheme)
+    st, df = subtype_reads(reads=fastq, genome_name=genome_name, scheme=scheme)
     assert isinstance(st, Subtype)
-    assert isinstance(df, DataFrame)
+    assert isinstance(df, pd.DataFrame)
     assert st.is_fastq_input()
     assert st.scheme == scheme
     assert 'Low coverage depth (10.9 < 20.0 expected)' in st.qc_message
@@ -74,9 +73,9 @@ def test_missing_tiles():
 def test_mixed_tiles():
     scheme = 'heidelberg'
     fastqs = ['tests/data/SRR3392166/SRR3392166.fastq', 'tests/data/SRR3392166/SRR3392166.fastq']
-    st, df = subtype_reads_ac(reads=fastqs, genome_name=genome_name, scheme=scheme)
+    st, df = subtype_reads(reads=fastqs, genome_name=genome_name, scheme=scheme)
     assert isinstance(st, Subtype)
-    assert isinstance(df, DataFrame)
+    assert isinstance(df, pd.DataFrame)
     assert st.scheme == scheme
     assert 'Mixed subtypes found: "1; 2; 2.1"' in st.qc_message
     assert st.qc_status == QC.FAIL
@@ -85,9 +84,9 @@ def test_mixed_tiles():
 def test_mixed_subtype_positive_negative_tiles_same_target():
     scheme = 'heidelberg'
     fasta = 'tests/data/fail-qc-mixed-subtype-pos-neg-tiles.fasta'
-    st, df = subtype_contigs_ac(fasta_path=fasta, genome_name=genome_name, scheme=scheme)
+    st, df = subtype_contigs(fasta_path=fasta, genome_name=genome_name, scheme=scheme)
     assert isinstance(st, Subtype)
-    assert isinstance(df, DataFrame)
+    assert isinstance(df, pd.DataFrame)
     assert st.scheme == scheme
     assert st.qc_status == QC.FAIL
     expected_qc_msg = ('FAIL: Mixed subtype; the positive and negative tiles were found for the same '
@@ -103,9 +102,9 @@ def test_mixed_subtype_positive_negative_tiles_same_target():
 def test_unconfident_subtype():
     scheme = 'enteritidis'
     fasta = 'tests/data/fail-qc-unconfident-subtype.fasta'
-    st, df = subtype_contigs_ac(fasta_path=fasta, genome_name=genome_name, scheme=scheme)
+    st, df = subtype_contigs(fasta_path=fasta, genome_name=genome_name, scheme=scheme)
     assert isinstance(st, Subtype)
-    assert isinstance(df, DataFrame)
+    assert isinstance(df, pd.DataFrame)
     assert st.scheme == scheme
     assert st.qc_status == QC.FAIL
     assert QC.UNCONFIDENT_RESULTS_ERROR_4 in st.qc_message

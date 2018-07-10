@@ -2,12 +2,11 @@
 """
 Functions for subtyping of reads (e.g. FASTQ) and contigs (e.g. FASTA) using bio_hansel-compatible subtyping schemes.
 """
-import re
 import logging
 from typing import Optional, List, Dict, Union, Tuple
 
-import attr
 import pandas as pd
+import re
 
 from .aho_corasick import init_automaton, find_in_fasta, find_in_fastqs
 from .const import COLUMNS_TO_REMOVE
@@ -19,12 +18,84 @@ from .subtyping_params import SubtypingParams
 from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version, init_subtyping_params
 
 
-def subtype_contigs_ac(fasta_path: str,
-                       genome_name: str,
-                       scheme: str,
-                       subtyping_params: Optional[SubtypingParams] = None,
-                       scheme_name: Optional[str] = None,
-                       scheme_subtype_counts: Optional[Dict[str, SubtypeCounts]] = None) -> Tuple[
+def subtype_reads_samples(reads: List[Tuple[List[str], str]],
+                          scheme: str,
+                          scheme_name: Optional[str] = None,
+                          subtyping_params: Optional[SubtypingParams] = None,
+                          scheme_subtype_counts: Optional[Dict[str, SubtypeCounts]] = None,
+                          n_threads: int = 1) -> List[Tuple[Subtype, pd.DataFrame]]:
+    """Subtype input genomes using a scheme.
+
+    Args:
+        input_genomes: input genomes; tuple of FASTA file path and genome name
+        scheme: bio_hansel scheme FASTA path
+        scheme_name: optional scheme name
+        subtyping_params: scheme specific subtyping parameters
+        scheme_subtype_counts: summary information about scheme
+        n_threads: number of threads to use for subtyping analysis
+
+    Returns:
+        List of tuple of Subtype and detailed subtyping results for each sample
+    """
+    if n_threads == 1:
+        logging.info('Serial single threaded run mode on %s input genomes', len(reads))
+        outputs = [subtype_reads(reads=fastq_files,
+                                 genome_name=genome_name,
+                                 scheme=scheme,
+                                 scheme_name=scheme_name,
+                                 subtyping_params=subtyping_params,
+                                 scheme_subtype_counts=scheme_subtype_counts)
+                   for fastq_files, genome_name in reads]
+    else:
+        outputs = parallel_query_reads(reads=reads,
+                                       scheme=scheme,
+                                       scheme_name=scheme_name,
+                                       subtyping_params=subtyping_params,
+                                       scheme_subtype_counts=scheme_subtype_counts,
+                                       n_threads=n_threads)
+    return outputs
+
+
+def subtype_contigs_samples(input_genomes: List[Tuple[str, str]],
+                            scheme: str,
+                            scheme_name: Optional[str] = None,
+                            subtyping_params: Optional[SubtypingParams] = None,
+                            scheme_subtype_counts: Optional[Dict[str, SubtypeCounts]] = None,
+                            n_threads: int = 1) -> List[Tuple[Subtype, pd.DataFrame]]:
+    """Subtype input genomes using a scheme.
+
+    Args:
+        input_genomes: input genomes; tuple of FASTA file path and genome name
+        scheme: bio_hansel scheme FASTA path
+        scheme_name: optional scheme name
+        subtyping_params: scheme specific subtyping parameters
+        scheme_subtype_counts: summary information about scheme
+        n_threads: number of threads to use for subtyping analysis
+
+    Returns:
+        List of tuple of Subtype and detailed subtyping results for each sample
+    """
+    if n_threads == 1:
+        logging.info('Serial single threaded run mode on %s input genomes', len(input_genomes))
+        outputs = [subtype_contigs(fasta_path=input_fasta,
+                                   genome_name=genome_name,
+                                   scheme=scheme,
+                                   scheme_name=scheme_name,
+                                   subtyping_params=subtyping_params,
+                                   scheme_subtype_counts=scheme_subtype_counts)
+                   for input_fasta, genome_name in input_genomes]
+    else:
+        outputs = parallel_query_contigs(input_genomes, scheme, scheme_name, subtyping_params, scheme_subtype_counts,
+                                         n_threads)
+    return outputs
+
+
+def subtype_contigs(fasta_path: str,
+                    genome_name: str,
+                    scheme: str,
+                    subtyping_params: Optional[SubtypingParams] = None,
+                    scheme_name: Optional[str] = None,
+                    scheme_subtype_counts: Optional[Dict[str, SubtypeCounts]] = None) -> Tuple[
     Subtype, pd.DataFrame]:
     """Subtype input contigs using a particular scheme.
 
@@ -58,7 +129,7 @@ def subtype_contigs_ac(fasta_path: str,
     if df is None or df.shape[0] == 0:
         logging.warning('No subtyping tile matches for input "%s" for scheme "%s"', fasta_path, scheme)
         st.qc_status = QC.FAIL
-        st.qc_message = QC.NO_SUBTYPE_RESULT
+        st.qc_message = QC.NO_TARGETS_FOUND
         st.are_subtypes_consistent = False
         return st, empty_results(st)
 
@@ -67,7 +138,7 @@ def subtype_contigs_ac(fasta_path: str,
     df['refposition'] = [int(x.replace('negative', '')) for x in refpositions]
     df['subtype'] = subtypes
     df['is_pos_tile'] = ~df.tilename.str.contains('negative')
-    process_contigs_subtyping_results(st, df, scheme_subtype_counts)
+    process_subtyping_results(st, df, scheme_subtype_counts)
     st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
 
     logging.info(st)
@@ -83,14 +154,12 @@ def subtype_contigs_ac(fasta_path: str,
     return st, df
 
 
-
-
-def parallel_query_contigs_ac(input_genomes: List[Tuple[str, str]],
-                              scheme: str,
-                              scheme_name: Optional[str] = None,
-                              subtyping_params: Optional[SubtypingParams] = None,
-                              scheme_subtype_counts: Optional[Dict[str, SubtypeCounts]] = None,
-                              n_threads: int = 1):
+def parallel_query_contigs(input_genomes: List[Tuple[str, str]],
+                           scheme: str,
+                           scheme_name: Optional[str] = None,
+                           subtyping_params: Optional[SubtypingParams] = None,
+                           scheme_subtype_counts: Optional[Dict[str, SubtypeCounts]] = None,
+                           n_threads: int = 1):
     """Parallel subtyping of input contigs
 
     Subtype and analyse each input in parallel using a multiprocessing thread pool.
@@ -110,68 +179,24 @@ def parallel_query_contigs_ac(input_genomes: List[Tuple[str, str]],
     logging.info('Initializing thread pool with %s threads', n_threads)
     pool = Pool(processes=n_threads)
     logging.info('Running analysis asynchronously on %s input genomes', len(input_genomes))
-    res = [pool.apply_async(subtype_contigs_ac, (input_fasta,
-                                                 genome_name,
-                                                 scheme,
-                                                 subtyping_params,
-                                                 scheme_name,
-                                                 scheme_subtype_counts))
+    res = [pool.apply_async(subtype_contigs, (input_fasta,
+                                              genome_name,
+                                              scheme,
+                                              subtyping_params,
+                                              scheme_name,
+                                              scheme_subtype_counts))
            for input_fasta, genome_name in input_genomes]
     logging.info('Parallel analysis complete! Retrieving analysis results')
     outputs = [x.get() for x in res]
     return outputs
 
 
-def query_contigs_ac(subtype_results: List[Subtype],
-                     dfs: List[pd.DataFrame],
-                     input_genomes: List[Tuple[str, str]],
-                     scheme: str,
-                     scheme_name: Optional[str] = None,
-                     subtyping_params: Optional[SubtypingParams] = None,
-                     scheme_subtype_counts: Optional[Dict[str, SubtypeCounts]] = None,
-                     n_threads: int = 1) -> None:
-    """Subtype input genomes using a scheme.
-
-    Args:
-        subtype_results: Subtyping results for each input genome
-        dfs: detailed subtyping results for each input genome
-        input_genomes: input genomes; tuple of FASTA file path and genome name
-        scheme: bio_hansel scheme FASTA path
-        scheme_name: optional scheme name
-        subtyping_params: scheme specific subtyping parameters
-        scheme_subtype_counts: summary information about scheme
-        n_threads: number of threads to use for subtyping analysis
-
-    Returns:
-        `subtype_results` and `dfs` by reference
-    """
-    if n_threads == 1:
-        logging.info('Serial single threaded run mode on %s input genomes', len(input_genomes))
-        outputs = [subtype_contigs_ac(fasta_path=input_fasta,
-                                      genome_name=genome_name,
-                                      scheme=scheme,
-                                      scheme_name=scheme_name,
-                                      subtyping_params=subtyping_params,
-                                      scheme_subtype_counts=scheme_subtype_counts)
-                   for input_fasta, genome_name in input_genomes]
-    else:
-        outputs = parallel_query_contigs_ac(input_genomes, scheme, scheme_name, subtyping_params, scheme_subtype_counts,
-                                            n_threads)
-    for subtype, df in outputs:
-        if df is not None:
-            dfs.append(df)
-        else:
-            logging.error(f'Subtyping results DataFrame is "None" for {subtype}. Building empty results DF.')
-            dfs.append(empty_results(subtype))
-        subtype_results.append(attr.asdict(subtype))
-
-
-def parallel_query_reads_ac(reads: List[Tuple[List[str], str]],
-                            scheme: str,
-                            scheme_name: Optional[str] = None,
-                            subtyping_params: Optional[SubtypingParams] = None,
-                            scheme_subtype_counts: Optional[Dict[str, SubtypeCounts]] = None,
-                            n_threads: int = 1) -> List[Tuple[Subtype, pd.DataFrame]]:
+def parallel_query_reads(reads: List[Tuple[List[str], str]],
+                         scheme: str,
+                         scheme_name: Optional[str] = None,
+                         subtyping_params: Optional[SubtypingParams] = None,
+                         scheme_subtype_counts: Optional[Dict[str, SubtypeCounts]] = None,
+                         n_threads: int = 1) -> List[Tuple[Subtype, pd.DataFrame]]:
     """Parallel subtyping of input reads
 
     Subtype and analyse each input in parallel using a multiprocessing thread pool.
@@ -191,24 +216,24 @@ def parallel_query_reads_ac(reads: List[Tuple[List[str], str]],
     logging.info('Initializing thread pool with %s threads', n_threads)
     pool = Pool(processes=n_threads)
     logging.info('Running analysis asynchronously on %s input genomes', len(reads))
-    res = [pool.apply_async(subtype_reads_ac, (fastqs,
-                                               genome_name,
-                                               scheme,
-                                               scheme_name,
-                                               subtyping_params,
-                                               scheme_subtype_counts))
+    res = [pool.apply_async(subtype_reads, (fastqs,
+                                            genome_name,
+                                            scheme,
+                                            scheme_name,
+                                            subtyping_params,
+                                            scheme_subtype_counts))
            for fastqs, genome_name in reads]
     logging.info('Parallel analysis complete! Retrieving analysis results')
     outputs = [x.get() for x in res]
     return outputs
 
 
-def subtype_reads_ac(reads: Union[str, List[str]],
-                     genome_name: str,
-                     scheme: str,
-                     scheme_name: Optional[str] = None,
-                     subtyping_params: Optional[SubtypingParams] = None,
-                     scheme_subtype_counts: Optional[Dict[str, SubtypeCounts]] = None) -> Tuple[
+def subtype_reads(reads: Union[str, List[str]],
+                  genome_name: str,
+                  scheme: str,
+                  scheme_name: Optional[str] = None,
+                  subtyping_params: Optional[SubtypingParams] = None,
+                  scheme_subtype_counts: Optional[Dict[str, SubtypeCounts]] = None) -> Tuple[
     Subtype, Optional[pd.DataFrame]]:
     """Subtype input reads using a particular scheme.
 
@@ -249,7 +274,7 @@ def subtype_reads_ac(reads: Union[str, List[str]],
         logging.warning('No subtyping tile matches for input "%s" for scheme "%s"', reads, scheme)
         st.are_subtypes_consistent = False
         st.qc_status = QC.FAIL
-        st.qc_message = QC.NO_SUBTYPE_RESULT
+        st.qc_message = QC.NO_TARGETS_FOUND
         return st, empty_results(st)
 
     refpositions = [x for x, y in df.tilename.str.split('-')]
@@ -259,8 +284,9 @@ def subtype_reads_ac(reads: Union[str, List[str]],
     df['is_pos_tile'] = ~df.tilename.str.contains('negative')
     df['is_kmer_freq_okay'] = (df.freq >= subtyping_params.min_kmer_freq) & (df.freq <= subtyping_params.max_kmer_freq)
     st.avg_tile_coverage = df['freq'].mean()
-    process_contigs_subtyping_results(st, df[df.is_kmer_freq_okay], scheme_subtype_counts)
+    st, df = process_subtyping_results(st, df[df.is_kmer_freq_okay], scheme_subtype_counts)
     st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
+    df['file_path'] = str(st.file_path)
     df['sample'] = genome_name
     df['scheme'] = scheme_name or scheme
     df['scheme_version'] = scheme_version
@@ -270,113 +296,163 @@ def subtype_reads_ac(reads: Union[str, List[str]],
     return st, df
 
 
-def process_contigs_subtyping_results(st, df, scheme_subtype_counts):
+def process_subtyping_results(st: Subtype, df: pd.DataFrame, scheme_subtype_counts: Dict[str, SubtypeCounts]) -> Tuple[
+    Subtype, pd.DataFrame]:
+    """Process the subtyping results to get the final subtype result and summary stats
+
+    Args:
+        st: Subtype result
+        df: Subtyping results
+        scheme_subtype_counts: Subtyping scheme summary info
+    Returns:
+        Tuple of `st` and `df`
+    """
     dfpos = df[df.is_pos_tile]
     dfpos_highest_res = highest_resolution_subtype_results(dfpos)
     subtype_list = [x for x in dfpos_highest_res.subtype.unique()]
-    set_subtype_results(st, dfpos, subtype_list)
-    set_inconsistent_subtypes(st, find_inconsistent_subtypes(sorted_positive_subtypes(dfpos)))
-    calculate_subtyping_stats(st, df, dfpos, subtype_list, scheme_subtype_counts)
-    set_non_present_subtypes(st, df, scheme_subtype_counts)
+    st = set_subtype_results(st, dfpos, subtype_list)
+    st = set_inconsistent_subtypes(st, find_inconsistent_subtypes(sorted_subtype_ints(dfpos.subtype)))
+    st = set_subtyping_stats(st, df, dfpos, dfpos_highest_res, subtype_list, scheme_subtype_counts)
+    st.non_present_subtypes = absent_downstream_subtypes(st.subtype, df.subtype, list(scheme_subtype_counts.keys()))
+    return (st, df)
 
 
-def set_subtype_results(st, dfpos, subtype_list):
+def set_subtype_results(st: Subtype, df_positive: pd.DataFrame, subtype_list: List[str]) -> Subtype:
+    """Set subtype results
+
+    Args:
+        st: Subtype result
+        df_positive: Positive tiles subtyping results
+        subtype_list: List of subtypes found
+    """
     st.subtype = '; '.join(subtype_list)
     st.tiles_matching_subtype = '; '.join(subtype_list)
-    pos_subtypes_str = [x for x in dfpos.subtype.unique()]
+    pos_subtypes_str = [x for x in df_positive.subtype.unique()]
     pos_subtypes_str.sort(key=lambda x: len(x))
     st.all_subtypes = '; '.join(pos_subtypes_str)
+    return st
 
 
-def calculate_subtyping_stats(st, df, dfpos, subtype_list, scheme_subtype_counts):
+def set_subtyping_stats(st: Subtype,
+                        df: pd.DataFrame,
+                        dfpos: pd.DataFrame,
+                        dfpos_highest_res: pd.DataFrame,
+                        subtype_list: List[str],
+                        scheme_subtype_counts: Dict[str, SubtypeCounts]) -> Subtype:
+    """Set subtyping result stats
+
+    - `n_tiles_matching_subtype`: # tiles matching final subtype
+    - `n_tiles_matching_all`: # tiles found
+    - `n_tiles_matching_positive`: # positive tiles found
+    - `n_tiles_matching_negative`:  # negative tiles found
+    - `n_tiles_matching_all_expected`: expected # of all tiles found for each subtype
+    - `n_tiles_matching_positive_expected`: expected # of positive tiles found for each subtype
+    - `n_tiles_matching_subtype_expected`: expected # of subtype-specific tiles found for each subtype
+
+    Args:
+        st: Subtype result
+        df: Subtyping results
+        dfpos: Positive tile subtyping results
+        dfpos_highest_res: Final subtype specific subtyping results
+        subtype_list: List of subtypes found
+        scheme_subtype_counts: Subtyping scheme summary info
+    """
+    st.n_tiles_matching_subtype = dfpos_highest_res.shape[0]
     st.n_tiles_matching_all = df.tilename.unique().size
     st.n_tiles_matching_positive = dfpos.tilename.unique().size
-    st.n_tiles_matching_negative = df[~df.is_pos_tile]
-    st.n_tiles_matching_subtype = len(subtype_list)
+    st.n_tiles_matching_negative = df[~df.is_pos_tile].shape[0]
     st.n_tiles_matching_all_expected = ';'.join([str(scheme_subtype_counts[x].all_tile_count) for x in subtype_list])
     st.n_tiles_matching_positive_expected = ';'.join(
         [str(scheme_subtype_counts[x].positive_tile_count) for x in subtype_list])
     st.n_tiles_matching_subtype_expected = ';'.join(
         [str(scheme_subtype_counts[x].subtype_tile_count) for x in subtype_list])
+    return st
 
 
-def count_periods(subtype_with_periods: str) -> pd.Series:
-    return (pd.Series(list(subtype_with_periods)) == '.').sum()
+def count_periods(s: str) -> int:
+    """Count the number of periods in a string.
+
+    Examples:
+
+        count_periods("2.1.1") => 2
+        count_periods("1") => 0
+
+    Args:
+        s: Some string with periods
+
+    Returns:
+        The number of periods found in the input string.
+    """
+    return sum((1 for c in list(s) if c == '.'))
 
 
-def highest_resolution_subtype_results(dfpos):
-    subtype_lens = dfpos.subtype.apply(count_periods)
+def highest_resolution_subtype_results(df: pd.DataFrame) -> pd.DataFrame:
+    """Get the highest resolution subtype results
+
+    Where the highest resolution result has the most periods ('.') in its designation.
+
+    Args:
+        df: positive subtyping results
+
+    Returns:
+        Highest resolution (most periods in subtype) subtyping results
+    """
+    subtype_lens = df.subtype.apply(count_periods)
     max_subtype_strlen = subtype_lens.max()
-    logging.debug('max substype str len: %s', max_subtype_strlen)
-    dfpos_highest_res = dfpos[subtype_lens == max_subtype_strlen]
-    return dfpos_highest_res
+    return df[subtype_lens == max_subtype_strlen]
 
 
-def sorted_positive_subtypes(dfpos: pd.DataFrame) -> List[List[int]]:
-    pos_subtypes = [[int(y) for y in x.split('.')] for x in dfpos.subtype.unique()]
-    pos_subtypes.sort(key=lambda a: len(a))
-    return pos_subtypes
+def sorted_subtype_ints(subtypes: pd.Series) -> List[List[int]]:
+    """Get the list of subtypes as lists of integers sorted by subtype resolution
+
+    Where the subtype resolution is determined by the number of periods ('.') in the subtype.
+
+    Args:
+        subtypes: pd.Series of subtype strings
+
+    Return:
+        list of subtypes as lists of integers sorted by subtype resolution
+    """
+    subtypes_ints = [[int(y) for y in x.split('.')] for x in subtypes.unique()]
+    subtypes_ints.sort(key=lambda a: len(a))
+    return subtypes_ints
 
 
-def set_non_present_subtypes(st, df, scheme_subtype_counts):
-    possible_downstream_subtypes = [s for s in scheme_subtype_counts
-                                    if re.search("^({})(\.)(\d)$".format(re.escape(st.subtype)), s)]
-    st.non_present_subtypes = [x for x in possible_downstream_subtypes
-                               if not (df.subtype == x).any()]
+def absent_downstream_subtypes(subtype: str, subtypes: pd.Series, scheme_subtypes: List[str]) -> Optional[List[str]]:
+    """Find the downstream subtypes that are not present in the results
+
+    Args:
+        subtype: Final subtype result
+        subtypes: Subtypes found
+        scheme_subtypes: Possible subtyping scheme subtypes
+
+    Returns:
+         List of downstream subtypes that are not present in the results or `None` if all downstream subtypes are present
+    """
+    escaped_subtype = re.escape(subtype)
+    re_subtype = re.compile(r'^{}\.\d+$'.format(escaped_subtype))
+    downstream_subtypes = [s for s in scheme_subtypes if re_subtype.search(s)]
+    absentees = [x for x in downstream_subtypes if not (subtypes == x).any()]
+    return absentees if len(absentees) > 0 else None
 
 
-def set_inconsistent_subtypes(st: Subtype, inconsistent_subtypes: List):
+def set_inconsistent_subtypes(st: Subtype, inconsistent_subtypes: List[str]) -> Subtype:
+    """Save the list of inconsistent subtypes, if any, to the Subtype result
+
+    Args:
+        st: Subtype result
+        inconsistent_subtypes: List of inconsistent subtypes
+
+    Returns:
+
+    """
     if len(inconsistent_subtypes) > 0:
         st.are_subtypes_consistent = False
         st.inconsistent_subtypes = inconsistent_subtypes
     else:
         st.are_subtypes_consistent = True
-        st.are_subtypes_consistent = None
-
-
-def query_reads_ac(subtype_results: List[Subtype],
-                   dfs: List[pd.DataFrame],
-                   reads: List[Tuple[List[str], str]],
-                   scheme: str,
-                   scheme_name: Optional[str] = None,
-                   subtyping_params: Optional[SubtypingParams] = None,
-                   scheme_subtype_counts: Optional[Dict[str, SubtypeCounts]] = None,
-                   n_threads: int = 1):
-    """Subtype input genomes using a scheme.
-
-    Args:
-        subtype_results: Subtyping results for each input genome
-        dfs: detailed subtyping results for each input genome
-        input_genomes: input genomes; tuple of FASTA file path and genome name
-        scheme: bio_hansel scheme FASTA path
-        scheme_name: optional scheme name
-        subtyping_params: scheme specific subtyping parameters
-        scheme_subtype_counts: summary information about scheme
-        n_threads: number of threads to use for subtyping analysis
-
-    Returns:
-        `subtype_results` and `dfs` by reference
-    """
-    if n_threads == 1:
-        logging.info('Serial single threaded run mode on %s input genomes', len(reads))
-        outputs = [subtype_reads_ac(reads=fastq_files,
-                                    genome_name=genome_name,
-                                    scheme=scheme,
-                                    scheme_name=scheme_name,
-                                    subtyping_params=subtyping_params,
-                                    scheme_subtype_counts=scheme_subtype_counts)
-                   for fastq_files, genome_name in reads]
-    else:
-        outputs = parallel_query_reads_ac(reads=reads,
-                                          scheme=scheme,
-                                          scheme_name=scheme_name,
-                                          subtyping_params=subtyping_params,
-                                          scheme_subtype_counts=scheme_subtype_counts,
-                                          n_threads=n_threads)
-    for subtype, df in outputs:
-        if df is not None:
-            dfs.append(df)
-        subtype_results.append(attr.asdict(subtype))
+        st.inconsistent_subtypes = None
+    return st
 
 
 def empty_results(st: Subtype) -> pd.DataFrame:

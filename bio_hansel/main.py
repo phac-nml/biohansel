@@ -4,18 +4,20 @@
 import argparse
 import logging
 import sys
-import os
-import re
 from typing import Optional, List, Any, Tuple
+
+import attr
+import os
 import pandas as pd
+import re
 
 from . import program_desc, __version__
 from .const import SUBTYPE_SUMMARY_COLS, REGEX_FASTQ, REGEX_FASTA, JSON_EXT_TMPL
 from .subtype import Subtype
 from .subtype_stats import subtype_counts
 from .subtyper import \
-    query_contigs_ac, \
-    query_reads_ac
+    subtype_contigs_samples, \
+    subtype_reads_samples
 from .utils import \
     genome_name_from_fasta_path, \
     get_scheme_fasta, \
@@ -189,34 +191,34 @@ def main():
     scheme_subtype_counts = subtype_counts(scheme_fasta)
     logging.debug(args)
     subtyping_params = init_subtyping_params(args, scheme)
-    input_genomes, reads = collect_inputs(args)
-    if len(input_genomes) == 0 and len(reads) == 0:
+    input_contigs, input_reads = collect_inputs(args)
+    if len(input_contigs) == 0 and len(input_reads) == 0:
         raise Exception('No input files specified!')
 
     n_threads = args.threads
 
-    subtype_results = []  # type: List[Subtype]
-    dfs = []  # type: List[pd.DataFrame]
-    if len(input_genomes) > 0:
-        query_contigs_ac(subtype_results=subtype_results,
-                         dfs=dfs,
-                         input_genomes=input_genomes,
-                         scheme=scheme,
-                         scheme_name=scheme_name,
-                         subtyping_params=subtyping_params,
-                         scheme_subtype_counts=scheme_subtype_counts,
-                         n_threads=n_threads)
-    if len(reads) > 0:
-        query_reads_ac(subtype_results=subtype_results,
-                       dfs=dfs,
-                       reads=reads,
-                       scheme=scheme,
-                       scheme_name=scheme_name,
-                       subtyping_params=subtyping_params,
-                       scheme_subtype_counts=scheme_subtype_counts,
-                       n_threads=n_threads)
+    subtype_results = []  # type: List[Tuple[Subtype, pd.DataFrame]]
+    if len(input_contigs) > 0:
+        contigs_results = subtype_contigs_samples(input_genomes=input_contigs,
+                                                  scheme=scheme,
+                                                  scheme_name=scheme_name,
+                                                  subtyping_params=subtyping_params,
+                                                  scheme_subtype_counts=scheme_subtype_counts,
+                                                  n_threads=n_threads)
+        logging.info('Generated %s subtyping results from %s contigs samples', len(contigs_results), len(input_contigs))
+        subtype_results += contigs_results
+    if len(input_reads) > 0:
+        reads_results = subtype_reads_samples(reads=input_reads,
+                                              scheme=scheme,
+                                              scheme_name=scheme_name,
+                                              subtyping_params=subtyping_params,
+                                              scheme_subtype_counts=scheme_subtype_counts,
+                                              n_threads=n_threads)
+        logging.info('Generated %s subtyping results from %s contigs samples', len(reads_results), len(input_reads))
+        subtype_results += reads_results
 
-    dfsummary = pd.DataFrame(subtype_results)
+    dfs = [df for st, df in subtype_results]  # type: List[pd.DataFrame]
+    dfsummary = pd.DataFrame([attr.asdict(st) for st, df in subtype_results])
     dfsummary = dfsummary[SUBTYPE_SUMMARY_COLS]
 
     if dfsummary['avg_tile_coverage'].isnull().all():
