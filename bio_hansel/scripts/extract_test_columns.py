@@ -10,18 +10,19 @@ def extract_test_columns(
     """Removes any genomes that do not belong in the test group
     Args: 
     reference_groups: the groups file path that indicates the group that each genome belongs to
-    data_frame: dataframe after filtering only for two-state SNVs
+    data_frame: dataframe after being filtered for two-state SNVs
 
     Returns:
-    data_frame: returns the genomes that are actually going to be used for the test
+    new_data_frame: returns the genomes that are actually going to be used for the test
+    test_dict: the dictionary that contains the group assignments for the 
     """
-    test_group = reference_groups
+    test_dict = reference_groups
     data_frame.columns = data_frame.columns.str.strip()
     new_data_frame = data_frame
 
     for index in range(len(test_indices)):
         current_value = test_indices[index]
         new_data_frame = new_data_frame.drop(current_value, 1)
-        test_group.pop(current_value)
+        test_dict.pop(current_value)
 
-    return new_data_frame, test_group
+    return new_data_frame, test_dict
