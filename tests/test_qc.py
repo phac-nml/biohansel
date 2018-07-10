@@ -108,4 +108,6 @@ def test_unconfident_subtype():
     assert st.scheme == scheme
     assert st.qc_status == QC.FAIL
     assert QC.UNCONFIDENT_RESULTS_ERROR_4 in st.qc_message
-    assert "tiles for downstream subtype(s) \"['2.1.1.1', '2.1.1.2']\" were missing" in st.qc_message
+    assert "tiles for downstream subtype(s)" in st.qc_message
+    assert "'2.1.1.1'" in st.qc_message
+    assert "'2.1.1.2'" in st.qc_message

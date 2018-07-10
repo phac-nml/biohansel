@@ -18,6 +18,7 @@ from .subtype_stats import subtype_counts
 from .subtyper import \
     subtype_contigs_samples, \
     subtype_reads_samples
+from .metadata import read_metadata_table, merge_metadata_with_summary_results
 from .utils import \
     genome_name_from_fasta_path, \
     get_scheme_fasta, \
@@ -54,6 +55,8 @@ def init_parser():
                              '/path/to/user/scheme)')
     parser.add_argument('--scheme-name',
                         help='Custom user-specified SNP substyping scheme name')
+    parser.add_argument('-M', '--scheme-metadata',
+                        help='Scheme subtype metadata table (CSV or tab-delimited format; must contain "subtype" column)')
     parser.add_argument('-p', '--paired-reads',
                         nargs=2,
                         metavar=('forward_reads', 'reverse_reads'),
@@ -194,7 +197,9 @@ def main():
     input_contigs, input_reads = collect_inputs(args)
     if len(input_contigs) == 0 and len(input_reads) == 0:
         raise Exception('No input files specified!')
-
+    df_md = None
+    if args.scheme_metadata:
+        df_md = read_metadata_table(args.scheme_metadata)
     n_threads = args.threads
 
     subtype_results = []  # type: List[Tuple[Subtype, pd.DataFrame]]
@@ -223,6 +228,9 @@ def main():
 
     if dfsummary['avg_tile_coverage'].isnull().all():
         dfsummary = dfsummary.drop(labels='avg_tile_coverage', axis=1)
+
+    if df_md is not None:
+        dfsummary = merge_metadata_with_summary_results(dfsummary, df_md)
 
     kwargs_for_pd_to_table = dict(sep='\t', index=None, float_format='%.3f')
     kwargs_for_pd_to_json = dict(orient='records')
@@ -254,6 +262,9 @@ def main():
             df_simple_summary = dfsummary[['sample', 'subtype', 'avg_tile_coverage', 'qc_status', 'qc_message']]
         else:
             df_simple_summary = dfsummary[['sample', 'subtype', 'qc_status', 'qc_message']]
+
+        if df_md is not None:
+            df_simple_summary = merge_metadata_with_summary_results(df_simple_summary, df_md)
 
         df_simple_summary.to_csv(output_simple_summary_path, **kwargs_for_pd_to_table)
         if args.json:
