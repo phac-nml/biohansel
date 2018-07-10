@@ -27,4 +27,4 @@ def extract_test_columns(
         new_data_frame = new_df.drop(current_value, 1)
         test_dict.pop(current_value)
 
-    return new_data_frame, test_dict
+    return new_df, test_dict
