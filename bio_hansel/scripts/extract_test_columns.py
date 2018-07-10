@@ -24,7 +24,7 @@ def extract_test_columns(
 
     for index in range(len(test_indices)):
         current_value = test_indices[index]
-        new_data_frame = new_df.drop(current_value, 1)
+        new_df = new_df.drop(current_value, 1)
         test_dict.pop(current_value)
 
     return new_df, test_dict
