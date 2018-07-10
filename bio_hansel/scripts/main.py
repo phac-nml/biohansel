@@ -68,7 +68,7 @@ def main():
     init_console_logger(3)
     vcf_file = args.input_vcf
     reference_genome_path = f"{home_folder}{args.reference_genome_file}"
-    print(f"using genbank file from {reference_genome_path}")
+    logging.info('using genbank file from %s', reference_genome_path)
 
     output_directory = f"{home_folder}/{output_folder_name}"
 
@@ -87,7 +87,7 @@ def main():
         data_frame, test_indices, groups_dict)
 
     ## need to extract the all-or-nothing snvs and also to parse out the columns that are in the test groups
-    results_dict = fisherTest(modified_data_frame, test_group)
+    results_dict = fisher_test(modified_data_frame, test_group)
     get_sequences(output_directory, reference_genome_path, results_dict)
 
 
