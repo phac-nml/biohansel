@@ -3,7 +3,7 @@
 
 |license| |nbsp| |citest| |nbsp| |pypi| |nbsp| |conda| 
 
-.. |logo| image:: https://i.imgur.com/yYOkFlH.png
+.. |logo| image:: logo.png
     :target: https://github.com/phac-nml/bio_hansel
 .. |pypi| image:: https://badge.fury.io/py/bio-hansel.svg
     :target: https://pypi.python.org/pypi/bio_hansel/
