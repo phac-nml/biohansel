@@ -1,22 +1,22 @@
-from Bio import Entrez, SeqIO
-import pandas as pd
-import os
 from typing import Dict
+
+import pandas as pd
+
+from Bio import SeqIO
 
 
 def get_sequences(output_directory: str, reference_genome_path: str,
                   results_dict: Dict[str, pd.DataFrame]):
-    """Collects the sequences from the from the reference genome by going through the dataframe and finding the appropriate SNV location
-    Args: 
-    output_directory:directory where the schema would be located as indicated by the user
-    data_frame: filtered data frame with list of SNVs and their location
-    group: specific group in which the SNV belongs to
-    random_id: id that is assigned to the schema file
-    output_directory: directory in which output files are stored
-    reference_genome_path: file path to where the reference genome is located
+    """Collects the sequences from the reference genome by going through the list of dataframes and outputting the
+    associated sequences at that SNV location
 
-    Output:
-    Creates schema file in the output directory
+    Args:
+        output_directory:directory where the schema would be located as indicated by the user
+        results_dict: specifies the list of genomes and their associated group
+        reference_genome_path: file path to where the reference genome is located
+
+    Returns:
+        Creates schema file in the output directory
 
 
     """

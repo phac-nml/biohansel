@@ -1,6 +1,4 @@
-import os
 import pandas as pd
-from typing import List, Dict
 
 
 def read_vcf(vcf_file: str) -> (pd.DataFrame):
