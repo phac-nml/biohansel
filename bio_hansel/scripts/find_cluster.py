@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import List, Dict
 
 import numpy as np
 import pandas as pd
@@ -8,21 +8,19 @@ from scipy.cluster.hierarchy import fcluster, linkage
 from scipy.spatial.distance import pdist
 
 
-
 def find_clusters(df: pd.DataFrame) -> Dict[str, str]:
     """
     Takes in a vcf file and creates clusters from the scipy hierarchy clustering algorithm
     
     Example:
-    '/path/example.vcf' -> {'mysnps2323':'1', 'mysnps232323':'2'}
+    '/path/example.vcf' -> {'mysnpsSRR2323':'1', 'mysnpsSRR232323':'2'}
     
     Args:
-    df: contains the vcf information in the DataFrame format
+        df: contains the vcf information in the DataFrame format
 
     Returns:
-    cluster_dict: a dictionary indicating the cluster membership of each of the supplied genomes in
+        cluster_dict: a dictionary indicating the cluster membership of each of the supplied genomes in
                 the vcf file
-
     """
 
     filtered_df = filter_df(df)
@@ -35,23 +33,58 @@ def find_clusters(df: pd.DataFrame) -> Dict[str, str]:
     cluster_dict = subset.to_dict()
     return cluster_dict
 
-#Still need to add docstrings and to also add the variable types to each individual function
-def filter_df(df: pd.DataFrame):
+
+def filter_df(df: pd.DataFrame) -> pd.DataFrame:
+    """Takes a DataFrame and filters it just for the columns with the sample names and provides a filtered DataFrame
+     of binary SNV states
+
+    Args:
+        df: contains the vcf information in the DataFrame format
+
+    Returns:
+        filtered_df: the DataFrame that contains only the samples' binary data
+    """
+
     filtered_df = df.drop(['POS', 'REF', 'ALT'], 1)
     return filtered_df
 
 
-def compute_distance_matrix(filtered_df: pd.DataFrame):
+def compute_distance_matrix(filtered_df: pd.DataFrame) -> List:
+    """Takes in a binary SNV state DataFrame and outputs a distance matrix using the hamming method
+
+    Args:
+         filtered_df: the DataFrame that contains only the samples' binary data
+
+    Returns:
+        distance_matrix: an matrix of pair-wise distances between samples
+    """
     distance_matrix = sp.spatial.distance.pdist(filtered_df.transpose(), metric='hamming')
     return distance_matrix
 
 
-def create_linkage_array(distance_matrix):
+def create_linkage_array(distance_matrix: List) -> List:
+    """Takes in a distance matrix and outputs a hierarchical clustering linkage array
+
+    Args:
+        distance_matrix: a matrix of pair-wise distances between samples
+
+    Returns:
+        clustering_array: a hierarchical clustering linkage array that is calculated from the distance matrix
+    """
     clustering_array = linkage(distance_matrix, method='complete')
     return clustering_array
 
 
-def output_flat_clusters(clustering_array:list, genomes_only):
+def output_flat_clusters(clustering_array: List, genomes_only: List) -> np.array:
+    """Uses a set of thresholds and a the linkage
+
+    Args:
+        clustering_array: a hierarchical clustering linkage array that is calculated from the distance matrix
+        genomes_only: an array of column names for the original SNV DataFrame
+
+    Returns:
+         flat_clusters: an array of flat clusters from the clustering array
+    """
     thresholds = [0.2, 0.3, 0.6]
 
     clusters = np.array([
