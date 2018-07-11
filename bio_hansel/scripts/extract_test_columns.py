@@ -1,9 +1,7 @@
-import io
-import os
-import pandas as pd
-from typing import List, Dict
 import logging
+from typing import Dict
 
+import pandas as pd
 
 def extract_test_columns(
         df: pd.DataFrame, test_indices: list,

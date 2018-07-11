@@ -1,14 +1,14 @@
-import sys
 import argparse
 import logging
-import wget
 import os
-from read_vcf import read_vcf
+import sys
+
 from extract_test_columns import extract_test_columns
-from split_genomes import split_genomes
-from get_sequence import get_sequences
-from fisher_test import fisher_test
 from find_cluster import find_clusters
+from fisher_test import fisher_test
+from get_sequence import get_sequences
+from read_vcf import read_vcf
+from split_genomes import split_genomes
 
 SCRIPT_NAME = 'schema_creation'
 LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
@@ -82,11 +82,9 @@ def main():
 
     test_indices = split_genomes(genomes_only)
 
-    # this function basically takes in the data_frames and returns a dataframe with only the test genomes
     modified_data_frame, test_group = extract_test_columns(
         data_frame, test_indices, groups_dict)
 
-    ## need to extract the all-or-nothing snvs and also to parse out the columns that are in the test groups
     results_dict = fisher_test(modified_data_frame, test_group)
     get_sequences(output_directory, reference_genome_path, results_dict)
 
