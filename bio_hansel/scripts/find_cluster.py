@@ -85,7 +85,7 @@ def output_flat_clusters(clustering_array: List, genomes_only: List) -> np.array
     Returns:
          flat_clusters: an array of flat clusters from the clustering array
     """
-    thresholds = [0.2, 0.3, 0.6]
+    thresholds = [0.2, 0.4, 0.6, 0.8, 1.0]
 
     clusters = np.array([
         fcluster(clustering_array, t=n, criterion='distance')
