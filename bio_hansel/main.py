@@ -4,12 +4,12 @@
 import argparse
 import logging
 import sys
+import re
+import os
 from typing import Optional, List, Any, Tuple
 
 import attr
-import os
 import pandas as pd
-import re
 
 from . import program_desc, __version__
 from .const import SUBTYPE_SUMMARY_COLS, REGEX_FASTQ, REGEX_FASTA, JSON_EXT_TMPL
