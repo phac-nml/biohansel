@@ -1,8 +1,8 @@
 |logo|
 
-|conda| |nbsp| |pypi| |nbsp| |license|
+|conda| |nbsp| |pypi| |nbsp| |license| |nbsp| |nbsp| Master:|citest-master| |nbsp| Development:|citest-dev|
 
-Master: |citest-master| |nbsp| Development: |citest-dev|
+
 
 .. |logo| image:: logo.png
     :target: https://github.com/phac-nml/biohansel
@@ -14,7 +14,7 @@ Master: |citest-master| |nbsp| Development: |citest-dev|
     :target: https://travis-ci.org/phac-nml/biohansel
 .. |citest-master| image:: https://travis-ci.org/phac-nml/biohansel.svg?branch=master
     :target: https://travis-ci.org/phac-nml/biohansel
-.. |conda|   image:: https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square
+.. |conda|   image:: https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg
     :target: https://bioconda.github.io/recipes/bio_hansel/README.html
 .. |nbsp| unicode:: 0xA0
     :trim:
