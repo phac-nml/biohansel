@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from typing import List, Any, Optional, Tuple
+from typing import List, Any, Optional, Tuple, Union
 
 import os
 import re
@@ -51,7 +51,7 @@ def compare_subtypes(a: List[Any], b: List[Any]) -> bool:
     return True
 
 
-def find_inconsistent_subtypes(subtypes: List[Any]) -> List[str]:
+def find_inconsistent_subtypes(subtypes: List[List[int]]) -> List[str]:
     from collections import Counter
     incon = []
     for i in range(len(subtypes) - 1):
@@ -98,7 +98,7 @@ def get_scheme_version(scheme: str) -> Optional[str]:
     return None
 
 
-def collect_fastq_from_dir(input_directory):
+def collect_fastq_from_dir(input_directory: str) -> List[Union[str, Tuple[List[str], str]]]:
     fastqs = []
     for x in os.listdir(input_directory):
         full_file_path = os.path.abspath(os.path.join(input_directory, x))

@@ -2,15 +2,15 @@
 
 from typing import Tuple, Optional
 
-from pandas import DataFrame
+import pandas as pd
 
-from ..subtyping_params import SubtypingParams
 from ..qc.const import QC
 from ..qc.utils import get_conflicting_tiles, get_num_pos_neg_tiles, get_mixed_subtype_tile_counts
 from ..subtype import Subtype
+from ..subtyping_params import SubtypingParams
 
 
-def is_overall_coverage_low(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[Optional[str], Optional[str]]:
+def is_overall_coverage_low(st: Subtype, df: pd.DataFrame, p: SubtypingParams) -> Tuple[Optional[str], Optional[str]]:
     if not st.are_subtypes_consistent \
             or st.subtype is None \
             or not st.is_fastq_input():
@@ -21,7 +21,7 @@ def is_overall_coverage_low(st: Subtype, df: DataFrame, p: SubtypingParams) -> T
     return None, None
 
 
-def is_missing_tiles(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[Optional[str], Optional[str]]:
+def is_missing_tiles(st: Subtype, df: pd.DataFrame, p: SubtypingParams) -> Tuple[Optional[str], Optional[str]]:
     """Are there more missing tiles than tolerated?
 
     Note:
@@ -39,7 +39,7 @@ def is_missing_tiles(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[Op
 
     if st.are_subtypes_consistent:
         return check_for_missing_tiles(is_fastq=st.is_fastq_input(),
-                                       curr_subtype=st.subtype,
+                                       subtype_result=st.subtype,
                                        scheme=st.scheme,
                                        df=df,
                                        exp=int(st.n_tiles_matching_all_expected),
@@ -55,34 +55,58 @@ def is_missing_tiles(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[Op
         mixed_subtype_counts = get_mixed_subtype_tile_counts(dfpos=dfpos,
                                                              subtype_list=subtype_list)
 
+        tiles_matching_negative = st.n_tiles_matching_negative
         for curr_subtype, exp in zip(subtype_list, n_tiles_matching_expected):
             # We can omit the status because there will be a fail status already from non consistent subtypes.
+
+            obs = mixed_subtype_counts.get(curr_subtype) + int(tiles_matching_negative)
             _, curr_messages = check_for_missing_tiles(is_fastq=st.is_fastq_input(),
-                                                       curr_subtype=curr_subtype,
+                                                       subtype_result=curr_subtype,
                                                        scheme=st.scheme,
                                                        df=df,
                                                        exp=int(exp),
-                                                       obs=(mixed_subtype_counts.get(curr_subtype) +
-                                                            int(st.n_tiles_matching_negative)),
+                                                       obs=obs,
                                                        p=p)
 
             message_list.append(curr_messages)
 
         error_messages = ' | '.join(filter(None.__ne__, message_list))
 
-        return _, error_messages
+        return QC.FAIL, error_messages
 
 
-def check_for_missing_tiles(is_fastq: bool, curr_subtype: str, scheme: str,
-                            df: DataFrame, exp: int, obs: int, p: SubtypingParams):
-    error_status = None
-    error_messages = None
+def check_for_missing_tiles(is_fastq: bool,
+                            subtype_result: str,
+                            scheme: str,
+                            df: pd.DataFrame,
+                            exp: int,
+                            obs: int,
+                            p: SubtypingParams) -> Tuple[Optional[str], Optional[str]]:
+    """Check if there are too many missing tiles
 
+    Also check if the mean tile coverage depth is above the low coverage threshold.
+
+    Args:
+        is_fastq: Is input sample reads?
+        subtype_result: Single subtype designation
+        scheme: Scheme name
+        df: Subtyping results dataframe
+        exp: Expected number of tiles that should be found
+        obs: Actual observed number of tiles found
+        p: Subtyping parameters
+
+    Returns:
+        Tuple of QC status and any QC messages
+    """
+    status = None
+    messages = None
+
+    # proportion of missing tiles
     p_missing = (exp - obs) / exp  # type: float
     if p_missing > p.max_perc_missing_tiles:
-        error_status = QC.FAIL
+        status = QC.FAIL
         if is_fastq:
-            tiles_with_hits = df[df['is_kmer_freq_okay']]  # type: DataFrame
+            tiles_with_hits = df[df['is_kmer_freq_okay']]  # type: pd.DataFrame
             depth = tiles_with_hits['freq'].mean()
             if depth < p.low_coverage_depth_freq:
                 coverage_msg = f'Low coverage depth ({depth:.1f} < {float(p.low_coverage_depth_freq):.1f} expected); ' \
@@ -90,16 +114,16 @@ def check_for_missing_tiles(is_fastq: bool, curr_subtype: str, scheme: str,
             else:
                 coverage_msg = f'Okay coverage depth ({depth:.1f} >= {float(p.low_coverage_depth_freq):.1f} expected), ' \
                                f'but this may be the wrong serovar or species for scheme "{scheme}"'
-            error_messages = f'{p_missing:.2%} missing tiles; more than {p.max_perc_missing_tiles:.2%} missing ' \
-                             f'tiles threshold. {coverage_msg}'
+            messages = f'{p_missing:.2%} missing tiles; more than {p.max_perc_missing_tiles:.2%} missing ' \
+                       f'tiles threshold. {coverage_msg}'
         else:
-            error_messages = f'{p_missing:.2%} missing tiles for subtype "{curr_subtype}"; more than ' \
-                             f'{p.max_perc_missing_tiles:.2%} missing tile threshold'
+            messages = f'{p_missing:.2%} missing tiles for subtype "{subtype_result}"; more than ' \
+                       f'{p.max_perc_missing_tiles:.2%} missing tile threshold'
 
-    return error_status, error_messages
+    return status, messages
 
 
-def is_mixed_subtype(st: Subtype, df: DataFrame, *args) -> Tuple[Optional[str], Optional[str]]:
+def is_mixed_subtype(st: Subtype, df: pd.DataFrame, *args) -> Tuple[Optional[str], Optional[str]]:
     """Is the subtype result mixed?
 
     Note:
@@ -126,7 +150,7 @@ def is_mixed_subtype(st: Subtype, df: DataFrame, *args) -> Tuple[Optional[str], 
                     f'the same target site{s} {positions} for subtype "{st.subtype}".'
 
 
-def is_missing_too_many_target_sites(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[
+def is_missing_too_many_target_sites(st: Subtype, df: pd.DataFrame, p: SubtypingParams) -> Tuple[
     Optional[str], Optional[str]]:
     """Are there too many missing target sites for an expected subtype?
 
@@ -180,7 +204,7 @@ def is_missing_downstream_targets(st: Subtype, *args) -> Tuple[Optional[str], Op
     return None, None
 
 
-def is_maybe_intermediate_subtype(st: Subtype, df: DataFrame, p: SubtypingParams) -> Tuple[
+def is_maybe_intermediate_subtype(st: Subtype, df: pd.DataFrame, p: SubtypingParams) -> Tuple[
     Optional[str], Optional[str]]:
     """Is the result a possible intermediate subtype?
 
