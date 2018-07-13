@@ -8,7 +8,7 @@ from scipy.cluster.hierarchy import fcluster, linkage
 from scipy.spatial.distance import pdist
 
 
-def find_clusters(df: pd.DataFrame) -> Dict[str, str]:
+def find_clusters(df: pd.DataFrame, min_threshold: float, max_threshold: float) -> Dict[str, str]:
     """
     Takes in a vcf file and creates clusters from the scipy hierarchy clustering algorithm
     
@@ -27,7 +27,7 @@ def find_clusters(df: pd.DataFrame) -> Dict[str, str]:
     distance_matrix = compute_distance_matrix(filtered_df)
     clustering_array = create_linkage_array(distance_matrix)
 
-    flat_clusters = output_flat_clusters(clustering_array, filtered_df.columns)
+    flat_clusters = output_flat_clusters(clustering_array, filtered_df.columns, min_threshold, max_threshold)
 
     subset = flat_clusters.iloc[0]
     cluster_dict = subset.to_dict()
@@ -75,17 +75,30 @@ def create_linkage_array(distance_matrix: List) -> List:
     return clustering_array
 
 
-def output_flat_clusters(clustering_array: List, genomes_only: List) -> np.array:
-    """Uses a set of thresholds and a the linkage
+def output_flat_clusters(clustering_array: List, genomes_only: List, min_threshold: float, max_threshold: float) -> \
+        pd.DataFrame:
+    """Uses a set of thresholds to output a flat cluster of the linkage array
 
     Args:
         clustering_array: a hierarchical clustering linkage array that is calculated from the distance matrix
         genomes_only: an array of column names for the original SNV DataFrame
+        min_threshold: the minimum threshold for the fcluster array
+        max_threshold: the maximum threshold for the fcluster array
+
 
     Returns:
          flat_clusters: an array of flat clusters from the clustering array
     """
-    thresholds = [0.2, 0.4, 0.6, 0.8, 1.0]
+
+    thresholds = []
+    max_threshold = 1
+    min_threshold = 0.3
+    numbers = int((max_threshold - min_threshold) / 0.2)
+    numbers += 1
+    curr_number = min_threshold
+    for x in range(0, numbers):
+        thresholds.append(curr_number)
+        curr_number = curr_number + 0.2
 
     clusters = np.array([
         fcluster(clustering_array, t=n, criterion='distance')

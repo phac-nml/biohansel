@@ -32,7 +32,7 @@ def init_parser():
         '--input-vcf',
         required=True,
         help=
-        'vcf file containing the list of snps that are related to the genomes')
+        'vcf file containing the list of SNVs that are related to the genomes')
 
     parser.add_argument(
         '-g',
@@ -54,6 +54,41 @@ def init_parser():
         help=
         'Logging verbosity level (-v == show warnings; -vvv == show debug info)'
     )
+
+    parser.add_argument(
+        '-n',
+        '--schema-name',
+        help=
+        'A unique name for the schema file that is generated, the default is just'
+        ' {bio_hansel-schema-reference_genome_name}-{schema_version}'
+    )
+
+    parser.add_argument(
+        '-m',
+        '--schema-version',
+        help=
+        'An optional version number for the schema file that is generated'
+
+    )
+
+    parser.add_argument(
+        '-t',
+        '--minimum-threshold',
+        required=True,
+        type=float,
+        help=
+        'Minimum threshold to be tested using the hierarchical clustering scheme'
+    )
+
+    parser.add_argument(
+        '-u',
+        '--maximum-threshold',
+        required=True,
+        type=float,
+        help=
+        'Maximum threshold to be tested using the hierarchical clustering scheme'
+    )
+
     return parser
 
 
@@ -65,10 +100,29 @@ def main():
         parser.exit()
     args = parser.parse_args()
     output_folder_name = args.output_folder_name
+    min_threshold = args.minimum_threshold
+    max_threshold = args.maximum_threshold
+
+    if (min_threshold >= max_threshold):
+        logging.error("max_threshold has to be bigger than min_threshold")
     init_console_logger(3)
     vcf_file = args.input_vcf
-    reference_genome_path = f"{home_folder}{args.reference_genome_file}"
+    reference_genome_path = args.reference_genome_file
+
+    reference_genome_name = reference_genome_path.split("/")[-1]
+    reference_genome_name=reference_genome_name.split(".")[-2]
+    print(reference_genome_name)
     logging.info('using genbank file from %s', reference_genome_path)
+
+    if args.schema_version is not None:
+        schema_version = args.schema_version
+    else:
+        schema_version = "0.1.0"
+
+    if args.schema_name is not None:
+        schema_name = args.schema_name - {schema_version}
+    else:
+        schema_name = f"bio_hansel-schema-{reference_genome_name}-{schema_version}"
 
     output_directory = f"{home_folder}/{output_folder_name}"
 
@@ -78,15 +132,14 @@ def main():
     data_frame = read_vcf(vcf_file)
     temporary = data_frame.drop(['POS', 'REF', 'ALT'], 1)
     genomes_only = temporary.columns
-    groups_dict = find_clusters(data_frame)
-
+    groups_dict = find_clusters(data_frame, min_threshold, max_threshold)
     test_indices = split_genomes(genomes_only)
 
     modified_data_frame, test_group = extract_test_columns(
         data_frame, test_indices, groups_dict)
 
     results_dict = fisher_test(modified_data_frame, test_group)
-    get_sequences(output_directory, reference_genome_path, results_dict)
+    get_sequences(output_directory, reference_genome_path, results_dict, schema_name)
 
 
 if __name__ == '__main__':

@@ -4,12 +4,17 @@ from typing import List
 import numpy as np
 
 
-def split_genomes(input_genomes: list)-> List:
-    """
+def  split_genomes(input_genomes: List[str])-> List[str]:
+    """Extracts a set of genomes from the list of genomes inside the vcf file and creates a new list that contains
+    the
 
 
-    :param input_genomes:
-    :return:
+    Args:
+        input_genomes:
+
+    Returns:
+        test_indices:
+
     """
     samples = []
     for x in input_genomes:
