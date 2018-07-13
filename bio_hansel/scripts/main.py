@@ -6,7 +6,7 @@ import sys
 from extract_test_columns import extract_test_columns
 from find_cluster import find_clusters
 from fisher_test import fisher_test
-from get_sequence import get_sequences
+from write_sequence import write_sequences
 from read_vcf import read_vcf
 from split_genomes import split_genomes
 
@@ -139,7 +139,7 @@ def main():
         data_frame, test_indices, groups_dict)
 
     results_dict = fisher_test(modified_data_frame, test_group)
-    get_sequences(output_directory, reference_genome_path, results_dict, schema_name)
+    write_sequences(output_directory, reference_genome_path, results_dict, schema_name)
 
 
 if __name__ == '__main__':
