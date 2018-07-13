@@ -149,6 +149,7 @@ test.tab
 .vscode
 
 # pytest_cache
+.pytest_cache/
 .pytest_cache
 
 # Jupyter notebooks
