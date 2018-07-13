@@ -27,7 +27,7 @@ def subtype_reads_samples(reads: List[Tuple[List[str], str]],
     """Subtype input genomes using a scheme.
 
     Args:
-        input_genomes: input genomes; tuple of FASTA file path and genome name
+        reads: input genomes; tuple of list of FASTQ file paths and genome name
         scheme: bio_hansel scheme FASTA path
         scheme_name: optional scheme name
         subtyping_params: scheme specific subtyping parameters
@@ -123,8 +123,8 @@ def subtype_contigs(fasta_path: str,
                  scheme_version=scheme_version,
                  scheme_subtype_counts=scheme_subtype_counts)
 
-    A = init_automaton(scheme_fasta)
-    df = find_in_fasta(A, fasta_path)
+    automaton = init_automaton(scheme_fasta)
+    df = find_in_fasta(automaton, fasta_path)
 
     if df is None or df.shape[0] == 0:
         logging.warning('No subtyping tile matches for input "%s" for scheme "%s"', fasta_path, scheme)
@@ -262,11 +262,11 @@ def subtype_reads(reads: Union[str, List[str]],
                  scheme_version=scheme_version,
                  scheme_subtype_counts=scheme_subtype_counts)
 
-    A = init_automaton(scheme_fasta)
+    automaton = init_automaton(scheme_fasta)
     if isinstance(reads, str):
-        df = find_in_fastqs(A, reads)
+        df = find_in_fastqs(automaton, reads)
     elif isinstance(reads, list):
-        df = find_in_fastqs(A, *reads)
+        df = find_in_fastqs(automaton, *reads)
     else:
         raise ValueError('Unexpected type "{}" for "reads": {}'.format(type(reads), reads))
 
@@ -314,7 +314,7 @@ def process_subtyping_results(st: Subtype, df: pd.DataFrame, scheme_subtype_coun
     st = set_inconsistent_subtypes(st, find_inconsistent_subtypes(sorted_subtype_ints(dfpos.subtype)))
     st = set_subtyping_stats(st, df, dfpos, dfpos_highest_res, subtype_list, scheme_subtype_counts)
     st.non_present_subtypes = absent_downstream_subtypes(st.subtype, df.subtype, list(scheme_subtype_counts.keys()))
-    return (st, df)
+    return st, df
 
 
 def set_subtype_results(st: Subtype, df_positive: pd.DataFrame, subtype_list: List[str]) -> Subtype:
@@ -427,7 +427,8 @@ def absent_downstream_subtypes(subtype: str, subtypes: pd.Series, scheme_subtype
         scheme_subtypes: Possible subtyping scheme subtypes
 
     Returns:
-         List of downstream subtypes that are not present in the results or `None` if all downstream subtypes are present
+         List of downstream subtypes that are not present in the results or `None` if all immediately downstream
+         subtypes are present.
     """
     escaped_subtype = re.escape(subtype)
     re_subtype = re.compile(r'^{}\.\d+$'.format(escaped_subtype))
