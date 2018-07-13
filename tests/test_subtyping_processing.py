@@ -2,10 +2,10 @@
 
 import pandas as pd
 
-from bio_hansel.qc import QC
-from bio_hansel.subtype import Subtype
-from bio_hansel.subtyper import absent_downstream_subtypes, sorted_subtype_ints, count_periods, empty_results
-from bio_hansel.utils import find_inconsistent_subtypes
+from biohansel.subtype.qc import QC
+from biohansel.subtype.subtype import Subtype
+from biohansel.subtype.subtyper import absent_downstream_subtypes, sorted_subtype_ints, count_periods, empty_results
+from biohansel.utils import find_inconsistent_subtypes
 
 
 def test_count_periods():

@@ -4,17 +4,16 @@ from typing import List, Callable, Tuple
 
 from pandas import DataFrame
 
-from ..subtype import Subtype
-from ..subtyping_params import SubtypingParams
-from ..qc.const import QC
-from ..qc.checks import \
+from biohansel.subtype.qc.checks import \
     is_missing_tiles, \
     is_mixed_subtype, \
     is_maybe_intermediate_subtype, \
     is_missing_too_many_target_sites, \
     is_missing_downstream_targets, \
     is_overall_coverage_low
-
+from biohansel.subtype.qc.const import QC
+from biohansel.subtype.subtype import Subtype
+from biohansel.subtype.subtyping_params import SubtypingParams
 
 CHECKS = [is_missing_tiles,
           is_mixed_subtype,

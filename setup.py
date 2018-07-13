@@ -4,7 +4,7 @@ from distutils.core import setup
 
 from setuptools import find_packages
 
-from bio_hansel import __version__, program_name, program_desc
+from biohansel import __version__, program_name, program_desc
 
 classifiers = """
 Development Status :: 3 - Alpha
@@ -31,19 +31,20 @@ setup(
     keywords='Salmonella enterica Heidelberg Enteritidis SNP kmer subtyping Aho-Corasick',
     classifiers=classifiers,
     package_dir={program_name: program_name},
-    package_data={program_name: ['data/*/*.fasta',]},
+    package_data={program_name: ['subtype/data/*/*.fasta', ]},
     install_requires=[
         'numpy>=1.12.1',
         'pandas>=0.20.1',
         'pyahocorasick>=1.1.6',
-        'attrs',
+        'attrs>=17.2.0',
+        'click>=6.7'
     ],
     extras_require={
         'test': ['pytest>=3.0.7',],
     },
     entry_points={
         'console_scripts': [
-            'hansel={}.main:main'.format(program_name),
+            f'{program_name}={program_name}.cli:cli',
         ],
     }
 )

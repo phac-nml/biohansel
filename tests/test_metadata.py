@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from bio_hansel.metadata import read_metadata_table, merge_metadata_with_summary_results
+from biohansel.subtype.metadata import read_metadata_table, merge_metadata_with_summary_results
+
 
 def test_read_metadata():
     df_results = pd.read_table('tests/data/subtyping-results.tsv')

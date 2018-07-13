@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
+from ahocorasick import Automaton
+
+import pandas as pd
 from collections import defaultdict
 
-from ahocorasick import Automaton
-import pandas as pd
-
-from ..parsers import parse_fasta, parse_fastq
-from ..utils import revcomp
+from biohansel.parsers import parse_fasta, parse_fastq
+from biohansel.utils import revcomp
 
 
 def init_automaton(scheme_fasta):

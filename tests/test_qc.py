@@ -2,11 +2,10 @@
 
 import pandas as pd
 
-from bio_hansel.qc import is_maybe_intermediate_subtype
-from bio_hansel.qc.const import QC
-from bio_hansel.subtype import Subtype
-from bio_hansel.subtyper import subtype_reads, subtype_contigs
-from bio_hansel.utils import init_subtyping_params
+from biohansel.subtype.qc import is_maybe_intermediate_subtype, QC
+from biohansel.subtype.subtype import Subtype
+from biohansel.subtype.subtyper import subtype_reads, subtype_contigs
+from biohansel.subtype.util import init_subtyping_params
 
 genome_name = 'test'
 

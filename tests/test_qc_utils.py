@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from bio_hansel.qc.utils import get_mixed_subtype_tile_counts
+from biohansel.subtype.qc.utils import get_mixed_subtype_tile_counts
 
 
 def test_get_mixed_subtype_tile_counts():

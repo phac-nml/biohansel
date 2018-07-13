@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Functions for subtyping of reads (e.g. FASTQ) and contigs (e.g. FASTA) using bio_hansel-compatible subtyping schemes.
+Functions for subtyping of reads (e.g. FASTQ) and contigs (e.g. FASTA) using biohansel-compatible subtyping schemes.
 """
 import logging
 from typing import Optional, List, Dict, Union, Tuple
@@ -8,14 +8,15 @@ from typing import Optional, List, Dict, Union, Tuple
 import pandas as pd
 import re
 
-from .aho_corasick import init_automaton, find_in_fasta, find_in_fastqs
-from .const import COLUMNS_TO_REMOVE
-from .qc import perform_quality_check, QC
-from .subtype import Subtype
-from .subtype_stats import SubtypeCounts
-from .subtype_stats import subtype_counts
-from .subtyping_params import SubtypingParams
-from .utils import find_inconsistent_subtypes, get_scheme_fasta, get_scheme_version, init_subtyping_params
+from biohansel.subtype.aho_corasick import init_automaton, find_in_fasta, find_in_fastqs
+from biohansel.subtype.const import COLUMNS_TO_REMOVE
+from biohansel.subtype.qc import perform_quality_check, QC
+from biohansel.subtype.subtype import Subtype
+from biohansel.subtype.subtype_stats import SubtypeCounts
+from biohansel.subtype.subtype_stats import subtype_counts
+from biohansel.subtype.subtyping_params import SubtypingParams
+from biohansel.subtype.util import get_scheme_fasta, get_scheme_version, init_subtyping_params
+from biohansel.utils import find_inconsistent_subtypes
 
 
 def subtype_reads_samples(reads: List[Tuple[List[str], str]],
@@ -28,7 +29,7 @@ def subtype_reads_samples(reads: List[Tuple[List[str], str]],
 
     Args:
         reads: input genomes; tuple of list of FASTQ file paths and genome name
-        scheme: bio_hansel scheme FASTA path
+        scheme: biohansel scheme FASTA path
         scheme_name: optional scheme name
         subtyping_params: scheme specific subtyping parameters
         scheme_subtype_counts: summary information about scheme
@@ -66,7 +67,7 @@ def subtype_contigs_samples(input_genomes: List[Tuple[str, str]],
 
     Args:
         input_genomes: input genomes; tuple of FASTA file path and genome name
-        scheme: bio_hansel scheme FASTA path
+        scheme: biohansel scheme FASTA path
         scheme_name: optional scheme name
         subtyping_params: scheme specific subtyping parameters
         scheme_subtype_counts: summary information about scheme
@@ -102,7 +103,7 @@ def subtype_contigs(fasta_path: str,
     Args:
         fasta_path: Input FASTA file path
         genome_name: Input genome name
-        scheme: bio_hansel scheme FASTA path
+        scheme: biohansel scheme FASTA path
         subtyping_params: scheme specific subtyping parameters
         scheme_name: optional scheme name
         scheme_subtype_counts: summary information about scheme
@@ -166,7 +167,7 @@ def parallel_query_contigs(input_genomes: List[Tuple[str, str]],
 
     Args:
         input_genomes: Input genome FASTA paths
-        scheme: bio_hansel scheme FASTA path to subtype with
+        scheme: biohansel scheme FASTA path to subtype with
         scheme_name: optional scheme name
         subtyping_params: scheme specific subtyping parameters
         scheme_subtype_counts: scheme summary information
@@ -203,7 +204,7 @@ def parallel_query_reads(reads: List[Tuple[List[str], str]],
 
     Args:
         reads: Input reads; list of tuples of FASTQ file paths and genome names
-        scheme: bio_hansel scheme FASTA path
+        scheme: biohansel scheme FASTA path
         scheme_name: optional scheme name
         subtyping_params: scheme specific subtyping parameters
         scheme_subtype_counts: scheme summary information
@@ -240,7 +241,7 @@ def subtype_reads(reads: Union[str, List[str]],
     Args:
         reads: Input FASTQ file path(s)
         genome_name: Input genome name
-        scheme: bio_hansel scheme FASTA path
+        scheme: biohansel scheme FASTA path
         scheme_name: optional scheme name
         subtyping_params: scheme specific subtyping parameters
         scheme_subtype_counts: summary information about scheme

@@ -1,10 +1,10 @@
 import pytest
 from pandas import DataFrame
 
-from bio_hansel.const import SCHEME_FASTAS
-from bio_hansel.qc.const import QC
-from bio_hansel.subtype import Subtype
-from bio_hansel.subtyper import subtype_reads
+from biohansel.subtype.const import SCHEME_FASTAS
+from biohansel.subtype.qc import QC
+from biohansel.subtype.subtype import Subtype
+from biohansel.subtype.subtyper import subtype_reads
 from . import check_df_fastq_cols, check_subtype_attrs
 
 genome_name = 'test'
