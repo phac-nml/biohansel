@@ -5,15 +5,15 @@ import pandas as pd
 from Bio import SeqIO
 
 
-def get_sequences(output_directory: str, reference_genome_path: str,
+def write_sequences(output_directory: str, reference_genome_path: str,
                   results_dict: Dict[str, pd.DataFrame], schema_name: str) -> None:
     """Collects the sequences from the reference genome by going through the list of dataframes and outputting the
     associated sequences at that SNV location
 
     Args:
         output_directory:directory where the schema would be located as indicated by the user
-        results_dict: specifies the list of genomes and their associated group
         reference_genome_path: file path to where the reference genome is located
+        results_dict: specifies the list of genomes and their associated group
         schema_name: the name of the output schema file
 
     Returns:
