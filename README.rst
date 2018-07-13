@@ -9,8 +9,8 @@
     :target: https://pypi.python.org/pypi/bio_hansel/
 .. |license| image:: https://img.shields.io/badge/License-Apache%20v2.0-blue.svg
     :target: http://www.apache.org/licenses/LICENSE-2.0
-.. |citest|  image:: https://travis-ci.org/phac-nml/bio_hansel.svg?branch=master
-    :target: https://travis-ci.org/phac-nml/bio_hansel
+.. |citest|  image:: https://travis-ci.org/phac-nml/biohansel.svg?branch=development
+    :target: https://travis-ci.org/phac-nml/biohansel
 .. |conda|   image:: https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square
     :target: https://bioconda.github.io/recipes/bio_hansel/README.html
 .. |nbsp| unicode:: 0xA0
