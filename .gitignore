@@ -145,11 +145,11 @@ match_results.tab
 results.tab
 test.tab
 
-$ VS Code 
+# VS Code
 .vscode
 
-$ pytest_cache
+# pytest_cache
 .pytest_cache
 
-$Jupyter notebooks
+# Jupyter notebooks
 .ipynb

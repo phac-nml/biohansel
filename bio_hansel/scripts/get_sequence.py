@@ -43,7 +43,7 @@ def get_sequences(output_directory: str, reference_genome_path: str,
                     record_2 = gb_record.seq[seq_start2:seq_stop2]
                     attribute_value = row.iloc[3]
                     # if the ratio is above 1, then it means that it is positive and takes the alternate snv form
-                    if (attribute_value > 0):
+                    if attribute_value > 0:
                         file.write('>' + str(position) + '-' + str(group) +
                                    '\n')
                         file.write(
