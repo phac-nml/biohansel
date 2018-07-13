@@ -147,3 +147,9 @@ test.tab
 
 $ VS Code 
 .vscode
+
+$ pytest_cache
+.pytest_cache
+
+$Jupyter notebooks
+.ipynb
