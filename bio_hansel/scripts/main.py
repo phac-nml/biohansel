@@ -97,7 +97,6 @@ def init_parser():
 
 
 def main():
-
     parser = init_parser()
     if len(sys.argv[1:]) == 0:
         parser.print_help()
