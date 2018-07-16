@@ -1,20 +1,23 @@
+# -*- coding: utf-8 -*-
+
 import pytest
 from pandas import DataFrame
 
-from bio_hansel.const import SCHEME_FASTAS
-from bio_hansel.qc.const import QC
-from bio_hansel.subtype import Subtype
-from bio_hansel.subtyper import subtype_reads
+from biohansel.subtype.const import SCHEME_FASTAS
+from biohansel.subtype.qc import QC
+from biohansel.subtype.subtype import Subtype
+from biohansel.subtype.subtyper import subtype_reads
 from . import check_df_fastq_cols, check_subtype_attrs
 
 genome_name = 'test'
 scheme_heidelberg = 'heidelberg'
 scheme_enteritidis = 'enteritidis'
 
-fastq_heidelberg_pass = 'tests/data/SRR5646583_SMALL.fastq'
-fastq_gz_heidelberg_pass = 'tests/data/SRR5646583_SMALL.fastq.gz'
+fastq_heidelberg_pass = 'tests/data/subtype/SRR5646583_SMALL.fastq'
+fastq_gz_heidelberg_pass = 'tests/data/subtype/SRR5646583_SMALL.fastq.gz'
 
-fastqs_enteritidis_fail = ['tests/data/inconsistent_reads_fwd.fastq', 'tests/data/inconsistent_reads_rvs.fastq']
+fastqs_enteritidis_fail = ['tests/data/subtype/inconsistent_reads_fwd.fastq',
+                           'tests/data/subtype/inconsistent_reads_rvs.fastq']
 
 
 @pytest.fixture()

@@ -5,7 +5,7 @@ from typing import Dict, List, Set
 import attr
 from collections import defaultdict
 
-from .parsers import parse_fasta
+from biohansel.parsers import parse_fasta
 
 
 @attr.s

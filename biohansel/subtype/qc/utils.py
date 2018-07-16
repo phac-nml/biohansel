@@ -2,7 +2,7 @@ from typing import Tuple, Optional, List, Any, Dict
 
 from pandas import DataFrame
 
-from ..subtype import Subtype
+from biohansel.subtype.subtype import Subtype
 
 
 def get_conflicting_tiles(st: Subtype, df: DataFrame) -> Optional[DataFrame]:

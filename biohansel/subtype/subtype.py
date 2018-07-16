@@ -4,7 +4,7 @@ from typing import List, Optional
 import attr
 import os
 
-from .const import REGEX_FASTQ
+from biohansel.utils import REGEX_FASTQ
 
 
 @attr.s

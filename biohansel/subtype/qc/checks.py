@@ -4,10 +4,10 @@ from typing import Tuple, Optional
 
 import pandas as pd
 
-from ..qc.const import QC
-from ..qc.utils import get_conflicting_tiles, get_num_pos_neg_tiles, get_mixed_subtype_tile_counts
-from ..subtype import Subtype
-from ..subtyping_params import SubtypingParams
+from biohansel.subtype.qc.const import QC
+from biohansel.subtype.qc.utils import get_conflicting_tiles, get_num_pos_neg_tiles, get_mixed_subtype_tile_counts
+from biohansel.subtype.subtype import Subtype
+from biohansel.subtype.subtyping_params import SubtypingParams
 
 
 def is_overall_coverage_low(st: Subtype, df: pd.DataFrame, p: SubtypingParams) -> Tuple[Optional[str], Optional[str]]:
@@ -16,8 +16,8 @@ def is_overall_coverage_low(st: Subtype, df: pd.DataFrame, p: SubtypingParams) -
             or not st.is_fastq_input():
         return None, None
 
-    if st.avg_tile_coverage < p.min_coverage_warning:
-        return QC.WARNING, f'Low coverage for all tiles ({st.avg_tile_coverage:.3f} < {p.min_coverage_warning} expected)'
+    if st.avg_tile_coverage < p.low_coverage_warning:
+        return QC.WARNING, f'Low coverage for all tiles ({st.avg_tile_coverage:.3f} < {p.low_coverage_warning} expected)'
     return None, None
 
 
@@ -103,22 +103,22 @@ def check_for_missing_tiles(is_fastq: bool,
 
     # proportion of missing tiles
     p_missing = (exp - obs) / exp  # type: float
-    if p_missing > p.max_perc_missing_tiles:
+    if p_missing > p.max_missing_tiles:
         status = QC.FAIL
         if is_fastq:
             tiles_with_hits = df[df['is_kmer_freq_okay']]  # type: pd.DataFrame
             depth = tiles_with_hits['freq'].mean()
-            if depth < p.low_coverage_depth_freq:
-                coverage_msg = f'Low coverage depth ({depth:.1f} < {float(p.low_coverage_depth_freq):.1f} expected); ' \
+            if depth < p.low_coverage_threshold:
+                coverage_msg = f'Low coverage depth ({depth:.1f} < {float(p.low_coverage_threshold):.1f} expected); ' \
                                f'you may need more WGS data.'
             else:
-                coverage_msg = f'Okay coverage depth ({depth:.1f} >= {float(p.low_coverage_depth_freq):.1f} expected), ' \
+                coverage_msg = f'Okay coverage depth ({depth:.1f} >= {float(p.low_coverage_threshold):.1f} expected), ' \
                                f'but this may be the wrong serovar or species for scheme "{scheme}"'
-            messages = f'{p_missing:.2%} missing tiles; more than {p.max_perc_missing_tiles:.2%} missing ' \
+            messages = f'{p_missing:.2%} missing tiles; more than {p.max_missing_tiles:.2%} missing ' \
                        f'tiles threshold. {coverage_msg}'
         else:
             messages = f'{p_missing:.2%} missing tiles for subtype "{subtype_result}"; more than ' \
-                       f'{p.max_perc_missing_tiles:.2%} missing tile threshold'
+                       f'{p.max_missing_tiles:.2%} missing tile threshold'
 
     return status, messages
 
@@ -176,7 +176,7 @@ def is_missing_too_many_target_sites(st: Subtype, df: pd.DataFrame, p: Subtyping
 
     exp = int(st.n_tiles_matching_all_expected)
     obs = int(st.n_tiles_matching_all)
-    if (exp - obs) / exp <= p.max_perc_missing_tiles and len(missing_targets) >= p.min_ambiguous_tiles:
+    if (exp - obs) / exp <= p.max_missing_tiles and len(missing_targets) >= p.min_ambiguous_tiles:
         return QC.FAIL, f'{QC.AMBIGUOUS_RESULTS_ERROR_3}: There were {len(missing_targets)} missing positions for ' \
                         f'subtype "{st.subtype}".'
     return None, None
@@ -232,7 +232,7 @@ def is_maybe_intermediate_subtype(st: Subtype, df: pd.DataFrame, p: SubtypingPar
     num_pos_tiles, num_neg_tiles = get_num_pos_neg_tiles(st, df)
     obs = int(st.n_tiles_matching_all)
     exp = int(st.n_tiles_matching_all_expected)
-    if (exp - obs) / exp <= p.max_perc_intermediate_tiles and conflicting_tiles.shape[0] == 0 and \
+    if (exp - obs) / exp <= p.max_intermediate_tiles and conflicting_tiles.shape[0] == 0 and \
             total_subtype_tiles_hits < total_subtype_tiles and num_pos_tiles and num_neg_tiles:
         return QC.WARNING, f'Possible intermediate subtype. All scheme tiles were found, but a fraction ' \
                            f'were positive for the final subtype. Total subtype matches observed ' \

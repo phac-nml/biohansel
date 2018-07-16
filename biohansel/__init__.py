@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-__version__ = '2.0.0'
-program_name = 'bio_hansel'
+__version__ = '3.0.0'
+program_name = 'biohansel'
 program_summary = 'Subtype microbial genomes using SNV targeting k-mer subtyping schemes.'
 program_desc = program_summary + '''
 Includes schemes for Salmonella enterica spp. enterica serovar Heidelberg and Enteritidis subtyping.

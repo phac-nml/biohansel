@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from bio_hansel.metadata import read_metadata_table, merge_metadata_with_summary_results
+from biohansel.subtype.metadata import read_metadata_table, merge_metadata_with_summary_results
+
 
 def test_read_metadata():
-    df_results = pd.read_table('tests/data/subtyping-results.tsv')
-    df_md = read_metadata_table('tests/data/subtype-metadata.tsv')
+    df_results = pd.read_table('tests/data/subtype/subtyping-results.tsv')
+    df_md = read_metadata_table('tests/data/subtype/subtype-metadata.tsv')
     df_merged = merge_metadata_with_summary_results(df_results, df_md)
     assert np.all(df_md.columns.isin(df_merged.columns))
     for i, r in df_merged.iterrows():
