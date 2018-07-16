@@ -4,7 +4,7 @@ import pandas as pd
 
 def fisher_test(modified_df: pd.DataFrame,
                 test_groups: Dict[str, str]) -> Dict[str, pd.DataFrame]:
-    """Takes in a DataFrame containing SNV VCF data and extracts the SNVS that are specific to a group, and only to that
+    """Takes in a DataFrame containing SNV VCF data and extracts the SNVs that are specific to a group, and only to that
     group
 
     Args:

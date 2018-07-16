@@ -17,6 +17,8 @@ def find_clusters(df: pd.DataFrame, min_threshold: float, max_threshold: float) 
     
     Args:
         df: contains the vcf information in the DataFrame format
+        min_threshold: minimum threshold for the flat cluster array
+        max_threshold: maximum threshold for the flat cluster array
 
     Returns:
         cluster_dict: a dictionary indicating the cluster membership of each of the supplied genomes in
