@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import pytest
 from pandas import DataFrame
 
@@ -11,15 +13,15 @@ genome_name = 'test'
 scheme_heidelberg = 'heidelberg'
 scheme_enteritidis = 'enteritidis'
 
-fasta_heidelberg_pass = 'tests/data/SRR1002850_SMALL.fasta'
-fasta_gz_heidelberg_pass = 'tests/data/SRR1002850_SMALL.fasta.gz'
+fasta_heidelberg_pass = 'tests/data/subtype/SRR1002850_SMALL.fasta'
+fasta_gz_heidelberg_pass = 'tests/data/subtype/SRR1002850_SMALL.fasta.gz'
 
 # input contigs that should give an unconfident result and a QC fail
-fasta_enteritidis_unconfident = 'tests/data/fail-qc-unconfident-subtype.fasta'
-fasta_gz_enteritidis_unconfident = 'tests/data/fail-qc-unconfident-subtype.fasta.gz'
+fasta_enteritidis_unconfident = 'tests/data/subtype/fail-qc-unconfident-subtype.fasta'
+fasta_gz_enteritidis_unconfident = 'tests/data/subtype/fail-qc-unconfident-subtype.fasta.gz'
 # input contigs that should give a QC fail
-fasta_enteritidis_fail = 'tests/data/fail-qc-unconfident-subtype.fasta'
-fasta_gz_enteritidis_fail = 'tests/data/fail-qc-unconfident-subtype.fasta.gz'
+fasta_enteritidis_fail = 'tests/data/subtype/fail-qc-unconfident-subtype.fasta'
+fasta_gz_enteritidis_fail = 'tests/data/subtype/fail-qc-unconfident-subtype.fasta.gz'
 
 
 @pytest.fixture()

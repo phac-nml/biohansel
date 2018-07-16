@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import pytest
 from pandas import DataFrame
 
@@ -11,10 +13,11 @@ genome_name = 'test'
 scheme_heidelberg = 'heidelberg'
 scheme_enteritidis = 'enteritidis'
 
-fastq_heidelberg_pass = 'tests/data/SRR5646583_SMALL.fastq'
-fastq_gz_heidelberg_pass = 'tests/data/SRR5646583_SMALL.fastq.gz'
+fastq_heidelberg_pass = 'tests/data/subtype/SRR5646583_SMALL.fastq'
+fastq_gz_heidelberg_pass = 'tests/data/subtype/SRR5646583_SMALL.fastq.gz'
 
-fastqs_enteritidis_fail = ['tests/data/inconsistent_reads_fwd.fastq', 'tests/data/inconsistent_reads_rvs.fastq']
+fastqs_enteritidis_fail = ['tests/data/subtype/inconsistent_reads_fwd.fastq',
+                           'tests/data/subtype/inconsistent_reads_rvs.fastq']
 
 
 @pytest.fixture()

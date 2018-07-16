@@ -12,7 +12,7 @@ genome_name = 'test'
 
 def test_low_coverage():
     scheme = 'heidelberg'
-    fastq = 'tests/data/SRR1696752/SRR1696752.fastq'
+    fastq = 'tests/data/subtype/SRR1696752/SRR1696752.fastq'
     st, df = subtype_reads(reads=fastq, genome_name=genome_name, scheme=scheme)
     assert isinstance(st, Subtype)
     assert isinstance(df, pd.DataFrame)
@@ -25,7 +25,7 @@ def test_low_coverage():
 def test_intermediate_subtype():
     scheme = 'enteritidis'
     st = Subtype(sample='test',
-                 file_path='tests/data/Retro1000data/10-1358.fastq',
+                 file_path='tests/data/subtype/Retro1000data/10-1358.fastq',
                  scheme='enteritidis',
                  scheme_version='0.8.0',
                  subtype='2.1.1.2',
@@ -47,7 +47,7 @@ def test_intermediate_subtype():
                  avg_tile_coverage=37.04102564102564,
                  qc_status=None,
                  qc_message=None)
-    df = pd.read_csv('tests/data/se_intermediate_subtype_df.csv')
+    df = pd.read_csv('tests/data/subtype/se_intermediate_subtype_df.csv')
     p = init_subtyping_params(args=None, scheme=scheme)
     st.qc_status, st.qc_message = is_maybe_intermediate_subtype(st, df, p)
     assert isinstance(st, Subtype)
@@ -59,7 +59,7 @@ def test_intermediate_subtype():
 
 def test_missing_tiles():
     scheme = 'heidelberg'
-    fastq = 'tests/data/SRR1696752/SRR1696752.fastq'
+    fastq = 'tests/data/subtype/SRR1696752/SRR1696752.fastq'
     st, df = subtype_reads(reads=fastq, genome_name=genome_name, scheme=scheme)
     assert isinstance(st, Subtype)
     assert isinstance(df, pd.DataFrame)
@@ -71,7 +71,7 @@ def test_missing_tiles():
 
 def test_mixed_tiles():
     scheme = 'heidelberg'
-    fastqs = ['tests/data/SRR3392166/SRR3392166.fastq', 'tests/data/SRR3392166/SRR3392166.fastq']
+    fastqs = ['tests/data/subtype/SRR3392166/SRR3392166.fastq', 'tests/data/subtype/SRR3392166/SRR3392166.fastq']
     st, df = subtype_reads(reads=fastqs, genome_name=genome_name, scheme=scheme)
     assert isinstance(st, Subtype)
     assert isinstance(df, pd.DataFrame)
@@ -82,7 +82,7 @@ def test_mixed_tiles():
 
 def test_mixed_subtype_positive_negative_tiles_same_target():
     scheme = 'heidelberg'
-    fasta = 'tests/data/fail-qc-mixed-subtype-pos-neg-tiles.fasta'
+    fasta = 'tests/data/subtype/fail-qc-mixed-subtype-pos-neg-tiles.fasta'
     st, df = subtype_contigs(fasta_path=fasta, genome_name=genome_name, scheme=scheme)
     assert isinstance(st, Subtype)
     assert isinstance(df, pd.DataFrame)
@@ -100,7 +100,7 @@ def test_mixed_subtype_positive_negative_tiles_same_target():
 
 def test_unconfident_subtype():
     scheme = 'enteritidis'
-    fasta = 'tests/data/fail-qc-unconfident-subtype.fasta'
+    fasta = 'tests/data/subtype/fail-qc-unconfident-subtype.fasta'
     st, df = subtype_contigs(fasta_path=fasta, genome_name=genome_name, scheme=scheme)
     assert isinstance(st, Subtype)
     assert isinstance(df, pd.DataFrame)
