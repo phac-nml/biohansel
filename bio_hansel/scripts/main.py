@@ -3,12 +3,10 @@ import logging
 import os
 import sys
 
-from extract_test_columns import extract_test_columns
 from find_cluster import find_clusters
 from fisher_test import fisher_test
 from write_sequence import write_sequences
 from read_vcf import read_vcf
-from split_genomes import split_genomes
 
 SCRIPT_NAME = 'schema_creation'
 LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
@@ -60,15 +58,12 @@ def init_parser():
         '--schema-name',
         help=
         'A unique name for the schema file that is generated, the default is just'
-        ' {bio_hansel-schema-reference_genome_name}-{schema_version}'
-    )
+        ' {bio_hansel-schema-reference_genome_name}-{schema_version}')
 
     parser.add_argument(
         '-m',
         '--schema-version',
-        help=
-        'An optional version number for the schema file that is generated'
-
+        help='An optional version number for the schema file that is generated'
     )
 
     parser.add_argument(
@@ -89,17 +84,26 @@ def init_parser():
         'Maximum threshold to be tested using the hierarchical clustering scheme'
     )
 
+    parser.add_argument(
+        '-s',
+        '--padding-sequence-length',
+        required=True,
+        type=int,
+        help=
+        'Length of additional sequences to be added to the beginning and end of the selected SNV'
+    )
+
     return parser
 
 
 def main():
-    home_folder = os.path.expanduser('~')
+
     parser = init_parser()
     if len(sys.argv[1:]) == 0:
         parser.print_help()
         parser.exit()
     args = parser.parse_args()
-    output_folder_name = args.output_folder_name
+    output_directory = args.output_folder_name
     min_threshold = args.minimum_threshold
     max_threshold = args.maximum_threshold
 
@@ -108,10 +112,10 @@ def main():
     init_console_logger(3)
     vcf_file = args.input_vcf
     reference_genome_path = args.reference_genome_file
+    sequence_length = args.padding_sequence_length
 
     reference_genome_name = reference_genome_path.split("/")[-1]
-    reference_genome_name=reference_genome_name.split(".")[-2]
-    print(reference_genome_name)
+    reference_genome_name = reference_genome_name.split(".")[-2]
     logging.info('using genbank file from %s', reference_genome_path)
 
     if args.schema_version is not None:
@@ -124,22 +128,15 @@ def main():
     else:
         schema_name = f"bio_hansel-schema-{reference_genome_name}-{schema_version}"
 
-    output_directory = f"{home_folder}/{output_folder_name}"
-
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
 
     data_frame = read_vcf(vcf_file)
-    temporary = data_frame.drop(['POS', 'REF', 'ALT'], 1)
-    genomes_only = temporary.columns
     groups_dict = find_clusters(data_frame, min_threshold, max_threshold)
-    test_indices = split_genomes(genomes_only)
-
-    modified_data_frame, test_group = extract_test_columns(
-        data_frame, test_indices, groups_dict)
-
-    results_dict = fisher_test(modified_data_frame, test_group)
-    write_sequences(output_directory, reference_genome_path, results_dict, schema_name)
+    results_dict = fisher_test(data_frame, groups_dict)
+    updated_results_dict = write_sequences(output_directory,
+                                           reference_genome_path, results_dict,
+                                           schema_name, sequence_length)
 
 
 if __name__ == '__main__':

@@ -7,7 +7,7 @@ def read_vcf(vcf_file: str) -> (pd.DataFrame):
     vcf_file: path to the vcf file
 
     Returns:
-    df: returns the dataframe version of the generated vcf file from snippy
+    df: returns the DataFrame version of the generated vcf file from snippy
     """
     with open(vcf_file, 'r') as file:
         for line in file:
