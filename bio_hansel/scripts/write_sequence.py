@@ -33,9 +33,12 @@ def write_sequences(output_directory: str, reference_genome_path: str,
             ]
             max_sequence_value = len(gb_record[0].seq)
             sequences = str(gb_record[0].seq)
-            ref_seqs = value.POS.apply(get_sub_sequences, args=(sequences, sequence_length, max_sequence_value))
-            alt_seqs = ref_seqs.str.slice(0, sequence_length) + value.ALT + ref_seqs.str.slice(sequence_length + 1,
-                                                                                               sequence_length + sequence_length + 1)
+            ref_seqs = value.POS.apply(
+                get_sub_sequences,
+                args=(sequences, sequence_length, max_sequence_value))
+            alt_seqs = ref_seqs.str.slice(
+                0, sequence_length) + value.ALT + ref_seqs.str.slice(
+                    sequence_length + 1, sequence_length + sequence_length + 1)
 
             value['ref_sequences'] = ref_seqs
             value['alt_sequences'] = alt_seqs
@@ -63,7 +66,8 @@ def write_sequences(output_directory: str, reference_genome_path: str,
     return results_dict
 
 
-def get_sub_sequences(position, seq, sequence_length, max_sequence_value):
+def get_sub_sequences(position: int, seq: str, sequence_length: int,
+                      max_sequence_value: int) -> str:
     """Get the sequences that are before are after the specified SNV
     Args:
         position: the position of the SNV based off of the reference genome
@@ -73,6 +77,8 @@ def get_sub_sequences(position, seq, sequence_length, max_sequence_value):
         max_sequence_value: the length of the reference genome
 
     Returns:
+        sequence_sequence: the sequence that is found at the specified genome positions from the reference genome
 
     """
-    return seq[max(0, position - (sequence_length + 1)):min(max_sequence_value, position + sequence_length)]
+    specific_sequence = seq[max(0, position - (sequence_length + 1)):min(
+        max_sequence_value, position + sequence_length)]
