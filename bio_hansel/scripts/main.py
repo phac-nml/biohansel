@@ -5,7 +5,7 @@ import sys
 
 from find_cluster import find_clusters
 from fisher_test import fisher_test
-from write_sequence import write_sequences
+from write_sequence import write_sequences, get_sequences
 from read_vcf import read_vcf
 
 SCRIPT_NAME = 'schema_creation'
@@ -133,9 +133,8 @@ def main():
     data_frame = read_vcf(vcf_file)
     groups_dict = find_clusters(data_frame, min_threshold, max_threshold)
     results_dict = fisher_test(data_frame, groups_dict)
-    updated_results_dict = write_sequences(output_directory,
-                                           reference_genome_path, results_dict,
-                                           schema_name, sequence_length)
+    updated_results_dict = get_sequences(results_dict, sequence_length)
+    write_sequences(output_directory, updated_results_dict, schema_name)
 
 
 if __name__ == '__main__':
