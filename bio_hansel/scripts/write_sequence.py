@@ -61,12 +61,12 @@ def write_sequences(output_directory: str,
                 os.path.join(output_directory, f"{schema_name}.fasta"),
                 "a+") as file:
             for index, row in curr_df.iterrows():
-                attribute_value = row.iloc[2]
+                ratio_value = row.iloc[2]
                 position = index
                 reference_snv = row['ref_sequences']
                 alternate_snv = row['alt_sequences']
                 # if the ratio is above 1, then it means that it is positive and takes the alternate snv form
-                if attribute_value > 0:
+                if ratio_value > 0:
                     file.write(f""">{position}-{group}\n"""
                                f"""{alternate_snv}\n"""
                                f""">negative{position}-{group}\n"""
