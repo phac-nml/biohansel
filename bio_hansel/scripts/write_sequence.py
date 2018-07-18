@@ -6,7 +6,7 @@ from Bio import SeqIO
 
 
 def get_sequences(results_dict: Dict[str, pd.DataFrame], sequence_length: int,
-                  reference_genome_path: str) -> pd.DataFrame:
+                  reference_genome_path: str) -> Dict[str, pd.DataFrame]:
     """Collects the sequences from the reference genome by going through the list of DataFrames and adds two columns
     that contains the reference sequence and the alternate sequence surrounding each SNV
 
