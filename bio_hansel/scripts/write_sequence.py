@@ -1,3 +1,5 @@
+import os
+
 from typing import Dict
 
 import pandas as pd
@@ -6,33 +8,33 @@ from Bio import SeqIO
 
 
 def get_sequences(results_dict: Dict[str, pd.DataFrame], sequence_length: int,
-                  reference_genome_path: str) -> Dict[str, pd.DataFrame]:
+                ) -> Dict[str, pd.DataFrame]:
     """Collects the sequences from the reference genome by going through the list of DataFrames and adds two columns
     that contains the reference sequence and the alternate sequence surrounding each SNV
 
     Args:
         results_dict: specifies the list of genomes and their associated group
         sequence_length: the length of additional sequences to be added to the beginning and end of the SNV
-        reference_genome_path: the path to where the reference genome is located
+        
 
     Returns:
         results_dict: updated dictionary with snv sequences for both the reference genome and alternate snv
     """
-    for key, value in results_dict.items():
+    for key, curr_df in results_dict.items():
         gb_record = [
             record for record in SeqIO.parse(reference_genome_path, "genbank")
         ]
         max_sequence_value = len(gb_record[0].seq)
         sequences = str(gb_record[0].seq)
-        ref_seqs = value.index.apply(
+        ref_seqs = curr_df.index.apply(
             get_sub_sequences,
             args=(sequences, sequence_length, max_sequence_value))
         alt_seqs = ref_seqs.str.slice(
-            0, sequence_length) + value.ALT + ref_seqs.str.slice(
+            0, sequence_length) + curr_df.ALT + ref_seqs.str.slice(
                 sequence_length + 1, sequence_length + sequence_length + 1)
 
-        value['ref_sequences'] = ref_seqs
-        value['alt_sequences'] = alt_seqs
+        curr_df['ref_sequences'] = ref_seqs
+        curr_df['alt_sequences'] = alt_seqs
 
     return results_dict
 
@@ -49,10 +51,9 @@ def write_sequences(output_directory: str,
     Returns:
          Creates schema file in the output directory specified by the user
     """
-    for key, value in updated_results_dict.items():
-        group = key
-        with open(f"{output_directory}/{schema_name}.fasta", "a+") as file:
-            for i, row in value.iterrows():
+    for group, curr_df in updated_results_dict.items():
+        with open(os.path.join(output_directory,f"{schema_name}.fasta", "a+") as file:
+            for i, row in curr_df.iterrows():
                 attribute_value = row.iloc[2]
                 position = i
                 reference_snv = row['ref_sequences']

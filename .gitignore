@@ -152,5 +152,4 @@ test.tab
 .pytest_cache/*
 .pytest_cache
 
-# Jupyter notebooks
-.ipynb
+

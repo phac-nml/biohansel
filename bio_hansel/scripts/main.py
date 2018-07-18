@@ -112,8 +112,7 @@ def main():
     vcf_file = args.input_vcf
     reference_genome_path = args.reference_genome_file
     sequence_length = args.padding_sequence_length
-
-    reference_genome_name = reference_genome_path.split("/")[-1]
+    reference_genome_name = os.path.split(reference_genome_path)[-1]
     reference_genome_name = reference_genome_name.split(".")[-2]
     logging.info('using genbank file from %s', reference_genome_path)
 
