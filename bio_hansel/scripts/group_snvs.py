@@ -3,8 +3,10 @@ from typing import Dict
 import pandas as pd
 
 
-def group_snvs(binary_df: pd.DataFrame, sequence_df: pd.DataFrame
-                test_groups: Dict[str, str]) -> Dict[str, pd.DataFrame]:
+def group_snvs(binary_df: pd.DataFrame, sequence_df: pd.DataFrame,
+               groups_dict: Dict[str, str],
+
+               ) -> Dict[str, pd.DataFrame]:
     """Takes in a DataFrame containing SNV VCF data and extracts the SNVs that are specific to a group, and only to that
     group
 
@@ -16,13 +18,12 @@ def group_snvs(binary_df: pd.DataFrame, sequence_df: pd.DataFrame
         results_list: A dictionary containing the group allocation and DataFrame of SNVs that are associated with that
                       group
     """
-   
-    unique_groups = list(set(test_groups.values()))
+    unique_groups = list(set(groups_dict.values()))
     results_list = {}
     other_list = []
     current_list = []
     for x in unique_groups:
-        for key, value in test_groups.items():
+        for key, value in groups_dict.items():
             if x == value:
                 current_list.append(key)
             else:
