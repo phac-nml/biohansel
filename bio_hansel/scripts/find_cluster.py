@@ -47,7 +47,7 @@ def compute_distance_matrix(df: pd.DataFrame) -> List:
         distance_matrix: an matrix of pair-wise distances between samples
     """
     distance_matrix = sp.spatial.distance.pdist(
-        filtered_df.transpose(), metric='hamming')
+        df.transpose(), metric='hamming')
     return distance_matrix
 
 
