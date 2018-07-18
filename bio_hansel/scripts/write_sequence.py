@@ -20,7 +20,7 @@ def get_sequences(results_dict: Dict[str, pd.DataFrame], sequence_length: int,
     Returns:
         results_dict: updated dictionary with snv sequences for both the reference genome and alternate snv
     """
-    for key, curr_df in results_dict.items():
+    for group, curr_df in results_dict.items():
         gb_record = [
             record for record in SeqIO.parse(reference_genome_path, "genbank")
         ]
