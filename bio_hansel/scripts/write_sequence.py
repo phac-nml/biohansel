@@ -5,8 +5,8 @@ import pandas as pd
 from Bio import SeqIO
 
 
-def get_sequences(results_dict: Dict[str, pd.DataFrame],
-                  sequence_length: int, reference_genome_path: str) -> pd.DataFrame:
+def get_sequences(results_dict: Dict[str, pd.DataFrame], sequence_length: int,
+                  reference_genome_path: str) -> pd.DataFrame:
     """Collects the sequences from the reference genome by going through the list of DataFrames and adds two columns
     that contains the reference sequence and the alternate sequence surrounding each SNV
 
@@ -24,12 +24,12 @@ def get_sequences(results_dict: Dict[str, pd.DataFrame],
         ]
         max_sequence_value = len(gb_record[0].seq)
         sequences = str(gb_record[0].seq)
-        ref_seqs = value.POS.apply(
+        ref_seqs = value.index.apply(
             get_sub_sequences,
             args=(sequences, sequence_length, max_sequence_value))
         alt_seqs = ref_seqs.str.slice(
             0, sequence_length) + value.ALT + ref_seqs.str.slice(
-            sequence_length + 1, sequence_length + sequence_length + 1)
+                sequence_length + 1, sequence_length + sequence_length + 1)
 
         value['ref_sequences'] = ref_seqs
         value['alt_sequences'] = alt_seqs
@@ -45,18 +45,16 @@ def write_sequences(output_directory: str,
         output_directory: directory where the schema would be located as indicated by the user
         updated_results_dict: updated dictionary with snv sequences for both the reference genome and alternate snv
         schema_name: the name of the output schema file
-       
+
     Returns:
          Creates schema file in the output directory specified by the user
-
-
     """
     for key, value in updated_results_dict.items():
         group = key
         with open(f"{output_directory}/{schema_name}.fasta", "a+") as file:
-            for row in value.iterrows():
-                attribute_value = row.iloc[3]
-                position = row['POS']
+            for i, row in value.iterrows():
+                attribute_value = row.iloc[2]
+                position = i
                 reference_snv = row['ref_sequences']
                 alternate_snv = row['alt_sequences']
                 # if the ratio is above 1, then it means that it is positive and takes the alternate snv form

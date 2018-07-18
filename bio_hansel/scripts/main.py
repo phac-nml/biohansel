@@ -4,7 +4,7 @@ import os
 import sys
 
 from find_cluster import find_clusters
-from fisher_test import fisher_test
+from group_snvs import group_snvs
 from write_sequence import write_sequences, get_sequences
 from read_vcf import read_vcf
 
@@ -123,16 +123,16 @@ def main():
         schema_version = "0.1.0"
 
     if args.schema_name is not None:
-        schema_name = args.schema_name - {schema_version}
+        schema_name = f"args.schema_name-{schema_version}"
     else:
         schema_name = f"bio_hansel-schema-{reference_genome_name}-{schema_version}"
 
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
 
-    data_frame = read_vcf(vcf_file)
-    groups_dict = find_clusters(data_frame, min_threshold, max_threshold)
-    results_dict = fisher_test(data_frame, groups_dict)
+    sequence_df, binary_df = read_vcf(vcf_file)
+    groups_dict = find_clusters(binary_df, min_threshold, max_threshold)
+    results_dict = group_snvs(binary_df, sequence_df, groups_dict)
     updated_results_dict = get_sequences(results_dict, sequence_length)
     write_sequences(output_directory, updated_results_dict, schema_name)
 

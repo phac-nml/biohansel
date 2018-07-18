@@ -1,13 +1,15 @@
 import pandas as pd
 
 
-def read_vcf(vcf_file: str) -> (pd.DataFrame):
-    """Reads in the generated vcf file, filters for 2-state SNVs and takes out unnecessary columns within the vcf file
+def read_vcf(vcf_file: str) -> (pd.DataFrame, pd.DataFrame):
+    """Reads in the generated vcf file, filters for 2-state SNVs and returns two dataframes: one that contains the
+    REF/ALT sequence info and the other that contains just the binary SNV data for each genome
     Args: 
     vcf_file: path to the vcf file
 
     Returns:
-    df: returns the DataFrame version of the generated vcf file from snippy
+    sequence_df: the DataFrame that contains just the REF/ALT sequence info
+    binary_df: the DataFrame that contains the binary SNV data
     """
     with open(vcf_file, 'r') as file:
         for line in file:
@@ -21,5 +23,8 @@ def read_vcf(vcf_file: str) -> (pd.DataFrame):
         names=cols).rename(columns={'#CHROM': 'CHROM'})
     df = df[df['ALT'].str.len() <= 1]
     df = df.drop(['CHROM', 'ID', 'QUAL', 'FILTER', 'INFO', 'FORMAT'], 1)
+    df.index = df.POS
+    sequence_df = df[['REF', 'ALT']]
+    binary_df = df.drop(['POS', 'REF', 'ALT'], 1)
 
-    return df
+    return sequence_df, binary_df
