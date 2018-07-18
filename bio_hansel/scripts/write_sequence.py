@@ -7,14 +7,18 @@ import pandas as pd
 from Bio import SeqIO
 
 
-def get_sequences(results_dict: Dict[str, pd.DataFrame], sequence_length: int,
-                ) -> Dict[str, pd.DataFrame]:
+def get_sequences(
+        results_dict: Dict[str, pd.DataFrame],
+        sequence_length: int,
+        reference_genome_path: str,
+) -> Dict[str, pd.DataFrame]:
     """Collects the sequences from the reference genome by going through the list of DataFrames and adds two columns
     that contains the reference sequence and the alternate sequence surrounding each SNV
 
     Args:
         results_dict: specifies the list of genomes and their associated group
         sequence_length: the length of additional sequences to be added to the beginning and end of the SNV
+        reference_genome_path: path to the reference genome
         
 
     Returns:
@@ -26,7 +30,8 @@ def get_sequences(results_dict: Dict[str, pd.DataFrame], sequence_length: int,
         ]
         max_sequence_value = len(gb_record[0].seq)
         sequences = str(gb_record[0].seq)
-        ref_seqs = curr_df.index.apply(
+        curr_df['POS'] = curr_df.index
+        ref_seqs = curr_df.POS.apply(
             get_sub_sequences,
             args=(sequences, sequence_length, max_sequence_value))
         alt_seqs = ref_seqs.str.slice(
@@ -52,28 +57,26 @@ def write_sequences(output_directory: str,
          Creates schema file in the output directory specified by the user
     """
     for group, curr_df in updated_results_dict.items():
-        with open(os.path.join(output_directory,f"{schema_name}.fasta", "a+") as file:
-            for i, row in curr_df.iterrows():
+        with open(
+                os.path.join(output_directory, f"{schema_name}.fasta"),
+                "a+") as file:
+            for index, row in curr_df.iterrows():
                 attribute_value = row.iloc[2]
-                position = i
+                position = index
                 reference_snv = row['ref_sequences']
                 alternate_snv = row['alt_sequences']
                 # if the ratio is above 1, then it means that it is positive and takes the alternate snv form
                 if attribute_value > 0:
-                    file.write(f'''
-                            >{position}-{group}
-                            {alternate_snv}
-                            >negative{position}-{group}
-                            {reference_snv}
-                            ''')
+                    file.write(f""">{position}-{group}\n"""
+                               f"""{alternate_snv}\n"""
+                               f""">negative{position}-{group}\n"""
+                               f"""{reference_snv}\n""")
                 # if the ratio is below 1, then it means that it remains negative
                 else:
-                    file.write(f'''
-                            >{position}-{group}
-                            {reference_snv}
-                            >negative{position}-{group}
-                            {alternate_snv}
-                            ''')
+                    file.write(f""">{position}-{group}\n"""
+                               f"""{reference_snv}\n"""
+                               f""">negative{position}-{group}\n"""
+                               f"""{alternate_snv}\n""")
 
 
 def get_sub_sequences(position: int, seq: str, sequence_length: int,

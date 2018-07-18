@@ -132,7 +132,7 @@ def main():
     sequence_df, binary_df = read_vcf(vcf_file)
     groups_dict = find_clusters(binary_df, min_threshold, max_threshold)
     results_dict = group_snvs(binary_df, sequence_df, groups_dict)
-    updated_results_dict = get_sequences(results_dict, sequence_length)
+    updated_results_dict = get_sequences(results_dict, sequence_length, reference_genome_path)
     write_sequences(output_directory, updated_results_dict, schema_name)
 
 
