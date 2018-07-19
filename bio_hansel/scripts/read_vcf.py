@@ -22,9 +22,9 @@ def read_vcf(vcf_file: str) -> (pd.DataFrame, pd.DataFrame):
         vcf_file, comment='#', header=None,
         names=cols).rename(columns={'#CHROM': 'CHROM'})
     df = df[df['ALT'].str.len() <= 1]
-    df = df.drop(['CHROM', 'ID', 'QUAL', 'FILTER', 'INFO', 'FORMAT'], 1)
+    df = df.drop(['ID', 'QUAL', 'FILTER', 'INFO', 'FORMAT'], 1)
     df.index = df.POS
-    sequence_df = df[['REF', 'ALT']]
-    binary_df = df.drop(['POS', 'REF', 'ALT'], 1)
+    sequence_df = df[['CHROM', 'REF', 'ALT']]
+    binary_df = df.drop(['CHROM', 'POS', 'REF', 'ALT'], 1)
 
     return sequence_df, binary_df

@@ -122,7 +122,7 @@ def main():
         schema_version = "0.1.0"
 
     if args.schema_name is not None:
-        schema_name = f"args.schema_name-{schema_version}"
+        schema_name = f"{args.schema_name}-{schema_version}"
     else:
         schema_name = f"bio_hansel-schema-{reference_genome_name}-{schema_version}"
 
@@ -132,8 +132,10 @@ def main():
     sequence_df, binary_df = read_vcf(vcf_file)
     groups_dict = find_clusters(binary_df, min_threshold, max_threshold)
     results_dict = group_snvs(binary_df, sequence_df, groups_dict)
-    updated_results_dict = get_sequences(results_dict, sequence_length, reference_genome_path)
-    write_sequences(output_directory, updated_results_dict, schema_name)
+    for group, curr_df in results_dict.items():
+        df_list = get_sequences(curr_df, sequence_length,
+                                reference_genome_path)
+        write_sequences(output_directory, df_list, schema_name, group)
 
 
 if __name__ == '__main__':
