@@ -44,11 +44,11 @@ def compute_distance_matrix(df: pd.DataFrame) -> List:
         df: the DataFrame that contains only the samples' binary data
 
     Returns:
-        distance_matrix: an matrix of pair-wise distances between samples
+        a matrix of pair-wise distances between samples
     """
-    distance_matrix = sp.spatial.distance.pdist(
+    return sp.spatial.distance.pdist(
         df.transpose(), metric='hamming')
-    return distance_matrix
+   
 
 
 def create_linkage_array(distance_matrix: List) -> List:
