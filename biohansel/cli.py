@@ -1,10 +1,15 @@
 import logging
+import os
 from typing import Union, Optional, Tuple, List
 
 import attr
 import click
 import pandas as pd
 
+from biohansel.create.find_cluster import find_clusters
+from biohansel.create.group_snvs import group_snvs
+from biohansel.create.read_vcf import read_vcf
+from biohansel.create.write_sequence import get_sequences, read_sequence_file, write_sequences
 from biohansel.subtype import subtype_contigs_samples, subtype_reads_samples, Subtype
 from biohansel.subtype.const import SUBTYPE_SUMMARY_COLS, JSON_EXT_TMPL
 from biohansel.subtype.metadata import read_metadata_table, merge_metadata_with_summary_results
@@ -12,6 +17,9 @@ from biohansel.subtype.subtype_stats import subtype_counts
 from biohansel.subtype.util import get_scheme_fasta, init_subtyping_params
 from biohansel.utils import does_file_exist, collect_inputs
 from biohansel.utils import init_console_logger
+
+
+
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
@@ -247,12 +255,12 @@ def parse_comma_delimited_floats(ctx: click.Context, param: click.Option, value:
 
 
 @cli.command()
-@click.option('--vcf-file-path',
+@click.option('-v', '--vcf-file-path',
               required=True,
               type=click.Path(exists=True, dir_okay=False),
               help='Variant calling file (VCF) of a collection of input genomes for population of interest against a '
                    'reference genome that must be specified with --reference-genome-path')
-@click.option('--reference-genome-path',
+@click.option('-r', '--reference-genome-path',
               required=True,
               type=click.Path(exists=True, dir_okay=False),
               help='Reference genome assembly file path. The reference used in the creation of the input VCF file.')
@@ -260,13 +268,43 @@ def parse_comma_delimited_floats(ctx: click.Context, param: click.Option, value:
               required=False,
               type=click.Path(exists=True, dir_okay=False),
               help='Optional phylogenetic tree created from variant calling analysis.')
-@click.option('--distance-thresholds',
+@click.option('-d', '--distance-thresholds',
               required=False,
               type=str,
               callback=parse_comma_delimited_floats,
               help='Comma delimited list of distance thresholds for creating hierarchical clustering groups '
                    '(e.g. "0,0.05,0.1,0.15")')
-def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thresholds):
+@click.option('-o', '--output-folder-name',
+              required=True,
+              type=click.Path(exists=False, dir_okay=True),
+              help='Output folder name in which schema file would be located'
+              )
+@click.option('-s', '--schema-name',
+              required=False,
+              type=str,
+              help='A unique name for the schema file that is generated, the default is just'
+                   '{bio_hansel-schema-reference_genome_name}-{schema_version}')
+@click.option('-m', '--schema-version',
+              required=False,
+              type=str,
+              help='An optional version number for the schema file that is generated')
+@click.option('-p', '--padding-sequence-length',
+              required=True,
+              type=int,
+              help='Output folder name in which schema file would be located'
+              )
+@click.option('-f', '--reference-genome-format',
+              required=True,
+              type=str,
+              help='Reference genome file format, i.e. fasta, genbank'
+              )
+@click.option('-t', '--min-group-size',
+              required=True,
+              type=int,
+              help='The minimum child group size for each new subtype branching point from the parent group'
+              )
+def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thresholds, output_folder_name, schema_name,
+           reference_genome_format, padding_sequence_length, min_group_size, schema_version):
     """Create a biohansel subtyping scheme.
 
     From the results of a variant calling analysis, create a biohansel subtyping with single nucleotide variants (SNV)
@@ -276,6 +314,35 @@ def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thres
     click.secho(f'Reference genome file path: {reference_genome_path}', fg='red')
     click.secho(f'Phylogenetic tree file path: {phylo_tree_path}', fg='yellow')
     click.secho(f'Distance thresholds: {distance_thresholds}', fg='blue')
+    click.secho(f'Output folder name: {output_folder_name}', fg='magenta')
+    click.secho(f'Scheme name: {schema_name}', fg='cyan')
+    click.secho(f'Reference genome format: {reference_genome_format}', fg='green')
+    click.secho(f'Min group size: {min_group_size}', fg='yellow')
+    click.secho(f'Padding Sequence length: {padding_sequence_length}', fg='blue')
     logging.info(f'Creating biohansel subtyping scheme from SNVs in "{vcf_file_path}" using reference genome '
                  f'"{reference_genome_path}" at {distance_thresholds if distance_thresholds else "all possible"} '
                  f'distance threshold levels.')
+    reference_genome_name = os.path.split(reference_genome_path)[-1]
+    reference_genome_name = reference_genome_name.split(".")[-2]
+    
+    if schema_version is None:
+        schema_version = "0.1.0"
+
+    if schema_name is not None:
+        schema_name = f"{schema_name}-{schema_version}"
+    else:
+        schema_name = f"bio_hansel-schema-{reference_genome_name}-{schema_version}"
+
+    if not os.path.exists(output_folder_name):
+        os.makedirs(output_folder_name)
+
+    sequence_df, binary_df = read_vcf(vcf_file_path)
+    groups_dict = find_clusters(binary_df, min_group_size)
+    record_dict = read_sequence_file(reference_genome_path, reference_genome_format)
+    results_dict = group_snvs(binary_df, sequence_df, groups_dict)
+    for group, curr_df in results_dict.items():
+        df_list = get_sequences(curr_df, padding_sequence_length,
+                                record_dict)
+        write_sequences(output_folder_name, df_list, schema_name, group)
+    output_schema_path = os.path.join(output_folder_name, f"{schema_name}.fasta")
+    logging.info(f"Finished writing schema file to {output_schema_path}")

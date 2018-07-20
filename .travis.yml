@@ -20,20 +20,13 @@ branches:
   only:
     - master
     - development
-
-# Blacklist of branches to not run CI testing on.
-# branches:
-#  except:
-#   - dontrunme 
-#   - test 
+    - /^.+\/_base$/
 
 before_install:
   - sudo apt-get -qq update;
 
 install:
   - python setup.py install
-  #Install pytest for testing.
-  - pip install pytest
 
 script:
-  - pytest
+  - python setup.py test
