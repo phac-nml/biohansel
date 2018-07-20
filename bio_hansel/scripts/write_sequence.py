@@ -93,11 +93,12 @@ def get_subsequences(position: int, seq: str, sequence_length: int,
     return specific_sequence
 
 
-def read_sequence_file(reference_genome_path: str, reference_genome_type: str) -> Dict[str, str]:
+def read_sequence_file(reference_genome_path: str, reference_genome_type: str) -> Dict[str, SeqIO.SeqRecord.seq]:
     """Reads in the sequence file and indexes each of the individual sequences into a dictionary 
     to allow for faster querying
     Args:   
         reference_genome_path: the path to the reference genome
+        reference_genome_type: reference genome file type
 
     Returns:
         record_dict: returns a dictionary of all the record sequences indexed by record name
