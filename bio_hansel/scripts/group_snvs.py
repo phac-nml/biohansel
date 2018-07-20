@@ -1,7 +1,7 @@
 from typing import Dict
 
 import pandas as pd
-import logging
+
 
 
 def group_snvs(
@@ -35,8 +35,8 @@ def group_snvs(
         row_sums_curr = dfsnv_curr.sum(axis=1)
         row_sums_other = dfsnv_other.sum(axis=1)
         new_data_frame = (dfsnv_curr.loc[(
-            (row_sums_curr == 0) & (row_sums_other == len(other_list))
-        ) | ((row_sums_curr == len(current_list)) & (row_sums_other == 0)), :])
+                                                 (row_sums_curr == 0) & (row_sums_other == len(other_list))
+                                         ) | ((row_sums_curr == len(current_list)) & (row_sums_other == 0)), :])
         final_table = pd.concat([sequence_df, new_data_frame], axis=1)
         final_table = final_table[final_table.columns[:4]]
         results_list[x] = final_table.dropna()

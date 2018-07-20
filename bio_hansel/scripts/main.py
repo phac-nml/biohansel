@@ -131,12 +131,14 @@ def main():
 
     sequence_df, binary_df = read_vcf(vcf_file)
     groups_dict = find_clusters(binary_df, min_threshold, max_threshold)
-    record_dict=read_sequence_file(reference_genome_path)
+    record_dict = read_sequence_file(reference_genome_path)
     results_dict = group_snvs(binary_df, sequence_df, groups_dict)
     for group, curr_df in results_dict.items():
         df_list = get_sequences(curr_df, sequence_length,
                                 record_dict)
         write_sequences(output_directory, df_list, schema_name, group)
+    output_schema_path = os.path.join(output_directory, f"{schema_name}.fasta")
+    logging.info(f"Finished writing schema file to {output_schema_path}")
 
 
 if __name__ == '__main__':
