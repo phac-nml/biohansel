@@ -5,7 +5,7 @@ import sys
 
 from find_cluster import find_clusters
 from group_snvs import group_snvs
-from write_sequence import write_sequences, get_sequences
+from write_sequence import write_sequences, get_sequences, read_sequence_file
 from read_vcf import read_vcf
 
 SCRIPT_NAME = 'schema_creation'
@@ -131,10 +131,11 @@ def main():
 
     sequence_df, binary_df = read_vcf(vcf_file)
     groups_dict = find_clusters(binary_df, min_threshold, max_threshold)
+    record_dict=read_sequence_file(reference_genome_path)
     results_dict = group_snvs(binary_df, sequence_df, groups_dict)
     for group, curr_df in results_dict.items():
         df_list = get_sequences(curr_df, sequence_length,
-                                reference_genome_path)
+                                record_dict)
         write_sequences(output_directory, df_list, schema_name, group)
 
 

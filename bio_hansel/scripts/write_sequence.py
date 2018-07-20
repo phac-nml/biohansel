@@ -10,7 +10,7 @@ from Bio import SeqIO
 def get_sequences(
         curr_df: pd.DataFrame,
         sequence_length: int,
-        reference_genome_path: str,
+        record_dict: Dict[str, str],
 ) -> List[pd.DataFrame]:
     """Collects the sequences from the reference genome by going through the list of DataFrames and adds two columns
     that contains the reference sequence and the alternate sequence surrounding each SNV
@@ -18,21 +18,21 @@ def get_sequences(
     Args:
         curr_df: a DataFrame that contains each group's individual SNV data
         sequence_length: the length of additional sequences to be added to the beginning and end of the SNV
-        reference_genome_path: path to the reference genome
+        record_dict: dictionary of records obainted from the reference sequence file
         
 
     Returns:
-        results_dict: updated dictionary with snv sequences for both the reference genome and alternate snv
+        resis ults_dict: updated dictionary with snv sequences for both the reference genome and alternate snv
     """
     df_list = []
-    gb_record = [
-        record for record in SeqIO.parse(reference_genome_path, "genbank")
-    ]
-    for index in range(0, len(gb_record)):
-        max_sequence_value = len(gb_record[index].seq)
-        sequences = str(gb_record[index].seq)
+    curr_df.CHROM=curr_df.CHROM.str.strip()
+    unique_chromosomes=curr_df.CHROM.unique()
+    for chromosome in unique_chromosomes:
+        record_seq=record_dict[chromosome]
+        max_sequence_value = len(record_seq)
+        sequences = str(record_seq)
         curr_chrom_df = curr_df[curr_df['CHROM'].str.match(
-            gb_record[index].name)]
+            chromosome.strip())]
         curr_chrom_df['POS'] = curr_chrom_df.index
         ref_seqs = curr_chrom_df.POS.apply(
             get_sub_sequences,
@@ -71,17 +71,17 @@ def write_sequences(output_directory: str, df_list: List[pd.DataFrame],
                 # if the ratio is above 1, then it means that it is positive and takes the alternate snv form
                 if ratio_value > 0:
                     file.write(
-                        f""">({chromosome}){position}-{group}\n"""
-                        f"""{alternate_snv}\n"""
-                        f""">negative({chromosome}){position}-{group}\n"""
-                        f"""{reference_snv}\n""")
+                        f">({chromosome}){position}-{group}\n"
+                        f"{alternate_snv}\n"
+                        f">negative({chromosome}){position}-{group}\n"
+                        f"{reference_snv}\n")
                 # if the ratio is below 1, then it means that it remains negative
                 else:
                     file.write(
-                        f""">({chromosome}){position}-{group}\n"""
-                        f"""{reference_snv}\n"""
-                        f""">negative({chromosome}){position}-{group}\n"""
-                        f"""{alternate_snv}\n""")
+                        f">({chromosome}){position}-{group}\n"
+                        f"{reference_snv}\n"
+                        f">negative({chromosome}){position}-{group}\n"
+                        f"{alternate_snv}\n")
 
 
 def get_sub_sequences(position: int, seq: str, sequence_length: int,
@@ -101,3 +101,24 @@ def get_sub_sequences(position: int, seq: str, sequence_length: int,
     specific_sequence = seq[max(0, position - (sequence_length + 1)):min(
         max_sequence_value, position + sequence_length)]
     return specific_sequence
+
+def read_sequence_file(reference_genome_path: str)-> Dict[str, str]:
+    """Reads in the sequence file and indexes each of the individual sequences into a dictionary 
+    to allow for faster querying
+    Args:   
+        reference_genome_path: the path to the reference genome
+
+    Returns:
+        record_dict: returns a dictionary of all the record sequences indexed by record name
+        
+
+    """
+    record_dict={}
+    for record in SeqIO.parse(reference_genome_path, "genbank"):
+        
+        record_dict[record.name]=record.seq
+    
+    return record_dict
+
+
+
