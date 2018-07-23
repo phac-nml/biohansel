@@ -5,13 +5,13 @@ from typing import Dict, List
 
 import pandas as pd
 
-from Bio import SeqIO
+from Bio import SeqIO, Seq
 
 
 def get_sequences(
         curr_df: pd.DataFrame,
         sequence_length: int,
-        record_dict: Dict[str, SeqIO.SeqRecord.seq],
+        record_dict: Dict[str, Seq.Seq],
 ) -> List[pd.DataFrame]:
     """Collects the sequences from the reference genome by going through the list of DataFrames and adds two columns
     that contains the reference sequence and the alternate sequence surrounding each SNV
@@ -19,7 +19,7 @@ def get_sequences(
     Args:
         curr_df: a DataFrame that contains each group's individual SNV data
         sequence_length: the length of additional sequences to be added to the beginning and end of the SNV
-        record_dict: dictionary of records obainted from the reference sequence file
+        record_dict: dictionary of records obtained from the reference sequence file
 
     Returns:
         df_list: list of DataFrames that contain snv sequences related to each chromosome for that particular cluster group
@@ -93,7 +93,7 @@ def get_subsequences(position: int, seq: str, sequence_length: int,
     return specific_sequence
 
 
-def read_sequence_file(reference_genome_path: str, reference_genome_type: str) -> Dict[str, SeqIO.SeqRecord.seq]:
+def read_sequence_file(reference_genome_path: str, reference_genome_type: str) -> Dict[str, Seq.Seq]:
     """Reads in the sequence file and indexes each of the individual sequences into a dictionary 
     to allow for faster querying
     Args:   
@@ -125,18 +125,11 @@ def get_sequence_string(ratio_value, chromosome, position, group, reference_snv,
         sequence_string: the sequence string to be outputted into the schema file
 
     """
-    if ratio_value > 0:
-        sequence_string = textwrap.dedent(f"""\
-        >({chromosome}){position}-{group}
-        {alternate_snv}
-        >negative({chromosome}){position}-{group}
-        {reference_snv}\n""")
-    # if the ratio is below 1, then it means that it remains negative
-    else:
-        sequence_string = textwrap.dedent(f"""\
-            >({chromosome}){position}-{group}
-            {reference_snv}
-            >negative({chromosome}){position}-{group}
-            {alternate_snv}\n""")
 
-    return sequence_string
+    return (textwrap.dedent(f"""\
+    >({chromosome}){position}-{group}
+    {alternate_snv if ratio_value > 0 else reference_snv}
+    >negative({chromosome}){position}-{group}
+    {reference_snv if ratio_value > 0 else alternate_snv}\n"""))
+
+

@@ -123,7 +123,7 @@ def main():
     sequence_length = args.padding_sequence_length
     reference_genome_name = os.path.split(reference_genome_path)[-1]
     reference_genome_name = reference_genome_name.split(".")[-2]
-    reference_genome_file_type=args.reference_genome_file_type
+    reference_genome_file_type=args.reference_genome_format
     logging.info('using reference genome file from %s', reference_genome_path)
 
     if args.schema_version is not None:
