@@ -3,7 +3,6 @@ from typing import Dict
 import pandas as pd
 
 
-
 def group_snvs(
         binary_df: pd.DataFrame,
         sequence_df: pd.DataFrame,
@@ -30,13 +29,19 @@ def group_snvs(
                 current_list.append(key)
             else:
                 other_list.append(key)
+        distinct = False
+        all_negative = False
         dfsnv_curr = binary_df[current_list]
         dfsnv_other = binary_df[other_list]
         row_sums_curr = dfsnv_curr.sum(axis=1)
         row_sums_other = dfsnv_other.sum(axis=1)
-        new_data_frame = (dfsnv_curr.loc[(
-                                                 (row_sums_curr == 0) & (row_sums_other == len(other_list))
-                                         ) | ((row_sums_curr == len(current_list)) & (row_sums_other == 0)), :])
+        if row_sums_curr == 0 & row_sums_other == len(other_list):
+            distinct = True
+
+        if row_sums_curr == len(current_list) & row_sums_other == 0:
+            all_negative = True
+
+        new_data_frame = (dfsnv_curr.loc[distinct | all_negative, :])
         final_table = pd.concat([sequence_df, new_data_frame], axis=1)
         final_table = final_table[final_table.columns[:4]]
         results_list[x] = final_table.dropna()

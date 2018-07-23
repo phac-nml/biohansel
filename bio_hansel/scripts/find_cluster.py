@@ -1,5 +1,6 @@
 from typing import List, Dict
 
+import logging
 import numpy as np
 import pandas as pd
 import scipy as sp
@@ -9,7 +10,7 @@ from scipy.spatial.distance import pdist
 
 
 def find_clusters(df: pd.DataFrame, min_threshold: float,
-                  max_threshold: float) -> Dict[str, str]:
+                  max_threshold: float) -> Dict[str, int]:
     """
     Takes in a vcf file and creates clusters from the scipy hierarchy clustering algorithm
     
@@ -34,6 +35,8 @@ def find_clusters(df: pd.DataFrame, min_threshold: float,
 
     subset = flat_clusters.iloc[0]
     cluster_dict = subset.to_dict()
+
+    logging.debug(cluster_dict)
     return cluster_dict
 
 
