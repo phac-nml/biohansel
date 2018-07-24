@@ -115,7 +115,7 @@ def main():
     min_threshold = args.minimum_threshold
     max_threshold = args.maximum_threshold
 
-    if (min_threshold >= max_threshold):
+    if min_threshold >= max_threshold:
         logging.error("max_threshold has to be bigger than min_threshold")
     init_console_logger(3)
     vcf_file = args.input_vcf
