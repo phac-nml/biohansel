@@ -93,6 +93,15 @@ def init_parser():
         'Length of additional sequences to be added to the beginning and end of the selected SNV'
     )
 
+    parser.add_argument(
+        '-f',
+        '--reference-genome-format',
+        required=True,
+        type=str,
+        help=
+        'Reference genome file format, i.e. fasta, genbank'
+    )
+
     return parser
 
 
@@ -106,7 +115,7 @@ def main():
     min_threshold = args.minimum_threshold
     max_threshold = args.maximum_threshold
 
-    if (min_threshold >= max_threshold):
+    if min_threshold >= max_threshold:
         logging.error("max_threshold has to be bigger than min_threshold")
     init_console_logger(3)
     vcf_file = args.input_vcf
@@ -114,7 +123,8 @@ def main():
     sequence_length = args.padding_sequence_length
     reference_genome_name = os.path.split(reference_genome_path)[-1]
     reference_genome_name = reference_genome_name.split(".")[-2]
-    logging.info('using genbank file from %s', reference_genome_path)
+    reference_genome_file_type=args.reference_genome_format
+    logging.info('using reference genome file from %s', reference_genome_path)
 
     if args.schema_version is not None:
         schema_version = args.schema_version
@@ -131,7 +141,7 @@ def main():
 
     sequence_df, binary_df = read_vcf(vcf_file)
     groups_dict = find_clusters(binary_df, min_threshold, max_threshold)
-    record_dict = read_sequence_file(reference_genome_path)
+    record_dict = read_sequence_file(reference_genome_path, reference_genome_file_type)
     results_dict = group_snvs(binary_df, sequence_df, groups_dict)
     for group, curr_df in results_dict.items():
         df_list = get_sequences(curr_df, sequence_length,
