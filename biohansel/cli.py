@@ -247,12 +247,12 @@ def parse_comma_delimited_floats(ctx: click.Context, param: click.Option, value:
 
 
 @cli.command()
-@click.option('--vcf-file-path',
+@click.option('-v','--vcf-file-path',
               required=True,
               type=click.Path(exists=True, dir_okay=False),
               help='Variant calling file (VCF) of a collection of input genomes for population of interest against a '
                    'reference genome that must be specified with --reference-genome-path')
-@click.option('--reference-genome-path',
+@click.option('-r','--reference-genome-path',
               required=True,
               type=click.Path(exists=True, dir_okay=False),
               help='Reference genome assembly file path. The reference used in the creation of the input VCF file.')
@@ -260,12 +260,48 @@ def parse_comma_delimited_floats(ctx: click.Context, param: click.Option, value:
               required=False,
               type=click.Path(exists=True, dir_okay=False),
               help='Optional phylogenetic tree created from variant calling analysis.')
-@click.option('--distance-thresholds',
+@click.option('-d','--distance-thresholds',
               required=False,
               type=str,
               callback=parse_comma_delimited_floats,
               help='Comma delimited list of distance thresholds for creating hierarchical clustering groups '
                    '(e.g. "0,0.05,0.1,0.15")')
+@click.option('-o','--output-folder-path',
+                required=True,
+                type=click.Path(exists=True, dir_okay=False),
+                help='Output folder name in which schema file would be located'
+                )
+@click.option('-s', '--schema-name',
+                required=False,
+                type=str,
+                help='A unique name for the schema file that is generated, the default is just'
+                '{bio_hansel-schema-reference_genome_name}-{schema_version}' )
+@click.option('-m', '--schema-version',
+                required=False,
+                type=str,
+                help='An optional version number for the schema file that is generated' )
+@click.option('-u','--maximum-threshold',
+                required=True,
+                type=float,
+                help='Maximum threshold to be tested using the hierarchical clustering scheme'
+                )
+@click.option('-t','--minimum-threshold',
+                type=float,
+                required=True,
+                help='Minimum threshold to be tested using the hierarchical clustering scheme'
+                )
+@click.option('-p','--padding-sequence-length',
+                required=True,
+                type=int,
+                help='Output folder name in which schema file would be located'
+                )
+@click.option('-f','--reference-genome-format',
+                required=True,
+                type=str,
+                help='Reference genome file format, i.e. fasta, genbank'
+                )
+
+
 def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thresholds):
     """Create a biohansel subtyping scheme.
 
@@ -279,3 +315,9 @@ def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thres
     logging.info(f'Creating biohansel subtyping scheme from SNVs in "{vcf_file_path}" using reference genome '
                  f'"{reference_genome_path}" at {distance_thresholds if distance_thresholds else "all possible"} '
                  f'distance threshold levels.')
+    
+    if minimum_threshold >= maximum_threshold:
+        threshold_exception=click.UsageError('maximum_threshold has to be bigger than minimum_threshold ')
+        logging.error("max_threshold has to be bigger than min_threshold")
+
+
