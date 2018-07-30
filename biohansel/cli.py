@@ -302,7 +302,7 @@ def parse_comma_delimited_floats(ctx: click.Context, param: click.Option, value:
                 )
 
 
-def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thresholds):
+def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thresholds, maximum_threshold, minimum_threshold):
     """Create a biohansel subtyping scheme.
 
     From the results of a variant calling analysis, create a biohansel subtyping with single nucleotide variants (SNV)
