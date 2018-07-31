@@ -1,5 +1,6 @@
 from typing import Dict
 
+import logging
 import pandas as pd
 
 
@@ -23,28 +24,25 @@ def group_snvs(
     results_list = {}
     other_list = []
     current_list = []
-    for x in unique_groups:
-        for key, value in groups_dict.items():
-            if x == value:
-                current_list.append(key)
+
+    for group in unique_groups:
+        for genome, curr_group in groups_dict.items():
+            if group == curr_group:
+                current_list.append(genome)
             else:
-                other_list.append(key)
-        distinct = False
-        all_negative = False
+                other_list.append(genome)
         dfsnv_curr = binary_df[current_list]
         dfsnv_other = binary_df[other_list]
         row_sums_curr = dfsnv_curr.sum(axis=1)
         row_sums_other = dfsnv_other.sum(axis=1)
-        if row_sums_curr == 0 & row_sums_other == len(other_list):
-            distinct = True
+        distinct = (row_sums_curr == 0) & (row_sums_other == len(other_list))
+        all_negative = (row_sums_curr == len(current_list)) & (row_sums_other == 0)
+        group_snv_df = dfsnv_curr.loc[distinct | all_negative, :]
 
-        if row_sums_curr == len(current_list) & row_sums_other == 0:
-            all_negative = True
-
-        new_data_frame = (dfsnv_curr.loc[distinct | all_negative, :])
-        final_table = pd.concat([sequence_df, new_data_frame], axis=1)
+        logging.debug(group_snv_df)
+        final_table = pd.concat([sequence_df, group_snv_df], axis=1)
         final_table = final_table[final_table.columns[:4]]
-        results_list[x] = final_table.dropna()
+        results_list[group] = final_table.dropna()
         current_list = []
         other_list = []
 
