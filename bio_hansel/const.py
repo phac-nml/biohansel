@@ -10,7 +10,7 @@ SCHEME_FASTAS = {'heidelberg': {'file': resource_filename(program_name, 'data/he
                                 'version': '0.5.0',
                                 'subtyping_params': SubtypingParams(low_coverage_depth_freq=20)},
                  'enteritidis': {'file': resource_filename(program_name, 'data/enteritidis/tiles.fasta'),
-                                 'version': '0.7.0',
+                                 'version': '0.8.0',
                                  'subtyping_params': SubtypingParams(low_coverage_depth_freq=50)}}
 
 COLUMNS_TO_REMOVE = '''

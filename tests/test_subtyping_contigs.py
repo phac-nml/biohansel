@@ -1,11 +1,10 @@
 import pytest
-from pandas import DataFrame, Series
-import numpy as np
-from bio_hansel.subtype import Subtype
-from bio_hansel.subtyper import subtype_contigs_ac
+from pandas import DataFrame
+
 from bio_hansel.const import SCHEME_FASTAS
 from bio_hansel.qc.const import QC
-
+from bio_hansel.subtype import Subtype
+from bio_hansel.subtyper import subtype_contigs
 from . import check_subtype_attrs, check_df_fasta_cols
 
 genome_name = 'test'
@@ -76,12 +75,12 @@ def subtype_enteritidis_fail():
 
 
 def test_heidelberg_fasta_ac(subtype_heidelberg_pass):
-    st, df = subtype_contigs_ac(fasta_path=fasta_heidelberg_pass,
-                                genome_name=genome_name,
-                                scheme=scheme_heidelberg)
-    stgz, dfgz = subtype_contigs_ac(fasta_path=fasta_gz_heidelberg_pass,
-                                    genome_name=genome_name,
-                                    scheme=scheme_heidelberg)
+    st, df = subtype_contigs(fasta_path=fasta_heidelberg_pass,
+                             genome_name=genome_name,
+                             scheme=scheme_heidelberg)
+    stgz, dfgz = subtype_contigs(fasta_path=fasta_gz_heidelberg_pass,
+                                 genome_name=genome_name,
+                                 scheme=scheme_heidelberg)
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
     assert isinstance(stgz, Subtype)
@@ -92,12 +91,12 @@ def test_heidelberg_fasta_ac(subtype_heidelberg_pass):
 
 
 def test_enteritidis_scheme_vs_qc_failing_contigs_unconfident_ac(subtype_enteritidis_fail_unconfident):
-    st, df = subtype_contigs_ac(fasta_path=fasta_enteritidis_unconfident,
-                                genome_name=genome_name,
-                                scheme=scheme_enteritidis)
-    stgz, dfgz = subtype_contigs_ac(fasta_path=fasta_gz_enteritidis_unconfident,
-                                    genome_name=genome_name,
-                                    scheme=scheme_enteritidis)
+    st, df = subtype_contigs(fasta_path=fasta_enteritidis_unconfident,
+                             genome_name=genome_name,
+                             scheme=scheme_enteritidis)
+    stgz, dfgz = subtype_contigs(fasta_path=fasta_gz_enteritidis_unconfident,
+                                 genome_name=genome_name,
+                                 scheme=scheme_enteritidis)
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
     assert isinstance(stgz, Subtype)
@@ -110,12 +109,12 @@ def test_enteritidis_scheme_vs_qc_failing_contigs_unconfident_ac(subtype_enterit
 
 
 def test_ac_vs_bad_contigs(subtype_enteritidis_fail):
-    st, df = subtype_contigs_ac(fasta_path=fasta_enteritidis_fail,
-                                genome_name=genome_name,
-                                scheme=scheme_enteritidis)
-    stgz, dfgz = subtype_contigs_ac(fasta_path=fasta_gz_enteritidis_fail,
-                                    scheme=scheme_enteritidis,
-                                    genome_name=genome_name)
+    st, df = subtype_contigs(fasta_path=fasta_enteritidis_fail,
+                             genome_name=genome_name,
+                             scheme=scheme_enteritidis)
+    stgz, dfgz = subtype_contigs(fasta_path=fasta_gz_enteritidis_fail,
+                                 scheme=scheme_enteritidis,
+                                 genome_name=genome_name)
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
     assert isinstance(stgz, Subtype)

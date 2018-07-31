@@ -1,11 +1,10 @@
 import pytest
 from pandas import DataFrame
 
-from bio_hansel.subtype import Subtype
-from bio_hansel.subtyper import subtype_reads_ac
 from bio_hansel.const import SCHEME_FASTAS
 from bio_hansel.qc.const import QC
-
+from bio_hansel.subtype import Subtype
+from bio_hansel.subtyper import subtype_reads
 from . import check_df_fastq_cols, check_subtype_attrs
 
 genome_name = 'test'
@@ -53,8 +52,8 @@ def subtype_enteritidis_fail():
 
 
 def test_heidelberg_scheme_vs_qc_passing_reads_with_ac(subtype_heidelberg_pass):
-    st, df = subtype_reads_ac(reads=fastq_heidelberg_pass, genome_name=genome_name, scheme=scheme_heidelberg)
-    stgz, dfgz = subtype_reads_ac(reads=fastq_gz_heidelberg_pass, genome_name=genome_name, scheme=scheme_heidelberg)
+    st, df = subtype_reads(reads=fastq_heidelberg_pass, genome_name=genome_name, scheme=scheme_heidelberg)
+    stgz, dfgz = subtype_reads(reads=fastq_gz_heidelberg_pass, genome_name=genome_name, scheme=scheme_heidelberg)
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
     assert isinstance(stgz, Subtype)
