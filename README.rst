@@ -268,7 +268,7 @@ Get the latest development code using Git from GitHub:
     pip install -e .
 
 
-Run tests with pytest_:
+Run tests with `$ python setup.py test` or pytest_:
 
 .. code-block:: bash
 
@@ -278,7 +278,6 @@ Run tests with pytest_:
     pytest
     # Or run a specific test module
     pytest -s tests/test_qc.py
-
 
 
 Legal
