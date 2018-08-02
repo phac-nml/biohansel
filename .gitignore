@@ -145,3 +145,11 @@ match_results.tab
 results.tab
 test.tab
 
+# VS Code
+.vscode
+
+# pytest_cache
+.pytest_cache/*
+.pytest_cache
+
+
