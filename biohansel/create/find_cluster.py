@@ -220,6 +220,6 @@ def df_to_subtypes_dict(cluster_genomes_df: pd.DataFrame) -> Dict[str, str]:
 
     """
     final_cluster_dict = {}
-    for i, r in cluster_genomes_df.apply(row_subtype, axis=1).iteritems():
-        final_cluster_dict[i] = r
+    for genome, row in cluster_genomes_df.apply(row_subtype, axis=1).iteritems():
+        final_cluster_dict[genome] = row
     return final_cluster_dict
