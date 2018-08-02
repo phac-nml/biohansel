@@ -85,6 +85,15 @@ def init_parser():
         'Reference genome file format, i.e. fasta, genbank'
     )
 
+    parser.add_argument(
+        '-t',
+        '--min-group-size',
+        required=True,
+        type=int,
+        help=
+        'The minimum child group size for each new subtype branching point from the parent group'
+    )
+
     return parser
 
 
@@ -95,11 +104,7 @@ def main():
         parser.exit()
     args = parser.parse_args()
     output_directory = args.output_folder_name
-    min_threshold = args.minimum_threshold
-    max_threshold = args.maximum_threshold
-
-    if min_threshold >= max_threshold:
-        logging.error("max_threshold has to be bigger than min_threshold")
+    min_group_size= args.min_group_size
     init_console_logger(3)
     vcf_file = args.input_vcf
     reference_genome_path = args.reference_genome_file
@@ -123,7 +128,7 @@ def main():
         os.makedirs(output_directory)
 
     sequence_df, binary_df = read_vcf(vcf_file)
-    groups_dict = find_clusters(binary_df, min_threshold, max_threshold)
+    groups_dict = find_clusters(binary_df, min_group_size)
     record_dict = read_sequence_file(reference_genome_path, reference_genome_file_type)
     results_dict = group_snvs(binary_df, sequence_df, groups_dict)
     for group, curr_df in results_dict.items():
