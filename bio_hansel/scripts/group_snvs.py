@@ -38,8 +38,6 @@ def group_snvs(
         distinct = (row_sums_curr == 0) & (row_sums_other == len(other_list))
         all_negative = (row_sums_curr == len(current_list)) & (row_sums_other == 0)
         group_snv_df = dfsnv_curr.loc[distinct | all_negative, :]
-
-        logging.debug(group_snv_df)
         final_table = pd.concat([sequence_df, group_snv_df], axis=1)
         final_table = final_table[final_table.columns[:4]]
         results_list[group] = final_table.dropna()

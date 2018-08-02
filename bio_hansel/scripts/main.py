@@ -66,23 +66,6 @@ def init_parser():
         help='An optional version number for the schema file that is generated'
     )
 
-    parser.add_argument(
-        '-t',
-        '--minimum-threshold',
-        required=True,
-        type=float,
-        help=
-        'Minimum threshold to be tested using the hierarchical clustering scheme'
-    )
-
-    parser.add_argument(
-        '-u',
-        '--maximum-threshold',
-        required=True,
-        type=float,
-        help=
-        'Maximum threshold to be tested using the hierarchical clustering scheme'
-    )
 
     parser.add_argument(
         '-s',
