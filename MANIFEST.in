@@ -2,6 +2,8 @@ include LICENSE
 include README.rst
 include MANIFEST.in
 include setup.py
-recursive-include *.py *.fasta
+recursive-include biohansel/subtype/data *.fasta
 exclude ipynbs
 exclude venv
+exclude .venv
+global-exclude *.py[co] __pycache__
