@@ -20,10 +20,12 @@ def group_snvs(
         results_list: A dictionary containing the group allocation and DataFrame of SNVs that are associated with that
                       group
     """
+  
     unique_groups = list(set(groups_dict.values()))
     results_list = {}
     other_list = []
     current_list = []
+
 
     for group in unique_groups:
         for genome, curr_group in groups_dict.items():
@@ -43,5 +45,7 @@ def group_snvs(
         results_list[group] = final_table.dropna()
         current_list = []
         other_list = []
-
+   
+    for key, value in results_list.items():
+        logging.debug(value)
     return results_list

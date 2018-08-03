@@ -1,4 +1,5 @@
 import pandas as pd
+import logging
 
 
 def read_vcf(vcf_file: str) -> (pd.DataFrame, pd.DataFrame):
@@ -26,5 +27,7 @@ def read_vcf(vcf_file: str) -> (pd.DataFrame, pd.DataFrame):
     df.index = df.POS
     sequence_df = df[['CHROM', 'REF', 'ALT']]
     binary_df = df.drop(['CHROM', 'POS', 'REF', 'ALT'], 1)
+
+   
 
     return sequence_df, binary_df
