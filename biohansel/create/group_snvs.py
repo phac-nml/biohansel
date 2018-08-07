@@ -1,6 +1,6 @@
 from typing import Dict
 
-import logging
+
 import pandas as pd
 
 
@@ -46,6 +46,4 @@ def group_snvs(
         current_list = []
         other_list = []
    
-    for key, value in results_list.items():
-        logging.debug(value)
     return results_list

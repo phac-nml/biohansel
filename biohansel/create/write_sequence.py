@@ -1,4 +1,4 @@
-import logging
+
 import os
 import textwrap
 
@@ -25,10 +25,7 @@ def get_sequences(
     Returns:
         df_list: list of DataFrames that contain snv sequences related to each chromosome for that particular cluster group
     """
-   
-    logging.debug(curr_df)
-    logging.debug(sequence_length)
-    logging.debug(record_dict)
+
     df_list = []
     curr_df.CHROM = curr_df.CHROM.str.strip()
     unique_chromosomes = curr_df.CHROM.unique()
@@ -43,7 +40,6 @@ def get_sequences(
         ref_seqs = positions.apply(
             get_subsequences,
             args=(sequences, sequence_length, max_sequence_value))
-        logging.debug(ref_seqs)
         alt_seqs = ref_seqs.str.slice(
             0, sequence_length) + curr_chrom_df.ALT + ref_seqs.str.slice(
             sequence_length + 1, sequence_length + sequence_length + 1)
@@ -97,12 +93,10 @@ def get_subsequences(position: int, seq: str, sequence_length: int,
         sequence_sequence: the sequence that is found at the specified genome positions from the reference genome
 
     """
-    logging.debug(position)
-    logging.debug(type(seq))
-    logging.debug(max_sequence_value)
+  
     specific_sequence = seq[max(0, position - (sequence_length + 1)):min(
         max_sequence_value, position + sequence_length)]
-    logging.debug(type(specific_sequence))
+  
     return specific_sequence
 
 
@@ -123,7 +117,7 @@ def read_sequence_file(reference_genome_path: str, reference_genome_type: str) -
     return record_dict
 
 
-def get_sequence_string(ratio_value:int , chromosome: str, position:str, group:str, reference_snv:str, alternate_snv:str) -> str:
+def get_sequence_string(ratio_value:int , chromosome: str, position:int, group:str, reference_snv:str, alternate_snv:str) -> str:
     """Creates the string output for the schema file
     Args:
         ratio_value: the ratio_value for that particular snv, with 1 being that all genomes contain the snv and 0 being
@@ -139,11 +133,6 @@ def get_sequence_string(ratio_value:int , chromosome: str, position:str, group:s
 
     """
 
-    logging.debug((textwrap.dedent(f"""\
-    >({chromosome}){position}-{group}
-    {alternate_snv if ratio_value > 0 else reference_snv}
-    >negative({chromosome}){position}-{group}
-    {reference_snv if ratio_value > 0 else alternate_snv}\n""")))
 
     return (textwrap.dedent(f"""\
     >({chromosome}){position}-{group}

@@ -1,6 +1,6 @@
 from typing import Dict, Set, List, Union
 
-import logging
+
 import numpy as np
 import pandas as pd
 import scipy as sp
@@ -60,7 +60,7 @@ def create_linkage_array(distance_matrix: np.ndarray) -> np.ndarray:
     """
     
     clustering_array = linkage(distance_matrix, method='complete')
-    logging.debug(clustering_array)
+
     return clustering_array
 
 
@@ -97,17 +97,17 @@ def output_flat_clusters(clustering_array: np.ndarray, genomes_only: List, dista
 
     cluster_matrix = cluster_matrix.drop([0], axis=1)
 
-    logging.debug(cluster_matrix)
+    
 
     clusters_genomes_dict = cluster_df_to_dict(cluster_matrix)
-    logging.debug(clusters_genomes_dict)
+   
     hierarchical_cluster_df = pd.DataFrame(
         expand_sets(
             assign_hc_clusters(clusters_genomes_dict=clusters_genomes_dict, min_group_size=min_group_size))).fillna(
         '').loc[cluster_matrix.index, :]
     final_assigned_clusters = df_to_subtypes_dict(hierarchical_cluster_df)
 
-    logging.debug(pprint.pformat(final_assigned_clusters))
+   
 
     return final_assigned_clusters
 
@@ -146,7 +146,7 @@ def assign_hc_clusters(clusters_genomes_dict: Dict[float, Dict[int, Set[str]]], 
                         that subtype
     """
 
-    logging.debug(clusters_genomes_dict)
+   
 
     output_subtypes = {threshold: {} for threshold in clusters_genomes_dict.keys()}
     sorted_thresholds = sorted(clusters_genomes_dict.keys())
@@ -176,7 +176,7 @@ def assign_hc_clusters(clusters_genomes_dict: Dict[float, Dict[int, Set[str]]], 
                     else:
                         output_subtypes[threshold][subtype] = child_genomes
                     subclade += 1
-    logging.debug(output_subtypes)
+   
     return output_subtypes
 
 
@@ -193,7 +193,7 @@ def expand_sets(cluster_dict: Dict[str, Dict[str, Set[str]]]) -> Dict[str, Dict[
 
     """
 
-    logging.debug(cluster_dict)
+   
     modified_cluster_dict = {}
     for threshold, groupings in cluster_dict.items():
         threshold_dict = {}
@@ -201,7 +201,7 @@ def expand_sets(cluster_dict: Dict[str, Dict[str, Set[str]]]) -> Dict[str, Dict[
             for genome in genomes:
                 threshold_dict[genome] = grouping
         modified_cluster_dict[threshold] = threshold_dict
-    logging.debug(modified_cluster_dict)
+   
     return modified_cluster_dict
 
 
@@ -234,10 +234,10 @@ def df_to_subtypes_dict(cluster_genomes_df: pd.DataFrame) -> Dict[str, str]:
         final_cluster_dict: the dictionary that contains the final subtype assignments for each genome
 
     """
-    cluster_genomes_df.to_csv('cluster_genomes_test.csv')
-    logging.debug(cluster_genomes_df)
+    
+   
     final_cluster_dict = {}
     for genome, row in cluster_genomes_df.apply(row_subtype, axis=1).iteritems():
         final_cluster_dict[genome] = row
-    logging.debug(final_cluster_dict)
+   
     return final_cluster_dict
