@@ -6,7 +6,8 @@ from typing import Dict
 
 
 def display_tree(phylo_tree_path: str, groups_dict: Dict[str, str]) -> str:
-    """
+    """ Displays the modified phylogenetic tree with subclades added to the original genome names
+    i.e. SRR238289-1.1.2
     Args:
         phylo_tree_path: the path to the user-defined phylogenetic tree
         groups_dict: the dictionary that contains the group information for each genome
