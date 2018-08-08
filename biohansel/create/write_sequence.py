@@ -1,4 +1,3 @@
-
 import os
 import textwrap
 
@@ -35,7 +34,7 @@ def get_sequences(
         sequences = str(record_seq)
         curr_chrom_df = curr_df[curr_df['CHROM'].str.match(
             chromosome.strip())]
-            
+
         positions = pd.Series(curr_chrom_df.index, index=curr_chrom_df.index)
         ref_seqs = positions.apply(
             get_subsequences,
@@ -47,8 +46,7 @@ def get_sequences(
         curr_chrom_df['ref_sequences'] = ref_seqs
         curr_chrom_df['alt_sequences'] = alt_seqs
         df_list.append(curr_chrom_df)
-        
-       
+
     return df_list
 
 
@@ -93,10 +91,10 @@ def get_subsequences(position: int, seq: str, sequence_length: int,
         sequence_sequence: the sequence that is found at the specified genome positions from the reference genome
 
     """
-  
+
     specific_sequence = seq[max(0, position - (sequence_length + 1)):min(
         max_sequence_value, position + sequence_length)]
-  
+
     return specific_sequence
 
 
@@ -117,7 +115,8 @@ def read_sequence_file(reference_genome_path: str, reference_genome_type: str) -
     return record_dict
 
 
-def get_sequence_string(ratio_value:int , chromosome: str, position:int, group:str, reference_snv:str, alternate_snv:str) -> str:
+def get_sequence_string(ratio_value: int, chromosome: str, position: int, group: str, reference_snv: str,
+                        alternate_snv: str) -> str:
     """Creates the string output for the schema file
     Args:
         ratio_value: the ratio_value for that particular snv, with 1 being that all genomes contain the snv and 0 being
@@ -133,11 +132,8 @@ def get_sequence_string(ratio_value:int , chromosome: str, position:int, group:s
 
     """
 
-
     return (textwrap.dedent(f"""\
     >({chromosome}){position}-{group}
     {alternate_snv if ratio_value > 0 else reference_snv}
     >negative({chromosome}){position}-{group}
     {reference_snv if ratio_value > 0 else alternate_snv}\n"""))
-
-

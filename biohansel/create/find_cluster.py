@@ -1,10 +1,9 @@
-from typing import Dict, Set, List, Union
-
+from typing import Dict, Set, List
 
 import numpy as np
 import pandas as pd
 import scipy as sp
-import pprint
+
 
 from collections import defaultdict
 from scipy.cluster.hierarchy import fcluster, linkage
@@ -44,7 +43,7 @@ def compute_distance_matrix(df: pd.DataFrame) -> np.ndarray:
     Returns:
         a matrix of pair-wise distances between samples
     """
-    
+
     return sp.spatial.distance.pdist(
         df.transpose(), metric='hamming')
 
@@ -58,13 +57,14 @@ def create_linkage_array(distance_matrix: np.ndarray) -> np.ndarray:
     Returns:
         clustering_array: a hierarchical clustering linkage array that is calculated from the distance matrix
     """
-    
+
     clustering_array = linkage(distance_matrix, method='complete')
 
     return clustering_array
 
 
-def output_flat_clusters(clustering_array: np.ndarray, genomes_only: List, distance_matrix: np.ndarray, min_group_size: int) -> \
+def output_flat_clusters(clustering_array: np.ndarray, genomes_only: List, distance_matrix: np.ndarray,
+                         min_group_size: int) -> \
         pd.DataFrame:
     """Uses a set of thresholds to output a flat cluster of the linkage array
 
@@ -72,6 +72,7 @@ def output_flat_clusters(clustering_array: np.ndarray, genomes_only: List, dista
         clustering_array: a hierarchical clustering linkage array that is calculated from the distance matrix
         genomes_only: an array of column names for the original SNV DataFrame
         distance_matrix: a matrix of pair-wise distances between samples
+        min_group_size: the minimum child group size for each new subtype branching point from the parent group
 
     Returns:
          flat_clusters: an array of flat clusters from the clustering array
@@ -97,17 +98,13 @@ def output_flat_clusters(clustering_array: np.ndarray, genomes_only: List, dista
 
     cluster_matrix = cluster_matrix.drop([0], axis=1)
 
-    
-
     clusters_genomes_dict = cluster_df_to_dict(cluster_matrix)
-   
+
     hierarchical_cluster_df = pd.DataFrame(
         expand_sets(
             assign_hc_clusters(clusters_genomes_dict=clusters_genomes_dict, min_group_size=min_group_size))).fillna(
         '').loc[cluster_matrix.index, :]
     final_assigned_clusters = df_to_subtypes_dict(hierarchical_cluster_df)
-
-   
 
     return final_assigned_clusters
 
@@ -128,7 +125,7 @@ def cluster_df_to_dict(df_clusters: pd.DataFrame) -> Dict[float, Dict[int, Set[s
         for genome, cluster in clusters.iteritems():
             cluster_genomes[cluster].add(genome)
         clusters_genomes_dict[threshold] = cluster_genomes
-    
+
     return clusters_genomes_dict
 
 
@@ -146,12 +143,11 @@ def assign_hc_clusters(clusters_genomes_dict: Dict[float, Dict[int, Set[str]]], 
                         that subtype
     """
 
-   
-
     output_subtypes = {threshold: {} for threshold in clusters_genomes_dict.keys()}
     sorted_thresholds = sorted(clusters_genomes_dict.keys())
     # initialize top level subtypes
-    output_subtypes[sorted_thresholds[0]] = {str(cluster): genomes for cluster, genomes in clusters_genomes_dict[sorted_thresholds[0]].items()}
+    output_subtypes[sorted_thresholds[0]] = {str(cluster): genomes for cluster, genomes in
+                                             clusters_genomes_dict[sorted_thresholds[0]].items()}
 
     for threshold_index in range(1, len(sorted_thresholds)):
         parent_hc_clusters = output_subtypes[sorted_thresholds[threshold_index - 1]]
@@ -176,7 +172,7 @@ def assign_hc_clusters(clusters_genomes_dict: Dict[float, Dict[int, Set[str]]], 
                     else:
                         output_subtypes[threshold][subtype] = child_genomes
                     subclade += 1
-   
+
     return output_subtypes
 
 
@@ -193,7 +189,6 @@ def expand_sets(cluster_dict: Dict[str, Dict[str, Set[str]]]) -> Dict[str, Dict[
 
     """
 
-   
     modified_cluster_dict = {}
     for threshold, groupings in cluster_dict.items():
         threshold_dict = {}
@@ -201,7 +196,7 @@ def expand_sets(cluster_dict: Dict[str, Dict[str, Set[str]]]) -> Dict[str, Dict[
             for genome in genomes:
                 threshold_dict[genome] = grouping
         modified_cluster_dict[threshold] = threshold_dict
-   
+
     return modified_cluster_dict
 
 
@@ -216,10 +211,10 @@ def row_subtype(curr_genome: pd.Series) -> str:
         row_unique[-1]: the last valid subtype name for that genome
 
     """
-    
+
     row_unique = curr_genome.unique()
     row_unique = row_unique[(row_unique != '') & (~pd.isnull(row_unique))]
-    
+
     return row_unique[-1]
 
 
@@ -234,10 +229,9 @@ def df_to_subtypes_dict(cluster_genomes_df: pd.DataFrame) -> Dict[str, str]:
         final_cluster_dict: the dictionary that contains the final subtype assignments for each genome
 
     """
-    
-   
+
     final_cluster_dict = {}
     for genome, row in cluster_genomes_df.apply(row_subtype, axis=1).iteritems():
         final_cluster_dict[genome] = row
-   
+
     return final_cluster_dict

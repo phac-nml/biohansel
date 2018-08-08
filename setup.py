@@ -84,7 +84,8 @@ setup(
         'attrs>=17.2.0',
         'click>=6.7',
         'scipy>=1.1.0',
-        'biopython>=1.72'
+        'biopython>=1.72',
+        'ete3>=3.1.1'
     ],
     tests_require=['pytest', ],
     cmdclass={'test': PyTest},  # run tests with `python setup.py test`

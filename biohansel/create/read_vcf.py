@@ -1,5 +1,5 @@
 import pandas as pd
-import logging
+
 
 
 def read_vcf(vcf_file: str) -> (pd.DataFrame, pd.DataFrame):
@@ -24,10 +24,9 @@ def read_vcf(vcf_file: str) -> (pd.DataFrame, pd.DataFrame):
         names=cols).rename(columns={'#CHROM': 'CHROM'})
     df = df[df['ALT'].str.len() <= 1]
     df = df.drop(['ID', 'QUAL', 'FILTER', 'INFO', 'FORMAT'], 1)
+    df.columns = df.columns.str.replace("mysnps", "")
     df.index = df.POS
     sequence_df = df[['CHROM', 'REF', 'ALT']]
     binary_df = df.drop(['CHROM', 'POS', 'REF', 'ALT'], 1)
-
-   
 
     return sequence_df, binary_df

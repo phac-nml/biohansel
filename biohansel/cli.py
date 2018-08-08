@@ -6,6 +6,7 @@ import attr
 import click
 import pandas as pd
 
+from biohansel.create.display_tree import display_tree
 from biohansel.create.find_cluster import find_clusters
 from biohansel.create.group_snvs import group_snvs
 from biohansel.create.read_vcf import read_vcf
@@ -338,6 +339,8 @@ def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thres
 
     sequence_df, binary_df = read_vcf(vcf_file_path)
     groups_dict = find_clusters(binary_df, min_group_size)
+    if phylo_tree_path is not None:
+        display_tree(phylo_tree_path, groups_dict)
     record_dict = read_sequence_file(reference_genome_path, reference_genome_format)
     results_dict = group_snvs(binary_df, sequence_df, groups_dict)
     for group, curr_df in results_dict.items():
