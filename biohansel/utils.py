@@ -15,10 +15,9 @@ REGEX_FASTA = re.compile(r'^.+\.(fasta|fa|fna|fas)(\.gz)?$')
 def does_file_exist(filepath: str, force: bool):
     if filepath and os.path.exists(filepath):
         if not force:
-            file_exists_err_fmt = 'File "{}" already exists! If you want to overwrite this output file run with opt "--force"'
-            raise OSError(file_exists_err_fmt.format(filepath))
+            raise OSError(f'File "{filepath}" already exists! If you want to overwrite this output file run with opt "--force"')
         else:
-            logging.warning('File "{}" already exists, overwriting with "--force" - uh oh :S')
+            logging.warning(f'File "{filepath}" already exists, overwriting with "--force"')
 
 
 def genome_name_from_fasta_path(fasta_path: str) -> str:
