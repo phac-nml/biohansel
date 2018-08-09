@@ -19,9 +19,6 @@ from biohansel.subtype.util import get_scheme_fasta, init_subtyping_params
 from biohansel.utils import does_file_exist, collect_inputs
 from biohansel.utils import init_console_logger
 
-
-
-
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
@@ -325,7 +322,7 @@ def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thres
                  f'distance threshold levels.')
     reference_genome_name = os.path.split(reference_genome_path)[-1]
     reference_genome_name = reference_genome_name.split(".")[-2]
-    
+
     if schema_version is None:
         schema_version = "0.1.0"
 
