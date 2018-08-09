@@ -2,24 +2,36 @@
 """
 Common utility functions and constants. 
 """
+import logging
 from typing import List, Any, Tuple, Union
+
 import os
 import re
-import logging
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
 
-NT_SUB = {x: y for x, y in zip('acgtrymkswhbvdnxACGTRYMKSWHBVDNX', 'tgcayrkmswdvbhnxTGCAYRKMSWDVBHNX')}
+# Nucleotide substitution dictionary for reverse complementing a nucleotide sequence
+NUCLEOTIDE_SUBSTITUTION = {x: y for x, y in zip('acgtrymkswhbvdnxACGTRYMKSWHBVDNX', 'tgcayrkmswdvbhnxTGCAYRKMSWDVBHNX')}
 
 REGEX_FASTQ = re.compile(r'^(.+)\.(fastq|fq|fastqsanger)(\.gz)?$')
 REGEX_FASTA = re.compile(r'^.+\.(fasta|fa|fna|fas)(\.gz)?$')
 
 
-def does_file_exist(filepath: str, force: bool):
+def does_file_exist(filepath: str, force: bool) -> None:
+    """Does a file exist? If so raise an OSError unless force is True
+
+    Args:
+        filepath: File path
+        force: Overwrite file? Okay if the file already exists?
+
+    Raises:
+        OSError: if file already exists and it's not okay to have it be potentially overwritten.
+    """
     if filepath and os.path.exists(filepath):
         if not force:
-            raise OSError(f'File "{filepath}" already exists! If you want to overwrite this output file run with opt "--force"')
+            raise OSError(
+                f'File "{filepath}" already exists! If you want to overwrite this output file run with opt "--force"')
         else:
             logging.warning(f'File "{filepath}" already exists, overwriting with "--force"')
 
@@ -48,36 +60,73 @@ def genome_name_from_fasta_path(fasta_path: str) -> str:
     return re.sub(r'\.(fa|fas|fasta|fna|\w{1,})(\.gz)?$', '', filename)
 
 
-def compare_subtypes(a: List[Any], b: List[Any]) -> bool:
-    for x, y in zip(a, b):
-        if x != y:
+def _compare_subtypes(subtypes_a: List[Any], subtypes_b: List[Any]) -> bool:
+    """Are 2 subtypes consistent with each other?
+
+    Examples:
+        ```python
+        assert compare_subtypes([1,2,3], [1,2,3]) == True
+        assert compare_subtypes([1,2,3], [1,2]) == True
+        assert compare_subtypes([1], [1,2,3,4,5]) == True
+        assert compare_subtypes([1], [2]) == False
+        assert compare_subtypes([1,2,3,4], [1,2,3,5]) == False
+        assert compare_subtypes([2,2], [1,2]) == False
+        ```
+
+    Args:
+        subtypes_a: One list of subtype integers to compare
+        subtypes_b:  Other list of subtype integers to compare
+
+    Returns:
+        True if lists are equal up to the last index of the smallest list in the comparison; False otherwise
+    """
+    for subtype_a, subtype_b in zip(subtypes_a, subtypes_b):
+        if subtype_a != subtype_b:
             return False
     return True
 
 
-def find_inconsistent_subtypes(subtypes: List[List[int]]) -> List[str]:
-    from collections import Counter
-    incon = []
+def _compare_all_subtypes(subtypes: List[List[int]]) -> List[Tuple[List[int], List[int]]]:
+    """Compare all subtypes against each other and return the pairs of inconsistent subtypes.
+
+    Args:
+        subtypes: Subtypes to compare against each other
+
+    Returns:
+        Pairs of subtypes that are inconsistent with each other.
+    """
+    inconsistent_subtypes = []
     for i in range(len(subtypes) - 1):
-        a = subtypes[i]
+        subtypes_a = subtypes[i]
         for j in range(i + 1, len(subtypes)):
-            b = subtypes[j]
-            is_consistent = compare_subtypes(a, b)
+            subtypes_b = subtypes[j]
+            is_consistent = _compare_subtypes(subtypes_a, subtypes_b)
             if not is_consistent:
-                incon.append((a, b))
-    l = []
-    for a, b in incon:
-        astr = '.'.join([str(x) for x in a])
-        bstr = '.'.join([str(x) for x in b])
-        l += [astr, bstr]
-    c = Counter(l)
-    incon_subtypes = []
-    for subtype, freq in c.most_common():
-        if freq >= 1:
-            incon_subtypes.append(subtype)
-        else:
-            break
-    return incon_subtypes
+                inconsistent_subtypes.append((subtypes_a, subtypes_b))
+    return inconsistent_subtypes
+
+
+def _inconsistent_subtype_pairs_to_list(inconsistent_subtype_pairs: List[Tuple[List[int], List[int]]]) -> List[str]:
+    potentially_inconsistent_subtypes = []
+    for subtypes_a, subtypes_b in inconsistent_subtype_pairs:
+        subtype_a = '.'.join([str(x) for x in subtypes_a])
+        subtype_b = '.'.join([str(x) for x in subtypes_b])
+        potentially_inconsistent_subtypes += [subtype_a, subtype_b]
+    return potentially_inconsistent_subtypes
+
+
+def find_inconsistent_subtypes(subtypes: List[List[int]]) -> List[str]:
+    """Find all inconsistent subtypes within a given list of subtypes.
+
+    Args:
+        subtypes: List of subtypes to compare against each other
+
+    Returns:
+        List of inconsistent subtype strings
+    """
+    inconsistent_subtype_pairs = _compare_all_subtypes(subtypes)
+    potentially_inconsistent_subtypes = _inconsistent_subtype_pairs_to_list(inconsistent_subtype_pairs)
+    return [subtype for subtype, freq in Counter(potentially_inconsistent_subtypes).most_common() if freq >= 1]
 
 
 def collect_fastq_from_dir(input_directory: str) -> List[Union[str, Tuple[List[str], str]]]:
@@ -128,22 +177,21 @@ def collect_fasta_from_dir(input_directory: str) -> List[Tuple[str, str]]:
     return input_genomes
 
 
-
-
-def revcomp(s):
+def revcomp(nucleotide_sequence: str) -> str:
     """Reverse complement nucleotide sequence
 
     Args:
-        s (str): nucleotide sequence
+        nucleotide_sequence: nucleotide sequence
 
     Returns:
-        str: reverse complement of `s` nucleotide sequence
+        Reverse complemented nucleotide sequence
     """
-    return ''.join([NT_SUB[c] for c in s[::-1]])
+    return ''.join([NUCLEOTIDE_SUBSTITUTION[nt] for nt in nucleotide_sequence[::-1]])
 
 
-def is_gzipped(p: str) -> bool:
-    return bool(re.match(r'^.+\.gz$', p))
+def is_gzipped(filepath: str) -> bool:
+    """Is a file gzipped? Does the file path end with `.gz`?"""
+    return bool(re.match(r'^.+\.gz$', filepath))
 
 
 def init_console_logger(logging_verbosity=3):
@@ -155,10 +203,10 @@ def init_console_logger(logging_verbosity=3):
     logging.basicConfig(format=LOG_FORMAT, level=lvl)
 
 
-def collect_inputs(files,
-                   input_fasta_genome_name,
-                   input_directory,
-                   paired_reads,
+def collect_inputs(files: List[str],
+                   input_fasta_genome_name: List[Tuple[str, str]],
+                   input_directory: str,
+                   paired_reads: List[Union[List[str], Tuple[str, str]]],
                    **kwargs) -> Tuple[List[Tuple[str, str]], List[Tuple[List[str], str]]]:
     """Collect all input files for analysis
 
@@ -199,14 +247,14 @@ def collect_inputs(files,
         logging.info(f'Searching dir "{input_directory}" for FASTQ files')
         reads += collect_fastq_from_dir(input_directory)
     if paired_reads:
-        for x in paired_reads:
-            if not isinstance(x, (list, tuple)):
-                logging.warning(f'Paired end reads not list or tuple {x}')
+        for filepaths in paired_reads:
+            if not isinstance(filepaths, (list, tuple)):
+                logging.warning(f'Paired end reads not list or tuple {filepaths}')
                 continue
-            filenames = [os.path.basename(y) for y in x]
+            filenames = [os.path.basename(filepath) for filepath in filepaths]
             common_prefix = os.path.commonprefix(filenames)
             genome_name = re.sub(r'[\W\_]+$', r'', common_prefix)
             if genome_name == '':
                 genome_name = filenames[0]
-            reads.append((x, genome_name))
+            reads.append((filepaths, genome_name))
     return input_genomes, reads
