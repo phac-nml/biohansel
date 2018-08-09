@@ -177,7 +177,10 @@ def is_missing_too_many_target_sites(st: Subtype, df: pd.DataFrame, params: Subt
 
     exp = int(st.n_tiles_matching_all_expected)
     obs = int(st.n_tiles_matching_all)
-    if (exp - obs) / exp <= params.max_missing_tiles and len(missing_targets) >= params.min_ambiguous_tiles:
+    # proportion of missing tiles given the number found vs expected to be found
+    p_missing_tiles = (exp - obs) / exp
+    are_too_many_missing_tiles = p_missing_tiles <= params.max_missing_tiles
+    if are_too_many_missing_tiles and len(missing_targets) >= params.min_ambiguous_tiles:
         return QC.FAIL, f'{QC.AMBIGUOUS_RESULTS_ERROR_3}: There were {len(missing_targets)} missing positions for ' \
                         f'subtype "{st.subtype}".'
     return None, None
