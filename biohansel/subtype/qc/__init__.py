@@ -24,7 +24,7 @@ CHECKS = [is_missing_tiles,
           ] # type: List[Callable[[Subtype, DataFrame, SubtypingParams], Tuple[str, str]]]
 
 
-def perform_quality_check(st: Subtype, df: DataFrame, subtyping_params: SubtypingParams) -> Tuple[str, str]:
+def perform_quality_checks(st: Subtype, df: DataFrame, subtyping_params: SubtypingParams) -> Tuple[str, str]:
     """Perform QC of subtyping results
 
     Return immediate fail if subtype result is missing or if there are no detailed subtyping results.
@@ -32,10 +32,10 @@ def perform_quality_check(st: Subtype, df: DataFrame, subtyping_params: Subtypin
     Args:
         st: Subtyping results.
         df: DataFrame containing subtyping results.
-        p: Subtyping/QC parameters
+        subtyping_params: Subtyping/QC parameters
 
     Returns:
-        (QC status, QC messages)
+        Tuple of QC status and QC messages delimited by `|`
     """
     if st.subtype is None or len(st.subtype) == 0 \
             or df is None or df.shape[0] == 0:

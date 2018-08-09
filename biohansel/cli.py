@@ -29,8 +29,8 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 def cli(verbose):
     """Subtype with a biohansel scheme or create a scheme for your organism of interest
     """
-    lvl = init_console_logger(verbose)
-    logging.debug('Initialized logging with %s level', lvl)
+    init_console_logger(verbose)
+    logging.info(f'Initialized logging at "{logging.getLevelName(logging.getLogger().level)}" level')
 
 
 def check_between_0_and_1_inclusive(ctx: click.Context,
@@ -179,7 +179,7 @@ def subtype(scheme,
                                                   subtyping_params=subtyping_params,
                                                   scheme_subtype_counts=scheme_subtype_counts,
                                                   n_threads=threads)
-        logging.info('Generated %s subtyping results from %s contigs samples', len(contigs_results), len(input_contigs))
+        logging.info(f'Generated {len(contigs_results)} subtyping results from {len(input_contigs)} contigs samples')
         subtype_results += contigs_results
     if len(input_reads) > 0:
         reads_results = subtype_reads_samples(reads=input_reads,
@@ -188,7 +188,7 @@ def subtype(scheme,
                                               subtyping_params=subtyping_params,
                                               scheme_subtype_counts=scheme_subtype_counts,
                                               n_threads=threads)
-        logging.info('Generated %s subtyping results from %s contigs samples', len(reads_results), len(input_reads))
+        logging.info(f'Generated {len(reads_results)} subtyping results from {len(input_reads)} reads samples')
         subtype_results += reads_results
 
     dfs = [df for st, df in subtype_results]  # type: List[pd.DataFrame]
@@ -208,7 +208,7 @@ def subtype(scheme,
         dfsummary.to_csv(output_summary_path, **kwargs_for_pd_to_table)
         if json_output:
             dfsummary.to_json(JSON_EXT_TMPL.format(output_summary_path), **kwargs_for_pd_to_json)
-        logging.info('Wrote subtyping output summary to %s', output_summary_path)
+        logging.info(f'Wrote subtyping output summary to "{output_summary_path}"')
     else:
         # if no output path specified for the summary results, then print to stdout
         print(dfsummary.to_csv(sep='\t', index=None))
@@ -217,14 +217,14 @@ def subtype(scheme,
         if len(dfs) > 0:
             dfall = pd.concat(dfs)  # type: pd.DataFrame
             dfall.to_csv(output_tile_results, **kwargs_for_pd_to_table)
-            logging.info('Tile results written to "{}".'.format(output_tile_results))
+            logging.info(f'Tile results written to "{output_tile_results}".')
             if json_output:
                 dfall.to_json(JSON_EXT_TMPL.format(output_tile_results), **kwargs_for_pd_to_json)
                 logging.info(
-                    'Tile results written to "{}" in JSON format.'.format(JSON_EXT_TMPL.format(output_tile_results)))
+                    f'Tile results written to "{JSON_EXT_TMPL.format(output_tile_results)}" in JSON format.')
         else:
             logging.error(
-                'No tile results generated. No tile results file written to "{}".'.format(output_tile_results))
+                f'No tile results generated. No tile results file written to "{output_tile_results}".')
 
     if output_simple_summary_path:
         if 'avg_tile_coverage' in dfsummary.columns:

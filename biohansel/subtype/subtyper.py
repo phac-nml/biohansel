@@ -10,7 +10,7 @@ import re
 
 from biohansel.subtype.aho_corasick import init_automaton, find_in_fasta, find_in_fastqs
 from biohansel.subtype.const import COLUMNS_TO_REMOVE
-from biohansel.subtype.qc import perform_quality_check, QC
+from biohansel.subtype.qc import perform_quality_checks, QC
 from biohansel.subtype.subtype import Subtype
 from biohansel.subtype.subtype_stats import SubtypeCounts
 from biohansel.subtype.subtype_stats import subtype_counts
@@ -140,7 +140,7 @@ def subtype_contigs(fasta_path: str,
     df['subtype'] = subtypes
     df['is_pos_tile'] = ~df.tilename.str.contains('negative')
     process_subtyping_results(st, df, scheme_subtype_counts)
-    st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
+    st.qc_status, st.qc_message = perform_quality_checks(st, df, subtyping_params)
 
     logging.info(st)
 
@@ -286,7 +286,7 @@ def subtype_reads(reads: Union[str, List[str]],
     df['is_kmer_freq_okay'] = (df.freq >= subtyping_params.min_kmer_freq) & (df.freq <= subtyping_params.max_kmer_freq)
     st.avg_tile_coverage = df['freq'].mean()
     st, df = process_subtyping_results(st, df[df.is_kmer_freq_okay], scheme_subtype_counts)
-    st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
+    st.qc_status, st.qc_message = perform_quality_checks(st, df, subtyping_params)
     df['file_path'] = str(st.file_path)
     df['sample'] = genome_name
     df['scheme'] = scheme_name or scheme
