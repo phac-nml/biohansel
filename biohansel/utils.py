@@ -131,9 +131,9 @@ def find_inconsistent_subtypes(subtypes: List[List[int]]) -> List[str]:
 
 def collect_fastq_from_dir(input_directory: str) -> List[Union[str, Tuple[List[str], str]]]:
     fastqs = []
-    for x in os.listdir(input_directory):
-        full_file_path = os.path.abspath(os.path.join(input_directory, x))
-        if os.path.isfile(full_file_path) and REGEX_FASTQ.match(x):
+    for filepath in os.listdir(input_directory):
+        full_file_path = os.path.abspath(os.path.join(input_directory, filepath))
+        if os.path.isfile(full_file_path) and REGEX_FASTQ.match(filepath):
             fastqs.append(full_file_path)
     if len(fastqs) > 0:
         logging.info(f'Found {len(fastqs)} FASTQ files in "{input_directory}"')
@@ -169,9 +169,9 @@ def group_fastqs(fastqs: List[str]) -> List[Tuple[List[str], str]]:
 
 def collect_fasta_from_dir(input_directory: str) -> List[Tuple[str, str]]:
     input_genomes = []
-    for x in os.listdir(input_directory):
-        full_file_path = os.path.abspath(os.path.join(input_directory, x))
-        if os.path.isfile(full_file_path) and REGEX_FASTA.match(x):
+    for filepath in os.listdir(input_directory):
+        full_file_path = os.path.abspath(os.path.join(input_directory, filepath))
+        if os.path.isfile(full_file_path) and REGEX_FASTA.match(filepath):
             genome_name = genome_name_from_fasta_path(full_file_path)
             input_genomes.append((full_file_path, genome_name))
     return input_genomes
