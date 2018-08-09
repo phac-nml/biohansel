@@ -48,8 +48,8 @@ def test_intermediate_subtype():
                  qc_status=None,
                  qc_message=None)
     df = pd.read_csv('tests/data/subtype/se_intermediate_subtype_df.csv')
-    p = init_subtyping_params(args=None, scheme=scheme)
-    st.qc_status, st.qc_message = is_maybe_intermediate_subtype(st, df, p)
+    params = init_subtyping_params(args=None, scheme=scheme)
+    st.qc_status, st.qc_message = is_maybe_intermediate_subtype(st, df, params)
     assert isinstance(st, Subtype)
     assert isinstance(df, pd.DataFrame)
     assert st.scheme == scheme
