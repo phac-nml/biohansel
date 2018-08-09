@@ -23,8 +23,8 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 def cli(verbose):
     """Subtype with a biohansel scheme or create a scheme for your organism of interest
     """
-    lvl = init_console_logger(verbose)
-    logging.debug('Initialized logging with %s level', lvl)
+    init_console_logger(verbose)
+    logging.info('Initialized logging at "%s" level', logging.getLevelName(logging.getLogger().level)
 
 
 def check_between_0_and_1_inclusive(ctx: click.Context,
