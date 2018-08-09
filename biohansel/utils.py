@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
-
-import logging
+"""
+Common utility functions and constants. 
+"""
 from typing import List, Any, Tuple, Union
-
 import os
 import re
+import logging
 from collections import defaultdict
 
+LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+
 NT_SUB = {x: y for x, y in zip('acgtrymkswhbvdnxACGTRYMKSWHBVDNX', 'tgcayrkmswdvbhnxTGCAYRKMSWDVBHNX')}
+
 REGEX_FASTQ = re.compile(r'^(.+)\.(fastq|fq|fastqsanger)(\.gz)?$')
 REGEX_FASTA = re.compile(r'^.+\.(fasta|fa|fna|fas)(\.gz)?$')
 
@@ -83,14 +87,9 @@ def collect_fastq_from_dir(input_directory: str) -> List[Union[str, Tuple[List[s
         if os.path.isfile(full_file_path) and REGEX_FASTQ.match(x):
             fastqs.append(full_file_path)
     if len(fastqs) > 0:
-        logging.info('Found %s FASTQ files in %s',
-                     len(fastqs),
-                     input_directory)
+        logging.info(f'Found {len(fastqs)} FASTQ files in "{input_directory}"')
         reads_from_dir = group_fastqs(fastqs)
-        logging.info('Collected %s read sets from %s FASTQ files in %s',
-                     len(reads_from_dir),
-                     len(fastqs),
-                     input_directory)
+        logging.info(f'Collected {len(reads_from_dir)} read sets from {len(fastqs)} FASTQ files in "{input_directory}"')
         return reads_from_dir
     return []
 
@@ -180,33 +179,29 @@ def collect_inputs(files,
         fastas = [x for x in files if REGEX_FASTA.match(x)]
         fastqs = [x for x in files if REGEX_FASTQ.match(x)]
         if len(fastas) > 0:
-            logging.info('# of input fastas %s', len(fastas))
             for fasta_path in fastas:
                 fasta_path = os.path.abspath(fasta_path)
                 if os.path.exists(fasta_path):
                     genome_name = genome_name_from_fasta_path(fasta_path)
                     input_genomes.append((fasta_path, genome_name))
                 else:
-                    logging.error('Input fasta "%s" does not exist!', fasta_path)
+                    logging.error(f'Input fasta "{fasta_path}" does not exist!')
         if len(fastqs) > 0:
-            logging.info('# of input fastqs %s', len(fastqs))
             grouped_fastqs = group_fastqs(fastqs)
-            logging.info('Grouped %s fastqs into %s groups',
-                         len(fastqs),
-                         len(grouped_fastqs))
+            logging.info(f'Grouped {len(fastqs)} fastqs into {len(grouped_fastqs)} groups')
             reads += grouped_fastqs
     if input_fasta_genome_name:
         for fasta_path, genome_name in input_fasta_genome_name:
             input_genomes.append((os.path.abspath(fasta_path), genome_name))
     if input_directory:
-        logging.info('Searching dir "%s" for FASTA files', input_directory)
+        logging.info(f'Searching dir "{input_directory}" for FASTA files')
         input_genomes += collect_fasta_from_dir(input_directory)
-        logging.info('Searching dir "%s" for FASTQ files', input_directory)
+        logging.info(f'Searching dir "{input_directory}" for FASTQ files')
         reads += collect_fastq_from_dir(input_directory)
     if paired_reads:
         for x in paired_reads:
             if not isinstance(x, (list, tuple)):
-                logging.warning('Paired end reads not list or tuple %s', x)
+                logging.warning(f'Paired end reads not list or tuple {x}')
                 continue
             filenames = [os.path.basename(y) for y in x]
             common_prefix = os.path.commonprefix(filenames)
@@ -215,6 +210,3 @@ def collect_inputs(files,
                 genome_name = filenames[0]
             reads.append((x, genome_name))
     return input_genomes, reads
-
-
-LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
