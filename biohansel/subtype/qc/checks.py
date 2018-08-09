@@ -12,12 +12,8 @@ from biohansel.subtype.subtyping_params import SubtypingParams
 
 def is_overall_coverage_low(st: Subtype, df: pd.DataFrame, params: SubtypingParams) -> Tuple[
     Optional[str], Optional[str]]:
-    if not st.are_subtypes_consistent \
-            or st.subtype is None \
-            or not st.is_fastq_input():
-        return None, None
-
-    if st.avg_tile_coverage < params.low_coverage_warning:
+    if st and st.are_subtypes_consistent and st.is_fastq_input() \
+            and st.avg_tile_coverage < params.low_coverage_warning:
         return QC.WARNING, f'Low coverage for all tiles ({st.avg_tile_coverage:.3f} < {params.low_coverage_warning} expected)'
     return None, None
 
