@@ -124,3 +124,5 @@ def _parse_fastq(f):
             skip = True
         else:
             seq = line
+
+

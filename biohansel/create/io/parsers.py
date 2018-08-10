@@ -1,8 +1,10 @@
+from typing import Dict
+
 import pandas as pd
 
+from Bio import Seq, SeqIO
 
-
-def read_vcf(vcf_file: str) -> (pd.DataFrame, pd.DataFrame):
+def parse_vcf(vcf_file: str) -> (pd.DataFrame, pd.DataFrame):
     """Reads in the generated vcf file, filters for 2-state SNVs and returns two dataframes: one that contains the
     REF/ALT sequence info and the other that contains just the binary SNV data for each genome
     Args: 
@@ -30,3 +32,19 @@ def read_vcf(vcf_file: str) -> (pd.DataFrame, pd.DataFrame):
     binary_df = df.drop(['CHROM', 'POS', 'REF', 'ALT'], 1)
 
     return sequence_df, binary_df
+
+def parse_sequence_file(reference_genome_path: str, reference_genome_type: str) -> Dict[str, Seq.Seq]:
+    """Reads in the sequence file and indexes each of the individual sequences into a dictionary 
+    to allow for faster querying
+    Args:   
+        reference_genome_path: the path to the reference genome
+        reference_genome_type: reference genome file type
+
+    Returns:
+        record_dict: returns a dictionary of all the record sequences indexed by record name
+    """
+    record_dict = {}
+    for record in SeqIO.parse(reference_genome_path, reference_genome_type):
+        record_dict[record.name] = record.seq
+
+    return record_dict

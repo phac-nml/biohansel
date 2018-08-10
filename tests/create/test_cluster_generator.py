@@ -1,15 +1,17 @@
-import pytest
-import pandas as pd
-import numpy as np
-from biohansel.create.find_cluster import find_clusters, compute_distance_matrix, create_linkage_array, \
-    output_flat_clusters, cluster_df_to_dict, assign_hc_clusters, expand_sets, row_subtype, df_to_subtypes_dict
-from biohansel.create.read_vcf import read_vcf
 import io
 import os
 import unittest
 import warnings
 
+import pytest
+import pandas as pd
+import numpy as np
+
 from collections import defaultdict
+
+from biohansel.create.io.parsers import parse_vcf
+from biohansel.create.cluster_generator import find_clusters, compute_distance_matrix, create_linkage_array, \
+    output_flat_clusters, cluster_df_to_dict, assign_hc_clusters, expand_sets, row_subtype, df_to_subtypes_dict
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
@@ -39,7 +41,7 @@ def test_findcluster():
                     'SRR7170730': '2.1.1.1',
                     'SRR7221720': '2.1.2'}
 
-    _, data_frame = read_vcf("tests/data/create/core.vcf")
+    _, data_frame = parse_vcf("tests/data/create/core.vcf")
 
     result = find_clusters(data_frame, 2)
 
@@ -47,7 +49,7 @@ def test_findcluster():
 
 
 def test_compute_distance_matrix():
-    _, data_frame = read_vcf("tests/data/create/test.vcf")
+    _, data_frame = parse_vcf("tests/data/create/test.vcf")
     test_array = compute_distance_matrix(data_frame)
     test_result = np.array([0.4, 0.4, 0.4, 0.8, 0, 0, 0.4, 0, 0.4, 0.4])
 

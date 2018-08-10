@@ -49,34 +49,6 @@ def get_sequences(
 
     return df_list
 
-
-def write_sequences(output_directory: str, df_list: List[pd.DataFrame],
-                    schema_name: str, group: str) -> None:
-    """Writes the sequences associated with each SNV into the output schema file
-    Args:
-        output_directory: directory where the schema would be located as indicated by the user
-        df_list: list of DataFrames related for each particular chromosome included in the reference genome file 
-        schema_name: the name of the output schema file
-        group: the group membership of the current group of SNVs
-
-    Returns:
-         Creates schema file in the output directory specified by the user
-    """
-
-    with open(os.path.join(output_directory, f"{schema_name}.fasta"),
-              "a+") as file:
-        for curr_df in df_list:
-            for index, row in curr_df.iterrows():
-                ratio_value = row.iloc[3]
-                position = index
-                chromosome = row['CHROM']
-                reference_snv = row['ref_sequences']
-                alternate_snv = row['alt_sequences']
-                sequence_string = get_sequence_string(ratio_value, chromosome, position, group, reference_snv,
-                                                      alternate_snv)
-                file.write(sequence_string)
-
-
 def get_subsequences(position: int, seq: str, sequence_length: int,
                      max_sequence_value: int) -> str:
     """Get the sequences that are before are after the specified SNV
@@ -96,23 +68,6 @@ def get_subsequences(position: int, seq: str, sequence_length: int,
         max_sequence_value, position + sequence_length)]
 
     return specific_sequence
-
-
-def read_sequence_file(reference_genome_path: str, reference_genome_type: str) -> Dict[str, Seq.Seq]:
-    """Reads in the sequence file and indexes each of the individual sequences into a dictionary 
-    to allow for faster querying
-    Args:   
-        reference_genome_path: the path to the reference genome
-        reference_genome_type: reference genome file type
-
-    Returns:
-        record_dict: returns a dictionary of all the record sequences indexed by record name
-    """
-    record_dict = {}
-    for record in SeqIO.parse(reference_genome_path, reference_genome_type):
-        record_dict[record.name] = record.seq
-
-    return record_dict
 
 
 def get_sequence_string(ratio_value: int, chromosome: str, position: int, group: str, reference_snv: str,
@@ -137,3 +92,46 @@ def get_sequence_string(ratio_value: int, chromosome: str, position: int, group:
     {alternate_snv if ratio_value > 0 else reference_snv}
     >negative({chromosome}){position}-{group}
     {reference_snv if ratio_value > 0 else alternate_snv}\n"""))
+
+def group_snvs(
+        binary_df: pd.DataFrame,
+        sequence_df: pd.DataFrame,
+        groups_dict: Dict[str, str],
+) -> Dict[str, pd.DataFrame]:
+    """Takes in a DataFrame containing SNV VCF data and extracts the SNVs that are specific to a group, and only to that
+    group
+
+    Args:
+        binary_df: the DataFrame that contains the binary SNV data
+        sequence_df: the DataFrame that contains just the REF/ALT sequence info
+        groups_dict: the dictionary that contains the group information for each genome
+    Returns:
+        results_list: A dictionary containing the group allocation and DataFrame of SNVs that are associated with that
+                      group
+    """
+
+    unique_groups = list(set(groups_dict.values()))
+    results_list = {}
+    other_list = []
+    current_list = []
+
+    for group in unique_groups:
+        for genome, curr_group in groups_dict.items():
+            if group == curr_group:
+                current_list.append(genome)
+            else:
+                other_list.append(genome)
+        dfsnv_curr = binary_df[current_list]
+        dfsnv_other = binary_df[other_list]
+        row_sums_curr = dfsnv_curr.sum(axis=1)
+        row_sums_other = dfsnv_other.sum(axis=1)
+        distinct = (row_sums_curr == 0) & (row_sums_other == len(other_list))
+        all_negative = (row_sums_curr == len(current_list)) & (row_sums_other == 0)
+        group_snv_df = dfsnv_curr.loc[distinct | all_negative, :]
+        final_table = pd.concat([sequence_df, group_snv_df], axis=1)
+        final_table = final_table[final_table.columns[:4]]
+        results_list[group] = final_table.dropna()
+        current_list = []
+        other_list = []
+
+    return results_list

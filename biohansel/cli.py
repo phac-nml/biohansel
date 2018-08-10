@@ -7,10 +7,10 @@ import click
 import pandas as pd
 
 from biohansel.create.display_tree import display_tree
-from biohansel.create.find_cluster import find_clusters
-from biohansel.create.group_snvs import group_snvs
-from biohansel.create.read_vcf import read_vcf
-from biohansel.create.write_sequence import get_sequences, read_sequence_file, write_sequences
+from biohansel.create.cluster_generator import find_clusters
+from biohansel.create.io.output import write_sequence_file
+from biohansel.create.io.parsers import parse_vcf, parse_sequence_file
+from biohansel.create.schema_generator import get_sequences, group_snvs
 from biohansel.subtype import subtype_contigs_samples, subtype_reads_samples, Subtype
 from biohansel.subtype.const import SUBTYPE_SUMMARY_COLS, JSON_EXT_TMPL
 from biohansel.subtype.metadata import read_metadata_table, merge_metadata_with_summary_results
@@ -334,15 +334,15 @@ def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thres
     if not os.path.exists(output_folder_name):
         os.makedirs(output_folder_name)
 
-    sequence_df, binary_df = read_vcf(vcf_file_path)
+    sequence_df, binary_df = parse_vcf(vcf_file_path)
     groups_dict = find_clusters(binary_df, min_group_size)
     if phylo_tree_path is not None:
-        display_tree(phylo_tree_path, groups_dict)
-    record_dict = read_sequence_file(reference_genome_path, reference_genome_format)
+        new_tree=display_tree(phylo_tree_path, groups_dict)
+    record_dict = parse_sequence_file(reference_genome_path, reference_genome_format)
     results_dict = group_snvs(binary_df, sequence_df, groups_dict)
     for group, curr_df in results_dict.items():
         df_list = get_sequences(curr_df, padding_sequence_length,
                                 record_dict)
-        write_sequences(output_folder_name, df_list, schema_name, group)
+        write_sequence_file(output_folder_name, df_list, schema_name, group)
     output_schema_path = os.path.join(output_folder_name, f"{schema_name}.fasta")
     logging.info(f"Finished writing schema file to {output_schema_path}")

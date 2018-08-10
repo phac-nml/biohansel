@@ -2,8 +2,7 @@ import pandas as pd
 
 from Bio import SeqIO
 
-from biohansel.create.write_sequence import get_sequences, get_subsequences, read_sequence_file, \
-    get_sequence_string
+from biohansel.create.schema_generator import get_sequences, get_subsequences,get_sequence_string, group_snvs
 
 
 def test_get_sequences():
@@ -22,10 +21,6 @@ def test_get_sequences():
     for test_items, expected_items in zip(test_list, test_result):
         pd.util.testing.assert_frame_equal(test_items, expected_items)
 
-
-# def test_write_sequences():
-
-
 def test_get_subsequences():
     test_records = [
         record
@@ -39,19 +34,6 @@ def test_get_subsequences():
     test_result = get_subsequences(test_position, test_seq, test_length, test_max_sequence_value)
 
     assert (test_result == expected_result)
-
-
-def test_read_sequence_file():
-    test_records = [
-        record
-        for record in SeqIO.parse("tests/data/create/sequence_ecoli.gb", "genbank")
-    ]
-    test_record_dict = {}
-    test_record_dict[test_records[0].name] = test_records[0].seq
-
-    test_result = read_sequence_file("tests/data/create/sequence_ecoli.gb", "genbank")
-    assert (test_result == test_record_dict)
-
 
 def test_get_sequence_string():
     test_string = """>(NC_002695)576-2
@@ -68,3 +50,20 @@ TATTTTTGCCGAACTTCTGACGGGACTCGCCGC\n"""
                                       test_alternate_snv)
 
     assert (test_string == test_result)
+
+def test_group_snvs():
+    """
+    Tests whether or not the group_snvs will provide the expected groupings
+    """
+    test_dict = {'SRR6683541': '1', 'SRR6683736': '1', 'SRR6683914': '1', 'Reference': '1', 'SRR6683916': '2'}
+    test_binary_df = pd.read_csv('tests/data/create/expected_binary_df.csv', index_col=0)
+    test_sequence_df = pd.read_csv('tests/data/create/expected_sequence_df.csv', index_col=0)
+    group1 = pd.read_csv("tests/data/create/group1.csv",
+                         dtype={'CHROM': str, 'REF': str, 'ALT': str, 'SRR6683541': float}, index_col=0)
+    group2 = pd.read_csv("tests/data/create/group2.csv",
+                         dtype={'CHROM': str, 'REF': str, 'ALT': str, 'SRR6683916': float}, index_col=0)
+
+    test_result = group_snvs(test_binary_df, test_sequence_df, test_dict)
+
+    pd.testing.assert_frame_equal(group1, test_result["1"])
+    pd.testing.assert_frame_equal(group2, test_result["2"])
