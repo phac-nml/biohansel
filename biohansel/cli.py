@@ -16,9 +16,7 @@ from biohansel.subtype.const import SUBTYPE_SUMMARY_COLS, JSON_EXT_TMPL
 from biohansel.subtype.metadata import read_metadata_table, merge_metadata_with_summary_results
 from biohansel.subtype.subtype_stats import subtype_counts
 from biohansel.subtype.util import get_scheme_fasta, init_subtyping_params
-from biohansel.utils import does_file_exist, collect_inputs
-from biohansel.utils import init_console_logger
-
+from biohansel.utils import does_file_exist, collect_inputs, genome_name_from_fasta_path, init_console_logger
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
@@ -165,7 +163,7 @@ def subtype(scheme,
     input_contigs, input_reads = collect_inputs(**locals())
     if len(input_contigs) == 0 and len(input_reads) == 0:
         no_files_exception = click.UsageError('No input files specified!')
-        click.secho('Please see -h/--help for more info', err=True)
+        logging.info('Please see -h/--help for more info', err=True)
         raise no_files_exception
     df_md = None
     if scheme_metadata:
@@ -279,11 +277,13 @@ def parse_comma_delimited_floats(ctx: click.Context, param: click.Option, value:
               )
 @click.option('-s', '--schema-name',
               required=False,
+              default="biohansel-schema",
               type=str,
               help='A unique name for the schema file that is generated, the default is just'
-                   '{bio_hansel-schema-reference_genome_name}-{schema_version}')
+                   '{bio_hansel-schema}-reference_genome_name}-{schema_version}')
 @click.option('-m', '--schema-version',
               required=False,
+              default="0.1.0",
               type=str,
               help='An optional version number for the schema file that is generated')
 @click.option('-t', '--tile-length',
@@ -294,12 +294,12 @@ def parse_comma_delimited_floats(ctx: click.Context, param: click.Option, value:
               )
 @click.option('-f', '--reference-genome-format',
               required=True,
-              type=click.Choice(['fasta', 'genbank'],
+              type=click.Choice(['fasta', 'genbank']),
               help='Reference genome file format: can be either fasta or genbank format'
               )
 @click.option('-g', '--min-group-size',
-              required=True,
-              type=int,
+              type=click.Choice(['2', '3', '4', '5', '6', '7', '8', '9', '10']),
+              default='2',
               help='The minimum child group size for each new subtype branching point from the parent group'
               )
 def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thresholds, output_folder_name, schema_name,
@@ -309,34 +309,25 @@ def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thres
     From the results of a variant calling analysis, create a biohansel subtyping with single nucleotide variants (SNV)
     that discriminate subpopulations of genomes from all other genomes.
     """
-    click.secho(f'VCF file path: {vcf_file_path}', fg='green')
-    click.secho(f'Reference genome file path: {reference_genome_path}', fg='red')
-    click.secho(f'Phylogenetic tree file path: {phylo_tree_path}', fg='yellow')
-    click.secho(f'Distance thresholds: {distance_thresholds}', fg='blue')
-    click.secho(f'Output folder name: {output_folder_name}', fg='magenta')
-    click.secho(f'Scheme name: {schema_name}', fg='cyan')
-    click.secho(f'Reference genome format: {reference_genome_format}', fg='green')
-    click.secho(f'Min group size: {min_group_size}', fg='yellow')
-    click.secho(f'Padding Sequence length: {tile_length}', fg='blue')
-    logging.info(f'Creating biohansel subtyping scheme from SNVs in "{vcf_file_path}" using reference genome '
-                 f'"{reference_genome_path}" at {distance_thresholds if distance_thresholds else "all possible"} '
-                 f'distance threshold levels.')
-    reference_genome_name = os.path.split(reference_genome_path)[-1]
-    reference_genome_name = reference_genome_name.split(".")[-2]
-
-    if schema_version is None:
-        schema_version = "0.1.0"
-
-    if schema_name is not None:
-        schema_name = f"{schema_name}-{schema_version}"
-    else:
-        schema_name = f"bio_hansel-schema-{reference_genome_name}-{schema_version}"
+    logging.info(f'VCF file path: {vcf_file_path}')
+    logging.info(f'Reference genome file path: {reference_genome_path}')
+    logging.info(f'Phylogenetic tree file path: {phylo_tree_path}')
+    logging.info(f'Distance thresholds: {distance_thresholds}')
+    logging.info(f'Output folder name: {output_folder_name}')
+    logging.info(f'Scheme name: {schema_name}')
+    logging.info(f'Reference genome format: {reference_genome_format}')
+    logging.info(f'Min group size: {min_group_size}')
+    logging.info(f'Padding Sequence length: {tile_length}')
+    logging.info(f'Creating biohansel subtyping scheme from SNVs in "{vcf_file_path}" using reference genome ')
+  
+    reference_genome_name = genome_name_from_fasta_path(reference_genome_path)
+    schema_name = f"{schema_name}-{reference_genome_name}-{schema_version}"
 
     if not os.path.exists(output_folder_name):
         os.makedirs(output_folder_name)
 
     sequence_df, binary_df = parse_vcf(vcf_file_path)
-    cluster_dict = find_clusters(binary_df, min_group_size)
+    cluster_dict = find_clusters(binary_df, int(min_group_size))
     if phylo_tree_path is not None:
         phylo_tree_string=display_tree(phylo_tree_path, cluster_dict)
     #sequence_records: Dict[str, Seq.Seq]

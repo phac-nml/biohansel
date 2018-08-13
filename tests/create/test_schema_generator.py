@@ -7,7 +7,7 @@ from biohansel.create.schema_generator import get_sequences, get_subsequences,ge
 
 def test_get_sequences():
     test_sequence_df = pd.read_csv("tests/data/create/sequence_df.csv", index_col=0)
-    test_length = 16
+    test_length = 32
     test_list = []
     test_chrom_df = pd.read_csv("tests/data/create/curr_chrom_df.csv", index_col=0)
 
