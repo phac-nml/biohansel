@@ -286,23 +286,24 @@ def parse_comma_delimited_floats(ctx: click.Context, param: click.Option, value:
               required=False,
               type=str,
               help='An optional version number for the schema file that is generated')
-@click.option('-p', '--padding-sequence-length',
+@click.option('-t', '--tile-length',
               required=True,
               type=int,
-              help='Output folder name in which schema file would be located'
+              help='Length of sequence to be added around each SNV in the schema file,'
+              'if an even integer is provided, then the tile length would be n+1'
               )
 @click.option('-f', '--reference-genome-format',
               required=True,
-              type=str,
-              help='Reference genome file format, i.e. fasta, genbank'
+              type=click.Choice(['fasta', 'genbank'],
+              help='Reference genome file format: can be either fasta or genbank format'
               )
-@click.option('-t', '--min-group-size',
+@click.option('-g', '--min-group-size',
               required=True,
               type=int,
               help='The minimum child group size for each new subtype branching point from the parent group'
               )
 def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thresholds, output_folder_name, schema_name,
-           reference_genome_format, padding_sequence_length, min_group_size, schema_version):
+           reference_genome_format, tile_length, min_group_size, schema_version):
     """Create a biohansel subtyping scheme.
 
     From the results of a variant calling analysis, create a biohansel subtyping with single nucleotide variants (SNV)
@@ -316,7 +317,7 @@ def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thres
     click.secho(f'Scheme name: {schema_name}', fg='cyan')
     click.secho(f'Reference genome format: {reference_genome_format}', fg='green')
     click.secho(f'Min group size: {min_group_size}', fg='yellow')
-    click.secho(f'Padding Sequence length: {padding_sequence_length}', fg='blue')
+    click.secho(f'Padding Sequence length: {tile_length}', fg='blue')
     logging.info(f'Creating biohansel subtyping scheme from SNVs in "{vcf_file_path}" using reference genome '
                  f'"{reference_genome_path}" at {distance_thresholds if distance_thresholds else "all possible"} '
                  f'distance threshold levels.')
@@ -335,14 +336,15 @@ def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thres
         os.makedirs(output_folder_name)
 
     sequence_df, binary_df = parse_vcf(vcf_file_path)
-    groups_dict = find_clusters(binary_df, min_group_size)
+    cluster_dict = find_clusters(binary_df, min_group_size)
     if phylo_tree_path is not None:
-        new_tree=display_tree(phylo_tree_path, groups_dict)
-    record_dict = parse_sequence_file(reference_genome_path, reference_genome_format)
-    results_dict = group_snvs(binary_df, sequence_df, groups_dict)
+        phylo_tree_string=display_tree(phylo_tree_path, cluster_dict)
+    #sequence_records: Dict[str, Seq.Seq]
+    sequence_records = parse_sequence_file(reference_genome_path, reference_genome_format)
+    results_dict = group_snvs(binary_df, sequence_df, cluster_dict)
     for group, curr_df in results_dict.items():
-        df_list = get_sequences(curr_df, padding_sequence_length,
-                                record_dict)
+        df_list = get_sequences(curr_df, tile_length,
+                                sequence_records)
         write_sequence_file(output_folder_name, df_list, schema_name, group)
     output_schema_path = os.path.join(output_folder_name, f"{schema_name}.fasta")
     logging.info(f"Finished writing schema file to {output_schema_path}")

@@ -10,7 +10,7 @@ from Bio import SeqIO, Seq
 
 def get_sequences(
         curr_df: pd.DataFrame,
-        sequence_length: int,
+        tile_length: int,
         record_dict: Dict[str, Seq.Seq],
 ) -> List[pd.DataFrame]:
     """Collects the sequences from the reference genome by going through the list of DataFrames and adds two columns
@@ -24,7 +24,7 @@ def get_sequences(
     Returns:
         df_list: list of DataFrames that contain snv sequences related to each chromosome for that particular cluster group
     """
-
+    pad_length=math.ceil((tile_length-1)/2)
     df_list = []
     curr_df.CHROM = curr_df.CHROM.str.strip()
     unique_chromosomes = curr_df.CHROM.unique()
@@ -38,10 +38,10 @@ def get_sequences(
         positions = pd.Series(curr_chrom_df.index, index=curr_chrom_df.index)
         ref_seqs = positions.apply(
             get_subsequences,
-            args=(sequences, sequence_length, max_sequence_value))
+            args=(sequences, pad_length, max_sequence_value))
         alt_seqs = ref_seqs.str.slice(
-            0, sequence_length) + curr_chrom_df.ALT + ref_seqs.str.slice(
-            sequence_length + 1, sequence_length + sequence_length + 1)
+            0, pad_length) + curr_chrom_df.ALT + ref_seqs.str.slice(
+            pad_length + 1, pad_length + pad_length + 1)
 
         curr_chrom_df['ref_sequences'] = ref_seqs
         curr_chrom_df['alt_sequences'] = alt_seqs
@@ -49,7 +49,7 @@ def get_sequences(
 
     return df_list
 
-def get_subsequences(position: int, seq: str, sequence_length: int,
+def get_subsequences(position: int, seq: str, pad_length: int,
                      max_sequence_value: int) -> str:
     """Get the sequences that are before are after the specified SNV
     Args:
@@ -64,8 +64,8 @@ def get_subsequences(position: int, seq: str, sequence_length: int,
 
     """
 
-    specific_sequence = seq[max(0, position - (sequence_length + 1)):min(
-        max_sequence_value, position + sequence_length)]
+    specific_sequence = seq[max(0, position - (pad_length + 1)):min(
+        max_sequence_value, position + pad_length)]
 
     return specific_sequence
 
