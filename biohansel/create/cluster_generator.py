@@ -35,13 +35,6 @@ def find_clusters(df: pd.DataFrame, group_size_range: tuple, distance_thresholds
     clustering_array = create_linkage_array(distance_matrix, linkage_method)
 
     flat_clusters = output_flat_clusters(clustering_array, df.columns, distance_matrix, group_size_range, distance_thresholds)
-    logging.info(f"distance_matrix:{type(distance_matrix)}")
-    logging.info(f"clustering_array:{type(clustering_array)}")
-    logging.info(f"flat_clusters:{type(flat_clusters)}")
-
-    logging.info(distance_matrix)
-    logging.info(clustering_array)
-    logging.info(flat_clusters)
     cluster_result=Cluster(distance_matrix=distance_matrix, clustering_array= clustering_array, flat_clusters= flat_clusters)
     return cluster_result
 
