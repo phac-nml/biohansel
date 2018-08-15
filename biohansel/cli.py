@@ -163,7 +163,7 @@ def subtype(scheme,
     input_contigs, input_reads = collect_inputs(**locals())
     if len(input_contigs) == 0 and len(input_reads) == 0:
         no_files_exception = click.UsageError('No input files specified!')
-        logging.info('Please see -h/--help for more info', err=True)
+        click.secho('Please see -h/--help for more info', err=True)
         raise no_files_exception
     df_md = None
     if scheme_metadata:
@@ -297,13 +297,24 @@ def parse_comma_delimited_floats(ctx: click.Context, param: click.Option, value:
               type=click.Choice(['fasta', 'genbank']),
               help='Reference genome file format: can be either fasta or genbank format'
               )
-@click.option('-g', '--min-group-size',
-              type=click.Choice(['2', '3', '4', '5', '6', '7', '8', '9', '10']),
-              default='2',
-              help='The minimum child group size for each new subtype branching point from the parent group'
+@click.option('-g', '--group-size-range',
+              type=(int, int),
+              default=(2,10),
+              help='The range of child group size for each new subtype branching point from the parent group'
               )
+@click.option('-p', '--pairwise-distance-metric',
+                type=click.Choice(['hamming', 'euclidean', 'minkowski', 'cityblock', 'cosine', 'sqeuclidean', 'correlation', 'jaccard', 'chebyshev', 'braycurtis']),
+                default='hamming',
+                help='The distance metric used to calculate pairwise distances between SNVs'
+                )
+@click.option('-l', '--linkage-method',
+                type=click.Choice(['single', 'complete', 'average', 'weighted', 'centroid', 'median', 'ward']),
+                default='complete',
+                help='The linkage method used to perform hierarchical clustering on SNVs'
+                )
+
 def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thresholds, output_folder_name, schema_name,
-           reference_genome_format, tile_length, min_group_size, schema_version):
+           reference_genome_format, tile_length, group_size_range, schema_version, pairwise_distance_metric, linkage_method):
     """Create a biohansel subtyping scheme.
 
     From the results of a variant calling analysis, create a biohansel subtyping with single nucleotide variants (SNV)
@@ -316,23 +327,27 @@ def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thres
     logging.info(f'Output folder name: {output_folder_name}')
     logging.info(f'Scheme name: {schema_name}')
     logging.info(f'Reference genome format: {reference_genome_format}')
-    logging.info(f'Min group size: {min_group_size}')
+    logging.info(f'Group size range: {group_size_range}')
     logging.info(f'Padding Sequence length: {tile_length}')
     logging.info(f'Creating biohansel subtyping scheme from SNVs in "{vcf_file_path}" using reference genome ')
-  
+    logging.info(f'Pairwise distance metric: {pairwise_distance_metric}')
+    logging.info(f'Linkage method to be used: {linkage_method}')
     reference_genome_name = genome_name_from_fasta_path(reference_genome_path)
     schema_name = f"{schema_name}-{reference_genome_name}-{schema_version}"
 
     if not os.path.exists(output_folder_name):
         os.makedirs(output_folder_name)
+    
 
     sequence_df, binary_df = parse_vcf(vcf_file_path)
-    cluster_dict = find_clusters(binary_df, int(min_group_size))
+    logging.info(type(group_size_range))
+    clusters = find_clusters(binary_df, group_size_range, distance_thresholds, pairwise_distance_metric, linkage_method)
+   
     if phylo_tree_path is not None:
-        phylo_tree_string=display_tree(phylo_tree_path, cluster_dict)
+        phylo_tree_string=display_tree(phylo_tree_path, clusters.flat_clusters)
     #sequence_records: Dict[str, Seq.Seq]
     sequence_records = parse_sequence_file(reference_genome_path, reference_genome_format)
-    results_dict = group_snvs(binary_df, sequence_df, cluster_dict)
+    results_dict = group_snvs(binary_df, sequence_df, clusters.flat_clusters)
     for group, curr_df in results_dict.items():
         df_list = get_sequences(curr_df, tile_length,
                                 sequence_records)

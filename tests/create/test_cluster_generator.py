@@ -10,6 +10,7 @@ import numpy as np
 from collections import defaultdict
 
 from biohansel.create.io.parsers import parse_vcf
+from biohansel.create.cluster import Cluster
 from biohansel.create.cluster_generator import find_clusters, compute_distance_matrix, create_linkage_array, \
     output_flat_clusters, cluster_df_to_dict, assign_hc_clusters, expand_sets, row_subtype, df_to_subtypes_dict
 
@@ -20,37 +21,29 @@ def test_findcluster():
     """ Tests whether or not the proper clusters will be provided by the scipy clustering algorithm
     """
 
-    cluster_dict = {'Reference': '2.1.2',
-                    'SRR6683541': '1',
-                    'SRR6683736': '1',
-                    'SRR6683914': '1',
-                    'SRR6683916': '1',
-                    'SRR6683917': '2.2',
-                    'SRR6703297': '2.1',
-                    'SRR6967786': '1',
-                    'SRR7128411': '2.1.1.2',
-                    'SRR7128414': '2.1.1.2',
-                    'SRR7130347': '2.1.2',
-                    'SRR7130348': '2.1.1.2',
-                    'SRR7130351': '2.1.1.1',
-                    'SRR7130522': '2.1.1.2',
-                    'SRR7135200': '2.2',
-                    'SRR7167142': '2.1.1.2',
-                    'SRR7168116': '2.1',
-                    'SRR7168670': '2.1.2',
-                    'SRR7170730': '2.1.1.1',
-                    'SRR7221720': '2.1.2'}
+    test_clusters={'SRR6683541': '1', 'SRR6683736': '1', 'SRR6683914': '1', 'Reference': '1', 'SRR6683916': '2'}
 
-    _, data_frame = parse_vcf("tests/data/create/core.vcf")
+    _, data_frame = parse_vcf("tests/data/create/test.vcf")
+    test_distance_matrix=[0.4, 0.4, 0.4, 0.8, 0.,  0.,  0.4, 0.,  0.4, 0.4]
+    test_clustering_array=[[1. , 2.,  0. , 2. ],
+ [3. , 5.,  0. , 3. ],
+ [0.,  6.,  0.4 ,4. ],
+ [4. , 7. , 0.8, 5. ]]
 
-    result = find_clusters(data_frame, 2)
 
-    assert (result == cluster_dict)
+
+    test_cluster=Cluster(distance_matrix=test_distance_matrix, clustering_array=test_clustering_array, flat_clusters=test_clusters)
+
+    result = find_clusters(data_frame, (2,10), None, 'hamming', 'complete')
+
+    np.array_equal(result.distance_matrix,test_cluster.distance_matrix)
+    np.array_equal (result.clustering_array, test_cluster.clustering_array)
+    assert (result.flat_clusters== test_cluster.flat_clusters)
 
 
 def test_compute_distance_matrix():
     _, data_frame = parse_vcf("tests/data/create/test.vcf")
-    test_array = compute_distance_matrix(data_frame)
+    test_array = compute_distance_matrix(data_frame, "hamming")
     test_result = np.array([0.4, 0.4, 0.4, 0.8, 0, 0, 0.4, 0, 0.4, 0.4])
 
     np.testing.assert_array_equal(test_result, test_array)
@@ -62,7 +55,7 @@ def test_create_linkage_array():
                                 [3., 5., 0., 3., ],
                                 [0., 6., 0.4, 4.],
                                 [4., 7., 0.8, 5.]))
-    test_result = create_linkage_array(dataset)
+    test_result = create_linkage_array(dataset, "complete")
     np.testing.assert_array_equal(expected_result, test_result)
 
 
@@ -75,7 +68,7 @@ def test_output_flat_clusters():
     test_genomes = ['Reference', 'SRR6683541', 'SRR6683736', 'SRR6683914', 'SRR6683916']
     group_size = 2
 
-    test_result = output_flat_clusters(test_cluster_array, test_genomes, test_distance_array, group_size)
+    test_result = output_flat_clusters(test_cluster_array, test_genomes, test_distance_array, (2,10), None)
 
     expected_clusters = {'Reference': '1',
                          'SRR6683541': '1',
@@ -403,10 +396,10 @@ def test_assign_hc_clusters():
     test_dict = {1: defaultdict(set, {1: {'SRR6683914', 'Reference', 'SRR6683541', 'SRR6683736'}, 2: {'SRR6683916'}}),
                  2: defaultdict(set,
                                 {1: {'SRR6683914', 'SRR6683541', 'SRR6683736'}, 2: {'Reference'}, 3: {'SRR6683916'}})}
-    group_size = 2
+    group_size_range = (2,10)
     expected_result = {1: {'1': {'SRR6683914', 'Reference', 'SRR6683541', 'SRR6683736'}, '2': {'SRR6683916'}},
                        2: {'1': {'SRR6683914', 'SRR6683541', 'SRR6683736'}}}
-    test_result = assign_hc_clusters(test_dict, group_size)
+    test_result = assign_hc_clusters(test_dict, group_size_range)
 
     assert (test_result == expected_result)
 
