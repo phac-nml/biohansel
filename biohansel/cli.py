@@ -293,7 +293,7 @@ def parse_comma_delimited_floats(ctx: click.Context, param: click.Option, value:
               'if an even integer is provided, then the tile length would be n+1'
               )
 @click.option('-f', '--reference-genome-format',
-              required=True,
+              required=False,
               type=click.Choice(['fasta', 'genbank']),
               help='Reference genome file format: can be either fasta or genbank format'
               )
@@ -344,7 +344,7 @@ def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thres
     clusters = find_clusters(binary_df, group_size_range, distance_thresholds, pairwise_distance_metric, linkage_method)
    
     if phylo_tree_path is not None:
-        phylo_tree_string=display_tree(phylo_tree_path, clusters.flat_clusters)
+        phylo_tree_string=display_tree(phylo_tree_path, clusters.flat_clusters, output_folder_name)
     #sequence_records: Dict[str, Seq.Seq]
     sequence_records = parse_sequence_file(reference_genome_path, reference_genome_format)
     results_dict = group_snvs(binary_df, sequence_df, clusters.flat_clusters)
