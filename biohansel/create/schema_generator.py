@@ -1,6 +1,6 @@
 import math
 import os
-import textwrap
+
 
 from typing import Dict, List
 
@@ -88,11 +88,22 @@ def get_sequence_string(ratio_value: int, chromosome: str, position: int, group:
 
     """
 
-    return (textwrap.dedent(f"""\
-    >({chromosome}){position}-{group}
-    {alternate_snv if ratio_value > 0 else reference_snv}
-    >negative({chromosome}){position}-{group}
-    {reference_snv if ratio_value > 0 else alternate_snv}\n"""))
+
+    if (len(str(group))>1):
+        sequence_string=f""">{position}-{group}
+{alternate_snv if ratio_value > 0 else reference_snv}
+>negative{position}-{group}
+{reference_snv if ratio_value > 0 else alternate_snv}
+"""
+    else:
+        sequence_string=f""">{position}-{group}
+{alternate_snv if ratio_value > 0 else reference_snv}
+"""
+    return sequence_string
+
+
+    
+
 
 def group_snvs(
         binary_df: pd.DataFrame,
