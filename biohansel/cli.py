@@ -294,6 +294,7 @@ def parse_comma_delimited_floats(ctx: click.Context, param: click.Option, value:
               )
 @click.option('-f', '--reference-genome-format',
               required=False,
+              default=None,
               type=click.Choice(['fasta', 'genbank']),
               help='Reference genome file format: can be either fasta or genbank format'
               )

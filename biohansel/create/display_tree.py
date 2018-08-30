@@ -61,6 +61,7 @@ def display_tree(phylo_tree_path: str, groups_dict: Dict[str, str], output_folde
         tree_style.layout_fn = layout
         tree_style.show_leaf_name = False
         tree_style.branch_vertical_margin=20
+        tree_style.mode="c"
         tree_style.scale=120
         output_tree_path = os.path.join(output_folder_name, "phylo_tree.png")
         new_tree.render(output_tree_path, w=183, units="mm", tree_style=tree_style)

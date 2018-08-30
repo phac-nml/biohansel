@@ -33,17 +33,23 @@ def parse_vcf(vcf_file: str) -> (pd.DataFrame, pd.DataFrame):
 
     return sequence_df, binary_df
 
-def parse_sequence_file(reference_genome_path: str, reference_genome_type: str) -> Dict[str, Seq.Seq]:
+def parse_sequence_file(reference_genome_path: str, reference_genome_type:str) -> Dict[str, Seq.Seq]:
     """Reads in the sequence file and indexes each of the individual sequences into a dictionary 
     to allow for faster querying
     Args:   
         reference_genome_path: the path to the reference genome
-        reference_genome_type: reference genome file type
+        
 
     Returns:
         record_dict: returns a dictionary of all the record sequences indexed by record name
     """
     record_dict = {}
+    if reference_genome_type is None:
+        if reference_genome_path.lower().endswith('.gb'):
+            reference_genome_type='genbank'
+        elif reference_genome_path.lower().endswith('.fna', 'fasta'):
+            reference_genome_type='fasta'
+
     for record in SeqIO.parse(reference_genome_path, reference_genome_type):
         record_dict[record.name] = record.seq
 
