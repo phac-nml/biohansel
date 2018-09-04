@@ -8,7 +8,7 @@ import pandas as pd
 
 from biohansel.create.display_tree import display_tree
 from biohansel.create.cluster_generator import find_clusters
-from biohansel.create.io.output import write_sequence_file
+from biohansel.create.io.output import write_sequence_file, generate_tile_fasta
 from biohansel.create.io.parsers import parse_vcf, parse_sequence_file
 from biohansel.create.schema_generator import get_sequences, group_snvs
 from biohansel.subtype import subtype_contigs_samples, subtype_reads_samples, Subtype
@@ -352,6 +352,6 @@ def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thres
     for group, curr_df in results_dict.items():
         df_list = get_sequences(curr_df, tile_length,
                                 sequence_records)
-        write_sequence_file(output_folder_name, df_list, schema_name, group)
+        write_sequence_file(output_folder_name, schema_name, generate_tile_fasta(df_list, group))
     output_schema_path = os.path.join(output_folder_name, f"{schema_name}.fasta")
     logging.info(f"Finished writing schema file to {output_schema_path}")

@@ -142,6 +142,7 @@ def group_snvs(
         group_snv_df = dfsnv_curr.loc[distinct | all_negative, :]
         final_table = pd.concat([sequence_df, group_snv_df], axis=1)
         final_table = final_table[final_table.columns[:4]]
+        final_table.columns=['CHROM', 'REF', 'ALT', 'ratio_value']
         results_list[group] = final_table.dropna()
         current_list = []
         other_list = []
