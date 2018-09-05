@@ -116,7 +116,7 @@ def output_flat_clusters(clustering_array: np.ndarray, genomes_only: List, dista
             assign_hc_clusters(clusters_genomes_dict=clusters_genomes_dict, group_size_range=group_size_range))).fillna(
         '').loc[cluster_matrix.index, :]
     final_assigned_clusters = df_to_subtypes_dict(hierarchical_cluster_df)
-
+    logging.debug(final_assigned_clusters)
     return final_assigned_clusters
 
 
@@ -155,8 +155,6 @@ def assign_hc_clusters(clusters_genomes_dict: Dict[float, Dict[int, Set[str]]], 
     """
     min_group_size=group_size_range[0]
     max_group_size=group_size_range[1]
-    logging.debug(min_group_size)
-    logging.debug(max_group_size)
     output_subtypes = {threshold: {} for threshold in clusters_genomes_dict.keys()}
     sorted_thresholds = sorted(clusters_genomes_dict.keys())
     # initialize top level subtypes
@@ -205,12 +203,8 @@ def expand_sets(cluster_dict: Dict[str, Dict[str, Set[str]]]) -> Dict[str, Dict[
 
     out = {}
     for threshold, cluster_genomes in cluster_dict.items():
-        genome_cluster = {}
-        for grouping, genomes in cluster_genomes.items():
-            for genome in genomes:
-                genome_cluster[genome] = grouping
-        out[threshold] = genome_cluster
-
+        out[threshold] = {genome: cluster for cluster, genomes in cluster_genomes.items() for genome in genomes}
+    logging.debug(out)
     return out
 
 
