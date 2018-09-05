@@ -100,15 +100,26 @@ def get_sequence_string(ratio_value: int, chromosome: str, position: int, group:
 """
     return sequence_string
 
-def find_snvs_discriminating_2_groups(binary_df: pd.DataFrame, ingroup_genomes: List[str], outgroup_genomes: List[str]) -> List[int]: # OR pd.Series OR pd.DataFrame (i.e. filtered VCF DF)
+def find_snvs_discriminating_2_groups(binary_df: pd.DataFrame, ingroup_genomes: List[str], outgroup_genomes: List[str]) -> List[int]: 
+    """Finds snvs that discriminates between the in-group genomes and outgroup genomes
+    Args:
+        binary_df:the DataFrame that contains the binary snv data
+        ingroup_genomes: the list of in-group genomes
+        outgroup_genomes: the list of out-group genomes
+
+    Returns:
+        distinct_list_of_snvs list of snv positions that separate the 2 groups of genomes
+    
+    """
+    
     snv_df_ingroup = binary_df[ingroup_genomes]
     snv_df_outgroup = binary_df[outgroup_genomes]
     row_sums_ingroup = snv_df_ingroup.sum(axis=1)
     row_sums_outgroup = snv_df_outgroup.sum(axis=1)
     distinct_snvs = (row_sums_ingroup == 0) & (row_sums_outgroup == len(outgroup_genomes))
     all_negative_snvs = (row_sums_ingroup == len(ingroup_genomes)) & (row_sums_outgroup == 0)
-    all_negative_set=set(all_negative_snvs.where(all_negative==True).dropna().index)
-    all_distinct_set=set(distinct_snvs.where(distinct==True).dropna().index)
+    all_negative_set=set(all_negative_snvs.where(all_negative_snvs==True).dropna().index)
+    all_distinct_set=set(distinct_snvs.where(distinct_snvs==True).dropna().index)
     distinct_list_of_snvs=list(all_negative_set.union(all_distinct_set))
 
 
