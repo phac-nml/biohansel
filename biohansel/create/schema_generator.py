@@ -1,8 +1,9 @@
+import logging
 import math
 import os
 
 
-from typing import Dict, List
+from typing import Dict, List, Set
 
 import pandas as pd
 
@@ -15,11 +16,11 @@ def get_sequences(
         record_dict: Dict[str, Seq.Seq],
 ) -> List[pd.DataFrame]:
     """Collects the sequences from the reference genome by going through the list of DataFrames and adds two columns
-    that contains the reference sequence and the alternate sequence surrounding each SNV
+    that contains the reference sequence and the alternate sequence surrounding each snv
 
     Args:
-        curr_df: a DataFrame that contains each group's individual SNV data
-        sequence_length: the length of additional sequences to be added to the beginning and end of the SNV
+        curr_df: a DataFrame that contains each group's individual snv data
+        sequence_length: the length of additional sequences to be added to the beginning and end of the snv
         record_dict: dictionary of records obtained from the reference sequence file
 
     Returns:
@@ -52,11 +53,11 @@ def get_sequences(
 
 def get_subsequences(position: int, seq: str, pad_length: int,
                      max_sequence_value: int) -> str:
-    """Get the sequences that are before are after the specified SNV
+    """Get the sequences that are before are after the specified snv
     Args:
-        position: the position of the SNV based off of the reference genome
+        position: the position of the snv based off of the reference genome
         seq: the set of sequences from the reference genome
-        sequence_length: the amount of upstream and downstream sequences added to the SNV and included in the schema
+        sequence_length: the amount of upstream and downstream sequences added to the snv and included in the schema
                         output
         max_sequence_value: the length of the reference genome
 
@@ -78,17 +79,15 @@ def get_sequence_string(ratio_value: int, chromosome: str, position: int, group:
         ratio_value: the ratio_value for that particular snv, with 1 being that all genomes contain the snv and 0 being
                     none of the genomes contain the sequence
         chromosome: the current chromosome of the reference genome sequence
-        position: the position of the SNV
-        group: the group membership of the SNV
+        position: the position of the snv
+        group: the group membership of the snv
         reference_snv: the genome sequence of the reference genome
-        alternate_snv: the genome sequence of the alternate form of the SNV
+        alternate_snv: the genome sequence of the alternate form of the snv
 
     Returns:
         sequence_string: the sequence string to be outputted into the schema file
 
     """
-
-
     if (len(str(group))>1):
         sequence_string=f""">{position}-{group}
 {alternate_snv if ratio_value > 0 else reference_snv}
@@ -101,50 +100,57 @@ def get_sequence_string(ratio_value: int, chromosome: str, position: int, group:
 """
     return sequence_string
 
+def find_snvs_discriminating_2_groups(binary_df: pd.DataFrame, ingroup_genomes: List[str], outgroup_genomes: List[str]) -> List[int]: # OR pd.Series OR pd.DataFrame (i.e. filtered VCF DF)
+    snv_df_ingroup = binary_df[ingroup_genomes]
+    snv_df_outgroup = binary_df[outgroup_genomes]
+    row_sums_ingroup = snv_df_ingroup.sum(axis=1)
+    row_sums_outgroup = snv_df_outgroup.sum(axis=1)
+    distinct_snvs = (row_sums_ingroup == 0) & (row_sums_outgroup == len(outgroup_genomes))
+    all_negative_snvs = (row_sums_ingroup == len(ingroup_genomes)) & (row_sums_outgroup == 0)
+    all_negative_set=set(all_negative_snvs.where(all_negative==True).dropna().index)
+    all_distinct_set=set(distinct_snvs.where(distinct==True).dropna().index)
+    distinct_list_of_snvs=list(all_negative_set.union(all_distinct_set))
 
-    
 
-
+    return distinct_list_of_snvs
 def group_snvs(
         binary_df: pd.DataFrame,
         sequence_df: pd.DataFrame,
         groups_dict: Dict[str, str],
 ) -> Dict[str, pd.DataFrame]:
-    """Takes in a DataFrame containing SNV VCF data and extracts the SNVs that are specific to a group, and only to that
+    """Takes in a DataFrame containing snv VCF data and extracts the snvs that are specific to a group, and only to that
     group
 
     Args:
-        binary_df: the DataFrame that contains the binary SNV data
+        binary_df: the DataFrame that contains the binary snv data
         sequence_df: the DataFrame that contains just the REF/ALT sequence info
         groups_dict: the dictionary that contains the group information for each genome
     Returns:
-        results_list: A dictionary containing the group allocation and DataFrame of SNVs that are associated with that
+        snvs_dict: A dictionary containing the group allocation and DataFrame of snvs that are associated with that
                       group
     """
 
     unique_groups = list(set(groups_dict.values()))
-    results_list = {}
-    other_list = []
-    current_list = []
+    snvs_dict = {}
+    outgroup_genomes = []
+    ingroup_genomes = []
 
     for group in unique_groups:
         for genome, curr_group in groups_dict.items():
             if group == curr_group:
-                current_list.append(genome)
+                ingroup_genomes.append(genome)
             else:
-                other_list.append(genome)
-        dfsnv_curr = binary_df[current_list]
-        dfsnv_other = binary_df[other_list]
-        row_sums_curr = dfsnv_curr.sum(axis=1)
-        row_sums_other = dfsnv_other.sum(axis=1)
-        distinct = (row_sums_curr == 0) & (row_sums_other == len(other_list))
-        all_negative = (row_sums_curr == len(current_list)) & (row_sums_other == 0)
-        group_snv_df = dfsnv_curr.loc[distinct | all_negative, :]
-        final_table = pd.concat([sequence_df, group_snv_df], axis=1)
-        final_table = final_table[final_table.columns[:4]]
-        final_table.columns=['CHROM', 'REF', 'ALT', 'ratio_value']
-        results_list[group] = final_table.dropna()
-        current_list = []
-        other_list = []
+                outgroup_genomes.append(genome)
+        list_of_discriminating_snvs=find_snvs_discriminating_2_groups(binary_df, ingroup_genomes, outgroup_genomes)
+        snv_df_ingroup=binary_df[ingroup_genomes]       
+        group_snv_df = snv_df_ingroup.loc[pd.Series(list_of_discriminating_snvs), :]
+       
+        distinct_snv_df = pd.concat([sequence_df, group_snv_df], axis=1)
+        distinct_snv_df = distinct_snv_df[distinct_snv_df.columns[:4]]
+        distinct_snv_df.columns=['CHROM', 'REF', 'ALT', 'ratio_value']
+        snvs_dict[group] = distinct_snv_df.dropna()
+        ingroup_genomes = []
+        outgroup_genomes = []
+    logging.debug(snvs_dict)
+    return snvs_dict
 
-    return results_list
