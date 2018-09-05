@@ -162,6 +162,6 @@ def group_snvs(
         snvs_dict[group] = distinct_snv_df.dropna()
         ingroup_genomes = []
         outgroup_genomes = []
-    logging.debug(snvs_dict)
+   
     return snvs_dict
 

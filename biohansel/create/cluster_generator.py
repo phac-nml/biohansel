@@ -124,10 +124,10 @@ def cluster_df_to_dict(df_clusters: pd.DataFrame) -> Dict[float, Dict[int, Set[s
     """Clusters dataframe to dict of threshold levels to clusters to members
 
     Args:
-        df_clusters: The cluster dataframe with original cluster groupings
+        df_clusters: The cluster dataframe with original cluster cluster_genomes
 
     Returns:
-        clusters_genomes_dict: A dictionary of the genome cluster groupings with the thresholds used as the key
+        clusters_genomes_dict: A dictionary of the genome cluster cluster_genomes with the thresholds used as the key
     """
     clusters_genomes_dict = {}
     for threshold in df_clusters.columns:
@@ -146,7 +146,7 @@ def assign_hc_clusters(clusters_genomes_dict: Dict[float, Dict[int, Set[str]]], 
     Assigns the subtypes for each genome at each threshold level
 
     Args:
-        clusters_genomes_dict: A dictionary of the genome cluster groupings with the thresholds used as the key
+        clusters_genomes_dict: A dictionary of the genome cluster cluster_genomes with the thresholds used as the key
         group_size_range: the range of child group sizes for each new subtype branching point from the parent group
 
     Returns:
@@ -195,23 +195,23 @@ def expand_sets(cluster_dict: Dict[str, Dict[str, Set[str]]]) -> Dict[str, Dict[
     Fills in the rest of the cells in the dataframe that had previously been unfilled
 
     Args:
-        cluster_dict: a dictionary that contains the cluster groupings of each genome with each value being sets of
+        cluster_dict: a dictionary that contains the cluster of each genome with each value being sets of
                     genomes
 
     Returns:
-        modified_cluster_dict: A dictionary with values beings filled for all cells
+        out: A dictionary with values beings filled for all cells
 
     """
 
-    modified_cluster_dict = {}
-    for threshold, groupings in cluster_dict.items():
-        threshold_dict = {}
-        for grouping, genomes in groupings.items():
+    out = {}
+    for threshold, cluster_genomes in cluster_dict.items():
+        genome_cluster = {}
+        for grouping, genomes in cluster_genomes.items():
             for genome in genomes:
-                threshold_dict[genome] = grouping
-        modified_cluster_dict[threshold] = threshold_dict
+                genome_cluster[genome] = grouping
+        out[threshold] = genome_cluster
 
-    return modified_cluster_dict
+    return out
 
 
 def row_subtype(curr_genome: pd.Series) -> str:
@@ -222,14 +222,13 @@ def row_subtype(curr_genome: pd.Series) -> str:
         curr_genome: the current subtypes for that particular genome
 
     Returns:
-        row_unique[-1]: the last valid subtype name for that genome
+        max(row_unique.tolist(), key=len): the last valid subtype name for that genome
 
     """
 
     row_unique = curr_genome.unique()
-    row_unique = row_unique[(row_unique != '') & (~pd.isnull(row_unique))]
-
-    return row_unique[-1]
+    return max(row_unique.tolist(), key=len)
+   
 
 
 def df_to_subtypes_dict(cluster_genomes_df: pd.DataFrame) -> Dict[str, str]:
