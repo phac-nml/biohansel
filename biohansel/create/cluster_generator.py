@@ -11,7 +11,8 @@ from scipy.spatial.distance import pdist
 from biohansel.create.cluster import Cluster
 
 
-def find_clusters(df: pd.DataFrame, group_size_range: tuple, distance_thresholds: List, pairwise_metric: str, linkage_method: str) -> Cluster:
+def find_clusters(df: pd.DataFrame, group_size_range: tuple, distance_thresholds: List, pairwise_metric: str,
+                  linkage_method: str) -> Cluster:
     """
     Takes in a vcf file and creates clusters from the scipy hierarchy clustering algorithm
     
@@ -20,7 +21,7 @@ def find_clusters(df: pd.DataFrame, group_size_range: tuple, distance_thresholds
     
     Args:
         df: contains the vcf information in the DataFrame format
-        min_group_size: the minimum child group size for each new subtype branching point from the parent group
+        group_size_range: a tuple that contains the range for the child group size for each new subtype branching point from the parent group
         pairwise_metric: the distance metric used to calculate pairwise distances between SNVs
         linkage_method: the linkage method used to perform hierarchical clustering on SNVs
 
@@ -28,22 +29,24 @@ def find_clusters(df: pd.DataFrame, group_size_range: tuple, distance_thresholds
         cluster_dict: a dictionary indicating the cluster membership of each of the supplied genomes in
                 the vcf file
     """
-    
 
-
-    distance_matrix = compute_distance_matrix(df, pairwise_metric )
+    distance_matrix = compute_distance_matrix(df, pairwise_metric)
     clustering_array = create_linkage_array(distance_matrix, linkage_method)
 
-    flat_clusters = output_flat_clusters(clustering_array, df.columns, distance_matrix, group_size_range, distance_thresholds)
-    cluster_result=Cluster(distance_matrix=distance_matrix, clustering_array= clustering_array, flat_clusters= flat_clusters)
+    df_flat_clusters = output_flat_clusters(clustering_array, distance_thresholds,  distance_matrix)
+    distinct_flat_clusters = get_distinct_flat_clusters(df_flat_clusters, df.columns)
+    hierarchical_clusters = get_hierarchical_clusters(distinct_flat_clusters, group_size_range)
+    cluster_result = Cluster(distance_matrix=distance_matrix, clustering_array=clustering_array,
+                             hierarchical_clusters=hierarchical_clusters)
     return cluster_result
 
 
-def compute_distance_matrix(df: pd.DataFrame, pairwise_metric:str) -> np.ndarray:
+def compute_distance_matrix(df: pd.DataFrame, pairwise_metric: str) -> np.ndarray:
     """Takes in a binary SNV state DataFrame and outputs a distance matrix using the hamming method
 
     Args:
         df: the DataFrame that contains only the samples' binary data
+        pairwise_metric: the method used to calculate pairwise distances
 
     Returns:
         a matrix of pair-wise distances between samples
@@ -58,6 +61,7 @@ def create_linkage_array(distance_matrix: np.ndarray, linkage_method: str) -> np
 
     Args:
         distance_matrix: a matrix of pair-wise distances between samples
+        linkage_method: the method used to calculate the linkage array
 
     Returns:
         clustering_array: a hierarchical clustering linkage array that is calculated from the distance matrix
@@ -68,31 +72,63 @@ def create_linkage_array(distance_matrix: np.ndarray, linkage_method: str) -> np
     return clustering_array
 
 
-def output_flat_clusters(clustering_array: np.ndarray, genomes_only: List, distance_matrix: np.ndarray,
-                         group_size_range: tuple, distance_thresholds: List) -> \
-        pd.DataFrame:
+def get_hierarchical_clusters(distinct_flat_clusters, group_size_range)->Dict[str, str]:
+    """Obtain hierarchical clusters based on the flat cluster output and group size
+    Args:
+        distinct_flat_clusters: DataFrame that contains distinct flat clusters
+        group_size_range: a tuple that contains the range for the child group size for each new subtype branching point from the parent group
+    Returns:
+        hierarchical_clusters: hierarchical clusters that indicate group membership of each of the supplied genomes
+
+    """
+    clusters_genomes_dict = cluster_df_to_dict(distinct_flat_clusters)
+
+    output_clusters = assign_hc_clusters(clusters_genomes_dict=clusters_genomes_dict, group_size_range=group_size_range)
+    expanded_clusters = expand_sets(output_clusters)
+    df_hierarchical_cluster = pd.DataFrame(expanded_clusters).fillna(
+        '').loc[distinct_flat_clusters.index, :]
+    hierarchical_clusters = df_to_subtypes_dict(df_hierarchical_cluster)
+    
+    return hierarchical_clusters
+
+
+def output_flat_clusters(clustering_array: np.ndarray, distance_thresholds: List, distance_matrix: np.ndarray) -> pd.DataFrame:
     """Uses a set of thresholds to output a flat cluster of the linkage array
 
     Args:
         clustering_array: a hierarchical clustering linkage array that is calculated from the distance matrix
-        genomes_only: an array of column names for the original SNV DataFrame
         distance_matrix: a matrix of pair-wise distances between samples
-        group_size_range: the range of possivle child group sizes for each new subtype branching point from the parent group
+        distance_thresholds: user defined thresholds to output flat clusters
 
     Returns:
-         flat_clusters: an array of flat clusters from the clustering array
+         flat_clusters: a DataFrame of flat clusters from the clustering array
     """
     if distance_thresholds is not None:
-        test_thresholds=distance_thresholds
+        test_thresholds = distance_thresholds
     else:
-        test_thresholds=np.sort(np.unique(distance_matrix))
+        test_thresholds = np.sort(np.unique(distance_matrix))
 
     clusters = np.array([
         fcluster(clustering_array, t=distance, criterion='distance')
         for distance in test_thresholds])
-    cluster_df = pd.DataFrame(np.array(clusters), index=test_thresholds)
-    matrix = cluster_df.transpose()
-    
+    df_flat_clusters = pd.DataFrame(np.array(clusters), index=test_thresholds)
+
+    return df_flat_clusters
+
+
+def get_distinct_flat_clusters(df_flat_clusters, genomes_only)->pd.DataFrame:
+    """Obtain the distinct flat clusters from the flat cluster DataFrame
+
+    Args:
+        df_flat_clusters: a DataFrame of flat clusters from the clustering array
+        genomes_only: an array of column names for the original SNV DataFrame
+    Returns:
+        distinct_flat_clusters: DataFrame that contains distinct flat clusters
+
+
+    """
+    matrix = df_flat_clusters.transpose()
+
     matrix.index = genomes_only
     matrix = matrix.sort_values(
         by=[cluster_grouping for cluster_grouping in matrix.columns.sort_values(ascending=False)])
@@ -107,17 +143,9 @@ def output_flat_clusters(clustering_array: np.ndarray, genomes_only: List, dista
     cluster_matrix = matrix[[thresholds[0] for thresholds in cluster_dict.values()]]
     cluster_matrix.columns = [index for index, thresholds in enumerate(cluster_matrix.columns)]
 
-    cluster_matrix = cluster_matrix.drop([0], axis=1)
+    distinct_flat_clusters = cluster_matrix.drop([0], axis=1)
 
-    clusters_genomes_dict = cluster_df_to_dict(cluster_matrix)
-
-    hierarchical_cluster_df = pd.DataFrame(
-        expand_sets(
-            assign_hc_clusters(clusters_genomes_dict=clusters_genomes_dict, group_size_range=group_size_range))).fillna(
-        '').loc[cluster_matrix.index, :]
-    final_assigned_clusters = df_to_subtypes_dict(hierarchical_cluster_df)
-    logging.debug(final_assigned_clusters)
-    return final_assigned_clusters
+    return distinct_flat_clusters
 
 
 def cluster_df_to_dict(df_clusters: pd.DataFrame) -> Dict[float, Dict[int, Set[str]]]:
@@ -153,8 +181,8 @@ def assign_hc_clusters(clusters_genomes_dict: Dict[float, Dict[int, Set[str]]], 
         output_clusters: A dictionary within a dictionary that contains each subgtype and the sets of genomes within
                         that subtype
     """
-    min_group_size=group_size_range[0]
-    max_group_size=group_size_range[1]
+    min_group_size = group_size_range[0]
+    max_group_size = group_size_range[1]
     output_subtypes = {threshold: {} for threshold in clusters_genomes_dict.keys()}
     sorted_thresholds = sorted(clusters_genomes_dict.keys())
     # initialize top level subtypes
@@ -172,7 +200,7 @@ def assign_hc_clusters(clusters_genomes_dict: Dict[float, Dict[int, Set[str]]], 
                 continue
             subclade = 1
             for _, child_genomes in cluster_genomes.items():
-                if len(child_genomes) < min_group_size or len(child_genomes)>max_group_size:
+                if len(child_genomes) < min_group_size or len(child_genomes) > max_group_size:
                     continue
 
                 if parent_genomes == child_genomes:
@@ -222,7 +250,6 @@ def row_subtype(curr_genome: pd.Series) -> str:
 
     row_unique = curr_genome.unique()
     return max(row_unique.tolist(), key=len)
-   
 
 
 def df_to_subtypes_dict(cluster_genomes_df: pd.DataFrame) -> Dict[str, str]:

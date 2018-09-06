@@ -345,10 +345,10 @@ def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thres
     clusters = find_clusters(binary_df, group_size_range, distance_thresholds, pairwise_distance_metric, linkage_method)
    
     if phylo_tree_path is not None:
-        phylo_tree_string=display_tree(phylo_tree_path, clusters.flat_clusters, output_folder_name)
+        phylo_tree_string=display_tree(phylo_tree_path, clusters.hierarchical_clusters, output_folder_name)
     #sequence_records: Dict[str, Seq.Seq]
     sequence_records = parse_sequence_file(reference_genome_path, reference_genome_format)
-    results_dict = group_snvs(binary_df, sequence_df, clusters.flat_clusters)
+    results_dict = group_snvs(binary_df, sequence_df, clusters.hierarchical_clusters)
     for group, curr_df in results_dict.items():
         df_list = get_sequences(curr_df, tile_length,
                                 sequence_records)
