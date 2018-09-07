@@ -3,6 +3,7 @@ from typing import Union, Optional, Tuple, List
 
 import attr
 import click
+import os
 import pandas as pd
 
 from biohansel.subtype import subtype_contigs_samples, subtype_reads_samples, Subtype
@@ -10,8 +11,7 @@ from biohansel.subtype.const import SUBTYPE_SUMMARY_COLS, JSON_EXT_TMPL
 from biohansel.subtype.metadata import read_metadata_table, merge_metadata_with_summary_results
 from biohansel.subtype.subtype_stats import subtype_counts
 from biohansel.subtype.util import get_scheme_fasta, init_subtyping_params
-from biohansel.utils import does_file_exist, collect_inputs
-from biohansel.utils import init_console_logger
+from biohansel.utils import does_file_exist, collect_inputs, genome_name_from_fasta_path, init_console_logger
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
@@ -247,12 +247,12 @@ def parse_comma_delimited_floats(ctx: click.Context, param: click.Option, value:
 
 
 @cli.command()
-@click.option('--vcf-file-path',
+@click.option('-v', '--vcf-file-path',
               required=True,
               type=click.Path(exists=True, dir_okay=False),
               help='Variant calling file (VCF) of a collection of input genomes for population of interest against a '
                    'reference genome that must be specified with --reference-genome-path')
-@click.option('--reference-genome-path',
+@click.option('-r', '--reference-genome-path',
               required=True,
               type=click.Path(exists=True, dir_okay=False),
               help='Reference genome assembly file path. The reference used in the creation of the input VCF file.')
@@ -260,22 +260,97 @@ def parse_comma_delimited_floats(ctx: click.Context, param: click.Option, value:
               required=False,
               type=click.Path(exists=True, dir_okay=False),
               help='Optional phylogenetic tree created from variant calling analysis.')
-@click.option('--distance-thresholds',
+@click.option('-d', '--distance-thresholds',
               required=False,
               type=str,
               callback=parse_comma_delimited_floats,
               help='Comma delimited list of distance thresholds for creating hierarchical clustering groups '
                    '(e.g. "0,0.05,0.1,0.15")')
-def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thresholds):
+@click.option('-o', '--outdir',
+              required=True,
+              type=click.Path(exists=False, dir_okay=True),
+              help='Output directory')
+@click.option('--force',
+              is_flag=True,
+              help='Force overwrite output directory?')
+@click.option('-s', '--schema-name',
+              required=False,
+              default="biohansel-schema",
+              type=str,
+              help='A unique name for the schema file that is generated, the default is just'
+                   '{bio_hansel-schema}-reference_genome_name}-{schema_version}')
+@click.option('-m', '--schema-version',
+              required=False,
+              default="0.1.0",
+              type=str,
+              help='An optional version number for the schema file that is generated')
+@click.option('-t', '--tile-length',
+              required=True,
+              type=int,
+              help='Length of sequence to be added around each SNV in the schema file,'
+              'if an even integer is provided, then the tile length would be n+1'
+              )
+@click.option('-f', '--reference-genome-format',
+              required=False,
+              default='fasta',
+              type=click.Choice(['fasta', 'genbank']),
+              help='Reference genome file format: can be either fasta or genbank format'
+              )
+@click.option('-g', '--group-size-range',
+              type=(int, int),
+              default=(2,10),
+              help='The range of child group size for each new subtype branching point from the parent group'
+              )
+@click.option('--pdist-metric',
+              type=click.Choice(['hamming', 'euclidean', 'minkowski', 'cityblock', 'cosine', 'sqeuclidean', 'correlation', 'jaccard', 'chebyshev', 'braycurtis']),
+              default='hamming',
+              help='The distance metric used to calculate pairwise distances between SNVs'
+              )
+@click.option('--linkage-method',
+              type=click.Choice(['single', 'complete', 'average', 'weighted', 'centroid', 'median', 'ward']),
+              default='complete',
+              help='The linkage method used to perform hierarchical clustering on SNVs'
+              )
+def create(vcf_file_path, reference_genome_path, phylo_tree_path, distance_thresholds, outdir, force, schema_name,
+           reference_genome_format, tile_length, group_size_range, schema_version, pairwise_distance_metric, linkage_method):
     """Create a biohansel subtyping scheme.
 
     From the results of a variant calling analysis, create a biohansel subtyping with single nucleotide variants (SNV)
     that discriminate subpopulations of genomes from all other genomes.
     """
-    click.secho(f'VCF file path: {vcf_file_path}', fg='green')
-    click.secho(f'Reference genome file path: {reference_genome_path}', fg='red')
-    click.secho(f'Phylogenetic tree file path: {phylo_tree_path}', fg='yellow')
-    click.secho(f'Distance thresholds: {distance_thresholds}', fg='blue')
+    if os.path.exists(outdir) and not force:
+        raise click.UsageError(
+            f'Output directory "{outdir}" already exists. To overwrite this directory specify "--force"')
+
+    logging.info(f'VCF file path: {vcf_file_path}')
+    logging.info(f'Reference genome file path: {reference_genome_path}')
+    logging.info(f'Phylogenetic tree file path: {phylo_tree_path}')
+    logging.info(f'Distance thresholds: {distance_thresholds}')
+    logging.info(f'Output folder name: {outdir}')
+    logging.info(f'Scheme name: {schema_name}')
     logging.info(f'Creating biohansel subtyping scheme from SNVs in "{vcf_file_path}" using reference genome '
-                 f'"{reference_genome_path}" at {distance_thresholds if distance_thresholds else "all possible"} '
-                 f'distance threshold levels.')
+                 f'{reference_genome_path}')
+
+
+    reference_genome_name = genome_name_from_fasta_path(reference_genome_path)
+    schema_name = f"{schema_name}-{reference_genome_name}-{schema_version}"
+
+    if not os.path.exists(outdir):
+        os.makedirs(outdir)
+
+
+    sequence_df, binary_df = parse_vcf(vcf_file_path)
+    logging.info(type(group_size_range))
+    clusters = create_scheme(binary_df, group_size_range, distance_thresholds, pairwise_distance_metric, linkage_method)
+
+    if phylo_tree_path is not None:
+        phylo_tree_string = display_tree(phylo_tree_path, clusters.clusters, outdir)
+    #sequence_records: Dict[str, Seq.Seq]
+    sequence_records = parse_sequence_file(reference_genome_path, reference_genome_format)
+    results_dict = group_snvs(binary_df, sequence_df, clusters.clusters)
+    for group, curr_df in results_dict.items():
+        df_list = get_sequences(curr_df, tile_length,
+                                sequence_records)
+        write_sequence_file(outdir, df_list, schema_name, group)
+    output_schema_path = os.path.join(outdir, f"{schema_name}.fasta")
+    logging.info(f"Finished writing schema file to {output_schema_path}")

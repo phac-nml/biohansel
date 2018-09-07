@@ -74,7 +74,7 @@ setup(
     classifiers=classifiers,
     package_dir={program_name: program_name},
     package_data={program_name: ['subtype/data/*/*.fasta', ]},
-    py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
+    py_modules=[splitext(basename(path))[0] for path in glob(f'{program_name}/*.py')],
     include_package_data=True,
     zip_safe=False,
     install_requires=[
