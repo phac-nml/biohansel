@@ -3,11 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Bio_Hansel's Read the Doc-s Testing!
+Welcome to Bio_Hansel's Read the Docs Testing!
 ==============================================
 
 
-Subtype microbial whole-genome sequencing (WGS) data using SNV targeting k-mer subtyping schemes.
+Subtype microbial wholegenome sequencing (WGS) data using SNV targeting k-mer subtyping schemes.
 
 Includes 33 bp k-mer SNV subtyping schemes for Salmonella enterica subsp. enterica serovar Heidelberg and Enteritidis genomes developed by Genevieve Labbe et al.
 
