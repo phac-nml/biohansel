@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Bio_Hansel's Read the Docs Testing!
+Welcome to Bio_Hansel's Read the Doc-s Testing!
 ==============================================
 
 
