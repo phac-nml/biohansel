@@ -7,7 +7,7 @@ Welcome to Bio_Hansel's Read the Docs Testing!
 ==============================================
 
 
-Subtype microbial wholegenome sequencing (WGS) data using SNV targeting k-mer subtyping schemes.
+Subtype microbial whole-genome sequencing (WGS) data using SNV targeting k-mer subtyping schemes.
 
 Includes 33 bp k-mer SNV subtyping schemes for Salmonella enterica subsp. enterica serovar Heidelberg and Enteritidis genomes developed by Genevieve Labbe et al.
 
@@ -75,6 +75,11 @@ Works on genome assemblies (FASTA files) or reads (FASTQ files)! Accepts Gzipped
    :caption: Contact
 
    contact
+ 
+
+.. toctree::
+   :maxdepth: 2
+   :caption: poop
 
 
 
