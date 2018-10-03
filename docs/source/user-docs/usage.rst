@@ -24,6 +24,15 @@ Install ``bio_hansel`` from Bioconda_ with Conda_ (`Conda installation instructi
 
 .. code-block:: bash
 
+    # OPTIONAL: To create new Conda environment input this command on terminal:
+    conda create -n "*name of environment*" python=3.6
+    # Then to create/activate conda environment:
+    source activate *name of environment*
+    
+    # You can then install biohansel in the new environment
+    # To deactivate environment, input:
+    source deactivate
+    
     # setup Conda channels for Bioconda and Conda-Forge (https://bioconda.github.io/#set-up-channels)
     conda config --add channels defaults
     conda config --add channels conda-forge
