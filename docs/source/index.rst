@@ -28,6 +28,7 @@ Works on genome assemblies (FASTA files) or reads (FASTQ files)! Accepts Gzipped
    :caption: User Documentation
 
    user-docs/usage
+   user-docs/Tutorial
    user-docs/input
    user-docs/output
    user-docs/parameters
