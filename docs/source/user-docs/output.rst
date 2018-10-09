@@ -19,6 +19,7 @@ Names of samples that are ran on biohansel
 
 
 
+
 **Subtype**
 -----------
 Consensus result from the analysis 
@@ -27,9 +28,11 @@ Consensus result from the analysis
 
 
 
+
 **Average Tile Coverage**
 -------------------------
 This section displays the average coverage of all the targets that were present in the sample.
+
 
 
 
@@ -42,6 +45,7 @@ Three possibilities based on the QC analysis described below: `QC message`_
 2.) FAIL
 
 3.) WARNING
+
 
 
 
