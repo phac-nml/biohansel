@@ -3,9 +3,9 @@ Output (Errors Encountered)
 
 Table of Contents
 #################
-
 1.) `"WARNING - Intermediate subtype"`_
 
+   2.) `Error Type 1: Missing Tiles`_
 
 
 "WARNING - Intermediate subtype"
