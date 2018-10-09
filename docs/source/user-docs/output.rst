@@ -4,7 +4,7 @@ Output (Errors Encountered)
 Table of Contents
 #################
 
-_`"WARNING - Intermediate subtype"`_
+1.) `"WARNING - Intermediate subtype"`_
 
 
 
