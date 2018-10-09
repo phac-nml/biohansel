@@ -5,7 +5,7 @@ Table of Contents
 #################
 1.) `"WARNING - Intermediate subtype"`_
 
-   2.) `Error Type 1: Missing Tiles`_
+2.) `Error Type 1: Missing Tiles`_
    
   
   
