@@ -1,6 +1,14 @@
 Output (Errors Encountered)
 ===========================
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Table of Contents 
+   
+   "WARNING - Intermediate subtype"
+   Error Type 1: Missing Tiles
+
+
 "WARNING - Intermediate subtype"
 --------------------------------
    This warning can be triggered from four different type of conditions:
@@ -12,3 +20,8 @@ Output (Errors Encountered)
    **3rd condition:** If only a fraction of the tiles are positive for the final subtype ("# of tiles matching subtype expected > # of tiles matching subtype") 
    
    **4th condition:** A warning will be produced if the tiles for the final subtype are a mixture of both "+" and "-" BUT do NOT clash for the same positions.
+
+
+Error Type 1: Missing Tiles
+---------------------------
+*** The "Maximum amount of missing tiles to be allowed before being considered an error" can be edited based on preference and scheme
