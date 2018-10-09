@@ -4,7 +4,7 @@ Tutorial
 To verify that Biohansel is working properly with the different interfaces:
 
 Download FASTA closed genome sequence and raw FASTQ reads for corresponding isolate:
-   <https://share.corefacility.ca/index.php/s/dRGOuqhDJUNeKmE>
+   <https://share.corefacility.ca/index.php/s/dRGOuqhDJUNeKmE> (password: biohansel)
  
 
 
