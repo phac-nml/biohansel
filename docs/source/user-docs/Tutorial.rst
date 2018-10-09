@@ -3,8 +3,9 @@ Tutorial
 
 To verify that Biohansel is working properly with the different interfaces:
 
-Download both reference files (raw Illumina forward and reverse file)
-  _`Click here to download <>_
+Download FASTA closed genome sequence and raw FASTQ reads for corresponding isolate:
+   <https://share.corefacility.ca/index.php/s/dRGOuqhDJUNeKmE>
+ 
 
 
 
