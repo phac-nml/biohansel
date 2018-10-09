@@ -6,6 +6,33 @@ Table of Contents
 1.) `"WARNING - Intermediate subtype"`_
 
    2.) `Error Type 1: Missing Tiles`_
+   
+  
+  
+========== ========= ======================= ============ ============
+  sample    subtype   average_tile_coverage   qc_status    qc_message
+---------- --------- ----------------------- ------------ ------------
+EC20120483 2.2.3.1.2          81.628              PASS         hi    
+========== ========= ======================= ============ ============
+
+
+
+Sample
+------
+
+
+Subtype
+-------
+
+
+Average Tile Coverage
+---------------------
+
+QC Status
+---------
+
+QC  Message
+-----------
 
 
 "WARNING - Intermediate subtype"
