@@ -1,12 +1,11 @@
 Output (Errors Encountered)
 ===========================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Table of Contents 
-   
-   "WARNING - Intermediate subtype"
-   Error Type 1: Missing Tiles
+Table of Contents
+#################
+
+_`"WARNING - Intermediate subtype"`_
+
 
 
 "WARNING - Intermediate subtype"
