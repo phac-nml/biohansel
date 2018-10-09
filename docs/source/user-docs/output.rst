@@ -35,11 +35,13 @@ This section displays the average coverage of all the targets that were present 
 
 **QC status**
 -------------
-Three possibilities based on the QC analysis described below: (hyperlink QCmsg)
+Three possibilities based on the QC analysis described below: `QC message`_
 
-PASS
-FAIL
-WARNING
+1.) PASS
+
+2.) FAIL
+
+3.) WARNING
 
 
 
