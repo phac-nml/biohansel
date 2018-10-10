@@ -3,8 +3,18 @@ Output
 ======
 
 Three different result files will be produced: tech results.tab, match results.tab & results.tab
-   
-  
+
+.. |mixed| image:: https://github.com/phac-nml/biohansel/blob/readthedocs/docs/source/user-docs/Mixed.PNG
+   :width: 100 px
+.. |missing| image:: https://github.com/phac-nml/biohansel/blob/readthedocs/docs/source/user-docs/Missing%20Targets.PNG
+   :width: 100 px
+.. |inconsistent| image:: https://github.com/phac-nml/biohansel/blob/readthedocs/docs/source/user-docs/Inconsistent%20results.PNG
+   :width: 100 px
+.. |unconfident| image:: https://github.com/phac-nml/biohansel/blob/readthedocs/docs/source/user-docs/Unconfident.PNG
+   :width: 100 px
+.. |pass| image:: https://github.com/phac-nml/biohansel/blob/readthedocs/docs/source/user-docs/Pass.PNG
+
+
 Tech results.tab
 ################
 ================ ================================== ================================== ==================== ===========================
@@ -50,6 +60,9 @@ Three possibilities based on the QC analysis described below: `QC message`_
 **QC message**
 ---------------
 
+|pass|
+This is an ideal picture of a passed scheme
+
 *"WARNING: Intermediate Subtype"*
 """""""""""""""""""""""""""""""
 Warnings will be triggered if all four following conditions are met:
@@ -76,14 +89,15 @@ Average coverage calculated from all targets found in the sample (The value is r
 
 Two possible causes:
 
-1.) Bacterial scheme does not match target
+1.) Bacterial scheme does not match target                                       
 
 2.) Low genome coverage or low quality data
 
 3.) Range of target coverage extends outside of QC limits (k-mer frequency thresholds default = min:8, max:500)
 
-** To determine which cause, the average coverage depth is returned to the user. The value is calculated based on the coverage for all tiles that were above the minumum coverage threshold (indicated by the QC parameters: default value = 8)
+** To determine which cause, the average coverage depth is returned to the user. The value is calculated based on the coverage for all tiles that were above the minumum coverage threshold (indicated by the QC parameters: default value = 8) 
 
+|missing|                                                                                                                                                                                                                                                                                                  
 
 *Error Type 2: Mixed Sample*
 """"""""""""""""""""""""""""
@@ -94,6 +108,9 @@ Two possible causes:
 2.) Position conflict: both "+" and "-" targets are found in the same target genome position above background noise level
 -> (possible solution) if the average genome coverage is above 100, increase the minimum k-mer threshold to at least 10% of the average genome coverage
 
+|mixed|
+
+
 
 *"Error Type 3: Ambiguous result"* 
 """"""""""""""""""""""""""""""""""
@@ -102,6 +119,9 @@ Caused by both conditions met:
 1.) Total matching tiles is within 5% of the expected value
 2.) 3 or more tiles are missing for the final subtype call (Error 3a)
 
+|inconsistent|
 *"Error Type 4: Unconfident/Not confident result"*
 """"""""""""""""""""""""""""""""""""""""""""""""""
 Lineage call is uncertain due to missing targets in downstream sublineage
+
+|unconfident|
