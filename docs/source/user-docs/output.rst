@@ -50,7 +50,7 @@ Three possibilities based on the QC analysis described below: `QC message`_
 **QC message**
 ---------------
 
-"WARNING: Intermediate Subtype"
+*"WARNING: Intermediate Subtype"*
 """""""""""""""""""""""""""""""
 Warnings will be triggered if all four following conditions are met:
    
@@ -63,14 +63,14 @@ Warnings will be triggered if all four following conditions are met:
 **4th condition:** The targets for the final subtype are a mixture of both "+" and "-" BUT do NOT clash for the same positions.
 
 
-"WARNING: Low Coverage"
+*"WARNING: Low Coverage"*
 """""""""""""""""""""""
 If the "Avg Tile Coverage" is below the parameters given for low coverage (parameters are adjustable) (default min average coverage: 20- fold)
 
 Average coverage calculated from all targets found in the sample (The value is returned to the user)
 
 
-Error Type 1: Missing Tiles
+*Error Type 1: Missing Tiles*
 """""""""""""""""""""""""""
 *** The "Maximum amount of missing tiles to be allowed before being considered an error" can be edited based on preference and scheme
 
@@ -81,3 +81,14 @@ Two possible causes:
 2.) Low genome coverage or low quality data
 
 ** To determine which cause, the average coverage depth is returned to the user. The value is calculated based on the coverage for all tiles that were above the minumum coverage threshold (indicated by the QC parameters: default value = 8)
+|
+|
+*Error Type 2: Mixed Sample*
+ """"""""""""""""""""""""""
+Two possible causes:
+
+1.) BioHansel came out with an "inconsistent result" designation
+2.) Position conflict: both "+" and "-" targets are found in the same target genome position above background noise level
+
+
+Error Type 3: "
