@@ -16,23 +16,22 @@ Tech results.tab
 **Sample**
 ----------
 Names of samples that are ran on biohansel
+::
+
+
+**Subtype**
+-----------
+Consensus result from the analysis 
+If mixed results, biohansel will list all different subtypes detected
+If no "+" target is detected it will produce: "No Subtype!"
+::
 
 
 
-
-  **Subtype**
-  -----------
-  Consensus result from the analysis 
-  -> If mixed results, biohansel will list all different subtypes detected
-  -> If no "+" target is detected it will produce: "No Subtype!"
-
-
-
-
-  **Average Tile Coverage**
-  -------------------------
-  This section displays the average coverage of all the targets that were present in the sample.
-
+**Average Tile Coverage**
+-------------------------
+This section displays the average coverage of all the targets that were present in the sample.
+::
 
 
 
