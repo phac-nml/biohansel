@@ -80,6 +80,8 @@ Two possible causes:
 
 2.) Low genome coverage or low quality data
 
+3.) Range of target coverage extends outside of QC limits (k-mer frequency thresholds default = min:8, max:500)
+
 ** To determine which cause, the average coverage depth is returned to the user. The value is calculated based on the coverage for all tiles that were above the minumum coverage threshold (indicated by the QC parameters: default value = 8)
 
 
@@ -88,7 +90,9 @@ Two possible causes:
 Two possible causes:
 
 1.) BioHansel came out with an "inconsistent result" designation
+
 2.) Position conflict: both "+" and "-" targets are found in the same target genome position above background noise level
+-> (possible solution) if the average genome coverage is above 100, increase the minimum k-mer threshold to at least 10% of the average genome coverage
 
 
 *"Error Type 3: Ambiguous result"* 
@@ -100,3 +104,4 @@ Caused by both conditions met:
 
 *"Error Type 4: Unconfident/Not confident result"*
 """"""""""""""""""""""""""""""""""""""""""""""""""
+Lineage call is uncertain due to missing targets in downstream sublineage
