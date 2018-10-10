@@ -23,6 +23,7 @@ Three different result files will be produced: tech results.tab, match results.t
    
 .. |pass| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Pass.PNG
    :alt: This is an ideal picture of a passed scheme
+   :width: 100 px
 
 
 Tech results.tab
