@@ -54,7 +54,7 @@ Three possibilities based on the QC analysis described below: `QC message`_
 """""""""""""""""""""""""""""""
 Warnings will be triggered if all four following conditions are met:
    
- **1st condition:** Less than 5% of the tiles are missing (by default) or more than 95% of the schemes targets are matched (parameters for this is adjustable prior to running biohansel)
+**1st condition:** Less than 5% of the tiles are missing (by default) or more than 95% of the schemes targets are matched (parameters for this is adjustable prior to running biohansel)
 
 **2nd condition:** There should be no clash for "+" and "-" targets for the same genome position (above background noise level)
    
@@ -81,14 +81,22 @@ Two possible causes:
 2.) Low genome coverage or low quality data
 
 ** To determine which cause, the average coverage depth is returned to the user. The value is calculated based on the coverage for all tiles that were above the minumum coverage threshold (indicated by the QC parameters: default value = 8)
-|
-|
+
+
 *Error Type 2: Mixed Sample*
- """"""""""""""""""""""""""
+""""""""""""""""""""""""""""
 Two possible causes:
 
 1.) BioHansel came out with an "inconsistent result" designation
 2.) Position conflict: both "+" and "-" targets are found in the same target genome position above background noise level
 
 
-Error Type 3: "
+*"Error Type 3: Ambiguous result"* 
+""""""""""""""""""""""""""""""""""
+Caused by both conditions met:
+
+1.) Total matching tiles is within 5% of the expected value
+2.) 3 or more tiles are missing for the final subtype call (Error 3a)
+
+*"Error Type 4: Unconfident/Not confident result"*
+""""""""""""""""""""""""""""""""""""""""""""""""""
