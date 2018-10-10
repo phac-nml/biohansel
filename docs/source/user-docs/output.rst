@@ -120,6 +120,8 @@ Caused by both conditions met:
 2.) 3 or more tiles are missing for the final subtype call (Error 3a)
 
 |inconsistent|
+
+
 *"Error Type 4: Unconfident/Not confident result"*
 """"""""""""""""""""""""""""""""""""""""""""""""""
 Lineage call is uncertain due to missing targets in downstream sublineage
