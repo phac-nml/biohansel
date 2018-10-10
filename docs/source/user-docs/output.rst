@@ -1,6 +1,6 @@
-===========================
-Output (Errors Encountered)
-===========================
+======
+Output 
+======
 
 Three different result files will be produced: tech results.tab, match results.tab & results.tab
    
