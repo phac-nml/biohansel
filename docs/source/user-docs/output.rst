@@ -4,15 +4,25 @@ Output
 
 Three different result files will be produced: tech results.tab, match results.tab & results.tab
 
-.. |mixed| image:: https://github.com/phac-nml/biohansel/blob/readthedocs/docs/source/user-docs/Mixed.PNG
+.. |mixed| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Mixed.PNG
    :width: 100 px
-.. |missing| image:: https://github.com/phac-nml/biohansel/blob/readthedocs/docs/source/user-docs/Missing%20Targets.PNG
+   :alt: Example of Mixed targets
+   
+   
+.. |missing| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Missing%20Targets.PNG
    :width: 100 px
-.. |inconsistent| image:: https://github.com/phac-nml/biohansel/blob/readthedocs/docs/source/user-docs/Inconsistent%20results.PNG
+   :alt: Example of Missing Targets
+   
+.. |inconsistent| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Inconsistent%20results.PNG
    :width: 100 px
-.. |unconfident| image:: https://github.com/phac-nml/biohansel/blob/readthedocs/docs/source/user-docs/Unconfident.PNG
+   :alt: Example of Inconsistent results
+   
+.. |unconfident| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Unconfident%20(1).PNG
    :width: 100 px
-.. |pass| image:: https://github.com/phac-nml/biohansel/blob/readthedocs/docs/source/user-docs/Pass.PNG
+   :alt: Example of Unconfident results
+   
+.. |pass| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Pass.PNG
+   :alt: This is an ideal picture of a passed scheme
 
 
 Tech results.tab
@@ -62,7 +72,6 @@ Three possibilities based on the QC analysis described below: `QC message`_
 
 |pass|
 
-This is an ideal picture of a passed scheme
 
 *"WARNING: Intermediate Subtype"*
 """""""""""""""""""""""""""""""
