@@ -61,6 +61,7 @@ Three possibilities based on the QC analysis described below: `QC message`_
 ---------------
 
 |pass|
+
 This is an ideal picture of a passed scheme
 
 *"WARNING: Intermediate Subtype"*
