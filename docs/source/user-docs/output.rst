@@ -58,9 +58,9 @@ This section displays the average coverage of all the targets that were present 
 #####################
 
 ================= ================================== =========================== ======================== ===========================
-    `Tilename`_               `Sequence`_                    `Frequency`_            `ref position`_               `Subtype`_
+    `Tilename`_               `Sequence`_                    `Frequency`_            `ref position`_               `Subtype `_
 ----------------- ---------------------------------- --------------------------- ------------------------ ---------------------------
- (Name of Tile)         (Corresponding Sequence)      (Corresponding Frequency)  (Corresponding ref pos.)   (Subtypes in Tile name)   
+ (Name of Tile)         (Corresponding Sequence)      (Corresponding Frequency)  (Corresponding ref pos.)   (Subtypes in tilename)   
 ================= ================================== =========================== ======================== ===========================
 
 
@@ -73,8 +73,9 @@ This section displays the average coverage of all the targets that were present 
 **Frequency**
 -------------
 
-**Subtype**
+**ref position**
 -------------
+
 
 
 
