@@ -57,42 +57,93 @@ This section displays the average coverage of all the targets that were present 
 **Match Results.tab**
 #####################
 
-================= ================================== =========================== ======================== ===========================
-    `Tilename`_               `Sequence`_                    `Frequency`_            `ref_position`_               `Subtype`_
------------------ ---------------------------------- --------------------------- ------------------------ ---------------------------
- (Name of Tile)         (Corresponding Sequence)      (Corresponding Frequency)  (Corresponding ref pos.)   (Subtypes in tilename)   
-================= ================================== =========================== ======================== ===========================
+===================== ============================ =============================== ========================= =========================
+    `Tilename`_               `Sequence`_                 `Frequency`_                  `ref_position`_            `Subtype`_
+--------------------- ---------------------------- ------------------------------- ------------------------- -------------------------
+(Name of target/kmer)   (Corresponding Sequence)   (Number of exact matches found) (pos in reference genome)  (Subtypes in tilename)   
+===================== ============================ =============================== ========================= =========================
 
 ================= ============================== =========================== ======================== ===========================
   `is_pos_tile`_      `is_kmer_freq_okay`_            `File path`_                  `Sample`_                  `Scheme`_
 ----------------- ------------------------------ --------------------------- ------------------------ ---------------------------
- (Name of Tile)       (Corresponding Sequence)    (Corresponding Frequency)  (Corresponding ref pos.)   (Subtypes in tilename)   
+   (TRUE/FALSE)          (TRUE/FALSE)                (File location)                (Sample Name)           (Scheme Name)   
 ================= ============================== =========================== ======================== ===========================
+================ ==================== ===========================
+`Scheme_vers`_        `QC status`_            `QC message`_
+---------------- -------------------- ---------------------------
+(Scheme version)  (PASS/FAIL/WARNING)  (Corresponding QC message)
+================ ==================== ===========================
+
 
 **Tilename**
 ------------
+Name of the target/kmer
+
 
 **Sequence**
 -----------
+Corresponding sequence to target
+
 
 **Frequency**
 -------------
+Number of exact matches found 
+
 
 **ref_position**
 -------------
+Specific position in the reference genome used
+
 
 **is_pos_tile**
 ---------------
+Is it a positive k-mer/target for specific subtype?
+
+1.) TRUE
+
+2.) FALSE
+
 
 **is_kmer_freq_okay**
 ---------------------
+Is it within the specified QC parameters (min/max)
+
+1.) TRUE
+
+2.) FALSE
+
 
 **File path**
 -------------
+File Location
+
 
 **Scheme**
 ----------
+Name of the given Scheme
 
+**Scheme_vers**
+---------------
+Version of the given scheme
+
+
+**tiles matching subtype**
+--------------------------
+(blank)
+
+
+**are_subtypes_consistent**
+---------------------------
+- Consistency -> 
+All positive tiles within QC parameters, have consistent subtypes in downstream sublineages corresponding to parent subtype
+
+**inconsistent_subtypes**
+-------------------------
+If "are_subtypes_consistent" is FALSE, it lists subtypes that are inconsistent to parent
+
+**n match expected**
+--------------------
+- How many positive matches expected per subtype found in sample based on subtype scheme
 
 
 
