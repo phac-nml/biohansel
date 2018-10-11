@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=source
 set BUILDDIR=build
-set SPHINXPROJ=Bio_Hansel
+set SPHINXPROJ=BioHansel
 
 if "%1" == "" goto help
 
