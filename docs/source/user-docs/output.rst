@@ -54,6 +54,29 @@ This section displays the average coverage of all the targets that were present 
 
 
 
+**Match Results.tab**
+#####################
+
+================= ================================== =========================== ======================== ===========================
+    `Tilename`_               `Sequence`_                    `Frequency`_            `ref position`_               `Subtype`_
+----------------- ---------------------------------- --------------------------- ------------------------ ---------------------------
+ (Name of Tile)         (Corresponding Sequence)      (Corresponding Frequency)  (Corresponding ref pos.)   (Subtypes in Tile name)   
+================= ================================== =========================== ======================== ===========================
+
+
+**Tilename**
+------------
+
+**Sequence**
+-----------
+
+**Frequency**
+-------------
+
+**Subtype**
+-------------
+
+
 
 **QC status**
 -------------
