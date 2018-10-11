@@ -2,7 +2,7 @@
 Output 
 ======
 
-Three different result files will be produced: tech results.tab, match results.tab & results.tab
+Three different result files will be produced: `tech results.tab`_, `match results.tab`_ & results.tab
 
 .. |mixed| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Mixed.PNG
    :width: 100 px
