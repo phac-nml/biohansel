@@ -58,16 +58,16 @@ This section displays the average coverage of all the targets that were present 
 #####################
 
 ================= ================================== =========================== ======================== ===========================
-    `Tilename`_               `Sequence`_                    `Frequency`_            `ref position`_               `Subtype`_
+    `Tilename`_               `Sequence`_                    `Frequency`_            `ref_position`_               `Subtype`_
 ----------------- ---------------------------------- --------------------------- ------------------------ ---------------------------
  (Name of Tile)         (Corresponding Sequence)      (Corresponding Frequency)  (Corresponding ref pos.)   (Subtypes in tilename)   
 ================= ================================== =========================== ======================== ===========================
 
-==================== ================================== =========================== ======================== ===========================
-  `"is pos tile"`_      `"is kmer freq okay"`_            `File path`_               `Sample`_                  `Scheme`_
--------------------- ---------------------------------- --------------------------- ------------------------ ---------------------------
- (Name of Tile)         (Corresponding Sequence)      (Corresponding Frequency)  (Corresponding ref pos.)   (Subtypes in tilename)   
-==================== ================================== =========================== ======================== ===========================
+================= ============================== =========================== ======================== ===========================
+  `is_pos_tile`_      `is_kmer_freq_okay`_            `File path`_               `Sample`_                  `Scheme`_
+----------------- ------------------------------ --------------------------- ------------------------ ---------------------------
+ (Name of Tile)       (Corresponding Sequence)      (Corresponding Frequency)  (Corresponding ref pos.)   (Subtypes in tilename)   
+================= ============================== =========================== ======================== ===========================
 
 **Tilename**
 ------------
@@ -78,13 +78,13 @@ This section displays the average coverage of all the targets that were present 
 **Frequency**
 -------------
 
-**"ref position"**
+**ref_position**
 -------------
 
-**"is pos tile"**
+**is_pos_tile**
 ---------------
 
-**"is kmer freq okay"**
+**is_kmer_freq_okay**
 ---------------------
 
 **File path**
