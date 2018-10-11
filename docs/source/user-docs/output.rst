@@ -64,9 +64,9 @@ This section displays the average coverage of all the targets that were present 
 ================= ================================== =========================== ======================== ===========================
 
 ================= ============================== =========================== ======================== ===========================
-  `is_pos_tile`_      `is_kmer_freq_okay`_            `File path`_               `Sample`_                  `Scheme`_
+  `is_pos_tile`_      `is_kmer_freq_okay`_            `File path`_                  `Sample`_                  `Scheme`_
 ----------------- ------------------------------ --------------------------- ------------------------ ---------------------------
- (Name of Tile)       (Corresponding Sequence)      (Corresponding Frequency)  (Corresponding ref pos.)   (Subtypes in tilename)   
+ (Name of Tile)       (Corresponding Sequence)    (Corresponding Frequency)  (Corresponding ref pos.)   (Subtypes in tilename)   
 ================= ============================== =========================== ======================== ===========================
 
 **Tilename**
