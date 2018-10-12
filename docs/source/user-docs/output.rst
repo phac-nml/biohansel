@@ -139,11 +139,12 @@ Version of the given scheme
     (Sample Name)          (Scheme name)            (Version of Scheme)         (Subtypes in tilename)    (Subtypes in all lineages)
 ===================== ======================= =============================== ========================== ============================
 
-==================================== ==============================
-    `tiles_matching_subtype`_          `are_subtypes_consistent`_
------------------------------------- ------------------------------
- (subtypes that match given tiles)            (TRUE/FAlSE)
-==================================== ==============================
+==================================== ============================== =========================== ==============================
+    `tiles_matching_subtype`_          `are_subtypes_consistent`_     `inconsistent_subtypes`_     `n_tiles_matching_all`_
+------------------------------------ ------------------------------ --------------------------- ------------------------------
+ (subtypes that match given tiles)            (TRUE/FALSE)                  (TRUE/FALSE)          (Number of actual matches)
+==================================== ============================== =========================== ==============================
+
 
 **all_subtype**
 ---------------
@@ -164,9 +165,13 @@ All positive tiles within QC parameters, have consistent subtypes in downstream 
 -------------------------
 If "are_subtypes_consistent" is FALSE, it lists subtypes that are inconsistent to parent
 
+**n_tiles_matching_all**
+-------------------------
+- Counting actual positive matches per subtype found in sample based on subtype scheme 
+
 **n match expected**
 --------------------
-- How many positive matches expected per subtype found in sample based on subtype scheme
+- The number positive matches expected per subtype found in sample based on subtype scheme
 
 
 
