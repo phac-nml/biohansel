@@ -92,7 +92,7 @@ Number of exact matches found
 
 
 **ref_position**
--------------
+---------------
 Specific position in the reference genome used
 
 
@@ -128,7 +128,22 @@ Name of the given Scheme
 Version of the given scheme
 
 
-**tiles matching subtype**
+
+
+**Results.tab**
+###############
+================ =========================== =================== ===================== ======================================= 
+    `Sample`_             `Scheme`_           `Scheme_vers`_        `Subtype`_                   `all_subtype`_
+---------------- --------------------------- ------------------- --------------------- ---------------------------------------
+  (Sample Name)    (Corresponding Sequence)    (Scheme Version)  (Subtype in Sample)    (List of all subtypes in all lineages)   
+================ =========================== =================== ===================== =======================================
+================================== =============================
+    `tiles_matching_subtype`_        `are_subtypes_consistent`_
+---------------------------------- -----------------------------
+ (subtypes that match given tiles)         (TRUE/FAlSE)
+================================== =============================
+
+**tiles_matching_subtype**
 --------------------------
 (blank)
 
