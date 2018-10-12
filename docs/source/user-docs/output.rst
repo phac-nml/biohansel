@@ -25,7 +25,22 @@ Three different result files will be produced: `tech results.tab`_, `match resul
    :alt: This is an ideal picture of a passed scheme
    :width: 100 px
 
+.. |positive| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Positive%20pic%20of%20matching.PNG
+   :alt: picture of positive match
+   :width: 100 px
 
+.. |consistent| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/PCIS%20BIO.PNG
+   :alt: picture of consistent
+   :width: 100 px
+
+.. |n_all| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/N%20tiles%20all%20picture.PNG
+   :alt: picture of all match
+   :width: 100 px
+ 
+.. |subtype| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/sUBTYPE%20MATCH%20PIC.PNG
+   :alt: picture of subtype match
+   :width: 100 px
+ 
 **Tech results.tab**
 ###################
 ================ ================================== ================================== ==================== ===========================
@@ -139,11 +154,29 @@ Version of the given scheme
     (Sample Name)          (Scheme name)            (Version of Scheme)         (Subtypes in tilename)    (Subtypes in all lineages)
 ===================== ======================= =============================== ========================== ============================
 
-==================================== ============================== =========================== ==============================
-    `tiles_matching_subtype`_          `are_subtypes_consistent`_     `inconsistent_subtypes`_     `n_tiles_matching_all`_
------------------------------------- ------------------------------ --------------------------- ------------------------------
- (subtypes that match given tiles)            (TRUE/FALSE)                  (TRUE/FALSE)          (Number of actual matches)
-==================================== ============================== =========================== ==============================
+==================================== ============================== =========================== =======================================
+    `tiles_matching_subtype`_          `are_subtypes_consistent`_     `inconsistent_subtypes`_           `n_tiles_matching_all`_
+------------------------------------ ------------------------------ --------------------------- ---------------------------------------
+ (subtypes that match given tiles)            (TRUE/FALSE)                  (TRUE/FALSE)          (Number of actual matches in sample)
+==================================== ============================== =========================== =======================================
+
+======================================== ========================================== ========================================== 
+    `n_tiles_matching_all_expected`_            `n_tiles_matching_positive`_           `n_tiles_matching_positive_expected`_     
+---------------------------------------- ------------------------------------------  -----------------------------------------
+(Expected positive matches in sample)     (Number of matches in targeted lineage)     (Expected matches in targeted lineage)          
+======================================== ========================================== ========================================== 
+
+=========================================== ========================================== =========================== 
+    `n_tiles_matching_subtype`_                `n_tiles_matching_subtype_expected`_           `File path`_ 
+------------------------------------------- ------------------------------------------  --------------------------
+(Number of matches in specific sublineage)  (Expected matches in targeted sublineage)        (File Location)         
+=========================================== ========================================== ===========================
+
+==================== ===========================
+    `QC status`_            `QC message`_
+-------------------- ---------------------------
+ (PASS/FAIL/WARNING)  (Corresponding QC message) 
+==================== ===========================
 
 
 **all_subtype**
@@ -161,17 +194,49 @@ All of the subtypes in all the levels of lineage
 - Consistency -> 
 All positive tiles within QC parameters, have consistent subtypes in downstream sublineages corresponding to parent subtype
 
+|consistent|
+
 **inconsistent_subtypes**
 -------------------------
 If "are_subtypes_consistent" is FALSE, it lists subtypes that are inconsistent to parent
 
+
 **n_tiles_matching_all**
 -------------------------
-- Counting actual positive matches per subtype found in sample based on subtype scheme 
+Counting actual positive matches per subtype found in sample based on subtype scheme in all lineages
 
-**n match expected**
---------------------
-- The number positive matches expected per subtype found in sample based on subtype scheme
+|n_all|
+
+
+**n_tiles_matching_all_expected**
+---------------------------------
+The number positive matches expected per subtype found in sample based on subtype scheme
+
+
+**n_tiles_matching_positive**
+------------------------------
+
+|positive|
+
+
+**n_tiles_matching_positive_expected**
+--------------------------------------
+
+
+**n_tiles_matching_subtype**
+-----------------------------
+
+|subtype|
+
+**n_tiles_matching_subtype_expected**
+-------------------------------------
+
+
+
+
+
+
+
 
 
 
