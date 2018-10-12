@@ -2,7 +2,7 @@
 Output 
 ======
 
-Three different result files will be produced: `tech results.tab`_, `match results.tab`_ & results.tab
+Three different result files will be produced: `tech results.tab`_, `match results.tab`_ & `results.tab`_
 
 .. |mixed| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Mixed.PNG
    :width: 100 px
@@ -159,18 +159,18 @@ Version of the given scheme
 ------------------------------------ ------------------------------ --------------------------- ---------------------------------------
  (subtypes that match given tiles)            (TRUE/FALSE)                  (TRUE/FALSE)          (Number of actual matches in sample)
 ==================================== ============================== =========================== =======================================
+ 
+========================================= =========================================== ==========================================
+    `n_tiles_matching_all_expected`_            `n_tiles_matching_positive`_             `n_tiles_matching_positive_expected`_     
+----------------------------------------- -------------------------------------------  -----------------------------------------
+  (Expected positive matches in sample)     (Number of matches in targeted lineage)     (Expected matches in targeted lineage)          
+========================================= =========================================== ==========================================
 
-======================================== ========================================== ========================================== 
-    `n_tiles_matching_all_expected`_            `n_tiles_matching_positive`_           `n_tiles_matching_positive_expected`_     
----------------------------------------- ------------------------------------------  -----------------------------------------
-(Expected positive matches in sample)     (Number of matches in targeted lineage)     (Expected matches in targeted lineage)          
-======================================== ========================================== ========================================== 
-
-=========================================== ========================================== =========================== 
-    `n_tiles_matching_subtype`_                `n_tiles_matching_subtype_expected`_           `File path`_ 
-------------------------------------------- ------------------------------------------  --------------------------
-(Number of matches in specific sublineage)  (Expected matches in targeted sublineage)        (File Location)         
-=========================================== ========================================== ===========================
+============================================ =========================================== ===========================
+        `n_tiles_matching_subtype`_              `n_tiles_matching_subtype_expected`_           `File path`_ 
+-------------------------------------------- -------------------------------------------  --------------------------
+(Number of matches in specific sublineage)    (Expected matches in targeted sublineage)        (File Location)         
+============================================ =========================================== ===========================
 
 ==================== ===========================
     `QC status`_            `QC message`_
@@ -191,8 +191,7 @@ All of the subtypes in all the levels of lineage
 
 **are_subtypes_consistent**
 ---------------------------
-- Consistency -> 
-All positive tiles within QC parameters, have consistent subtypes in downstream sublineages corresponding to parent subtype
+- Consistency -> All positive tiles within QC parameters, have consistent subtypes in downstream sublineages corresponding to parent subtype
 
 |consistent|
 
@@ -215,22 +214,24 @@ The number positive matches expected per subtype found in sample based on subtyp
 
 **n_tiles_matching_positive**
 ------------------------------
+The number of positive matches in the full sample lineage 
 
 |positive|
 
 
 **n_tiles_matching_positive_expected**
 --------------------------------------
-
+The number of positive matches expected in the full sample lineage 
 
 **n_tiles_matching_subtype**
 -----------------------------
+The number of positive matches in the sample sublineage only
 
 |subtype|
 
 **n_tiles_matching_subtype_expected**
 -------------------------------------
-
+The number of positive matches expected in the sample sublineage only
 
 
 
