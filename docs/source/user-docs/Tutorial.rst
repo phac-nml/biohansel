@@ -3,11 +3,11 @@ Tutorial
 
 .. |heidelberg| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Specs%20for%20biohansel.PNG
    :alt: specs of biohansel run
-   :width: 110 px
+   :width: 250 px
  
 .. |experimental| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Biohansel%20location.PNG
    :alt: location of biohansel in galaxy
-   :width: 110 px
+   :width: 250 px
 
 Testing:
 ########
