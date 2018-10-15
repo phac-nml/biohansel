@@ -40,7 +40,7 @@ Three different result files will be produced: `tech results.tab`_, `match resul
 .. |subtype| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/sUBTYPE%20MATCH%20PIC.PNG
    :alt: picture of subtype match
    :width: 100 px
- 
+|
 **Tech results.tab**
 ###################
 ================ ================================== ================================== ==================== ===========================
@@ -239,15 +239,15 @@ Three possibilities based on the QC analysis described below: `QC message`_
 
 3.) WARNING
 
-
-
-
+|
 **QC message**
 ---------------
 
+A pass occurs when there is no errors in the targeted lineage and its corresponding sublineages:
+
 |pass|
 
-
+|
 *"WARNING: Intermediate Subtype"*
 """""""""""""""""""""""""""""""
 Warnings will be triggered if all four following conditions are met:
@@ -282,7 +282,8 @@ Two possible causes:
 
 ** To determine which cause, the average coverage depth is returned to the user. The value is calculated based on the coverage for all tiles that were above the minumum coverage threshold (indicated by the QC parameters: default value = 8) 
 
-|missing|                                                                                                                                                                                                                                                                                                  
+|missing|
+
 |
 *Error Type 2: Mixed Sample*
 """"""""""""""""""""""""""""
@@ -294,7 +295,6 @@ Two possible causes:
 -> (possible solution) if the average genome coverage is above 100, increase the minimum k-mer threshold to at least 10% of the average genome coverage
 
 |mixed|
-
 
 |
 *"Error Type 3: Ambiguous result"* 
