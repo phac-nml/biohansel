@@ -7,7 +7,7 @@ Tutorial
  
 .. |experimental| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Biohansel%20location.PNG
    :alt: location of biohansel in galaxy
-   :width: 250 px
+   :width: 500 px
 
 Testing:
 ########
