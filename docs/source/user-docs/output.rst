@@ -243,6 +243,9 @@ Three possibilities based on the QC analysis described below: `QC message`_
 **QC message**
 ---------------
 
+|
+*"Pass"*
+"""""""""
 A pass occurs when there is no errors in the targeted lineage and its corresponding sublineages:
 
 |pass|
