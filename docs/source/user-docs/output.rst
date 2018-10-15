@@ -272,7 +272,7 @@ Average coverage calculated from all targets found in the sample (The value is r
 |
 *Error Type 1: Missing Tiles*
 """""""""""""""""""""""""""
-*** The "Maximum amount of missing tiles to be allowed before being considered an error" can be edited based on preference and scheme
+\*** The "Maximum amount of missing tiles to be allowed before being considered an error" can be edited based on preference and scheme
 
 Two possible causes:
 
