@@ -15,8 +15,10 @@ Testing:
 To verify that Biohansel is working properly with the different interfaces:
 
 Download either the CP012921.fasta (fasta file) or the SRR2598330(fastq-dump).fastqsanger.gz (raw file) which are two of the same samples:
+
    <https://share.corefacility.ca/index.php/s/dRGOuqhDJUNeKmE> (password: biohansel)
    
+|
 CP012921.fasta (fasta file) - This is the assembly file 
 SRR2598330(fastq-dump).fastqsanger.gz - This is the raw reads file
 \*** Both files are Salmonella heidelberg samples
@@ -25,10 +27,8 @@ SRR2598330(fastq-dump).fastqsanger.gz - This is the raw reads file
 -------------------
 
 For CP012921.fasta (fasta file):
-
-
  
-
+|
 NML - Galaxy Access (BioHansel)
 ###############################
 1.) Create a new history in Galaxy and either the fasta file or the raw reads file onto the new history
