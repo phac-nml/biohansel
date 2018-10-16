@@ -8,6 +8,20 @@ Tutorial
 .. |experimental| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Biohansel%20location.PNG
    :alt: location of biohansel in galaxy
    :width: 250 px
+   
+.. |fmatch| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Match_results.PNG
+   :alt: fasta match results
+   :width: 100 px
+   
+.. |ftech| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/tech_results.PNG
+   :alt: fasta tech results
+   :width: 100 px
+   
+.. |fresults| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Results.PNG
+   :alt: fasta results
+   :width: 100 px
+   
+
 
 **To see the different types of outputs that are produced by biohansel go to: `Output <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/output.html>`_
 
@@ -29,7 +43,16 @@ SRR2598330(fastq-dump).fastqsanger.gz - This is the raw reads file
 -------------------
 
 For CP012921.fasta (fasta file):
- 
+
+**Fasta match_result.tab:**
+|fmatch|
+
+**Fasta tech_result.tab:**
+|ftech|
+
+**Fasta tech_result.tab:**
+|fresults|
+
 |
 NML - Galaxy Access (BioHansel)
 ###############################
