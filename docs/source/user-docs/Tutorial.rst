@@ -100,7 +100,8 @@ NML - Galaxy Access (BioHansel)
 3.) For the "Sequence Data Type", select the proper type of data (FASTA vs. FASTAQ (raw))
 
 4.) For the "SNP Subtyping Scheme", select the proper scheme corresponding to the organism in your samples
-       - (For verification/testing select the "Salmonella Heidelberg subtype scheme")
+
+    (For verification/testing select the "Salmonella Heidelberg subtype scheme")
        
 |heidelberg|
   
