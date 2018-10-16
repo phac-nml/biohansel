@@ -20,7 +20,7 @@ Tutorial
 .. |fresults| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Results.PNG
    :alt: fasta results
    :width: 900 px
-   :length: 500 px
+  
    
 
 
@@ -55,6 +55,10 @@ For CP012921.fasta (fasta file):
 |fresults|
 
 |
+
+For SRR2598330(fastq-dump).fastqsanger.gz (raw file):
+
+
 NML - Galaxy Access (BioHansel)
 ###############################
 1.) Create a new history in Galaxy and either the fasta file or the raw reads file onto the new history
@@ -63,12 +67,14 @@ NML - Galaxy Access (BioHansel)
 
   |experimental|
   
-3.) For the "SNP Subtyping Scheme", select the proper scheme corresponding to the organism in your samples
+3.) For the "Sequence Data Type", select the proper type of data (FASTA vs. FASTAQ (raw))
+
+4.) For the "SNP Subtyping Scheme", select the proper scheme corresponding to the organism in your samples
        - (For verification/testing select the "Salmonella Heidelberg subtype scheme")
        
 |heidelberg|
   
-4.) Execute the file and three results should be produced: tech_results.tab, match_results.tab and results.tab
+5.) Execute the file and three results should be produced: tech_results.tab, match_results.tab and results.tab
 (If running the "testing" fasta or raw file; to verify go to `Testing results`_)
 
 -> The .tab files can be opened in excel
