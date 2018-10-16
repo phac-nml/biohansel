@@ -20,6 +20,7 @@ Tutorial
 .. |fresults| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Results.PNG
    :alt: fasta results
    :width: 900 px
+   :length: 500 px
    
 
 
@@ -50,7 +51,7 @@ For CP012921.fasta (fasta file):
 **Fasta tech_result.tab:**
 |ftech|
 
-**Fasta tech_result.tab:**
+**Fasta result.tab:**
 |fresults|
 
 |
