@@ -59,30 +59,36 @@ SRR2598330(fastq-dump).fastqsanger.gz - This is the raw reads file
 **Testing Results**
 -------------------
 
-For CP012921.fasta (fasta file):
+**For CP012921.fasta (fasta file):**
 
-**Fasta match_result.tab:**
+*Fasta match_result.tab:*
+
 |fmatch|
 
-**Fasta tech_result.tab:**
+*Fasta tech_result.tab:*
+
 |ftech|
 
-**Fasta result.tab:**
+*Fasta result.tab:*
+
 |fresults|
 
 |
-For SRR2598330(fastq-dump).fastqsanger.gz (raw file):
+**For SRR2598330(fastq-dump).fastqsanger.gz (raw file):**
 
-**Raw/FASTQ match_result.tab:**
+*Raw/FASTQ match_result.tab:*
+
 |rmatch|
 
-**Raw/FASTQ tech_result.tab:**
+*Raw/FASTQ tech_result.tab:*
+
 |rtech|
 
-**Raw/FASTQ result.tab:**
+*Raw/FASTQ result.tab:*
+
 |rresults|
 
-
+|
 NML - Galaxy Access (BioHansel)
 ###############################
 1.) Create a new history in Galaxy and either the fasta file or the raw reads file onto the new history
