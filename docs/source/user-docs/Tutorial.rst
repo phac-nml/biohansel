@@ -9,6 +9,8 @@ Tutorial
    :alt: location of biohansel in galaxy
    :width: 250 px
 
+**To see the different types of outputs that are produced by biohansel go to: `Output <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/output.html>`_
+
 Testing:
 ########
 
@@ -44,3 +46,5 @@ NML - Galaxy Access (BioHansel)
   
 4.) Execute the file and three results should be produced: tech_results.tab, match_results.tab and results.tab
 (If running the "testing" fasta or raw file; to verify go to `Testing results`_)
+
+-> The .tab files can be opened in excel
