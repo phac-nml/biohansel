@@ -11,7 +11,7 @@ Tutorial
    
 .. |fmatch| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Match_results.PNG
    :alt: fasta match results
-   :width: 600 px
+   :width: 670 px
    
 .. |ftech| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/tech_results.PNG
    :alt: fasta tech results
@@ -19,7 +19,7 @@ Tutorial
    
 .. |fresults| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Results.PNG
    :alt: fasta results
-   :width: 600 px
+   :width: 900 px
    
 
 
