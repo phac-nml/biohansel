@@ -9,6 +9,7 @@ Tutorial
    :alt: location of biohansel in galaxy
    :width: 250 px
    
+   
 .. |fmatch| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Match_results.PNG
    :alt: fasta match results
    :width: 670 px
@@ -20,6 +21,21 @@ Tutorial
 .. |fresults| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Results.PNG
    :alt: fasta results
    :width: 900 px
+   
+   
+.. |rmatch| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Match%20results.PNG
+   :alt: raw match
+   :width: 600 px
+   
+   
+.. |rresults| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/results.PNG
+   :alt: raw results
+   :width: 600 px
+   
+   
+.. |rtech| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Tech%20resultss.PNG
+   :alt:  raw tech results
+   :width: 600 px
   
    
 
@@ -55,8 +71,16 @@ For CP012921.fasta (fasta file):
 |fresults|
 
 |
-
 For SRR2598330(fastq-dump).fastqsanger.gz (raw file):
+
+**Raw/FASTQ match_result.tab:**
+|rmatch|
+
+**Raw/FASTQ tech_result.tab:**
+|rtech|
+
+**Raw/FASTQ result.tab:**
+|rresults|
 
 
 NML - Galaxy Access (BioHansel)
