@@ -11,15 +11,15 @@ Tutorial
    
 .. |fmatch| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Match_results.PNG
    :alt: fasta match results
-   :width: 100 px
+   :width: 300 px
    
 .. |ftech| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/tech_results.PNG
    :alt: fasta tech results
-   :width: 100 px
+   :width: 300 px
    
 .. |fresults| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Results.PNG
    :alt: fasta results
-   :width: 100 px
+   :width: 300 px
    
 
 
