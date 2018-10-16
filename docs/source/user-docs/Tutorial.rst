@@ -23,7 +23,7 @@ Tutorial
    
 
 
-**To see the different types of outputs that are produced by biohansel go to: `Output <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/output.html>`_
+\**To see the different types of outputs that are produced by biohansel go to: `Output <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/output.html>`_
 
 Testing:
 ########
