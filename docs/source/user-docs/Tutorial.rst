@@ -54,7 +54,6 @@ Download either the CP012921.fasta (fasta file) or the SRR2598330(fastq-dump).fa
 
    <https://share.corefacility.ca/index.php/s/dRGOuqhDJUNeKmE> (password: biohansel)
    
-|
 CP012921.fasta (fasta file) - This is the assembly file 
 SRR2598330(fastq-dump).fastqsanger.gz - This is the raw reads file
 \*** Both files are Salmonella heidelberg samples
@@ -139,6 +138,7 @@ conda install -c bioconda bio_hansel
 biohansel -h 
 
 #this command shows the numerous types of commands you can use in for biohansel
+
 go to `command-line<https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/command-line.html>`_ to see detailed description
 
 |command|
@@ -167,13 +167,18 @@ cd User/name of user/Downloads
 hansel -s heidelberg -vv -o results.tab -O match_results.tab -S tech_results.tab CP012921.fasta
 
 -s -> this command is for the name of the scheme used in biohansel (enteritidis and heidelberg are the two built in schemes right now)
+
 -o -> this command is for the most basic of results (you can change the name to whatever you want *just remember to add .tab)
+
 -O -> this command is for a more detailed type of results (known as match_results.tab, but you can change it to whatever name you want)
+
 -S -> this command is for the tech_results.tab (change name to whatever you want *just remember to add .tab)
 
 Then at the end of the command just input the name of the file 
+
 (you can type the first two to three letters of the file name, then just press "tab" and the file name should pop-up)
 
+|
 10.) The result files should be where-ever the file you ran was located.
 
 
