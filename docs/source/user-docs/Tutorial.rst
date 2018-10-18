@@ -139,7 +139,7 @@ biohansel -h
 
 #this command shows the numerous types of commands you can use in for biohansel
 
-go to `command-line<https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/command-line.html>`_ to see detailed description
+go to `command-line <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/command-line.html>`_ to see detailed description
 
 |command|
 
