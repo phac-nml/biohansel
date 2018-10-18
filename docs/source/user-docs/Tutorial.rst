@@ -37,7 +37,7 @@ Tutorial
    :alt:  raw tech results
    :width: 600 px
 
-.. |command| image:: 
+.. |command| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Screen%20Shot%202018-10-18%20at%203.22.52%20PM.png
    :alt: command line commands
    :width: 600 px
    
@@ -128,25 +128,29 @@ conda create -n *name of environment* python=3.6
 
 source activate *name of your environment*
 
+|
 5.) Now install biohansel onto conda environment by inputting:
 
 conda install -c bioconda bio_hansel
 
+|
 6.) To confirm that biohansel has been installed in the environment, input:
 
 biohansel -h 
 
 #this command shows the numerous types of commands you can use in for biohansel
-go to 
+go to `command-line<https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/command-line.html>`_ to see detailed description
 
 |command|
 
+|
 7.) Then input:
 
 pwd 
 
 #pwd command stands for print working directory, which shows what directory you are currently in
 
+|
 8.) Using the directory you are in (which is most likely User/"*name of user*) you point the terminal to go to the directory where the file is by inputting:
 
 cd *where the file is*
@@ -157,6 +161,7 @@ cd User/name of user/Downloads
 
 # cd (change directory) command
 
+|
 9.) This will put you straight into the directory where the file is. Then just run the file using this as an example:
 
 hansel -s heidelberg -vv -o results.tab -O match_results.tab -S tech_results.tab CP012921.fasta
