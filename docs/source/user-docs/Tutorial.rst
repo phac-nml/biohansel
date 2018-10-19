@@ -119,13 +119,17 @@ Running BioHansel on Terminal (MAC) using Conda
 
 2.) After installing Conda, go on terminal and create a conda environment by inputing this command:
 
-conda create -n *name of environment* python=3.6
+.. codeblock::
+
+   conda create -n *name of environment* python=3.6
 
 3.) It will ask you to proceed (y/n) afterwards, type in: y
 
 4.) Then activate your environment by typing:
 
-source activate *name of your environment*
+.. codeblock::
+
+   source activate *name of your environment*
 
 |
 5.) Now install biohansel onto conda environment by inputting:
