@@ -120,16 +120,13 @@ Running BioHansel on Terminal (MAC) using Conda
 |
 **2.)** After installing Conda, go on terminal and create a conda environment by inputing this command:
 
-.. code-block::
+conda create -n *name of environment* python=3.6
 
-   conda create -n *name of environment* python=3.6
-
+|
 **3.)** It will ask you to proceed (y/n) afterwards, type in: y
 
 |
 **4.)** Then activate your environment by typing:
-
-.. code-block::
 
    source activate *name of your environment*
 
@@ -140,8 +137,6 @@ conda install -c bioconda bio_hansel
 
 |
 **6.)** To confirm that biohansel has been installed in the environment, input:
-
-.. code-block::
 
    biohansel -h 
 
@@ -154,16 +149,12 @@ go to `command-line <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/
 |
 **7.)** Then input:
 
-.. code-block::
-
    pwd 
 
 #pwd command stands for print working directory, which shows what directory you are currently in
 
 |
 **8.)** Using the directory you are in (which is most likely User/"*name of user*) you point the terminal to go to the directory where the file is by inputting:
-
-.. codeblock::
 
    cd *where the file is*
 
