@@ -138,7 +138,7 @@ conda install -c bioconda bio_hansel
 |
 **6.)** To confirm that biohansel has been installed in the environment, input:
 
-   biohansel -h 
+   hansel -h 
 
 #this command shows the numerous types of commands you can use in for biohansel
 
