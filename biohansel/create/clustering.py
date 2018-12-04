@@ -128,5 +128,5 @@ def fclusters_at_multiple_distances(linkage_array: np.ndarray,
             threshold_cluster[threshold] = clusters
     df = pd.DataFrame(threshold_cluster, index=index_names)
     # sort columns by greatest distance threshold to least
-    df = df[df.columns[::-1]]
-    return df.sort_values(by=df.columns[::-1].tolist(), ascending=True)
+    df = df[np.sort(df.columns)[::-1]]
+    return df.sort_values(by=df.columns.tolist(), ascending=True)

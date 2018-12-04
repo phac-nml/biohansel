@@ -43,13 +43,7 @@ Requirements and Dependencies
 
 Each new build of ``biohansel`` is automatically tested on Linux using `Continuous Integration <https://travis-ci.org/phac-nml/bio_hansel/branches>`_. ``biohansel`` has been confirmed to work on Mac OSX (versions 10.13.5 Beta and 10.12.6) when installed with Conda_.
 
-These are the dependencies required for ``biohansel``:
-
-- Python_ (>=v3.6)
-    - numpy_ >=1.12.1
-    - pandas_ >=0.20.1
-    - pyahocorasick_ >=1.1.6
-    - attrs_
+``biohansel`` requires Python 3.6+. Required Python library dependencies can be found in the ``setup.py``.
 
 
 Installation
@@ -259,13 +253,19 @@ Get the latest development code using Git from GitHub:
 
     git clone https://github.com/phac-nml/biohansel.git
     cd biohansel/
+    # checkout the main development branch or some other development branch
     git checkout development
-    # Create a virtual environment (virtualenv) for development
+    # Create a virtual environment (virtualenv) for development; ensure that you're creating a Python virtualenv with Python 3.6!
     virtualenv -p python3 .venv
     # Activate the newly created virtualenv
     source .venv/bin/activate
     # Install biohansel into the virtualenv in "editable" mode
     pip install -e .
+    # install Jupyter for prototyping in a Jupyter Notebook
+    pip install jupyter
+    # launch Jupyter Notebook
+    jupyter notebook
+    # hack away!
 
 
 Run tests with `$ python setup.py test` or pytest_:

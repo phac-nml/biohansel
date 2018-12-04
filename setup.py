@@ -78,11 +78,15 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'numpy>=1.12.1',
-        'pandas>=0.20.1',
-        'pyahocorasick>=1.1.6',
+        'numpy>=1.15.4',
+        'pandas>=0.23.4',
+        'pyahocorasick>=1.1.12',
         'attrs>=17.2.0',
-        'click>=6.7'
+        'click>=6.7',
+        'fastcluster>=1.1.25',
+        'biopython>=1.72',
+        'matplotlib>=3.0.2',
+        'scipy==1.1.0'
     ],
     tests_require=['pytest', ],
     cmdclass={'test': PyTest},  # run tests with `python setup.py test`
