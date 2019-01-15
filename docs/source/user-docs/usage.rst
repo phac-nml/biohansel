@@ -1,6 +1,12 @@
 Usage
 =====
 
+BioHansel subtypes microbial whole-genome sequencing (WGS) data using singe nucleotide variant (SNV) k-mer subtyping schemes.
+
+SNV k-mer schemes can be created for use by the tool or the included 33 bp k-mer SNV subtyping schemes for Salmonella enterica subsp. enterica serovar Heidelberg and Enteritidis genomes developed by Genevieve Labbe et al. can be used for analysis of Salmonella WGS data. 
+
+BioHansel can be installed with Conda, pip, or within an existing Galaxy infrastructure. View the `install guide`__ of your preferance for additional details.
+
 Requirements and Dependencies
 -----------------------------
 
@@ -14,31 +20,45 @@ These are the dependencies required for ``bio_hansel``:
     - pyahocorasick_ >=1.1.6
     - attrs_
 
-Installation
-------------
+Quick Installation
+------------------
 
 With Conda_
 -----------
 
-Install ``bio_hansel`` from Bioconda_ with Conda_ (`Conda installation instructions <https://bioconda.github.io/#install-conda>`_):
+Conda is the easiest way to install ``bio_hanzel`` and run it through the use of the command line.
+
+First, install Conda_ (`Conda installation instructions <https://bioconda.github.io/#install-conda>`_).
+
+Then, install ``bio_hansel``through Bioconda_ (64bit linux and MAC OSX) using the following commands:
 
 .. code-block:: bash
 
-    # OPTIONAL: To create new Conda environment input this command on terminal:
+    # OPTIONAL: To create a new Conda environment input this command on terminal:
     conda create -n "name of environment" python=3.6
     # Then to create/activate conda environment: (*note* name of environment is what user decides to name environment)
-    source activate name of environment
+    source activate "name of environment"
     
-    # You can then install biohansel in the new environment
+    # You can then install bio_hansel in the new environment
     # To deactivate environment, input:
     source deactivate
     
-    # setup Conda channels for Bioconda and Conda-Forge (https://bioconda.github.io/#set-up-channels)
+    # Setup Conda channels for Bioconda and Conda-Forge (https://bioconda.github.io/#set-up-channels)
     conda config --add channels defaults
-    conda config --add channels conda-forge
     conda config --add channels bioconda
-    # install bio_hansel
+    conda config --add channels conda-forge
+
+    #Activate wanted Conda environment (base or user created)
+    conda activate
+
+    # Install bio_hansel
     conda install bio_hansel
+
+    #Check installation with the following command; make sure to be in the correct environment
+    hansel -h
+    #This will display the usage statement
+
+Remeber to activate the Conda environment that ``bio_hansel`` is installed at to run it.
 
 With pip_ from PyPI_
 ---------------------
@@ -49,21 +69,76 @@ Install ``bio_hansel`` from PyPI_ with pip_:
 
     pip install bio_hansel
 
+This will install ``bio_hansel`` along with the required dependencies.
+
+Check that installation is correct with the command:
+
+ .. code-block:: bash
+
+    hansel -h
+    #This will display the usage statement.
+
 With pip_ from Github
 ---------------------
 
-Or install the latest master branch version directly from Github:
+Install the latest master branch version directly from Github:
 
 .. code-block:: bash
 
     pip install git+https://github.com/phac-nml/bio_hansel.git@master
 
+Check that ``bio_hanzel`` is working with the command:
+
+ .. code-block:: bash
+
+    hansel -h
+    #This will display the usage statement.
+
 Install into Galaxy_ (version >= 17.01)
 ---------------------------------------
 
-Install ``bio_hansel`` from the main Galaxy_ toolshed:
+Galaxy admins install ``bio_hansel`` from the main Galaxy toolshed (`tutorial <https://galaxyproject.org/admin/tools/add-tool-from-toolshed-tutorial/>`_):
 
 https://toolshed.g2.bx.psu.edu/repository?repository_id=59b90ef18cc5dbbc&changeset_revision=4654c51dae72
+
+Users can download and set up their own instance of Galaxy following the `get Galaxy tutorial <https://galaxyproject.org/admin/get-galaxy/>`_ and then install ``bio_hansel`` from the toolshed as an admin.
+
+Input Data
+----------
+
+BioHansel uses genome assemblies (FASTA files) or reads (FastQ files) from WGS data as an input. It also accepts these files as their Gzipped FASTA/FASTQ formats. Genomes can be fully assembled or a collection of contigs when analyzed without impacting the output.
+
+SNV subtyping schemes have to be defined for BioHansel to run correctly. Two schemes are included and user created schemes can be used by creating SNV k-mers in the FASTA format. See `Creating schemes <**link**>`_ for more details.
+
+Output Results
+--------------
+
+Output of results will be found in three .tab files in the same folder as the analyzed data was stored or in the Galaxy histories window after analysis. The three files include:
+
+- tech_results.tab
+- results.tab
+- match_results.tab
+
+Detailed info about the results output can be found in the `output section <user-docs/output.html>`_.
+
+Parameters
+----------
+
+Parameters can be modified for the users needs on both Galaxy and the command line. Modifiable parameters include:
+
+- K-mer Frequency Thresholds
+    - Min k-mer frequency/coverage (default 8)
+    - Max k-mer frequency/coverage (default 1000)
+
+- Quality Checking Thresholds
+    - QC: Frequency below this coverage are considered low coverage (default 20)
+    - QC: Min number of tiles missing for Ambiguous Result (default 3)
+    - QC: Decimal Proportion of max allowed missing tiles (default 0.05)
+    - QC: Decimal Proportion of max allowed missing tiles for an intermediate subtype (default 0.05)
+    - QC: Overall tile coverage below this value will trigger a low coverage warning (default 20)
+
+Detailed info on BioHansels parameters and there functions can be found in the `parameter section <user-docs/parameters.html>`_.
+
 
 .. _PyPI: https://pypi.org/project/bio-hansel/
 .. _Conda: https://conda.io/docs/
@@ -75,3 +150,5 @@ https://toolshed.g2.bx.psu.edu/repository?repository_id=59b90ef18cc5dbbc&changes
 .. _attrs: http://www.attrs.org/en/stable/
 .. _Python: https://www.python.org/
 .. _Galaxy: https://galaxyproject.org/
+__ ../installation-docs/home.html
+
