@@ -5,7 +5,7 @@ BioHansel subtypes microbial whole-genome sequencing (WGS) data using singe nucl
 
 SNV k-mer schemes can be created for use by the tool or the included 33 bp k-mer SNV subtyping schemes for Salmonella enterica subsp. enterica serovar Heidelberg and Enteritidis genomes developed by Genevieve Labbe et al. can be used for analysis of Salmonella WGS data. 
 
-BioHansel can be installed with Conda, pip, or within an existing Galaxy infrastructure. View the `install guide`__ of your preferance for additional details.
+BioHansel can be installed with Conda, pip, or within an existing Galaxy infrastructure. View the `install guide <../installation-docs/home.html>`_ of your preferance for additional details.
 
 Requirements and Dependencies
 -----------------------------
@@ -108,7 +108,9 @@ Input Data
 
 BioHansel uses genome assemblies (FASTA files) or reads (FastQ files) from WGS data as an input. It also accepts these files as their Gzipped FASTA/FASTQ formats. Genomes can be fully assembled or a collection of contigs when analyzed without impacting the output.
 
-SNV subtyping schemes have to be defined for BioHansel to run correctly. Two schemes are included and user created schemes can be used by creating SNV k-mers in the FASTA format. See `Creating schemes <**link**>`_ for more details.
+SNV subtyping schemes have to be defined for BioHansel to run correctly. Two schemes are included and user created schemes can be used by creating SNV k-mers in the FASTA format. See `Creating schemes <subtyping_schemes.html>`_ for more details.
+
+Subtype metadata schemes can be added to the analysis but are not required. Added metadata is joined with the subtype field of the final results. More detailed info on formating of metadata schemes can be found in the `input section <input.html>`_. 
 
 Output Results
 --------------
@@ -119,12 +121,12 @@ Output of results will be found in three .tab files in the same folder as the an
 - results.tab
 - match_results.tab
 
-Detailed info about the results output can be found in the `output section <user-docs/output.html>`_.
+Detailed info about the results output can be found in the `output section <output.html>`_.
 
 Parameters
 ----------
 
-Parameters can be modified for the users needs on both Galaxy and the command line. Modifiable parameters include:
+Parameters can be modified for users of both Galaxy and the command line. These can be changed based on the users need. Modifiable parameters include:
 
 - K-mer Frequency Thresholds
     - Min k-mer frequency/coverage (default 8)
@@ -137,7 +139,7 @@ Parameters can be modified for the users needs on both Galaxy and the command li
     - QC: Decimal Proportion of max allowed missing tiles for an intermediate subtype (default 0.05)
     - QC: Overall tile coverage below this value will trigger a low coverage warning (default 20)
 
-Detailed info on BioHansels parameters and there functions can be found in the `parameter section <user-docs/parameters.html>`_.
+Detailed info on BioHansels parameters and their functions can be found in the `parameter section <parameters.html>`_.
 
 
 .. _PyPI: https://pypi.org/project/bio-hansel/
@@ -150,5 +152,4 @@ Detailed info on BioHansels parameters and there functions can be found in the `
 .. _attrs: http://www.attrs.org/en/stable/
 .. _Python: https://www.python.org/
 .. _Galaxy: https://galaxyproject.org/
-__ ../installation-docs/home.html
 

@@ -30,6 +30,7 @@ Works on genome assemblies (FASTA files) or reads (FASTQ files)! Accepts Gzipped
    user-docs/usage
    user-docs/Tutorial
    user-docs/input
+   user-docs/subtyping_schemes
    user-docs/output
    user-docs/parameters
    user-docs/command-line

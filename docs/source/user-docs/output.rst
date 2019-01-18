@@ -314,3 +314,7 @@ Caused by both conditions met:
 Lineage call is uncertain due to missing targets in downstream sublineage
 
 |unconfident|
+
+.. _schemes: subtyping_schemes.thml
+
+

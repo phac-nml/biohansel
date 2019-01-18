@@ -1,9 +1,9 @@
 Tutorial
 ========
 
-.. |heidelberg| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Specs%20for%20biohansel.PNG
-   :alt: specs of biohansel run
-   :width: 500 px
+.. |heidelberg| image:: SNP_addition.png
+   :alt: Selecting a subtyping scheme
+   :width: 700 px
  
 .. |experimental| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Biohansel%20location.PNG
    :alt: location of biohansel in galaxy
@@ -39,27 +39,186 @@ Tutorial
 
 .. |command| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Screen%20Shot%202018-10-18%20at%203.22.52%20PM.png
    :alt: command line commands
-   :width: 600 px
-   
+   :width: 600 px   
+
+.. |getdata| image:: get_data.png
+   :alt: get data section of Galaxy
+   :width: 200 px
+
+.. |sequencedata| image:: sequence_data.png
+   :alt: sequence data
+   :width: 700 px
+
+.. |metadata| image:: Scheme_tutorial.png
+   :alt: meta data addition
+   :width: 700 px
+
+.. |options| image:: Optional_changes.png
+   :alt: Parameters that can be changed but do not need to be changed in most analyses
+   :width: 700 px
+
+.. |eyes| image:: Eyes.png
+   :alt: collapseble eyes
+   :width: 25 px
 
 
-\**To see the different types of outputs that are produced by biohansel go to: `Output <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/output.html>`_
+This tutorial is for demonstrating how to run BioHansel and to confirm that it is installed correctly. For step by step installation instructions view `installation home <../installation-docs/home.html>`_ or for quick instructions view `quick install <usage.html>`_.
+
 
 Testing:
 ########
 
-To verify that Biohansel is working properly with the different interfaces:
+To verify that Biohansel is working properly with the different interfaces (command line/Galaxy):
 
-Download either the CP012921.fasta (fasta file) or the SRR2598330(fastq-dump).fastqsanger.gz (raw file) which are two of the same samples:
+Download either the CP012921.fasta (fasta file) or the SRR2598330(fastq-dump).fastqsanger.gz (raw file) which are the same samples in different formats:
 
    <https://share.corefacility.ca/index.php/s/dRGOuqhDJUNeKmE> (password: biohansel)
    
-CP012921.fasta (fasta file) - This is the assembly file 
-SRR2598330(fastq-dump).fastqsanger.gz - This is the raw reads file
-\*** Both files are Salmonella heidelberg samples
+CP012921.fasta - Is the assembled file sequence. 
 
-**Testing Results**
--------------------
+SRR2598330 (fastq-dump).fastqsanger.gz - Is the raw reads file.
+
+Specific steps regarding the testing/checking that installation was successful using the sample data found above will be found within the (brackets) below each general step involved in the analysis pipeline.
+
+*** Both example files contain are Salmonella heidelberg samples***
+
+NML - Galaxy Access (BioHansel)
+###############################
+**1.)** Create a new history in Galaxy and import either fasta files or raw reads files that are being analyzed into the newly created history using any of the tools from the Get Data "Tools" section.
+
+    (For verification: find the sample data in your files, most likely in Downloads, and upload it into Galaxy using the upload file tool.)
+
+|getdata|
+   
+**2.)** Find Biohansel on the right-hand side in the "Tools" Section: Under the Experimental Section and click it.
+
+  |experimental|
+  
+**3.)** For the "Sequence Data Type" parameter, select the proper type of data (FASTA vs. FASTAQ (raw)) depending upon the type of data being analyzed
+
+|sequencedata|
+
+**4.)** For the "SNP Subtyping Scheme", select the proper scheme corresponding to the organism in your samples. This can currently be the included Heidelberg or Enteritidis schemes or a user created FASTA file
+
+    (For verification: select the "Salmonella Heidelberg subtype scheme")
+       
+|heidelberg|
+
+**5.)** Optionally, add a Scheme Subtype Metadata Table to the analysis to be included into the end of the results files. This file must be in the .tsv format to be added properly or the analysis may fail (.csv may work on Galaxy but if the analysis fails change it to .tsv). 
+
+|metadata|
+
+**6.)** Click on the eye (|eyes|) to expand or collapse the modifiable parameters to your needs. The defaults work well for most analyses but in some situations it may be beneficial to change them. Detailed information on the parameters and what they do can be found in the `parameters section <parameters.html>`_
+
+    (For verification: leave all of the parameters as their defaults.)
+
+|options|
+  
+**7.)** Execute your inputs and analyze your data by clicking the large execute button to produce three results files: tech_results.tab, match_results.tab and results.tab. 
+
+The normal execution time is 0.5 - 60 seconds depending on what the inputs were. Don't be alarmed if it does take longer as it depends on the amount of computing power avaliable.
+
+    (For verification: verify that the output was correct by comparing to the `Testing results`_.)
+
+**8.)** The .tab files can be opened in excel or another spreadsheet program to view the results of the analysis.
+
+\**To view the different types of outputs that are produced by biohansel go to: `Output <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/output.html>`_
+
+Running BioHansel on Terminal (MAC) using Conda
+###############################################
+
+**1.)** Go to `Quick Installation <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/usage.html>`_ and download Miniconda from the website following the instructions corresponding to your given iOS
+
+|
+**2.)** After installing Conda, go on terminal and create a conda environment by inputing this command:
+
+.. code-block:: bash
+
+    conda create -n "name of environment" python=3.6
+
+|
+**3.)** It will ask you to proceed (y/n) afterwards, type in: y
+
+|
+**4.)** Then activate your environment by typing:
+
+.. code-block:: bash
+
+   source activate "name of your environment"
+
+|
+**5.)** Now install biohansel onto conda environment by inputting:
+
+.. code-block:: bash
+
+    conda install bio_hansel
+
+|
+**6.)** To confirm that BioHansel has been installed in the environment, input:
+
+.. code-block:: bash
+
+   hansel -h 
+   #this command shows the numerous types of commands you can use in for biohansel
+
+Go to `command-line <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/command-line.html>`_ to see detailed descriptions.
+
+|command|
+
+|
+**7.)** Figure out what directory you are in (which is most likely User/"*name of user*) using the following command:
+
+.. code-block:: bash
+
+    pwd
+    #pwd = "print working directory" and will show which directory you are currently in.
+
+|
+**8.)** Using the terminal window, change directories to the directory/folder that contains the data that you want to analyze. This can be done with the following command:
+
+.. code-block:: bash
+
+    cd *where the file is*
+    
+Example: if the file was in User/name of user/Downloads you input:
+
+.. code-block:: bash
+
+    cd User/name of user/Downloads
+    # cd = change directory command
+
+|
+**9.)** Once you're in the directory where your data is stored, BioHansel can be run on the data using this command:
+
+.. code-block:: bash
+
+    hansel -s heidelberg -vv -o results.tab -O match_results.tab -S tech_results.tab <Name of data file>
+    # If you downloaded the CP012921.fasta, then you would input CP012921.fasta at the end of the command
+
+
+The other arguments needed to run the command are as follows:
+
+-vv -> this command is for ***???***
+
+-s -> this command is for the name of the scheme used in biohansel (enteritidis and heidelberg are the two built in schemes right now)
+
+-o -> this command is for the most basic of results output by BioHansel called results.tab (You can change the name to whatever you want. **Remember to add .tab**)
+
+-O -> this command is for a more detailed results output known as match_results.tab (You can change it to whatever name you want. **Remember to add the .tab**)
+
+-S -> this command is for the tech_results.tab output (You can change name to whatever you want. **Remember to add .tab**)
+
+You do not need all of the arguments to run the command. You may only choose to look at one or two of the three outputs and as such can leave off the file you do not wish to create.
+
+After you have defined all of the necessary arguments, input the name of the file at the end of the command and press enter to start the analysis. (you can type the first two to three letters of the file name, then just press “tab” and the file name should pop-up) Normal analysis times will take anywhere from 0.5 - 60 seconds depending on the file size and previous assembly of contigs (if any).
+
+|
+10.) The result files that you specified should be where-ever the file you ran was located.
+
+If running the example files, verify that the output was correct by comparing to the `Testing results`_ tables.
+
+Testing Results
+###############
 
 **For CP012921.fasta (fasta file):**
 
@@ -91,97 +250,4 @@ SRR2598330(fastq-dump).fastqsanger.gz - This is the raw reads file
 |rresults|
 
 |
-NML - Galaxy Access (BioHansel)
-###############################
-**1.)** Create a new history in Galaxy and either the fasta file or the raw reads file onto the new history
-  
-**2.)** Find Biohansel on the right-hand side in the "Tools" Section: Under the Experimental Section
-
-  |experimental|
-  
-**3.)** For the "Sequence Data Type", select the proper type of data (FASTA vs. FASTAQ (raw))
-
-**4.)** For the "SNP Subtyping Scheme", select the proper scheme corresponding to the organism in your samples
-
-    (For verification/testing select the "Salmonella Heidelberg subtype scheme")
-       
-|heidelberg|
-  
-**5.)** Execute the file and three results should be produced: tech_results.tab, match_results.tab and results.tab
-(If running the "testing" fasta or raw file; to verify go to `Testing results`_)
-
--> The .tab files can be opened in excel
-
-
-Running BioHansel on Terminal (MAC) using Conda
-###############################################
-**1.)** Go to `Installation <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/usage.html>`_ and download Miniconda from the website following the instructions corresponding to your given iOS
-
-|
-**2.)** After installing Conda, go on terminal and create a conda environment by inputing this command:
-
-conda create -n *name of environment* python=3.6
-
-|
-**3.)** It will ask you to proceed (y/n) afterwards, type in: y
-
-|
-**4.)** Then activate your environment by typing:
-
-   source activate *name of your environment*
-
-|
-**5.)** Now install biohansel onto conda environment by inputting:
-
-conda install -c bioconda bio_hansel
-
-|
-**6.)** To confirm that biohansel has been installed in the environment, input:
-
-   hansel -h 
-
-#this command shows the numerous types of commands you can use in for biohansel
-
-go to `command-line <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/command-line.html>`_ to see detailed description
-
-|command|
-
-|
-**7.)** Then input:
-
-   pwd 
-
-#pwd command stands for print working directory, which shows what directory you are currently in
-
-|
-**8.)** Using the directory you are in (which is most likely User/"*name of user*) you point the terminal to go to the directory where the file is by inputting:
-
-   cd *where the file is*
-
-Example: (if the file was in User/name of user/Downloads) you input:
-
-   cd User/name of user/Downloads
-
-# cd (change directory) command
-
-|
-**9.)** This will put you straight into the directory where the file is. Then just run the file using this as an example:
-
-hansel -s heidelberg -vv -o results.tab -O match_results.tab -S tech_results.tab CP012921.fasta
-
--s -> this command is for the name of the scheme used in biohansel (enteritidis and heidelberg are the two built in schemes right now)
-
--o -> this command is for the most basic of results (you can change the name to whatever you want *just remember to add .tab)
-
--O -> this command is for a more detailed type of results (known as match_results.tab, but you can change it to whatever name you want)
-
--S -> this command is for the tech_results.tab (change name to whatever you want *just remember to add .tab)
-
-Then at the end of the command just input the name of the file 
-
-(you can type the first two to three letters of the file name, then just press "tab" and the file name should pop-up)
-
-|
-**10.)** The result files should be where-ever the file you ran was located.
-
 

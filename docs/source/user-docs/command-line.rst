@@ -75,3 +75,6 @@ If you run ``hansel -h``, you should see the following usage statement:
       -v, --verbose         Logging verbosity level (-v == show warnings; -vvv ==
                             show debug info)
       -V, --version         shows the program version number and exit
+
+
+**Going to include what all the things do if possible, maybe???
