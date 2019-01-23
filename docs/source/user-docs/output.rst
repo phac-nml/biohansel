@@ -51,13 +51,13 @@ Three different result files will be produced: `tech results.tab`_, `match resul
 
 **Sample**
 ----------
-Names of samples that are ran on biohansel
+Names of samples analyzed by biohansel
 
 
 **Subtype**
 -----------
-Consensus result from the analysis 
-If mixed results, biohansel will list all different subtypes detected
+Consensus result from the analysis.  
+If mixed results, biohansel will list all different subtypes detected. 
 If no "+" target is detected it will produce: "No Subtype!"
 
 
@@ -280,7 +280,7 @@ Two possible causes:
 
 2.) Low genome coverage or low quality data
 
-3.) Range of target coverage extends outside of QC limits (k-mer frequency thresholds default = min:8, max:500)
+3.) Range of target coverage extends outside of QC limits (k-mer frequency thresholds default = min:8, max:1000)
 
 ** To determine which cause, the average coverage depth is returned to the user. The value is calculated based on the coverage for all tiles that were above the minumum coverage threshold (indicated by the QC parameters: default value = 8) 
 
