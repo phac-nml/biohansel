@@ -93,50 +93,50 @@ SRR2598330(fastq-dump).fastqsanger.gz - This is the raw reads file
 |
 NML - Galaxy Access (BioHansel)
 ###############################
-**1.)** Create a new history in Galaxy and either the fasta file or the raw reads file onto the new history
+**1)** Create a new history in Galaxy and either the fasta file or the raw reads file onto the new history
   
-**2.)** Find Biohansel on the right-hand side in the "Tools" Section: Under the Experimental Section
+**2)** Find Biohansel on the right-hand side in the "Tools" Section: Under the Experimental Section
 
   |experimental|
   
-**3.)** For the "Sequence Data Type", select the proper type of data (FASTA vs. FASTAQ (raw))
+**3)** For the "Sequence Data Type", select the proper type of data (FASTA vs. FASTQ (raw))
 
-**4.)** For the "SNP Subtyping Scheme", select the proper scheme corresponding to the organism in your samples
+**4)** For the "SNP Subtyping Scheme", select the proper scheme corresponding to the organism in your samples
 
     (For verification/testing select the "Salmonella Heidelberg subtype scheme")
        
 |heidelberg|
   
-**5.)** Execute the file and three results should be produced: tech_results.tab, match_results.tab and results.tab
+**5)** Execute the file and three results should be produced: tech_results.tab, match_results.tab and results.tab
 (If running the "testing" fasta or raw file; to verify go to `Testing results`_)
 
--> The .tab files can be opened in excel
+-> The .tab files can be opened in Excel
 
 
 Running BioHansel on Terminal (MAC) using Conda
 ###############################################
-**1.)** Go to `Installation <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/usage.html>`_ and download Miniconda from the website following the instructions corresponding to your given iOS
+**1)** Go to `Installation <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/usage.html>`_ and download Miniconda from the website following the instructions corresponding to your given iOS
 
 |
-**2.)** After installing Conda, go on terminal and create a conda environment by inputing this command:
+**2)** After installing Conda, go on terminal and create a conda environment by inputing this command:
 
 conda create -n *name of environment* python=3.6
 
 |
-**3.)** It will ask you to proceed (y/n) afterwards, type in: y
+**3)** It will ask you to proceed (y/n) afterwards, type in: y
 
 |
-**4.)** Then activate your environment by typing:
+**4)** Then activate your environment by typing:
 
    source activate *name of your environment*
 
 |
-**5.)** Now install biohansel onto conda environment by inputting:
+**5)** Now install biohansel onto conda environment by inputting:
 
 conda install -c bioconda bio_hansel
 
 |
-**6.)** To confirm that biohansel has been installed in the environment, input:
+**6)** To confirm that biohansel has been installed in the environment, input:
 
    hansel -h 
 
@@ -147,14 +147,14 @@ go to `command-line <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/
 |command|
 
 |
-**7.)** Then input:
+**7)** Then input:
 
    pwd 
 
 #pwd command stands for print working directory, which shows what directory you are currently in
 
 |
-**8.)** Using the directory you are in (which is most likely User/"*name of user*) you point the terminal to go to the directory where the file is by inputting:
+**8)** Using the directory you are in (which is most likely User/"*name of user*) you point the terminal to go to the directory where the file is by inputting:
 
    cd *where the file is*
 
@@ -165,7 +165,7 @@ Example: (if the file was in User/name of user/Downloads) you input:
 # cd (change directory) command
 
 |
-**9.)** This will put you straight into the directory where the file is. Then just run the file using this as an example:
+**9)** This will put you straight into the directory where the file is. Then just run the file using this as an example:
 
 hansel -s heidelberg -vv -o results.tab -O match_results.tab -S tech_results.tab CP012921.fasta
 
@@ -182,6 +182,6 @@ Then at the end of the command just input the name of the file
 (you can type the first two to three letters of the file name, then just press "tab" and the file name should pop-up)
 
 |
-**10.)** The result files should be where-ever the file you ran was located.
+**10.)** The result files should be wherever the file you ran was located.
 
 
