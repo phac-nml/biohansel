@@ -182,6 +182,6 @@ Then at the end of the command just input the name of the file
 (you can type the first two to three letters of the file name, then just press "tab" and the file name should pop-up)
 
 |
-**10.)** The result files should be wherever the file you ran was located.
+**10)** The result files should be wherever the file you ran was located.
 
 
