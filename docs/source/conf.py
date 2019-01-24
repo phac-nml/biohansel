@@ -23,7 +23,7 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 project = 'Bio_Hansel'
-copyright = '2018, Peter Kruczkiewicz'
+copyright = '2019, Peter Kruczkiewicz'
 author = 'Peter Kruczkiewicz'
 
 # The short X.Y version

@@ -13,6 +13,9 @@ The three input files are:
 
 More detailed information on the output of what each results file contains can be found in the `Output section <output.html>`_.
 
+Types of Analysis
+#################
+
 Analysis of a single FASTA file
 -------------------------------
 
@@ -42,27 +45,7 @@ Or, if you have already changed to the directory containing the dataset, you can
 
 The output of the BioHansel tool can be found in the directory that the command was run from.
 
-Contents of ``results.tab``:
-
-.. code-block:: bash
-
-    sample  scheme  subtype all_subtypes    tiles_matching_subtype  are_subtypes_consistent inconsistent_subtypes   n_tiles_matching_all    n_tiles_matching_all_total  n_tiles_matching_positive   n_tiles_matching_positive_total n_tiles_matching_subtype    n_tiles_matching_subtype_total  file_path
-    SRR1002850  heidelberg  2.2.2.2.1.4 2; 2.2; 2.2.2; 2.2.2.2; 2.2.2.2.1; 2.2.2.2.1.4  1037658-2.2.2.2.1.4; 2154958-2.2.2.2.1.4; 3785187-2.2.2.2.1.4   True        202 202 17  17  3   3   SRR1002850.fasta
-
-
-Contents of ``match_results.tab``:
-
-.. code-block:: bash
-
-    tilename    stitle  pident  length  mismatch    gapopen qstart  qend    sstart  send    evalue  bitscore    qlen    slen    seq coverage    is_trunc    refposition subtype is_pos_tile sample  file_path   scheme
-    775920-2.2.2.2  NODE_2_length_512016_cov_46.4737_ID_3   100.0   33  0   0   1   33  474875  474907  2.0000000000000002e-11  62.1    33  512016  GTTCAGGTGCTACCGAGGATCGTTTTTGGTGCG   1.0 False   775920  2.2.2.2 True    SRR1002850  SRR1002850.fasta   heidelberg
-    negative3305400-2.1.1.1 NODE_3_length_427905_cov_48.1477_ID_5   100.0   33  0   0   1   33  276235  276267  2.0000000000000002e-11  62.1    33  427905  CATCGTGAAGCAGAACAGACGCGCATTCTTGCT   1.0 False   negative3305400 2.1.1.1 False   SRR1002850  SRR1002850.fasta   heidelberg
-    negative3200083-2.1 NODE_3_length_427905_cov_48.1477_ID_5   100.0   33  0   0   1   33  170918  170950  2.0000000000000002e-11  62.1    33  427905  ACCCGGTCTACCGCAAAATGGAAAGCGATATGC   1.0 False   negative3200083 2.1 False   SRR1002850  SRR1002850.fasta   heidelberg
-    negative3204925-2.2.3.1.5   NODE_3_length_427905_cov_48.1477_ID_5   100.0   33  0   0   1   33  175760  175792  2.0000000000000002e-11  62.1    33  427905  CTCGCTGGCAAGCAGTGCGGGTACTATCGGCGG   1.0 False   negative3204925 2.2.3.1.5   False   SRR1002850  SRR1002850.fasta   heidelberg
-    negative3230678-2.2.2.1.1.1 NODE_3_length_427905_cov_48.1477_ID_5   100.0   33  0   0   1   33  201513  201545  2.0000000000000002e-11  62.1    33  427905  AGCGGTGCGCCAAACCACCCGGAATGATGAGTG   1.0 False   negative3230678 2.2.2.1.1.1 False   SRR1002850  SRR1002850.fasta   heidelberg
-    negative3233869-2.1.1.1.1   NODE_3_length_427905_cov_48.1477_ID_5   100.0   33  0   0   1   33  204704  204736  2.0000000000000002e-11  62.1    33  427905  CAGCGCTGGTATGTGGCTGCACCATCGTCATTA   1.0 False   
-    [Next 196 lines omitted.]
-
+|
 
 Analysis of a single FASTQ readset
 ----------------------------------
@@ -79,48 +62,35 @@ Analysis of a single FASTQ readset would be run on raw sequencing data. To run t
 
 - The name of the FASTQ file(s) at the end of the command
     - For single-end reads include the one file 
-    - For paired-end reads include both files one after the other
+    - For paired-end reads include: -p followed by both files one after the other
 
+An example command for the analysis of a single single-end reads run dataset would look like:
+
+.. code-block:: bash
+
+    hansel -s heidelberg -vv -t 4 -o results.tab -O match_results.tab SRR5646583.fastqsanger
+
+|
 An example command for the analysis of a single paired-end reads run dataset would look like:
 
 .. code-block:: bash
 
     hansel -s heidelberg -vv -t 4 -o results.tab -O match_results.tab -p SRR5646583_forward.fastqsanger SRR5646583_reverse.fastqsanger
 
-
-Contents of ``results.tab``:
-
-.. code-block:: bash
-
-    sample  scheme  subtype all_subtypes    tiles_matching_subtype  are_subtypes_consistent inconsistent_subtypes   n_tiles_matching_all    n_tiles_matching_all_total  n_tiles_matching_positive   n_tiles_matching_positive_total n_tiles_matching_subtype    n_tiles_matching_subtype_total  file_path
-    SRR5646583  heidelberg  2.2.1.1.1.1 2; 2.2; 2.2.1; 2.2.1.1; 2.2.1.1.1; 2.2.1.1.1.1  1983064-2.2.1.1.1.1; 4211912-2.2.1.1.1.1    True     single   202 202 20  20  2   2   SRR5646583_forward.fastqsanger; SRR5646583_reverse.fastqsanger
-
-
-Contents of ``match_results.tab``:
-
-.. code-block:: bash
-
-    seq freq    sample  file_path   tilename    is_pos_tile subtype refposition is_kmer_freq_okay   scheme
-    ACGGTAAAAGAGGACTTGACTGGCGCGATTTGC   68  SRR5646583 SRR5646583_forward.fastqsanger; SRR5646583_reverse.fastqsanger    21097-2.2.1.1.1 True    2.2.1.1.1   21097   True    heidelberg
-    AACCGGCGGTATTGGCTGCGGTAAAAGTACCGT   77  SRR5646583 SRR5646583_forward.fastqsanger; SRR5646583_reverse.fastqsanger    157792-2.2.1.1.1    True    2.2.1.1.1   157792  True    heidelberg
-    CCGCTGCTTTCTGAAATCGCGCGTCGTTTCAAC   67  SRR5646583 SRR5646583_forward.fastqsanger; SRR5646583_reverse.fastqsanger    293728-2.2.1.1  True    2.2.1.1 293728  True    heidelberg
-    GAATAACAGCAAAGTGATCATGATGCCGCTGGA   91  SRR5646583 SRR5646583_forward.fastqsanger; SRR5646583_reverse.fastqsanger    607438-2.2.1    True    2.2.1   607438  True    heidelberg
-    CAGTTTTACATCCTGCGAAATGCGCAGCGTCAA   87  SRR5646583 SRR5646583_forward.fastqsanger; SRR5646583_reverse.fastqsanger    691203-2.2.1.1  True    2.2.1.1 691203  True    heidelberg
-    CAGGAGAAAGGATGCCAGGGTCAACACGTAAAC   33  SRR5646583 SRR5646583_forward.fastqsanger; SRR5646583_reverse.fastqsanger    944885-2.2.1.1.1    True    2.2.1.1.1   944885  True    heidelberg
-    [Next 200 lines omitted.]
+|
 
 Analysis of all FASTA/FASTQ files in a directory
 ------------------------------------------------
 
-Analysis on **all** of the FASTA/FASTQ files in the specified directory. This will run on all FASTA/FASTQ files in the directory so be sure that there are no miscellaneous files that may increase analysis time or lead to errors.
+Analysis on **all** of the FASTA/FASTQ files in the specified directory. This will run on all FASTA/FASTQ files in the directory. Be sure that there are no miscellaneous files that may unnecessarily increase analysis time or lead to unneeded errors.
 
-``bio_hansel`` will only attempt to analyze the FASTA/FASTQ files within the specified directory and will not descend into any subdirectories! As such, make sure all of the data to be analyzed is in the same location.
+BioHansel will only attempt to analyze the FASTA/FASTQ files within the specified directory and will not descend into any subdirectories! As such, make sure all of the data to be analyzed is in the same location or organized in a way that suites the projecct.
 
 Analysis of all of the sequencing files in a directory must include following the arguments to run properly:
 
 - -s "scheme" where the scheme defined can be one of the two built or a user created one (FASTA format)
 
-- --threads <#_cpu> to specify the number of CPU's wanted to run the analysis. (give a number)
+- --threads <#_cpu> to specify the number of CPU's wanted to run the analysis. (give a number; like 1 for example)
 
 - Any combination of the results delimiters and names (file names can be changed but must be included after the argument):
  
@@ -136,7 +106,7 @@ An example of a general command for the analysis of a directory of FASTA/FASTQ f
 
     hansel -s heidelberg -vv --threads <n_cpu> -o results.tab -O match_results.tab -D /path/to/fastas_or_fastqs/
 
-The chosen output files can still be found in the directory that the command was run from and will contain data from each of the analyzed files run by bio_hanzel. 
+The chosen output files can be found in the directory that the command was run from and will contain data from each of the analyzed files run by BioHansel. 
 
 Ex. If you had your data directory in the path USER/name of user/bio_hansel/data and ran your command in the USER/name of user/bio_hansel folder, then the results of the analysis would end up in the bio_hansel folder. To run the analysis on the folder in this situation, your command would be as follows:
 
@@ -146,9 +116,9 @@ Ex. If you had your data directory in the path USER/name of user/bio_hansel/data
 
 
 Subtype Metadata Table (Optional)
----------------------------------
+#################################
 
-Optionally you can select a subtype metadata information table to include subtype metadata along with the subtyping results created with BioHansel. Metadata tables must be in a tab-delimited format to correctly work. The file extension for your metadata table should be **.tsv** if at all possible or you may end up with an error.
+Optionally you can select a subtype metadata information table to include subtype metadata along with the subtyping results created with BioHansel. Metadata tables must be in a tab-delimited format to correctly work. The file extension for your metadata table should be **.tsv** if at all possible or you may end up with an error and no analysis results.
 
 To add a metadata table to the analysis you will add the argument `-M <metadata_scheme.tsv>` to any other analysis command. There are no requirements for the number of columns or the content of each of the columns on the metadata table so long as the first column is labeled as "subtype". 
 

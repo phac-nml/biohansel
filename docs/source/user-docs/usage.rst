@@ -5,14 +5,14 @@ BioHansel subtypes microbial whole-genome sequencing (WGS) data using singe nucl
 
 SNV k-mer schemes can be created for use by the tool or the included 33 bp k-mer SNV subtyping schemes for Salmonella enterica subsp. enterica serovar Heidelberg and Enteritidis genomes developed by Genevieve Labbe et al. can be used for analysis of Salmonella WGS data. 
 
-BioHansel can be installed with Conda, pip, or within an existing Galaxy infrastructure. View the `install guide <../installation-docs/home.html>`_ of your preferance for additional details.
+BioHansel can be installed with Conda, pip, or within an existing Galaxy infrastructure. View the `install guide <../installation-docs/home.html>`_ of your preference for additional details.
 
 Requirements and Dependencies
 -----------------------------
 
 This tool has only been tested on Linux (specifically Arch Linux). It may or may not work on OSX.
 
-These are the dependencies required for ``bio_hansel``:
+These are the dependencies required for BioHansel
 
 - Python_ (>=v3.5)
     - numpy_ >=1.12.1
@@ -26,7 +26,7 @@ Quick Installation
 With Conda_
 -----------
 
-Conda is the easiest way to install ``bio_hanzel`` and run it through the use of the command line.
+Conda is the easiest way to install BioHansel and run it through the use of the command line.
 
 First, install Conda_ (`Conda installation instructions <https://bioconda.github.io/#install-conda>`_).
 
@@ -58,18 +58,18 @@ Then, install ``bio_hansel``through Bioconda_ (64bit linux and MAC OSX) using th
     hansel -h
     #This will display the usage statement
 
-Remeber to activate the Conda environment that ``bio_hansel`` is installed at to run it.
+Remeber to activate the Conda environment that BioHansel is installed at to allow it to run.
 
 With pip_ from PyPI_
 ---------------------
 
-Install ``bio_hansel`` from PyPI_ with pip_:
+Install BioHansel from PyPI_ with pip_:
 
 .. code-block:: bash
 
     pip install bio_hansel
 
-This will install ``bio_hansel`` along with the required dependencies.
+This will install BioHansel along with the required dependencies.
 
 Check that installation is correct with the command:
 
@@ -87,7 +87,7 @@ Install the latest master branch version directly from Github:
 
     pip install git+https://github.com/phac-nml/bio_hansel.git@master
 
-Check that ``bio_hanzel`` is working with the command:
+Check that BioHansel is working with the command:
 
  .. code-block:: bash
 
@@ -97,11 +97,11 @@ Check that ``bio_hanzel`` is working with the command:
 Install into Galaxy_ (version >= 17.01)
 ---------------------------------------
 
-Galaxy admins install ``bio_hansel`` from the main Galaxy toolshed (`tutorial <https://galaxyproject.org/admin/tools/add-tool-from-toolshed-tutorial/>`_):
+Galaxy admins install BioHansel from the main Galaxy toolshed (`tutorial <https://galaxyproject.org/admin/tools/add-tool-from-toolshed-tutorial/>`_):
 
 https://toolshed.g2.bx.psu.edu/repository?repository_id=59b90ef18cc5dbbc&changeset_revision=4654c51dae72
 
-Users can download and set up their own instance of Galaxy following the `get Galaxy tutorial <https://galaxyproject.org/admin/get-galaxy/>`_ and then install ``bio_hansel`` from the toolshed as an admin.
+Users can download and set up their own instance of Galaxy following the `get Galaxy tutorial <https://galaxyproject.org/admin/get-galaxy/>`_ and then install BioHansel from the toolshed as an admin using the admin instructions linked above.
 
 Input Data
 ----------
@@ -110,7 +110,7 @@ BioHansel uses genome assemblies (FASTA files) or reads (FastQ files) from WGS d
 
 SNV subtyping schemes have to be defined for BioHansel to run correctly. Two schemes are included and user created schemes can be used by creating SNV k-mers in the FASTA format. See `Creating schemes <subtyping_schemes.html>`_ for more details.
 
-Subtype metadata schemes can be added to the analysis but are not required. Added metadata is joined with the subtype field of the final results. More detailed info on formating of metadata schemes can be found in the `input section <input.html>`_. 
+Subtype metadata schemes can be added to the analysis but are not required. Added metadata is joined with the subtype field of the final results. More detailed info on formatting of metadata schemes can be found in the `input section <input.html>`_. 
 
 Output Results
 --------------

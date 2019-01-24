@@ -2,7 +2,8 @@
 Output 
 ======
 
-Three different result files will be produced: `tech results.tab`_, `match results.tab`_ & `results.tab`_
+This page describes the three different result files will be produced from running BioHansel: `tech results.tab`_, `match results.tab`_ & `results.tab`_. These results will be the same whether you are using the command line or Galaxy to run an analysis.
+
 
 .. |mixed| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Mixed.PNG
    :width: 100 px
@@ -24,6 +25,7 @@ Three different result files will be produced: `tech results.tab`_, `match resul
 .. |pass| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Pass.PNG
    :alt: This is an ideal picture of a passed scheme
    :width: 100 px
+Incorrect
 
 .. |positive| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Positive%20pic%20of%20matching.PNG
    :alt: picture of positive match
@@ -40,76 +42,194 @@ Three different result files will be produced: `tech results.tab`_, `match resul
 .. |subtype| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/sUBTYPE%20MATCH%20PIC.PNG
    :alt: picture of subtype match
    :width: 100 px
+
+.. |mixed_result| image:: mixed_sub_result.png
+   :alt: Mixed subtype result
+   :width: 500 px
+
+.. |error_no_result| image:: No_result.png
+   :alt: no result
+   :width: 600 px
+
+
 |
 **Tech results.tab**
-###################
-================ ================================== ================================== ==================== ===========================
-    `Sample`_               `Subtype`_                    `Average Tile Coverage`_        `QC status`_            `QC message`_
----------------- ---------------------------------- ---------------------------------- -------------------- ---------------------------
-  (Sample Name)    (Corresponding Subtypes Found)    (Corresponding avg tile coverage) (PASS/FAIL/WARNING)  (Corresponding QC message)   
-================ ================================== ================================== ==================== ===========================
+####################
 
-**Sample**
+Tech results is the simplest output file and only contains the sample name, the subtype found by the analysis, and the quality control status with message. Here the output file :
+
+
++---------------+--------------------------------+-------------------------------------------+
+| Sample        | Subtype                        | Avg_tile_coverage                         |
++===============+================================+===========================================+
+| (Sample Name) | (Corresponding Subtypes Found) | (average tile coverage of all the targets |
++---------------+--------------------------------+-------------------------------------------+
+
++---------------------+----------------------------+ 
+| QC_status           | QC_message                 |
++=====================+============================+ 
+| (PASS/FAIL/WARNING) | (Corresponding QC message) |
++---------------------+----------------------------+
+
+
+Sample
+------
+This column provides the names of samples that were run on BioHansel
+
+
+Subtype
+-------
+This column gives the subtype of the sample determined by the analysis. This column can display a single positive subtype, a list of positive subtypes, or no subtype depending on the results of the analysis. If this column does not display a single positive subtype, it will show one of the two following situations:
+
+- Different subtypes if mixed samples are run or there is an error in a user-created scheme. In this case, BioHansel will list all different subtypes detected.
+
+|mixed_result|
+
+- If no positive target is detected, the column will be blank and the qc_message will state that no tiles/targets were found.
+
+|error_no_result|
+
+Average Tile Coverage
+---------------------
+
+Found only when analyzing raw read FastQ files. It displays the average coverage of all of the targets/k-mers that were present in the sample.
+
+QC Columns
 ----------
-Names of samples that are ran on biohansel
+
+QC Status and QC message are found in full details under their own section as they are a part of all 3 results files. This detailed information is found in the `Quality_Control`_ section.
 
 
-**Subtype**
------------
-Consensus result from the analysis 
-If mixed results, biohansel will list all different subtypes detected
-If no "+" target is detected it will produce: "No Subtype!"
 
-
-**Average Tile Coverage**
--------------------------
-This section displays the average coverage of all the targets that were present in the sample.
-
-|
 **Match Results.tab**
 #####################
 
-===================== ============================ =============================== ========================= =========================
-    `Tilename`_               `Sequence`_                 `Frequency`_                  `ref_position`_            `Subtype`_
---------------------- ---------------------------- ------------------------------- ------------------------- -------------------------
-(Name of target/kmer)   (Corresponding Sequence)   (Number of exact matches found) (pos in reference genome)  (Subtypes in tilename)   
-===================== ============================ =============================== ========================= =========================
 
-================== ============================== =========================== ======================== ========================
-  `is_pos_tile`_         `is_kmer_freq_okay`_            `File path`_                 `Sample`_                `Scheme`_
------------------- ------------------------------ --------------------------- ------------------------ ------------------------
-   (TRUE/FALSE)             (TRUE/FALSE)                (File location)             (Sample Name)            (Scheme Name)   
-================== ============================== =========================== ======================== ========================
+**Fasta File Output**
+---------------------
 
-================= ===================== ============================
-  `Scheme_vers`_       `QC status`_            `QC message`_
------------------ --------------------- ----------------------------
-(Scheme version)   (PASS/FAIL/WARNING)   (Corresponding QC message)
-================= ===================== ============================
+The following is the scheme for the match_results.tab file **For a single Fasta file**. **Running raw reads data has slightly different output columns**. The columns for a contig contained in a are broken up to fit all on one page with out scrolling. Here, you can see all of the outputs of this file at a glance along with a short block of info about the column.
+
++------------------------+--------------------------------+--------------+------------------+ 
+| Tilename               | Sequence                       | is_revcomp   | Contig_id        |
++========================+================================+==============+==================+  
+| (Name of Target/K-mer) | (Corresponding K-mer Sequence) | (TRUE/FALSE) | (Name of Contig) |
++------------------------+--------------------------------+--------------+------------------+
 
 
-**Tilename**
-------------
-Name of the target/kmer
++------------------+-------------------------------+-------------------------+--------------+ 
+| Match_index      | Refposition                   | Subtype                 | is_pos_tile  |
++==================+===============================+=========================+==============+  
+| (Match Position) | (Match Position in reference) | (Subtypes in Tilename)  | (TRUE/FALSE) |
++------------------+-------------------------------+-------------------------+--------------+
 
 
-**Sequence**
------------
-Corresponding sequence to target
++---------------+-----------------+---------------+------------------+
+| Sample        | File_path       | Scheme        | Scheme_version   |
++===============+=================+===============+==================+ 
+| (Sample Name) | (File Location) | (Scheme Name) | (Scheme Version) |
++---------------+-----------------+---------------+------------------+
 
 
-**Frequency**
--------------
-Number of exact matches found 
++---------------------+----------------------------+ 
+| QC_status           | QC_message                 |
++=====================+============================+ 
+| (PASS/FAIL/WARNING) | (Corresponding QC message) |
++---------------------+----------------------------+
+
+All of the columns in the correct order in the match_results.tab file looks as such:
+
++------------------------+--------------------------------+--------------+------------------+------------------+-------------------------------+-------------------------+--------------+---------------+-----------------+---------------+------------------+---------------------+----------------------------+  
+| Tilename               | Sequence                       | is_revcomp   | Contig_id        | Match_index      | Refposition                   | Subtype                 | is_pos_tile  | Sample        | File_path       | Scheme        | Scheme_version   | QC_Status           | QC_message                 |
++========================+================================+==============+==================+==================+===============================+=========================+==============+===============+=================+===============+==================+=====================+============================+ 
+| (Name of Target/K-mer) | (Corresponding K-mer Sequence) | (TRUE/FALSE) | (Name of Contig) | (Match Position) | (Match Position in reference) | (Subtypes in Tilename)  | (TRUE/FALSE) | (Sample Name) | (File Location) | (Scheme Name) | (Scheme Version) | (PASS/FAIL/WARNING) | (Corresponding QC message) |
++------------------------+--------------------------------+--------------+------------------+------------------+-------------------------------+-------------------------+--------------+---------------+-----------------+---------------+------------------+---------------------+----------------------------+
+
+**Raw Reads FastQ File Output**
+-------------------------------
+
+The raw reads file gives slightly different outputs when compared to the Fasta file match_results.tab output. The overall Output looks as such:
 
 
-**ref_position**
----------------
-Specific position in the reference genome used
++------------------------+--------------------------------+---------------------------------+ 
+| Tilename               | Sequence                       | Frequency                       |
++========================+================================+=================================+  
+| (Name of Target/K-mer) | (Corresponding K-mer Sequence) | (Number of exact matches found) |
++------------------------+--------------------------------+---------------------------------+
 
 
-**is_pos_tile**
----------------
++-------------------------------+-------------------------+--------------+-------------------+ 
+| Refposition                   | Subtype                 | is_pos_tile  | is_kmer_freq_okay |
++===============================+=========================+==============+===================+  
+| (Match Position in reference) | (Subtypes in Tilename)  | (TRUE/FALSE) | (TRUE/FALSE)      |
++-------------------------------+-------------------------+--------------+-------------------+
+
+
++-----------------+---------------+---------------+------------------+
+| File_path       | Sample        |Scheme         | Scheme_version   |
++=================+===============+===============+==================+ 
+| (File Location) | (Sample Name) |(Scheme Name)  | (Scheme Version) |
++-----------------+---------------+---------------+------------------+
+
+
++---------------------+----------------------------+ 
+| QC_Status           | QC_message                 |
++=====================+============================+ 
+| (PASS/FAIL/WARNING) | (Corresponding QC message) |
++---------------------+----------------------------+
+
+**Detailed Column Information** 
+-------------------------------
+
+Tilename
+""""""""
+
+This column gives the name of the target/kmer that matched to the sample. It will match to the name of the tile in the fasta file following the fasta convention as seen in the `input section <input.html>`_. The tiles give the identity of the sample
+
+Sequence
+""""""""
+
+This column gives the sequence of the tile from the Tilename column. This sequence is the 33 bp fragment that matched somewhere in the sample.
+
+is_revcomp
+""""""""""
+
+If the target tile was found from the 5' to 3' direction in the sample, this column will display "FALSE".
+
+If the target tile was found in the 3' to 5' direction in the sample, this column will display "TRUE".
+
+Contig_id
+"""""""""
+
+This column displays the name of the contig as found in the Fasta file.
+
+Frequency
+"""""""""
+
+
+
+Match_index
+"""""""""""
+
+This column outputs the last nucleotide match of a k-mer/tile as its position in the genome.
+
+For example, if the tile matched the genome from positions 12312 to 12345, the SNP would be at position 12329 and output of this column would be 12345.
+
+Refposition
+"""""""""""
+
+This column displays the reference position of the SNP as found in the k-mer tile.
+
+Subtype
+"""""""
+
+This column gives the subtype of the sample determined by the analysis. This column can display a single positive subtype, a list of positive subtypes, or no subtype depending on the results of the analysis. If this column does not display a single positive subtype, it will show one of the two following situations:
+
+- Different subtypes if mixed samples are run or there is an error in a user-created scheme. In this case, BioHansel will list all different subtypes detected.
+
+
+is_pos_tile
+"""""""""""
 Is it a positive k-mer/target for specific subtype?
 
 1.) TRUE
@@ -117,8 +237,9 @@ Is it a positive k-mer/target for specific subtype?
 2.) FALSE
 
 
-**is_kmer_freq_okay**
----------------------
+is_kmer_freq_okay
+"""""""""""""""""
+
 Is it within the specified QC parameters (min/max)
 
 1.) TRUE
@@ -126,17 +247,19 @@ Is it within the specified QC parameters (min/max)
 2.) FALSE
 
 
-**File path**
--------------
+File path
+"""""""""
+
 File Location
 
 
-**Scheme**
-----------
+Scheme
+""""""
 Name of the given Scheme
 
-**Scheme_vers**
----------------
+Scheme_vers
+"""""""""""
+
 Version of the given scheme
 
 |
@@ -144,92 +267,96 @@ Version of the given scheme
 ################
 
 ===================== ======================= =============================== ========================== ============================
-      `Sample`_             `Sequence`_               `Scheme_vers`_                 `Subtype`_               `all_subtype`_
+       Sample                Sequence                  Scheme_vers                    Subtype                  all_subtype  
 --------------------- ----------------------- ------------------------------- -------------------------- ----------------------------
     (Sample Name)          (Scheme name)            (Version of Scheme)         (Subtypes in tilename)    (Subtypes in all lineages)
 ===================== ======================= =============================== ========================== ============================
 
 ==================================== ============================== =========================== =======================================
-    `tiles_matching_subtype`_          `are_subtypes_consistent`_     `inconsistent_subtypes`_           `n_tiles_matching_all`_
+     tiles_matching_subtype             are_subtypes_consistent        inconsistent_subtypes              n_tiles_matching_all   
 ------------------------------------ ------------------------------ --------------------------- ---------------------------------------
  (subtypes that match given tiles)            (TRUE/FALSE)                  (TRUE/FALSE)          (Number of actual matches in sample)
 ==================================== ============================== =========================== =======================================
  
 ====================================== ========================================= ========================================
-   `n_tiles_matching_all_expected`_            `n_tiles_matching_positive`_        `n_tiles_matching_positive_expected`_     
+    n_tiles_matching_all_expected               n_tiles_matching_positive           n_tiles_matching_positive_expected       
 -------------------------------------- ----------------------------------------- ----------------------------------------
 (Expected positive matches in sample)   (Number of matches in targeted lineage)   (Expected matches in targeted lineage)          
 ====================================== ========================================= ========================================
 
 ============================================ =========================================== =====================
-     `n_tiles_matching_subtype`_                 `n_tiles_matching_subtype_expected`_        `File path`_ 
+      n_tiles_matching_subtype                    n_tiles_matching_subtype_expected           File path   
 -------------------------------------------- ------------------------------------------- ---------------------
 (Number of matches in specific sublineage)    (Expected matches in targeted sublineage)    (File Location)         
 ============================================ =========================================== =====================
 
 ==================== ===========================
-    `QC status`_            `QC message`_
+     QC status               QC message  
 -------------------- ---------------------------
  (PASS/FAIL/WARNING)  (Corresponding QC message) 
 ==================== ===========================
 
 
-**all_subtype**
----------------
+all_subtype
+-----------
 All of the subtypes in all the levels of lineage
 
 
-**tiles_matching_subtype**
---------------------------
+tiles_matching_subtype
+----------------------
 (blank)
 
 
-**are_subtypes_consistent**
----------------------------
+are_subtypes_consistent
+-----------------------
 - Consistency -> All positive tiles within QC parameters, have consistent subtypes in downstream sublineages corresponding to parent subtype
 
 |consistent|
 
-**inconsistent_subtypes**
--------------------------
+inconsistent_subtypes
+---------------------
 If "are_subtypes_consistent" is FALSE, it lists subtypes that are inconsistent to parent
 
 
-**n_tiles_matching_all**
--------------------------
+n_tiles_matching_all
+--------------------
 Counting actual positive matches per subtype found in sample based on subtype scheme in all lineages
 
 |n_all|
 
 
-**n_tiles_matching_all_expected**
----------------------------------
+n_tiles_matching_all_expected
+-----------------------------
 The number positive matches expected per subtype found in sample based on subtype scheme
 
 
-**n_tiles_matching_positive**
-------------------------------
+n_tiles_matching_positive
+-------------------------
 The number of positive matches in the full sample lineage 
 
 |positive|
 
 
-**n_tiles_matching_positive_expected**
---------------------------------------
+n_tiles_matching_positive_expected
+----------------------------------
 The number of positive matches expected in the full sample lineage 
 
-**n_tiles_matching_subtype**
------------------------------
+n_tiles_matching_subtype
+------------------------
 The number of positive matches in the sample sublineage only
 
 |subtype|
 
-**n_tiles_matching_subtype_expected**
--------------------------------------
+n_tiles_matching_subtype_expected
+---------------------------------
 The number of positive matches expected in the sample sublineage only
 
+
+**Quality_Control**
+###################
+
 |
-**QC status**
+**QC Status**
 -------------
 Three possibilities based on the QC analysis described below: `QC message`_
 
@@ -241,7 +368,7 @@ Three possibilities based on the QC analysis described below: `QC message`_
 
 |
 **QC message**
----------------
+--------------
 
 *"Pass"*
 """""""""
@@ -271,7 +398,7 @@ Average coverage calculated from all targets found in the sample (The value is r
 
 |
 *Error Type 1: Missing Tiles*
-"""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""
 \*** The "Maximum amount of missing tiles to be allowed before being considered an error" can be edited based on preference and scheme
 
 Two possible causes:
