@@ -77,59 +77,59 @@ Download either the CP012921.fasta (fasta file) or the SRR2598330(fastq-dump).fa
 
    <https://share.corefacility.ca/index.php/s/dRGOuqhDJUNeKmE> (password: biohansel)
    
-CP012921.fasta - Is the assembled file sequence. 
+CP012921.fasta - is an assembled sequence. 
 
-SRR2598330 (fastq-dump).fastqsanger.gz - Is the raw reads file.
+SRR2598330 (fastq-dump).fastqsanger.gz - is the raw reads file that CP012921 was assembled from.
 
 Specific steps regarding the testing/checking that installation was successful using the sample data found above will be found within the (brackets) below each general step involved in the analysis pipeline.
 
-*** Both example files are Salmonella heidelberg samples***
+ **Both example files are from the same Salmonella Heidelberg sample**
 
 NML - Galaxy Access (BioHansel)
 ###############################
-**1.)** Create a new history in Galaxy and import either fasta files or raw reads files that are being analyzed into the newly created history using any of the tools from the Get Data "Tools" section.
+**1.** Create a new history in Galaxy and import either fasta files or raw reads files that are being analyzed into the newly created history using any of the tools from the Get Data "Tools" section.
 
     (For verification: find the sample data in your files, most likely in Downloads, and upload it into Galaxy using the upload file tool.)
 
 |getdata|
    
-**2.)** Find Biohansel on the right-hand side in the "Tools" Section: Under the Experimental Section and click it.
+**2.** Find Biohansel on the right-hand side in the "Tools" Section: Under the Experimental Section and click it.
 
   |experimental|
   
-**3.)** For the "Sequence Data Type" parameter, select the proper type of data (FASTA vs. FASTAQ (raw)) depending upon the type of data being analyzed
+**3.** For the "Sequence Data Type" parameter, select the proper type of data (FASTA vs. FASTQ (raw)) depending upon the type of data being analyzed
 
     (For Verification: If you are using the Fasta file select the fasta option. If you are using the FastQ file, select the paired-end reads data type.)
     
 |sequencedata|
 
-**4.)** For the "SNP Subtyping Scheme", select the proper scheme corresponding to the organism in your samples. This can currently be the included Heidelberg or Enteritidis schemes or a user created FASTA file
+**4.** For the "SNP Subtyping Scheme", select the proper scheme corresponding to the organism in your samples. This can currently be the included Heidelberg or Enteritidis schemes or a user created FASTA file
 
     (For verification: select the "Salmonella Heidelberg subtype scheme")
        
 |heidelberg|
 
-**5.)** Optionally, add a Scheme Subtype Metadata Table to the analysis to be included into the end of the results files. This file must be in the .tsv format to be added properly or the analysis may fail (.csv may work on Galaxy but if the analysis fails change it to .tsv). 
+**5.** Optionally, add a Scheme Subtype Metadata Table to the analysis to be included into the end of the results files. This file must be in the .tsv format to be added properly or the analysis may fail (.csv may work on Galaxy but if the analysis fails change it to .tsv). 
 
 |metadata|
 
-**6.)** Click on the eye (|eyes|) to expand or collapse the modifiable parameters to allow adjustments to them to suite your needs. The defaults work well for most analyses but in some situations it may be beneficial to change them. Detailed information on the parameters and what they do can be found in the `parameters section <parameters.html>`_
+**6.** Click on the eye (|eyes|) to expand or collapse the modifiable parameters to allow adjustments to them to suit your needs. The defaults work well for most analyses but in some situations it may be beneficial to change them. Detailed information on the parameters that Galaxy allows modification to and what they do can be found in the `parameters section <parameters.html>`_
 
     (For verification: leave all of the parameters as their defaults.)
 
 |options|
   
-**7.)** Execute your inputs and analyze your data by clicking the large execute button to produce three results files: tech_results.tab, match_results.tab and results.tab. 
+**7.** Execute your inputs and analyze your data by clicking the large execute button to produce three results files: tech_results.tab, match_results.tab and results.tab. 
 
 The normal execution time is 0.5 - 60 seconds depending on what the inputs were. Don't be alarmed if it does take longer as it depends on the available computing power and the size of the dataset given (especially on Galaxy).
 
     (For verification: verify that the output was correct by comparing to the `Verification Results`_.)
 
-**8.)** The .tab files can be opened in excel or another spreadsheet program to view the results of the analysis.
+**8.** The .tab files can be opened in excel or another spreadsheet program to view the results of the analysis. On Galaxy, the results can be looked at by clicking on the view data eye in the history section. 
 
 |galaxyresults|
 
-\**To view the different types of outputs that are produced by BioHansel go to: `Output <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/output.html>`_
+\**For more detailed information on the different types of outputs that are produced by BioHansel go to: `Output <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/output.html>`_
 
 Running BioHansel on Terminal (MAC) using Conda
 ###############################################
@@ -137,12 +137,12 @@ Running BioHansel on Terminal (MAC) using Conda
 Steps
 -----
 
-**1.)** Go to `Quick Installation instructions <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/usage.html>`_ or `Full installation instructions <../installation-docs/home.html>`_ (exact same with different details to them) and download Miniconda from the website following the instructions corresponding to your given iOS.
+**1.** Go to `Quick Installation instructions <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/usage.html>`_ or `Full installation instructions <../installation-docs/home.html>`_ (exact same with different details to them) and download Miniconda from the website following the instructions corresponding to your given iOS.
 
 **Skip to step 6 if you have already installed BioHansel.**
 
 |
-**2.)** After installing Conda, go on terminal and create a conda environment by inputing this command:
+**2.** After installing Conda, go on terminal and create a conda environment by inputing this command:
 
 .. code-block:: bash
 
@@ -152,10 +152,10 @@ Steps
     conda create -n bio_hansel python=3.6
 
 |
-**3.)** It will ask you to proceed (y/n) afterwards, type in: y
+**3.** It will ask you to proceed (y/n) afterwards, type in: y
 
 |
-**4.)** Then activate your environment by typing:
+**4.** Then activate your environment by typing:
 
 .. code-block:: bash
 
@@ -168,7 +168,7 @@ Steps
     # the environment name beside your name.
 
 |
-**5.)** Now install BioHansel onto conda environment by inputting:
+**5.** Now install BioHansel onto conda environment by inputting:
 
 .. code-block:: bash
 
@@ -178,7 +178,7 @@ Steps
     # otherwise it will not run.
 
 |
-**6.)** To confirm that BioHansel has been installed in the environment, input:
+**6.** To confirm that BioHansel has been installed in the environment, input:
 
 .. code-block:: bash
 
@@ -197,7 +197,7 @@ Additional troubleshooting can be found in the `installation page <../installati
 |command|
 
 |
-**7.)** Figure out what directory you are in (which is most likely User/"*name of user*) using the following command:
+**7.** Figure out what directory you are in (which is most likely User/"*name of user*) using the following command:
 
 .. code-block:: bash
 
@@ -205,7 +205,7 @@ Additional troubleshooting can be found in the `installation page <../installati
     # pwd = "print working directory" and will show which directory you are currently in.
 
 |
-**8.)** Using the terminal window, change directories to the directory/folder that contains the data that you want to analyze. This can be done with the following command:
+**8.** Using the terminal window, change directories to the directory/folder that contains the data that you want to analyze. This can be done with the following command:
 
 .. code-block:: bash
 
@@ -219,14 +219,14 @@ Example: if the file was in User/name of user/Downloads you input:
     # cd = change directory command
 
 |
-**9.)** Once you're in the directory where your data is stored, BioHansel can be used to analyze the data in the directory using the following command:
+**9.** Once you're in the directory where your data is stored, BioHansel can be used to analyze the data in the directory using the following command:
 
 .. code-block:: bash 
 
     hansel -s heidelberg -vv -o results.tab -O match_results.tab -S tech_results.tab <Name of data file>
 
     # If you downloaded the CP012921.fasta, then you would input CP012921.fasta at the end of the command
-    # If working with the raw data, you may need to unzip the file to get the analysis to work.
+    # If working with the raw fastq data, you may need to unzip the file to get the analysis to work.
     # To do this use the following g-zip command without the # before it:
     # gzip -d <file>
 
@@ -237,13 +237,13 @@ The other arguments needed to run the command are as follows:
 
 -s -> this command is to specify the scheme used by BioHansel for the analysis being done (enteritidis and heidelberg are the two built in schemes right now). You can also use this to specify a custom scheme.
 
--vv -> this command is used to display more information from the terminal while the command is running. It is not neccessary for an analysis but can be extremely useful. Can be added as just -v to show warnings.
+-vv -> this command is used to display more information from the terminal while the command is running. It is not necessary for an analysis but can be extremely useful. Can be added as just -v to show warnings.
 
 -t or --threads <#_CPUs> -> the number of parallel threads to run analysis
 
 -o -> this command is used to get the most basic of results output by BioHansel called results.tab (You can change the name to whatever you want. **Remember to add .tab**)
 
--O -> this command is uesd to get the more detailed results output known as match_results.tab (You can change it to whatever name you want. **Remember to add the .tab**)
+-O -> this command is used to get the more detailed results output known as match_results.tab (You can change it to whatever name you want. **Remember to add the .tab**)
 
 -S -> this command is for the tech_results.tab output (You can change name to whatever you want. **Remember to add .tab**)
 
@@ -252,7 +252,7 @@ You do not need all of the arguments shown to run the command. You may only choo
 After you have defined all of the necessary arguments, input the name of the file at the end of the command and press enter to start the analysis. (you can type the first two to three letters of the file name, then just press “tab” and the file name should pop-up) Normal analysis times will take anywhere from 0.5 - 60 seconds depending on the file size and previous assembly of contigs (if any).
 
 |
-10.) The result files that you specified with the correct arguments and their names should be in the directory that the command was run from. For example if you ran the command from a directory called "data", the results would be located in the "data" directory.
+**10.** The result files that you specified with the correct arguments and their names should be in the directory that the command was run from. For example if you ran the command from a directory called "data", the results would be located in the "data" directory.
 
 If running the example files, verify that the output was correct by comparing to the `Verification Results`_ tables.
 

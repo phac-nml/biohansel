@@ -1,7 +1,77 @@
 Command-Line
 ============
 
-If you run ``hansel -h``, you should see the following usage statement:
+Here, the arguments needed to run BioHansel effectively are displayed. The required and additional arguments are shown below to see what must be included in a run. 
+
+Required
+########
+
+Make sure to be in the directory containing all of the data needed to run a command or that the path to the input data is put into the command following the argument.
+
+- Subtyping Scheme
+
+    - use -s "scheme"
+
+- Output/Results Files (any combination so long as there is at least one specified. Details in `Output <output.html>`_)
+
+    - use -S "filename.tab" | for tech_results.tab
+    - use -o "filename.tab" | for results.tab
+    - use -O "filename.tab" | for match_results.tab
+    
+- Input data
+
+    - use -i <path/to/fasta> | to specify fasta file to analyze
+    - use -p <path/to/forward_reads> <path/to/reverse_reads> | to analyze paired reads
+    - use -D <path/to/directory> | to analyze a full directory of data into 1 file
+
+
+Additional
+##########
+
+**If any of these arguments are left off of the command used to run BioHansel, they will be set to default values for the given analysis.**
+
+| 
+| -M "metadata_scheme.tsv"  -->  Used to input a metadata scheme that follows all requirements
+|        found in `input <input.html>`_
+|
+| \\--force  -->  Forces the existing outputs to be overwritten
+|
+| \\--json  -->  Output JSON representation of output files
+|
+| \\--min-kmer-freq <#>  -->  Minimum k-mer coverage needed for a raw reads fastq file to be
+|       considered acceptable by the quality control module (default is 8) (cannot lower past 8 in
+|       the current build)
+|
+| \\--max-kmer-freq <#>  -->  Maximum k-mer coverage for a raw reads fastq file to be considered
+|       acceptable (default is 1000)
+|
+| \\--low-cov-depth-freq <#>  -->  Coverage frequencies of raw read fastq files below this value are
+|       considered as low coverage (default is 20)
+|
+| \\--max-missing-tiles <#>  -->  Decimal proportion of maximum allowable missing tiles before being
+|       considered an error (0.0 - 1.0) (default is 0.05 or 5%)
+|
+| \\--min-ambiguous-tiles <#>  -->  Minimum number of missing tiles to be considered an ambiguous
+|       result (default is 3)
+|
+| \\--low-cov-warning <#>  -->  Overall tile coverage below this value will trigger a low coverage 
+|       warning on raw read fastq files. (default is 20) 
+|
+| \\--max-intermediate-tiles <#>  -->  Decimal proportion of maximum allowable missing tiles
+|       (0.0 - 1.0) to be considered an intermediate subtype (default is 0.05)
+| 
+| -t <#_CPUs>  -->  Number of parallel threads used to run the analysis (default = 1)
+|
+| -v  -->  Verbose: Logs verbosity levels where -v == show warnings and -vv == show debug info
+|
+| -V  -->  Displays the version of BioHansel installed
+|
+
+Hansel Help Command
+###################
+
+
+If you run ``hansel -h``, you will be provided with additional information for most of the commands along with following usage statement:
 
 .. code-block:: bash
 
@@ -77,4 +147,3 @@ If you run ``hansel -h``, you should see the following usage statement:
       -V, --version         shows the program version number and exit
 
 
-**Going to include what all the things do if possible, maybe???

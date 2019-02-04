@@ -1,7 +1,7 @@
 Input
 =====
 
-This section describes the main input files that are needed to run BioHansel along with the various methods avaliavble to analyze datasets using the tool.
+This section describes the main input files that are needed to run BioHansel along with the various methods available to analyze datasets using the tool.
 
 The three input files are:
 
@@ -9,7 +9,7 @@ The three input files are:
 
 - A chosen genotyping scheme (heidelberg or enteritidis) or a user created custom genotyping scheme (FASTA). More info in the `subtyping schemes section <subtyping_schemes.html>`_.
 
-- An optional metadata table to add additional information to results
+- A metadata table (**Optional**) to add additional information to results
 
 More detailed information on the output of what each results file contains can be found in the `Output section <output.html>`_.
 
@@ -37,7 +37,7 @@ An example command for the analysis of a single FASTA file called SRR1002850.fas
 
     hansel -s heidelberg -vv -o results.tab -O match_results.tab /path/to/SRR1002850.fasta
 
-Or, if you have already changed to the directory containing the dataset, you can use the following command where you do not have to specifiy the path to the data:
+Or, if you have already changed to the directory containing the dataset, you can use the following command where you do not have to specify the path to the data:
 
 .. code-block:: bash
 
@@ -84,13 +84,13 @@ Analysis of all FASTA/FASTQ files in a directory
 
 Analysis on **all** of the FASTA/FASTQ files in the specified directory. This will run on all FASTA/FASTQ files in the directory. Be sure that there are no miscellaneous files that may unnecessarily increase analysis time or lead to unneeded errors.
 
-BioHansel will only attempt to analyze the FASTA/FASTQ files within the specified directory and will not descend into any subdirectories! As such, make sure all of the data to be analyzed is in the same location or organized in a way that suites the projecct.
+BioHansel will only attempt to analyze the FASTA/FASTQ files within the specified directory and will not descend into any subdirectories! As such, make sure all of the data to be analyzed is in the same location or organized in a way that suits the project.
 
 Analysis of all of the sequencing files in a directory must include following the arguments to run properly:
 
 - -s "scheme" where the scheme defined can be one of the two built or a user created one (FASTA format)
 
-- --threads <#_cpu> to specify the number of CPU's wanted to run the analysis. (give a number; like 1 for example)
+- --threads <#_cpu> to specify the number of CPUs wanted to run the analysis. (give a number; like 1 for example)
 
 - Any combination of the results delimiters and names (file names can be changed but must be included after the argument):
  

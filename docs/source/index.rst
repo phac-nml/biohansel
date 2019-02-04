@@ -13,6 +13,8 @@ Includes 33 bp k-mer SNV subtyping schemes for Salmonella enterica subsp. enteri
 
 Works on genome assemblies (FASTA files) or reads (FASTQ files)! Accepts Gzipped FASTA/FASTQ files as input!
 
+Code is available on GitHub under https://github.com/phac-nml/biohansel. 
+
 * :ref:`user-docs`
 * :ref:`installation-docs`
 * :ref:`examples-docs`
@@ -42,6 +44,7 @@ Works on genome assemblies (FASTA files) or reads (FASTQ files)! Accepts Gzipped
    :caption: Installation
 
    installation-docs/home
+   installation-docs/command-line
    installation-docs/virtual_machine
    installation-docs/galaxy
    installation-docs/versions

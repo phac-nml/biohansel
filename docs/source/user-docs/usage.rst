@@ -26,11 +26,11 @@ Quick Installation
 With Conda_
 -----------
 
-Conda is the easiest way to install BioHansel and run it through the use of the command line.
+Conda is the easiest way to install and BioHansel through the use of the command line.
 
 First, install Conda_ (`Conda installation instructions <https://bioconda.github.io/#install-conda>`_).
 
-Then, install ``bio_hansel``through Bioconda_ (64bit linux and MAC OSX) using the following commands:
+Then, install ``bio_hansel`` through Bioconda_ (64bit linux and MAC OSX) using the following commands:
 
 .. code-block:: bash
 
@@ -58,7 +58,7 @@ Then, install ``bio_hansel``through Bioconda_ (64bit linux and MAC OSX) using th
     hansel -h
     #This will display the usage statement
 
-Remeber to activate the Conda environment that BioHansel is installed at to allow it to run.
+Remember to activate the Conda environment that BioHansel is installed into each time you want to run it after opening a new terminal window.
 
 With pip_ from PyPI_
 ---------------------
@@ -108,18 +108,18 @@ Input Data
 
 BioHansel uses genome assemblies (FASTA files) or reads (FastQ files) from WGS data as an input. It also accepts these files as their Gzipped FASTA/FASTQ formats. Genomes can be fully assembled or a collection of contigs when analyzed without impacting the output.
 
-SNV subtyping schemes have to be defined for BioHansel to run correctly. Two schemes are included and user created schemes can be used by creating SNV k-mers in the FASTA format. See `Creating schemes <subtyping_schemes.html>`_ for more details.
+SNV subtyping schemes have to be defined for BioHansel to run correctly. Two schemes are currently included in BioHansel and user created schemes can be developed by creating SNV k-mer pairs in the FASTA format. See `Creating schemes <subtyping_schemes.html>`_ for more details.
 
-Subtype metadata schemes can be added to the analysis but are not required. Added metadata is joined with the subtype field of the final results. More detailed info on formatting of metadata schemes can be found in the `input section <input.html>`_. 
+Subtype metadata schemes can be added to the analysis but are not required. Added metadata is joined with the subtype field of the final results. More detailed info on formatting of metadata schemes can be found in the `input section <input.html>`_ along with additional information on all of the other input files BioHansel can use. 
 
 Output Results
 --------------
 
-Output of results will be found in three .tab files in the same folder as the analyzed data was stored or in the Galaxy histories window after analysis. The three files include:
+Output of the results generated through BioHansel will be found in three .tab files in the directory that the BioHansel tool was run from or in the Galaxy histories window after analysis is complete. The three files include:
 
-- tech_results.tab
-- results.tab
-- match_results.tab
+- tech_results.tab -> Most basic results file
+- results.tab -> More advanced information on the results generated
+- match_results.tab -> All k-mer information used to generate the subtype
 
 Detailed info about the results output can be found in the `output section <output.html>`_.
 
@@ -128,11 +128,11 @@ Parameters
 
 Parameters can be modified for users of both Galaxy and the command line. These can be changed based on the users need. Modifiable parameters include:
 
-- K-mer Frequency Thresholds
-    - Min k-mer frequency/coverage (default 8)
+- K-mer Frequency Thresholds - **only apply to raw reads/.fastq datasets**
+    - Min k-mer frequency/coverage (default 8, cannot lower past 8 in current build)
     - Max k-mer frequency/coverage (default 1000)
 
-- Quality Checking Thresholds
+- Quality Checking Thresholds - Important parameters for the final results of the QC columns
     - QC: Frequency below this coverage are considered low coverage (default 20)
     - QC: Min number of tiles missing for Ambiguous Result (default 3)
     - QC: Decimal Proportion of max allowed missing tiles (default 0.05)
@@ -141,6 +141,16 @@ Parameters can be modified for users of both Galaxy and the command line. These 
 
 Detailed info on BioHansels parameters and their functions can be found in the `parameter section <parameters.html>`_.
 
+Running BioHansel
+-----------------
+
+More detailed information is available under the `Tutorial section <tutorial.html>`_, the `input section <input.html>`_, or the `Command Line section <command-line.html>`_.
+
+A basic command to run BioHansel on an assembled Heidelberg fasta file  would be:
+
+.. code-block:: bash
+
+    hansel -s heidelberg -vv -o results.tab -O match_results.tab -S tech_results.tab </path/to/data_file>
 
 .. _PyPI: https://pypi.org/project/bio-hansel/
 .. _Conda: https://conda.io/docs/

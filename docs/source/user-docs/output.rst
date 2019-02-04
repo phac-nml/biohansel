@@ -2,7 +2,7 @@
 Output 
 ======
 
-This page describes the three different result files will be produced from running BioHansel: `tech results.tab`_, `match results.tab`_ & `results.tab`_. These results will be the same whether you are using the command line or Galaxy to run an analysis.
+This page describes the three different result files will be produced from running BioHansel: `tech results.tab`_, `match results.tab`_ & `results.tab`_. The results found in these three files will be the same whether you are using the command line or Galaxy to run an analysis.
 
 
 .. |mixed| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Mixed.PNG
@@ -25,7 +25,6 @@ This page describes the three different result files will be produced from runni
 .. |pass| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Pass.PNG
    :alt: This is an ideal picture of a passed scheme
    :width: 100 px
-Incorrect
 
 .. |positive| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Positive%20pic%20of%20matching.PNG
    :alt: picture of positive match
@@ -51,6 +50,21 @@ Incorrect
    :alt: no result
    :width: 600 px
 
+.. |all_subtypes| image:: all_subtypes.png
+   :alt: Output of all subtypes
+   :width: 450 px
+
+.. |inconsistent_subtypes_false| image:: inconsistent_subtypes_false.png
+   :alt: Output of all subtypes
+   :width: 477 px
+
+.. |matching_all| image:: matching_all.png
+   :alt: tiles matching all output
+   :width: 420 px
+
+.. |good_tech| image:: good_tech.png
+   :alt: Correct tech_results.tab file
+   :width: 400 px
 
 |
 **Tech results.tab**
@@ -79,13 +93,17 @@ This column provides the names of samples that were run on BioHansel
 
 Subtype
 -------
-This column gives the subtype of the sample determined by the analysis. This column can display a single positive subtype, a list of positive subtypes, or no subtype depending on the results of the analysis. If this column does not display a single positive subtype, it will show one of the two following situations:
+This column gives the subtype of the sample determined by the analysis. This column can display a single positive subtype, a list of positive subtypes, or no subtype depending on the results of the analysis. A good analysis will output the following:
 
-- Different subtypes if mixed samples are run or there is an error in a user-created scheme. In this case, BioHansel will list all different subtypes detected.
+|good_tech|
+
+If this column does not display a single positive subtype, it will show one of the two following situations:
+
+1. Different subtypes if mixed samples are run or there is an error in a user-created scheme. In this case, BioHansel will list all different subtypes detected.
 
 |mixed_result|
 
-- If no positive target is detected, the column will be blank and the qc_message will state that no tiles/targets were found.
+2. If no positive target is detected, the column will be blank and the qc_message will state that no tiles/targets were found.
 
 |error_no_result|
 
@@ -108,7 +126,7 @@ QC Status and QC message are found in full details under their own section as th
 **Fasta File Output**
 ---------------------
 
-The following is the scheme for the match_results.tab file **For a single Fasta file**. **Running raw reads data has slightly different output columns**. The columns for a contig contained in a are broken up to fit all on one page with out scrolling. Here, you can see all of the outputs of this file at a glance along with a short block of info about the column.
+The following is the scheme for the match_results.tab file **For a single Fasta file**. **Running raw reads data has slightly different output columns due to the different nature of the data**. The output columns for the match_results.tab file are shown below broken into different charts to allow them to fit mostly on one page. In the real generated file, they would all found in the same long row. Below, you will find detailed information for each column.
 
 +------------------------+--------------------------------+--------------+------------------+ 
 | Tilename               | Sequence                       | is_revcomp   | Contig_id        |
@@ -148,7 +166,7 @@ All of the columns in the correct order in the match_results.tab file looks as s
 **Raw Reads FastQ File Output**
 -------------------------------
 
-The raw reads file gives slightly different outputs when compared to the Fasta file match_results.tab output. The overall Output looks as such:
+Running raw reads files/FastQ files gives slightly different output columns when compared to the Fasta file match_results.tab output due to the slight differences in the data that each file contains. The overall output for a match_results.tab results output from a FastQ file looks as such:
 
 
 +------------------------+--------------------------------+---------------------------------+ 
@@ -178,8 +196,20 @@ The raw reads file gives slightly different outputs when compared to the Fasta f
 | (PASS/FAIL/WARNING) | (Corresponding QC message) |
 +---------------------+----------------------------+
 
+Overall the match_results.tab file for analyzing raw reads will look as such:
+
++------------------------+--------------------------------+---------------------------------+-------------------------------+-------------------------+--------------+-------------------+-----------------+---------------+---------------+------------------+---------------------+----------------------------+  
+| Tilename               | Sequence                       | Frequency                       | Refposition                   | Subtype                 | is_pos_tile  | is_kmer_freq_okay | File_path       | Sample        |Scheme         | Scheme_version   | QC_Status           | QC_message                 |
++========================+================================+=================================+===============================+=========================+==============+===================+=================+===============+===============+==================+=====================+============================+  
+| (Name of Target/K-mer) | (Corresponding K-mer Sequence) | (Number of exact matches found) | (Match Position in reference) | (Subtypes in Tilename)  | (TRUE/FALSE) | (TRUE/FALSE)      | (File Location) | (Sample Name) |(Scheme Name)  | (Scheme Version) | (PASS/FAIL/WARNING) | (Corresponding QC message) |
++------------------------+--------------------------------+---------------------------------+-------------------------------+-------------------------+--------------+-------------------+-----------------+---------------+---------------+------------------+---------------------+----------------------------+
+
+
+
 **Detailed Column Information** 
 -------------------------------
+
+The detailed information on the meaning of each columns outputs for both files can be found below:
 
 Tilename
 """"""""
@@ -189,82 +219,90 @@ This column gives the name of the target/kmer that matched to the sample. It wil
 Sequence
 """"""""
 
-This column gives the sequence of the tile from the Tilename column. This sequence is the 33 bp fragment that matched somewhere in the sample.
+The column contains the sequence of the tile from the Tilename column. This sequence is the 33 bp fragment that matched somewhere in the sample.
 
 is_revcomp
 """"""""""
 
-If the target tile was found from the 5' to 3' direction in the sample, this column will display "FALSE".
+Is the tile found in the forward direction or the reverse direction?
 
-If the target tile was found in the 3' to 5' direction in the sample, this column will display "TRUE".
+1. FALSE - the target tile was found from the 5' to 3' direction 
+
+2. TRUE - the target tile was found in the 3' to 5' direction in the sample
 
 Contig_id
 """""""""
 
-This column displays the name of the contig as found in the Fasta file.
+Displays the name of the contig as found in the Fasta file.
 
 Frequency
 """""""""
 
-
+Displays the exact number of matches found for the tile/k-mer in the raw reads/FastQ file input.
 
 Match_index
 """""""""""
 
-This column outputs the last nucleotide match of a k-mer/tile as its position in the genome.
+Displays the last nucleotide match of a k-mer/tile as its position in the genome.
 
 For example, if the tile matched the genome from positions 12312 to 12345, the SNP would be at position 12329 and output of this column would be 12345.
 
 Refposition
 """""""""""
 
-This column displays the reference position of the SNP as found in the k-mer tile.
+Displays the numerical position of the tile/k-mers SNP in the reference genome. This information is also found in the description of the tile in the subtyping schemes Fasta file. 
 
 Subtype
 """""""
 
-This column gives the subtype of the sample determined by the analysis. This column can display a single positive subtype, a list of positive subtypes, or no subtype depending on the results of the analysis. If this column does not display a single positive subtype, it will show one of the two following situations:
+Shows the consensus subtype of the sample as determined by the analysis. 
 
-- Different subtypes if mixed samples are run or there is an error in a user-created scheme. In this case, BioHansel will list all different subtypes detected.
-
+This column can display a single positive subtype, a list of positive subtypes, or no subtype depending on the results.
 
 is_pos_tile
 """""""""""
-Is it a positive k-mer/target for specific subtype?
+Is the tile in question a positive k-mer/target for specific subtype?
 
-1.) TRUE
+1. TRUE - the positive SNP has been found in the sample
 
-2.) FALSE
+2. FALSE - the negative SNP has been found in the sample
 
 
 is_kmer_freq_okay
 """""""""""""""""
 
-Is it within the specified QC parameters (min/max)
+Is the frequencey of the k-mer/tile within the specified QC parameters (min/max)? For FastQ datasets. 
 
-1.) TRUE
+1. TRUE - enough of the k-mer has been found in the dataset as specified by the QC parameters
 
-2.) FALSE
+2. FALSE - not enough of the k-mer has been found in the dataset as specified by the QC parameters
 
 
 File path
 """""""""
 
-File Location
+The location of the input data file.
 
 
 Scheme
 """"""
-Name of the given Scheme
+The name of the chosen Scheme used in the analysis.
 
 Scheme_vers
 """""""""""
 
-Version of the given scheme
+The version of the chosen scheme used in the analysis.
+
+QC Columns
+""""""""""
+
+QC Status and QC message are found in full details under their own section as they are a part of all 3 results files. This detailed information is found in the `Quality_Control`_ section.
 
 |
 **Results.tab**
 ################
+
+The results.tab output file is almost exactly the same for all inputs. This file contains the overall information of the analysis and gives the final results of a BioHansel run in more detail then the tech_results.tab file. The expanded version of all information that can be obtained from this file is as such:
 
 ===================== ======================= =============================== ========================== ============================
        Sample                Sequence                  Scheme_vers                    Subtype                  all_subtype  
@@ -290,66 +328,137 @@ Version of the given scheme
 (Number of matches in specific sublineage)    (Expected matches in targeted sublineage)    (File Location)         
 ============================================ =========================================== =====================
 
-==================== ===========================
-     QC status               QC message  
--------------------- ---------------------------
- (PASS/FAIL/WARNING)  (Corresponding QC message) 
-==================== ===========================
+================================ ==================== ===========================
+        avg_tile_coverage             QC status               QC message  
+-------------------------------- -------------------- ---------------------------
+(Average frequency of all tiles) (PASS/FAIL/WARNING)  (Corresponding QC message) 
+================================ ==================== ===========================
+
+Sample
+------
+
+Provides the names of samples that were run on BioHansel
 
 
-all_subtype
------------
-All of the subtypes in all the levels of lineage
+Scheme
+------
+
+The name of the chosen Scheme used in the analysis.
+
+
+Scheme_Version
+--------------
+
+The version of the chosen scheme used in the analysis.
+
+
+Subtype
+-------
+
+Shows the consensus subtype of the sample as determined by the analysis.
+
+This column can display a single positive subtype, a list of positive subtypes, or no subtype depending on the results.
+
+
+All_subtypes
+------------
+
+All of the subtypes in all the levels of lineage leading to the final subtype.
+
+|all_subtypes|
 
 
 tiles_matching_subtype
 ----------------------
-(blank)
+
+Displays the subtype(s) that the most downstream, specific tiles have matched to. For good, non-mixed results it should be the same as the subtype column.
 
 
 are_subtypes_consistent
 -----------------------
-- Consistency -> All positive tiles within QC parameters, have consistent subtypes in downstream sublineages corresponding to parent subtype
+
+1. TRUE - the subtypes are consistent as defined.
+
+- Consistency -> All positive tiles within QC parameters have consistent subtypes in downstream sublineages corresponding to parent subtype.
 
 |consistent|
 
+Each tile must become more specific to the final subtype while matching all of the previous ones to be considered consistent.
+
+2. FALSE - the subtypes are not consistent.
+
+
 inconsistent_subtypes
 ---------------------
-If "are_subtypes_consistent" is FALSE, it lists subtypes that are inconsistent to parent
+
+If "are_subtypes_consistent" is FALSE, it lists subtypes that are inconsistent to parent.
+
+|inconsistent_subtypes_false|
 
 
 n_tiles_matching_all
 --------------------
-Counting actual positive matches per subtype found in sample based on subtype scheme in all lineages
+
+Counting all of the actual k-mer matches (both positive and negative) that make up each subtype lineage as defined by the subtyping scheme used/created.
 
 |n_all|
 
 
 n_tiles_matching_all_expected
 -----------------------------
-The number positive matches expected per subtype found in sample based on subtype scheme
+
+The total number k-mer/target matches expected (both positive and negative) that make up each subtype lineage as defined by the subtyping scheme used/created.
+
+Every/almost every k-mer defined in the scheme should match somewhere in the sample if the sample is of high quality.
+
+|matching_all|
 
 
 n_tiles_matching_positive
 -------------------------
-The number of positive matches in the full sample lineage 
+
+The number of positive matches in the sample from all of the upstream lineages of the output subtype as defined by the subtyping scheme.
 
 |positive|
 
 
 n_tiles_matching_positive_expected
 ----------------------------------
-The number of positive matches expected in the full sample lineage 
+
+The expected number of positive matches from all of the upstream lineages of the output subtype as defined by the subtyping scheme.
+
+For a good analysis, this value should match the sample.
+
 
 n_tiles_matching_subtype
 ------------------------
-The number of positive matches in the sample sublineage only
+
+The number of positive matches in the sample sublineage only.
 
 |subtype|
 
+
 n_tiles_matching_subtype_expected
 ---------------------------------
-The number of positive matches expected in the sample sublineage only
+
+The expected number of positive matches in the sample sublineage only.
+
+File Path
+---------
+
+The file location of the input data.
+
+
+Avg_tile_coverage
+-----------------
+
+The average frequency of all tiles, both positive and negative, that were found in the sample. This output column is only found for analysis of raw reads FastQ files and it is an indicator that there was a sufficient amount of overlap in the dataset for the results to be significant. 
+
+
+QC Columns
+----------
+
+QC Status and QC message are found in full details under their own section as they are a part of all 3 results files. This detailed information is found in the `Quality_Control`_ section.
 
 
 **Quality_Control**
@@ -358,23 +467,27 @@ The number of positive matches expected in the sample sublineage only
 |
 **QC Status**
 -------------
-Three possibilities based on the QC analysis described below: `QC message`_
+Three possibilities can be shown in this column based on the QC analysis described below: `QC message`_
 
-1.) PASS
+1. PASS
 
-2.) FAIL
+2. FAIL
 
-3.) WARNING
+3. WARNING
 
 |
 **QC message**
 --------------
+
+The QC message displayed provides information on what happened in the analysis and where, if there was a warning or fail, the data can be cleaned up/improved to obtain a passing result. 
 
 *"Pass"*
 """""""""
 A pass occurs when there is no errors in the targeted lineage and its corresponding sublineages:
 
 |pass|
+
+Once the QC module is declared as a pass, there is no information in the QC message column displayed. The result should be considered a valid analysis.
 
 |
 *"WARNING: Intermediate Subtype"*
@@ -399,15 +512,15 @@ Average coverage calculated from all targets found in the sample (The value is r
 |
 *Error Type 1: Missing Tiles*
 """""""""""""""""""""""""""""
-\*** The "Maximum amount of missing tiles to be allowed before being considered an error" can be edited based on preference and scheme
+\*** The Maximum amount of missing tiles, either positive or negative, to be allowed before being considered an error/fail. This amount can be edited based on preference and scheme.
 
-Two possible causes:
+Three possible causes:
 
-1.) Bacterial scheme does not match target                                       
+1. Bacterial scheme does not match target                                       
 
-2.) Low genome coverage or low quality data
+2. Low genome coverage or low quality data
 
-3.) Range of target coverage extends outside of QC limits (k-mer frequency thresholds default = min:8, max:500)
+3. Range of target coverage extends outside of QC limits (k-mer frequency thresholds default = min:8, max:500)
 
 ** To determine which cause, the average coverage depth is returned to the user. The value is calculated based on the coverage for all tiles that were above the minumum coverage threshold (indicated by the QC parameters: default value = 8) 
 
@@ -416,12 +529,13 @@ Two possible causes:
 |
 *Error Type 2: Mixed Sample*
 """"""""""""""""""""""""""""
-Two possible causes:
+A mixed sample error is where BioHansel is unsure what the final subtype is of the sample due to one of two possible causes:
 
-1.) BioHansel came out with an "inconsistent result" designation
+1. BioHansel came out with an "inconsistent result" designation
 
-2.) Position conflict: both "+" and "-" targets are found in the same target genome position above background noise level
--> (possible solution) if the average genome coverage is above 100, increase the minimum k-mer threshold to at least 10% of the average genome coverage
+2. Position conflict: both "+" and "-" targets are found in the same target genome position above background noise level
+
+A possible solution to this error if the average genome coverage is above 100 is to increase the minimum k-mer threshold to at least 10% of the average genome coverage. This will change the background noise tolerated and potentially allow for a positive result to occur. 
 
 |mixed|
 
@@ -430,18 +544,19 @@ Two possible causes:
 """"""""""""""""""""""""""""""""""
 Caused by both conditions met:
 
-1.) Total matching tiles is within 5% of the expected value
-2.) 3 or more tiles are missing for the final subtype call (Error 3a)
+1. Total matching tiles is within 5% of the expected value
+
+2. 3 or more tiles are missing for the final subtype call (Error 3a)
 
 |inconsistent|
 
 |
 *"Error Type 4: Unconfident/Not confident result"*
 """"""""""""""""""""""""""""""""""""""""""""""""""
-Lineage call is uncertain due to missing targets in downstream sublineage
+Lineage call is uncertain due to missing targets in downstream sublineage.
 
 |unconfident|
 
-.. _schemes: subtyping_schemes.thml
+.. _schemes: subtyping_schemes.html
 
 
