@@ -79,14 +79,14 @@ The parameters found under this column are only needed when running results on r
 Min k-mer frequency/coverage
 """"""""""""""""""""""""""""
 
-The minimum frequency that all of the k-mers of the chosen subtyping scheme should be found in a raw reads Fastq dataset. If a k-mer falls below this coverage, it will output an error.
+The minimum frequency that all of the k-mers of the chosen subtyping scheme should be found in a raw reads Fastq dataset. If a k-mer falls below this coverage, it will not be taken into account in the results.
 
-Changing this parameter will result in what the acceptable coverage of each of these k-mers is before an error is output by BioHansel. Default is 8. **In the current build, you cannot lower this past 8 or it will result in an error**.
+This parameter should be adjusted based on the average genome coverage of the dataset (or estimated average tile coverage output by BioHansel). A good min k-mer coverage would be 10% of your estimated genome/tile coverage.
 
 Max k-mer frequency/coverage
 """"""""""""""""""""""""""""
 
-The maximum frequency that all of the k-mers of the chosen subtyping scheme should be found in a raw reads Fastq dataset. If a k-mer is above this chosen frequency, it will output an error. Default is 1000.
+The maximum frequency that all of the k-mers of the chosen subtyping scheme should be found in a raw reads Fastq dataset. If a k-mer is above this chosen frequency, it will not be taken into account. Default is 1000. Make sure that the Max k-mer frequency is at least 5x more then the average genome coverage of the dataset (or estimated average tile coverage output by BioHansel).
 
 |k-mer_freq|
 
@@ -100,28 +100,32 @@ These parameters are used to run the quality control (QC) module that determines
 QC: Frequency below this coverage are considered low coverage
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-This QC threshold determines if the coverage of each of the individual tiles is enough to be considered adequate or low coverage. The lower this value is set, the more lax what is considered low coverage is for QC module failure. The default value is 20.
+This QC threshold determines if the coverage of each of the individual tiles is enough to be considered adequate or low coverage. The lower this value is set, the more lax what is considered low coverage is for QC module warning. The default value is 20. This parameter may be useful for scheme development.
+
+
 
 QC: Min number of tiles missing for Ambiguous Result
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
-This QC threshold determines the minimum number of tiles that can be missed to result in an ambiguous output by BioHansel. The default value is 3. A higher value means that the QC module is more relaxed resulting in less ambiguous results from datasets that are not as highly covered. 
+This QC threshold determines the minimum number of positive tiles that can be missed to result in an ambiguous output by BioHansel. The default value is 3. A higher value means that the QC module is more relaxed resulting in less ambiguous results from datasets that are not as highly covered. 
 
 QC: Decimal Proportion of max allowed missing tiles
 """""""""""""""""""""""""""""""""""""""""""""""""""
 
-This QC threshold determines the maximum number of tiles allowed to be missed in the target dataset as a decimal proportion before the QC module determines the outcome to be a failure. The default decimal proportion is 0.05 or 5%. 
+This QC threshold determines the maximum number of tiles allowed to be missing in the target dataset as a decimal proportion before the QC module determines the outcome to be a failure. The default decimal proportion is 0.05 or 5%. 
 
 QC: Decimal Proportion of max allowed missing tiles for an intermediate subtype
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-This QC threshold determines the maximum number of tiles allowed to be missed in the target dataset as a decimal proportion before the QC module determines that the outcome is a failure due to being an intermediate subtype. The default decimal proportion is 0.05 or 5%. 
+This QC threshold determines the maximum number of tiles allowed to be missed in the target dataset as a decimal proportion before the QC module determines that the outcome is a failure due to being an intermediate subtype. The default decimal proportion is 0.05 which equals 5%. 
 
 
 QC: Overall tile coverage below this value will trigger a low coverage warning
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-This QC threshold is the average tile Coverage of an analyzed fastq file which, when the average coverage falls below this number, a warning is triggered by the QC module saying that the sample is of low coverage. The default is 20. A lower number will relax the standard and allow sample of lower quantity to pass which may be needed on metagenomic samples.
+This QC threshold is the average tile Coverage of an analyzed fastq file which, when the average coverage falls below this number, a warning is triggered by the QC module saying that the sample is of low coverage. The default is 20. A lower number will relax the standard and allow sample of lower quantity to pass which may be needed on metagenomic samples. Doesn't affect the validity of the BioHansel results.
+
+**This is meant as a warning that you may want to resequence your sample for more data for other downstream applications.**
 
 Developer Options
 #################

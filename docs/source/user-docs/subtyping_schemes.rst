@@ -22,12 +22,8 @@ Subtyping Schemes
    :alt: showing the lineages defined through the first round of analysis
    :width: 600 px
 
-.. |wrong_subtype| image:: wrong_subtype.png
-   :alt: example of a poorly done snp extraction
-   :width: 600 px
-
 .. |proper_subtype| image:: proper_subtype.png
-   :alt: correct snp extraction
+   :alt: example of a snp extraction
    :width: 600 px
 
 This section will cover the subtyping schemes currently used by BioHansel for *Salmonella enterica* subspecies enterica serovar Heidelberg and serovar Enteritidis along with providing in depth information on how to create a custom subtyping scheme.
@@ -125,13 +121,13 @@ This can be done with any tool that creates a ML phylogeny. Examples of tools pr
 
 - Tree branches are at least 2 SNPs long
 
-	- Longer the branch the better as there will be more SNP positions to choose from for defining that subtype. You can look at a SNP file generated previously to look at the SNPs from regions that don't feature any indels and are isolated by atleast 15 (preferably 20) nucleotides on each side.
+	- Longer the branch the better as there will be more SNP positions to choose from for defining that subtype. You can look at a SNP file generated previously to look at the SNPs from regions that don't feature any indels and are isolated by at least 15 (preferably 20) nucleotides on each side.
 
-If wanted, you can lower the number of SNP sites to be evaluated into the scheme by removing all of the SNPs that are present in less then 5 isolates and then remake the tree. The aim is to have a least 5-10 strains per sub-lineage, to keep the scheme focused on clonal expansions.
+If wanted, you can lower the number of SNP sites to be evaluated into the scheme by removing all of the SNPs that are present in less then 5 isolates and then remaking the tree. The aim is to have at least 5-10 strains per sub-lineage, to keep the scheme focused on clonal expansions.
 
 |lineages|
 
-Above is the ML phylogeny previously generated with lineages and sublineages applied to the strains. These are a preliminary deligation and can change in the next steps. However, it is a good idea to set up lineages now and edit them as better designations are designed.
+Above is the ML phylogeny previously generated with lineages and sublineages applied to the strains. These are a preliminary delegation and can change in the next steps. However, it is a good idea to set up lineages now and edit them as better designations are designed.
 
 |
 8. Create a neighbour-joining tree and root it using a distantly related sequence or a pseudo sequence to determine where the root of the tree should be.
@@ -139,15 +135,10 @@ Above is the ML phylogeny previously generated with lineages and sublineages app
 |
 9. Give main lineages and sub-lineages determined previously hierarchical codes based on how they cluster in the NJ tree and the SNPs that make up each sequence.
 
-|wrong_subtype|
-
-Based on the SNPs seen in the .vfc file and the rooted tree, heiarchical codes are assigned. The root is in an odd spot in this example as it was determined mostly based off of the SNPs seen in the parsnp tree.
-
-Make sure you thouroghly check the SNPs that are making up each subtype before going onto the next step or finalizing the codes (step 7). In the above image, you can see that although some of the strains may seperate when looking at a phylogenetic analysis, there are no SNPs to distinguish between the two of them in the SNP file. To fix this remove the repeats and redo steps 7, 8, and 9 to generate a proper tree and correct heiarchical codes.
-
 |proper_subtype|
 
-The root looks more natural now and all of the data has finally been de-duplicated to provide the proper subtypes. You can also note that the lineages and sub lineages are slightly different then in step 7 which is ok as its baesd on how you want to differentiate the subtypes.
+Based on the SNPs seen in the .vfc file and the rooted tree, hierarchical codes are assigned. The root is in an odd spot in this example as it was determined mostly based off of the SNPs seen in the parsnp tree.
+It is important to verify that the root is correct with an outgroup as the BioHansel scheme needs to be strictly hierarchical.
 
 |
 10. Extract from the SNV table or VCF file the canonical SNPs that define the subtype and differentiate it from other strains using `FEHT <https://github.com/chadlaing/feht>`_ which can be installed into bioconda or galaxy. 
@@ -179,6 +170,20 @@ The metadata file should look as such and be in a **.tsv** format:
 +---------------+---------+---------+---------+----------+-----+  
 | SRR1242422313 | 2       | 2.2     | 2.2.2   | 2.2.2    | ... |
 +---------------+---------+---------+---------+----------+-----+
+
+The VCF table should look as such and also be in a **.tsv** format:
+
+
++--------+-----------+---------------+---------------+
+|        | reference | SRR1242421444 | SRR1242422313 |
++========+===========+===============+===============+
+| 122123 | 0         | 1             | 0             | 
++--------+-----------+---------------+---------------+ 
+| 234142 | 0         | 0             | 1             |
++--------+-----------+---------------+---------------+
+| 341251 | 0         | 1             | 1             |
++--------+-----------+---------------+---------------+
+
 
 11. Extract the exact matches to the query using the ratioFilter in FEHT by switching "-f" to "1". 
 
@@ -232,27 +237,27 @@ K-mer_Structure
 The structure k-mer pairs are structured as such and must follow the following format to work correctly:
 
 | >[SNP position in ref genome]-[subtype] for the positive tiles
-| AAATTTCAGCTAGCTAGCTAGCAATCACTGATC
+| AAATTTCAGCTAGCTA\ **G**\ CTAGCAATCACTGATC
 | 
 | >negative[SNP position in ref genome]-[subtype] for the negative tiles
-| AAATTTCAGCTAGCTATCTAGCAATCACTGATC
+| AAATTTCAGCTAGCTA\ **T**\ CTAGCAATCACTGATC
 
 An example with real data:
 
 | >2981-2.2.3.1.4
-| ACTGCCGCCGGAGCCGTGTGAAAATATTGTTTA
+| ACTGCCGCCGGAGCCG\ **T**\ GTGAAAATATTGTTTA
 | 
 | >negative2981-2.2.3.1.4
-| ACTGCCGCCGGAGCCGCGTGAAAATATTGTTTA
+| ACTGCCGCCGGAGCCG\ **C**\ GTGAAAATATTGTTTA
 
 
 ***The first distinction between subtypes 1 and 2 (or potentially more subtypes) does not have a negative condition and instead moves samples into one of the two classes established. The setup for the k-mers is similar to the other k-mers shown above and looks like such:
 
 | >717-1
-| ATGCAGAGTCAGTCAGATCAACATGCACCCACA
+| ATGCAGAGTCAGTCAG\ **A**\ TCAACATGCACCCACA
 | 
 | >717-2
-| ATGCAGAGTCAGTCAGTTCAACATGCACCCACA
+| ATGCAGAGTCAGTCAG\ **T**\ TCAACATGCACCCACA
 
 |
 16. Test the created scheme by running BioHansel to verify that all of the expected positive target sequences are present in the corresponding strains. Eliminate targeted k-mers from the scheme that do not work well and verify that the targeted k-mers created are present in most of the dataset. Finally test the scheme on a de novo assembly along with raw Illumina sequencing reads to make sure it holds true for both.

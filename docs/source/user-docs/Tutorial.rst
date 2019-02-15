@@ -37,9 +37,9 @@ Tutorial
    :alt:  raw tech results
    :width: 600 px
 
-.. |command| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Screen%20Shot%202018-10-18%20at%203.22.52%20PM.png
+.. |command| image:: usage_statement.png
    :alt: command line commands
-   :width: 600 px   
+   :width: 900 px   
 
 .. |getdata| image:: get_data.png
    :alt: get data section of Galaxy
