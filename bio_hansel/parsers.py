@@ -54,6 +54,7 @@ def _parse_fasta(f, filepath):
         if isinstance(line, bytes):
             line = line.decode()
         line = line.strip()
+
         if line == '':
             continue
         if line[0] == '>':
@@ -71,7 +72,7 @@ def _parse_fasta(f, filepath):
                     line=line_count,
                     chars=', '.join([str(x) for x in non_nucleotide_chars_in_line]))
                 logging.warning(msg)
-            seqs.append(line)
+            seqs.append(line.upper())
         line_count += 1
     yield header, ''.join(seqs)
 
@@ -120,7 +121,7 @@ def _parse_fastq(f):
         if line[0] == '@':
             header = line.replace('@', '')
         elif line[0] == '+':
-            yield header, seq
+            yield header, seq.upper()
             skip = True
         else:
             seq = line
