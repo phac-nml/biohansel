@@ -71,7 +71,7 @@ def _parse_fasta(f, filepath):
                     line=line_count,
                     chars=', '.join([str(x) for x in non_nucleotide_chars_in_line]))
                 logging.warning(msg)
-            seqs.append(line)
+            seqs.append(line.upper())
         line_count += 1
     yield header, ''.join(seqs)
 
@@ -123,4 +123,4 @@ def _parse_fastq(f):
             yield header, seq
             skip = True
         else:
-            seq = line
+            seq = line.upper()
