@@ -70,7 +70,7 @@ This page describes the three different result files will be produced from runni
 **Tech results.tab**
 ####################
 
-Tech results is the simplest output file and only contains the sample name, the subtype found by the analysis, and the quality control status with message. Here the output file :
+Tech_results.tab is the simplest output file released by running a BioHansel analysis. It contains only the sample name, subtype, and the QC status of the sample allowing this file to be easy to interpret at the cost of not elaborating on any of the specific details of the analysis. Found below are the columns and explanations of the columns for this output file:
 
 
 +---------------+--------------------------------+-------------------------------------------+
