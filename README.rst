@@ -37,10 +37,12 @@ If you find the ``biohansel`` tool useful, please cite as:
     Geneviève Labbé, James Robertson, Peter Kruczkiewicz, Marisa Rankin, Matthew Gopez, Chad R. Laing, Philip Mabon, Kim Ziebell, Aleisha R. Reimer, Lorelee Tschetter, Gary Van Domselaar, Sadjia Bekal, Kimberley A. MacDonald, Linda Hoang, Linda Chui, Danielle Daignault, Durda Slavic, Frank Pollari, E. Jane Parmley, Elissa Giang, Lok Kan Lee, Jonathan Moffat, Joanne MacKinnon, Roger Johnson, John H.E. Nash.
     [Manuscript in preparation]
 
+
 Read_The_Docs
 ==============
 
 More indepth information on running and installing biohansel can be found on the `biohansel readthedocs page <https://bio-hansel.readthedocs.io/en/readthedocs/>`_.
+
 
 Requirements and Dependencies
 =============================
