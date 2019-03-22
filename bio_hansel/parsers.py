@@ -39,7 +39,7 @@ def parse_fasta(filepath):
         # http://aripollak.com/pythongzipbenchmarks/
         # assumes Linux os with zcat installed
         import os
-        with os.popen('zcat {}'.format(filepath)) as f:
+        with os.popen('zcat < {}'.format(filepath)) as f:
             yield from _parse_fasta(f, filepath)
     else:
         with open(filepath, 'r') as f:
@@ -71,7 +71,7 @@ def _parse_fasta(f, filepath):
                     line=line_count,
                     chars=', '.join([str(x) for x in non_nucleotide_chars_in_line]))
                 logging.warning(msg)
-            seqs.append(line)
+            seqs.append(line.upper())
         line_count += 1
     yield header, ''.join(seqs)
 
@@ -91,7 +91,7 @@ def parse_fastq(filepath):
         # http://aripollak.com/pythongzipbenchmarks/
         # assumes Linux os with zcat installed
         import os
-        with os.popen('zcat {}'.format(filepath)) as f:
+        with os.popen('zcat < {}'.format(filepath)) as f:
             yield from _parse_fastq(f)
     else:
         with open(filepath, 'rU') as f:
@@ -123,4 +123,4 @@ def _parse_fastq(f):
             yield header, seq
             skip = True
         else:
-            seq = line
+            seq = line.upper()

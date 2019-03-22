@@ -10,13 +10,16 @@ notifications: # set notification options
 
 language: python
 python:
-  - '3.5'
   - '3.6'
+os:
+  - linux
+#  - osx
 
 # Whitelist of branches to run CI Testing on.
 branches:
   only:
     - master
+    - development
 
 # Blacklist of branches to not run CI testing on.
 # branches:
