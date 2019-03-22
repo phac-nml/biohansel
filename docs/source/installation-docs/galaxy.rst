@@ -30,7 +30,7 @@ Requirements
 Steps
 #####
 
-If you just want BioHansel or other programs to run on your own instance of Galaxy, then follow the steps below to download and install Galaxy. If you wish to work on Galaxy development or use it for another purpose other then installing and running Bioinformatic tools, then read more about `Galaxys uses <https://galaxyproject.org/admin/get-galaxy/>`_.
+If you just want biohansel or other programs to run on your own instance of Galaxy, then follow the steps below to download and install Galaxy. If you wish to work on Galaxy development or use it for another purpose other then installing and running Bioinformatic tools, then read more about `Galaxys uses <https://galaxyproject.org/admin/get-galaxy/>`_.
 
 For your own instance of Galaxy follow these steps:
 
@@ -88,7 +88,7 @@ If any problems have occurred or you want to customize/modify settings, view the
 
     sh run.sh
 
-7. Now to install BioHansel, continue following along here or go to the Galaxy Admin tab at the top bar:
+7. Now to install biohansel, continue following along here or go to the Galaxy Admin tab at the top bar:
 
 |admin_bar|
 
@@ -103,7 +103,7 @@ If any problems have occurred or you want to customize/modify settings, view the
 |search|
 
 
-10. Click on biohansel and a drop down menu will appear allowing you to preview/install. Click on this to be redirected to a page that will let you browse the repository for BioHansel, or install it to Galaxy.
+10. Click on biohansel and a drop down menu will appear allowing you to preview/install. Click on this to be redirected to a page that will let you browse the repository for biohansel, or install it to Galaxy.
 
 
 11. Once you click on *Install to Galaxy*, you will be brought to a page to confirm the installation and the location that the tool can be found under in the toolbar. Set these to your preferences and then click install.

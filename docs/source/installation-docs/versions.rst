@@ -16,7 +16,7 @@ Versions
 Galaxy versions
 ---------------
 
-Using Galaxy, you can easily install older versions of BioHansel to your own Galaxy workspace. To do this, follow the `Galaxy Installation Page instructions <galaxy.html>`_ to get Galaxy to run on your local machine. Once Galaxy is installed and you make yourself an admin, you can install any other versions of BioHansel released to Galaxy with the following:
+Using Galaxy, you can easily install older versions of biohansel to your own Galaxy workspace. To do this, follow the `Galaxy Installation Page instructions <galaxy.html>`_ to get Galaxy to run on your local machine. Once Galaxy is installed and you make yourself an admin, you can install any other versions of biohansel released to Galaxy with the following:
 
 1. Click on the Admin button on the top bar to be brought to the Admin page.
 
@@ -40,6 +40,6 @@ Once you know what version you want, click on the "Preview and install" button a
 
 |select_version|
 
-6. Confirm the installation and then the version of BioHansel specified will be installed into your local Galaxy
+6. Confirm the installation and then the version of biohansel specified will be installed into your local Galaxy
 
 

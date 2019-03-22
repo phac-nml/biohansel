@@ -1,7 +1,7 @@
 Command-Line
 ============
 
-Here, the arguments needed to run BioHansel effectively are displayed. The required and additional arguments are shown below to see what must be included in a run. 
+Here, the arguments needed to run biohansel effectively are displayed. The required and additional arguments are shown below to see what must be included in a run. 
 
 Required
 ########
@@ -28,7 +28,7 @@ Make sure to be in the directory containing all of the data needed to run a comm
 Additional
 ##########
 
-**If any of these arguments are left off of the command used to run BioHansel, they will be set to default values for the given analysis.**
+**If any of these arguments are left off of the command used to run biohansel, they will be set to default values for the given analysis.**
 
 | 
 | -M "metadata_scheme.tsv"  -->  Used to input a metadata scheme that follows all requirements
@@ -64,7 +64,7 @@ Additional
 |
 | -v  -->  Verbose: Logs verbosity levels where -v == show warnings and -vv == show debug info
 |
-| -V  -->  Displays the version of BioHansel installed
+| -V  -->  Displays the version of biohansel installed
 |
 
 Hansel Help Command

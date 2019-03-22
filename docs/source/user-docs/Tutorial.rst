@@ -62,10 +62,10 @@ Tutorial
    :width: 25 px
 
 .. |galaxyresults| image:: Results_Galaxy.png
-   :alt: Galaxy Results files from BioHansel
+   :alt: Galaxy Results files from biohansel
    :width: 400 px
 
-This tutorial is for demonstrating how to run BioHansel and to confirm that it is installed correctly. For step by step installation instructions view `installation home <../installation-docs/home.html>`_ or for quick instructions view `quick install <usage.html>`_.
+This tutorial is for demonstrating how to run biohansel and to confirm that it is installed correctly. For step by step installation instructions view `installation home <../installation-docs/home.html>`_ or for quick instructions view `quick install <usage.html>`_.
 
 
 Testing:
@@ -85,7 +85,7 @@ Specific steps regarding the testing/checking that installation was successful u
 
  **Both example files are from the same Salmonella Heidelberg sample**
 
-NML - Galaxy Access (BioHansel)
+NML - Galaxy Access (biohansel)
 ###############################
 **1.** Create a new history in Galaxy and import either fasta files or raw reads files that are being analyzed into the newly created history using any of the tools from the Get Data "Tools" section.
 
@@ -129,9 +129,9 @@ The normal execution time is 0.5 - 60 seconds depending on what the inputs were.
 
 |galaxyresults|
 
-\**For more detailed information on the different types of outputs that are produced by BioHansel go to: `Output <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/output.html>`_
+\**For more detailed information on the different types of outputs that are produced by biohansel go to: `Output <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/output.html>`_
 
-Running BioHansel on Terminal (MAC) using Conda
+Running biohansel on Terminal (MAC) using Conda
 ###############################################
 
 Steps
@@ -139,7 +139,7 @@ Steps
 
 **1.** Go to `Quick Installation instructions <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/usage.html>`_ or `Full installation instructions <../installation-docs/home.html>`_ (exact same with different details to them) and download Miniconda from the website following the instructions corresponding to your given iOS.
 
-**Skip to step 6 if you have already installed BioHansel.**
+**Skip to step 6 if you have already installed biohansel.**
 
 |
 **2.** After installing Conda, go on terminal and create a conda environment by inputing this command:
@@ -148,8 +148,8 @@ Steps
 
     conda create -n <name of environment> python=3.6
 
-    # For example to create an environment called bio_hansel the command would be:
-    conda create -n bio_hansel python=3.6
+    # For example to create an environment called biohansel the command would be:
+    conda create -n biohansel python=3.6
 
 |
 **3.** It will ask you to proceed (y/n) afterwards, type in: y
@@ -161,38 +161,38 @@ Steps
 
     source activate <name of your environment>
 
-    # If you called your environment bio_hansel, the activate command would be:
-    source activate bio_hansel
+    # If you called your environment biohansel, the activate command would be:
+    source activate biohansel
 
     # Source activate will activate the environment. You know that it is active if you see
     # the environment name beside your name.
 
 |
-**5.** Now install BioHansel onto conda environment by inputting:
+**5.** Now install biohansel onto conda environment by inputting:
 
 .. code-block:: bash
 
     conda install bio_hansel
 
-    # Make sure to always activate the environment that BioHansel was installed into 
+    # Make sure to always activate the environment that biohansel was installed into 
     # otherwise it will not run.
 
 |
-**6.** To confirm that BioHansel has been installed in the environment, input:
+**6.** To confirm that biohansel has been installed in the environment, input:
 
 .. code-block:: bash
 
     hansel -h 
-    #this command shows the numerous types of commands you can use in for BioHansel
+    #this command shows the numerous types of commands you can use in for biohansel
 
     # If there is any issue confirm that, if using conda, you are in the correct environment
-    # that you installed BioHansel to.
+    # that you installed biohansel to.
 
-    # If you installed BioHansel with pip and are having issues; confirm that BioHansel
+    # If you installed biohansel with pip and are having issues; confirm that biohansel
     # was installed into the correct python (Should be python 3.6 or higher) with the command:
     # which python
 
-Additional troubleshooting can be found in the `installation page <../installation-docs/home.html>`_. Go to `command-line <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/command-line.html>`_ to see detailed descriptions of all of the arguments that can be used to run BioHansel. Quick descriptions of the arguments_ are found below.
+Additional troubleshooting can be found in the `installation page <../installation-docs/home.html>`_. Go to `command-line <https://bio-hansel.readthedocs.io/en/readthedocs/user-docs/command-line.html>`_ to see detailed descriptions of all of the arguments that can be used to run biohansel. Quick descriptions of the arguments_ are found below.
 
 |command|
 
@@ -219,7 +219,7 @@ Example: if the file was in User/name of user/Downloads you input:
     # cd = change directory command
 
 |
-**9.** Once you're in the directory where your data is stored, BioHansel can be used to analyze the data in the directory using the following command:
+**9.** Once you're in the directory where your data is stored, biohansel can be used to analyze the data in the directory using the following command:
 
 .. code-block:: bash 
 
@@ -235,13 +235,13 @@ Arguments
 
 The other arguments needed to run the command are as follows:
 
--s -> this command is to specify the scheme used by BioHansel for the analysis being done (enteritidis and heidelberg are the two built in schemes right now). You can also use this to specify a custom scheme.
+-s -> this command is to specify the scheme used by biohansel for the analysis being done (enteritidis and heidelberg are the two built in schemes right now). You can also use this to specify a custom scheme.
 
 -vv -> this command is used to display more information from the terminal while the command is running. It is not necessary for an analysis but can be extremely useful. Can be added as just -v to show warnings.
 
 -t or --threads <#_CPUs> -> the number of parallel threads to run analysis
 
--o -> this command is used to get the most basic of results output by BioHansel called results.tab (You can change the name to whatever you want. **Remember to add .tab**)
+-o -> this command is used to get the most basic of results output by biohansel called results.tab (You can change the name to whatever you want. **Remember to add .tab**)
 
 -O -> this command is used to get the more detailed results output known as match_results.tab (You can change it to whatever name you want. **Remember to add the .tab**)
 

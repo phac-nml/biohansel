@@ -14,7 +14,7 @@ Parameters
    :alt: Quality checking thresholds
 
 
-This section will explain how to use the Galaxy parameters of BioHansel to get the most out of your analyses. The command line is slightly more complicated then Galaxy but also allows more a bit more customization to it. The command line arguments and parameters that can be changed can be found in the `Command-Line section <command-line.html>`_.
+This section will explain how to use the Galaxy parameters of biohansel to get the most out of your analyses. The command line is slightly more complicated then Galaxy but also allows more a bit more customization to it. The command line arguments and parameters that can be changed can be found in the `Command-Line section <command-line.html>`_.
 
 
 Galaxy Parameters
@@ -55,7 +55,7 @@ If single-end reads is selected, a single fastq file is required as input
 Paired-end reads collection (FASTQ)
 """""""""""""""""""""""""""""""""""
 
-With a paired-end reads collection, you can only select that as the input to run BioHansel on.
+With a paired-end reads collection, you can only select that as the input to run biohansel on.
 
 SNP Subtyping Scheme
 ####################
@@ -81,19 +81,19 @@ Min k-mer frequency/coverage
 
 The minimum frequency that all of the k-mers of the chosen subtyping scheme should be found in a raw reads Fastq dataset. If a k-mer falls below this coverage, it will not be taken into account in the results.
 
-This parameter should be adjusted based on the average genome coverage of the dataset (or estimated average tile coverage output by BioHansel). A good min k-mer coverage would be 10% of your estimated genome/tile coverage.
+This parameter should be adjusted based on the average genome coverage of the dataset (or estimated average tile coverage output by biohansel). A good min k-mer coverage would be 10% of your estimated genome/tile coverage.
 
 Max k-mer frequency/coverage
 """"""""""""""""""""""""""""
 
-The maximum frequency that all of the k-mers of the chosen subtyping scheme should be found in a raw reads Fastq dataset. If a k-mer is above this chosen frequency, it will not be taken into account. Default is 1000. Make sure that the Max k-mer frequency is at least 5x more then the average genome coverage of the dataset (or estimated average tile coverage output by BioHansel).
+The maximum frequency that all of the k-mers of the chosen subtyping scheme should be found in a raw reads Fastq dataset. If a k-mer is above this chosen frequency, it will not be taken into account. Default is 1000. Make sure that the Max k-mer frequency is at least 5x more then the average genome coverage of the dataset (or estimated average tile coverage output by biohansel).
 
 |k-mer_freq|
 
 Quality Checking Thresholds
 ###########################
 
-These parameters are used to run the quality control (QC) module that determines if the outcome of BioHansel is a PASS or a FAIL. Changing them allows for greater control on what the program will allow a pass, whether this is more strict or less strict. 
+These parameters are used to run the quality control (QC) module that determines if the outcome of biohansel is a PASS or a FAIL. Changing them allows for greater control on what the program will allow a pass, whether this is more strict or less strict. 
 
 |QC_Thresh|
 
@@ -107,7 +107,7 @@ This QC threshold determines if the coverage of each of the individual tiles is 
 QC: Min number of tiles missing for Ambiguous Result
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
-This QC threshold determines the minimum number of positive tiles that can be missed to result in an ambiguous output by BioHansel. The default value is 3. A higher value means that the QC module is more relaxed resulting in less ambiguous results from datasets that are not as highly covered. 
+This QC threshold determines the minimum number of positive tiles that can be missed to result in an ambiguous output by biohansel. The default value is 3. A higher value means that the QC module is more relaxed resulting in less ambiguous results from datasets that are not as highly covered. 
 
 QC: Decimal Proportion of max allowed missing tiles
 """""""""""""""""""""""""""""""""""""""""""""""""""
@@ -123,7 +123,7 @@ This QC threshold determines the maximum number of tiles allowed to be missed in
 QC: Overall tile coverage below this value will trigger a low coverage warning
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-This QC threshold is the average tile Coverage of an analyzed fastq file which, when the average coverage falls below this number, a warning is triggered by the QC module saying that the sample is of low coverage. The default is 20. A lower number will relax the standard and allow sample of lower quantity to pass which may be needed on metagenomic samples. Doesn't affect the validity of the BioHansel results.
+This QC threshold is the average tile Coverage of an analyzed fastq file which, when the average coverage falls below this number, a warning is triggered by the QC module saying that the sample is of low coverage. The default is 20. A lower number will relax the standard and allow sample of lower quantity to pass which may be needed on metagenomic samples. Doesn't affect the validity of the biohansel results.
 
 **This is meant as a warning that you may want to resequence your sample for more data for other downstream applications.**
 

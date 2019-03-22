@@ -2,7 +2,7 @@
 Output 
 ======
 
-This page describes the three different result files will be produced from running BioHansel: `tech results.tab`_, `match results.tab`_ & `results.tab`_. The results found in these three files will be the same whether you are using the command line or Galaxy to run an analysis.
+This page describes the three different result files will be produced from running biohansel: `tech results.tab`_, `match results.tab`_ & `results.tab`_. The results found in these three files will be the same whether you are using the command line or Galaxy to run an analysis.
 
 
 .. |mixed| image:: https://raw.githubusercontent.com/phac-nml/biohansel/readthedocs/docs/source/user-docs/Mixed.PNG
@@ -70,7 +70,7 @@ This page describes the three different result files will be produced from runni
 **Tech results.tab**
 ####################
 
-Tech_results.tab is the simplest output file released by running a BioHansel analysis. It contains only the sample name, subtype, and the QC status of the sample allowing this file to be easy to interpret at the cost of not elaborating on any of the specific details of the analysis. Found below are the columns and explanations of the columns for this output file:
+Tech_results.tab is the simplest output file released by running a biohansel analysis. It contains only the sample name, subtype, and the QC status of the sample allowing this file to be easy to interpret at the cost of not elaborating on any of the specific details of the analysis. Found below are the columns and explanations of the columns for this output file:
 
 
 +---------------+--------------------------------+-------------------------------------------+
@@ -88,7 +88,7 @@ Tech_results.tab is the simplest output file released by running a BioHansel ana
 
 Sample
 ------
-This column provides the names of samples that were run on BioHansel
+This column provides the names of samples that were run on biohansel
 
 
 Subtype
@@ -99,7 +99,7 @@ This column gives the subtype of the sample determined by the analysis. This col
 
 If this column does not display a single positive subtype, it will show one of the two following situations:
 
-1. Different subtypes if mixed samples are run or there is an error in a user-created scheme. In this case, BioHansel will list all different subtypes detected.
+1. Different subtypes if mixed samples are run or there is an error in a user-created scheme. In this case, biohansel will list all different subtypes detected.
 
 |mixed_result|
 
@@ -302,7 +302,7 @@ QC Status and QC message are found in full details under their own section as th
 **Results.tab**
 ################
 
-The results.tab output file is almost exactly the same for all inputs. This file contains the overall information of the analysis and gives the final results of a BioHansel run in more detail then the tech_results.tab file. The expanded version of all information that can be obtained from this file is as such:
+The results.tab output file is almost exactly the same for all inputs. This file contains the overall information of the analysis and gives the final results of a biohansel run in more detail then the tech_results.tab file. The expanded version of all information that can be obtained from this file is as such:
 
 ===================== ======================= =============================== ========================== ============================
        Sample                Sequence                  Scheme_vers                    Subtype                  all_subtype  
@@ -337,7 +337,7 @@ The results.tab output file is almost exactly the same for all inputs. This file
 Sample
 ------
 
-Provides the names of samples that were run on BioHansel
+Provides the names of samples that were run on biohansel
 
 
 Scheme
@@ -529,9 +529,9 @@ Three possible causes:
 |
 *Error Type 2: Mixed Sample*
 """"""""""""""""""""""""""""
-A mixed sample error is where BioHansel is unsure what the final subtype is of the sample due to one of two possible causes:
+A mixed sample error is where biohansel is unsure what the final subtype is of the sample due to one of two possible causes:
 
-1. BioHansel came out with an "inconsistent result" designation
+1. biohansel came out with an "inconsistent result" designation
 
 2. Position conflict: both "+" and "-" targets are found in the same target genome position above background noise level
 

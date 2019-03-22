@@ -1,9 +1,9 @@
 Command Line  
 ============ 
 
-There are three ways to install the latest version of BioHansel to run analyses through the use of the command line. These instructions have been tested for linux terminal and thus, no comments on the other operating system instructions can be found here at the moment. MAC should be extremely similar once you install Miniconda following the MAC installation steps. BioHansel commands have not been tested for the Windows OS terminal.
+There are three ways to install the latest version of biohansel to run analyses through the use of the command line. These instructions have been tested for linux terminal and thus, no comments on the other operating system instructions can be found here at the moment. MAC should be extremely similar once you install Miniconda following the MAC installation steps. biohansel commands have not been tested for the Windows OS terminal.
 
-BioHansel on Miniconda Linux Installation Instructions
+biohansel on Miniconda Linux Installation Instructions
 ------------------------------------------------------
 
 Miniconda is a mini version of `Anaconda <https://conda.io/projects/conda/en/latest/glossary.html#anaconda-glossary>`_ that includes only conda and its dependencies. If you wish to `install Anaconda <https://docs.continuum.io/anaconda/install.html>`_ then follow the steps found on the Anaconda installation instructions page and join back at step 5. 
@@ -39,17 +39,17 @@ You can use the tab key after typing the first few letters of the file to finish
     conda config --add channels bioconda
     conda config --add channels conda-forge
 
-6. Create a new environment to run BioHansel from. This environment is going to be called "bio_hansel" but can be whatever you choose. Command:
+6. Create a new environment to run biohansel from. This environment is going to be called "biohansel" but can be whatever you choose. Command:
 
 .. code-block:: bash
 
-    conda create -n bio_hansel python=3.6
+    conda create -n biohansel python=3.6
 
 7. Activate the newly created conda environment:
 
 .. code-block:: bash
 
-    source activate bio_hansel
+    source activate biohansel
 
 8. Check that the channels added earlier are properly included in the new environment by repeating the command in step 5. This can be skipped if step 5 went well:
 
@@ -61,7 +61,7 @@ You can use the tab key after typing the first few letters of the file to finish
 
 The output will either be nothing if the channel is re-added, or it will say that the channel is already present. Either output is good.
 
-9. Install bio_hansel and all of its dependencies into this environment:
+9. Install biohansel and all of its dependencies into this environment:
 
 .. code-block:: bash
 
@@ -73,16 +73,16 @@ The output will either be nothing if the channel is re-added, or it will say tha
 
     hansel -h
 
-11. When you open a new terminal window to run BioHansel, remember to activate the environment you set it to before running a job or it will not work:
+11. When you open a new terminal window to run biohansel, remember to activate the environment you set it to before running a job or it will not work:
 
 .. code-block:: bash
 
-    conda activate bio_hansel
+    conda activate biohansel
 
     # Then run the analysis you want to do. Example:
     hansel -s heidelberg -o results.tab STR13341
 
-If there are problems running/installing BioHansel, check to see if any of the following are are occuring:
+If there are problems running/installing biohansel, check to see if any of the following are are occuring:
 
 1. Make sure that that all of the system requirements are met for Miniconda on this page: https://conda.io/projects/conda/en/latest/user-guide/install/index.html#system-requirements
 
@@ -113,10 +113,10 @@ If there are problems running/installing BioHansel, check to see if any of the f
     source (conda info --root)/etc/fish/conf.d/conda.fish
 
 |
-BioHansel installation with pip from PyPI
+biohansel installation with pip from PyPI
 -----------------------------------------
 
-If you have pip and python3 installed already onto your machine, then the following steps can be used to install BioHansel. If not, follow along and install them as prompted:
+If you have pip and python3 installed already onto your machine, then the following steps can be used to install biohansel. If not, follow along and install them as prompted:
 
 1. Make sure that python3 is the active python version and that it is installed onto the machine:
 
@@ -134,21 +134,21 @@ If you have pip and python3 installed already onto your machine, then the follow
     # If not, then python3 may need to be installed with the following:
     apt-install python3.7-minimal
 
-BioHansel needs python3 to work correctly. If installed this way, you may need to use the alias command to get the correct version of python active before each run of BioHansel
+biohansel needs python3 to work correctly. If installed this way, you may need to use the alias command to get the correct version of python active before each run of biohansel
 
-2. Install BioHansel with pip. If pip is not installed on your current machine, then follow the `installing pip tutorial <https://pip.pypa.io/en/stable/installing/>`_:
+2. Install biohansel with pip. If pip is not installed on your current machine, then follow the `installing pip tutorial <https://pip.pypa.io/en/stable/installing/>`_:
 
 .. code-block:: bash
     
     # You can check that pip is installed with the input:
     pip
 
-    # If pip is installed, then install bio_hansel with it
+    # If pip is installed, then install biohansel with it
     pip install bio_hansel
 
-    # This will install bio_hansel along with all of its needed dependencies. 
+    # This will install biohansel along with all of its needed dependencies. 
 
-3. Check that BioHansel has been correctly installed with:
+3. Check that biohansel has been correctly installed with:
 
 .. code-block:: bash
 
@@ -156,21 +156,21 @@ BioHansel needs python3 to work correctly. If installed this way, you may need t
 
 Common problems encountered:
 
-1. pip installing BioHansel to the wrong python environment. Instead of installing to python 3, it installs to python 2.
+1. pip installing biohansel to the wrong python environment. Instead of installing to python 3, it installs to python 2.
 	
 - Set the correct path for pip/python to install files
 
 2. Make sure the correct version of python is being installed to (v3.x)
 
 
-BioHansel installation with pip from Github
+biohansel installation with pip from Github
 -------------------------------------------
 
 Use the following command:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/phac-nml/bio_hansel.git@master
+    pip install git+https://github.com/phac-nml/biohansel.git@master
 
 If that doesn't work, look at the common problems encountered with pip from PyPI or try the PyPI installation instructions. Both installation methods are extremely similar.
 

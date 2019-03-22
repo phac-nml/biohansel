@@ -1,7 +1,7 @@
 Input
 =====
 
-This section describes the main input files that are needed to run BioHansel along with the various methods available to analyze datasets using the tool.
+This section describes the main input files that are needed to run biohansel along with the various methods available to analyze datasets using the tool.
 
 The three input files are:
 
@@ -43,7 +43,7 @@ Or, if you have already changed to the directory containing the dataset, you can
 
     hansel -s heidelberg -vv -o results.tab -O match_results.tab SRR1002850.fasta
 
-The output of the BioHansel tool can be found in the directory that the command was run from.
+The output of the biohansel tool can be found in the directory that the command was run from.
 
 |
 
@@ -84,7 +84,7 @@ Analysis of all FASTA/FASTQ files in a directory
 
 Analysis on **all** of the FASTA/FASTQ files in the specified directory. This will run on all FASTA/FASTQ files in the directory. Be sure that there are no miscellaneous files that may unnecessarily increase analysis time or lead to unneeded errors.
 
-BioHansel will only attempt to analyze the FASTA/FASTQ files within the specified directory and will not descend into any subdirectories! As such, make sure all of the data to be analyzed is in the same location or organized in a way that suits the project.
+biohansel will only attempt to analyze the FASTA/FASTQ files within the specified directory and will not descend into any subdirectories! As such, make sure all of the data to be analyzed is in the same location or organized in a way that suits the project.
 
 Analysis of all of the sequencing files in a directory must include following the arguments to run properly:
 
@@ -106,9 +106,9 @@ An example of a general command for the analysis of a directory of FASTA/FASTQ f
 
     hansel -s heidelberg -vv --threads <n_cpu> -o results.tab -O match_results.tab -D /path/to/fastas_or_fastqs/
 
-The chosen output files can be found in the directory that the command was run from and will contain data from each of the analyzed files run by BioHansel. 
+The chosen output files can be found in the directory that the command was run from and will contain data from each of the analyzed files run by biohansel. 
 
-Ex. If you had your data directory in the path USER/name of user/bio_hansel/data and ran your command in the USER/name of user/bio_hansel folder, then the results of the analysis would end up in the bio_hansel folder. To run the analysis on the folder in this situation, your command would be as follows:
+Ex. If you had your data directory in the path USER/name of user/biohansel/data and ran your command in the USER/name of user/biohansel folder, then the results of the analysis would end up in the biohansel folder. To run the analysis on the folder in this situation, your command would be as follows:
 
 .. code-block:: bash
 
@@ -118,7 +118,7 @@ Ex. If you had your data directory in the path USER/name of user/bio_hansel/data
 Subtype Metadata Table (Optional)
 #################################
 
-Optionally you can select a subtype metadata information table to include subtype metadata along with the subtyping results created with BioHansel. Metadata tables must be in a tab-delimited format to correctly work. The file extension for your metadata table should be **.tsv** if at all possible or you may end up with an error and no analysis results.
+Optionally you can select a subtype metadata information table to include subtype metadata along with the subtyping results created with biohansel. Metadata tables must be in a tab-delimited format to correctly work. The file extension for your metadata table should be **.tsv** if at all possible or you may end up with an error and no analysis results.
 
 To add a metadata table to the analysis you will add the argument `-M <metadata_scheme.tsv>` to any other analysis command. There are no requirements for the number of columns or the content of each of the columns on the metadata table so long as the first column is labeled as "subtype". 
 
@@ -129,7 +129,7 @@ A command that incorporates the -M command for analysis would be structured foll
     hansel -s heidelberg -M <metadata_scheme.tsv> -vv -o results.tab -O match_results.tab <data>
 
 
-The BioHansel results table will be joined with the subtype metadata table based if a subtype on the metadata table matches one on the results. If a match occurs, the metadata of that subtype will be added to the table at the end of the results.tab and tech_results.tab results files. 
+The biohansel results table will be joined with the subtype metadata table based if a subtype on the metadata table matches one on the results. If a match occurs, the metadata of that subtype will be added to the table at the end of the results.tab and tech_results.tab results files. 
 
 Example metadata table (called meta.tsv):
 

@@ -26,21 +26,21 @@ Subtyping Schemes
    :alt: example of a snp extraction
    :width: 600 px
 
-This section will cover the subtyping schemes currently used by BioHansel for *Salmonella enterica* subspecies enterica serovar Heidelberg and serovar Enteritidis along with providing in depth information on how to create a custom subtyping scheme.
+This section will cover the subtyping schemes currently used by biohansel for *Salmonella enterica* subspecies enterica serovar Heidelberg and serovar Enteritidis along with providing in depth information on how to create a custom subtyping scheme.
 
-The subtyping schemes developed and used by BioHansel are specially developed fasta files that contain many tiles/k-mer pairs of the same length. These k-mer pairs are given a positive or negative label for the subtype that they correspond to allowing analysis to occur through BioHansel. See `K-mer_Structure`_ for the exact formatting of the k-mers which is needed for BioHansel to run correctly. Depending upon which tiles match the target, the final subtype will be obtained from the output files. 
+The subtyping schemes developed and used by biohansel are specially developed fasta files that contain many tiles/k-mer pairs of the same length. These k-mer pairs are given a positive or negative label for the subtype that they correspond to allowing analysis to occur through biohansel. See `K-mer_Structure`_ for the exact formatting of the k-mers which is needed for biohansel to run correctly. Depending upon which tiles match the target, the final subtype will be obtained from the output files. 
 
-The k-mer subtyping process works due to the clonal (very little genomic change/evolution occurs over time) nature of the serovars found in *Salmonella enterica* allowing SNPs to be mapped to subtypes that evolved from the same original lineages. This process can be used to subtype other clonal pathogens with BioHansel as soon as a statistically significant subtyping scheme is created for them.  
+The k-mer subtyping process works due to the clonal (very little genomic change/evolution occurs over time) nature of the serovars found in *Salmonella enterica* allowing SNPs to be mapped to subtypes that evolved from the same original lineages. This process can be used to subtype other clonal pathogens with biohansel as soon as a statistically significant subtyping scheme is created for them.  
 
 Heidelberg and Enteritidis Subtyping Schemes 
 --------------------------------------------  
 
-The heidelberg subtyping scheme currently included with BioHansel is in version 0.5.0 and features a set of 202 33-mer pairs with a single nucleotide polymorphism (SNP) distinguishing between the positive and negative condition in of each pair. This distinction between pairs allows for the identification and classification of different subtypes of Heidelberg serovars based on the number and location of SNPs in a WGS sample that match to pairs. The Enteritidis scheme (version 0.8.0) features a similar set of 224 33-mer pairs that follow the same style as the Heidelberg scheme to classify and identify different enteritidis serovar subtypes. Both schemes were developed by Genevieve Labbe et al. with changes occurring to the schemes as new classifications are made.
+The heidelberg subtyping scheme currently included with biohansel is in version 0.5.0 and features a set of 202 33-mer pairs with a single nucleotide polymorphism (SNP) distinguishing between the positive and negative condition in of each pair. This distinction between pairs allows for the identification and classification of different subtypes of Heidelberg serovars based on the number and location of SNPs in a WGS sample that match to pairs. The Enteritidis scheme (version 0.8.0) features a similar set of 224 33-mer pairs that follow the same style as the Heidelberg scheme to classify and identify different enteritidis serovar subtypes. Both schemes were developed by Genevieve Labbe et al. with changes occurring to the schemes as new classifications are made.
 
 Subtype Classification System
 -----------------------------
 
-The subtyping classification system created for BioHansel follows a nested hierarchical approach to allow relationships between subtypes to be established based on which SNPs they contain. The format designed for the classification system supports modification of the existing subtyping scheme to recognize new branches of new subtypes as they are fit into the existing classification system. The designed system works as a way to easily link outbreak origins and look at places further up the hierarchy where interventions can be done and monitored based on what subtype was found where. 
+The subtyping classification system created for biohansel follows a nested hierarchical approach to allow relationships between subtypes to be established based on which SNPs they contain. The format designed for the classification system supports modification of the existing subtyping scheme to recognize new branches of new subtypes as they are fit into the existing classification system. The designed system works as a way to easily link outbreak origins and look at places further up the hierarchy where interventions can be done and monitored based on what subtype was found where. 
 
 The scheme and process that is used to subtype *Salmonella enterica* subspecies Heidelberg can be seen below:
 
@@ -53,7 +53,7 @@ The `Output section <output.html>`_ contains more details on the errors that can
 Creating a Subtyping Scheme
 ---------------------------
 
-Creating a statistically valid, representative and well established subtyping scheme for BioHansel is a large task. Once a scheme is established however, it is easy to modify the scheme to fit the needs of the research and allow for new classifications as they are discovered. When creating a subtyping scheme, keep in mind that the **organism should be clonal**. All of the k-mers identified and created for the subtyping scheme should be found in all/almost all isolates for BioHansel to work correctly.
+Creating a statistically valid, representative and well established subtyping scheme for biohansel is a large task. Once a scheme is established however, it is easy to modify the scheme to fit the needs of the research and allow for new classifications as they are discovered. When creating a subtyping scheme, keep in mind that the **organism should be clonal**. All of the k-mers identified and created for the subtyping scheme should be found in all/almost all isolates for biohansel to work correctly.
 
 To create a well constructed subtyping scheme the steps below should be followed. However, you do not need to follow the steps to create a subtyping scheme and can create a quick one to identify certain k-mer tiles instead. As long as the k-mer scheme is followed, the tiles and their locations can be identified using the match_results.tab file. 
 
@@ -138,12 +138,12 @@ Above is the ML phylogeny previously generated with lineages and sublineages app
 |proper_subtype|
 
 Based on the SNPs seen in the .vfc file and the rooted tree, hierarchical codes are assigned. The root is in an odd spot in this example as it was determined mostly based off of the SNPs seen in the parsnp tree.
-It is important to verify that the root is correct with an outgroup as the BioHansel scheme needs to be strictly hierarchical.
+It is important to verify that the root is correct with an outgroup as the biohansel scheme needs to be strictly hierarchical.
 
 |
 10. Extract from the SNV table or VCF file the canonical SNPs that define the subtype and differentiate it from other strains using `FEHT <https://github.com/chadlaing/feht>`_ which can be installed into bioconda or galaxy. 
 
-The installation instructions are found in the link but if you are using bioconda for BioHansel, the easiest thing to do is go to the wanted environment and install FEHT there with the following commands:
+The installation instructions are found in the link but if you are using bioconda for biohansel, the easiest thing to do is go to the wanted environment and install FEHT there with the following commands:
 
 .. code-block:: bash
 
@@ -226,7 +226,7 @@ A python script can be written to do this such that it creates 33-mers from the 
     5. Replace the middle column by the negative base column and repeat the same procedure to obtain the list of “negative tiles”.
 
 |
-15. Create a FASTA file following the K-mer structure found below. Make sure that the headers and sequences are on separate lines. The order of the files in the scheme does not matter for BioHansel input.
+15. Create a FASTA file following the K-mer structure found below. Make sure that the headers and sequences are on separate lines. The order of the files in the scheme does not matter for biohansel input.
 
 It is important that the K-mers follow the exact format or the analysis will generate errors and potentially fail. They should all be the same size with position 17 (or the middle position if using a smaller k-mer size) containing the SNP.
 
@@ -260,6 +260,6 @@ An example with real data:
 | ATGCAGAGTCAGTCAG\ **T**\ TCAACATGCACCCACA
 
 |
-16. Test the created scheme by running BioHansel to verify that all of the expected positive target sequences are present in the corresponding strains. Eliminate targeted k-mers from the scheme that do not work well and verify that the targeted k-mers created are present in most of the dataset. Finally test the scheme on a de novo assembly along with raw Illumina sequencing reads to make sure it holds true for both.
+16. Test the created scheme by running biohansel to verify that all of the expected positive target sequences are present in the corresponding strains. Eliminate targeted k-mers from the scheme that do not work well and verify that the targeted k-mers created are present in most of the dataset. Finally test the scheme on a de novo assembly along with raw Illumina sequencing reads to make sure it holds true for both.
 
 
