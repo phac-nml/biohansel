@@ -71,7 +71,7 @@ This tutorial is for demonstrating how to run biohansel and to confirm that it i
 Testing:
 ########
 
-To verify that Biohansel is working properly with the different interfaces (command line/Galaxy):
+To verify that biohansel is working properly with the different interfaces (command line/Galaxy):
 
 Download either the CP012921.fasta (fasta file) or the SRR2598330(fastq-dump).fastqsanger.gz (raw file) which are the same samples in different formats:
 
@@ -93,7 +93,7 @@ NML - Galaxy Access (biohansel)
 
 |getdata|
    
-**2.** Find Biohansel on the right-hand side in the "Tools" Section: Under the Experimental Section and click it.
+**2.** Find biohansel on the right-hand side in the "Tools" Section: Under the Experimental Section and click it.
 
   |experimental|
   
