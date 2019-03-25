@@ -1,17 +1,20 @@
 |logo|
 
+|conda| |nbsp| |pypi| |nbsp| |license| |nbsp| |nbsp| Master:|citest-master| |nbsp| Development:|citest-dev|
 
-|license| |nbsp| |citest| |nbsp| |pypi| |nbsp| |conda| 
 
-.. |logo| image:: https://i.imgur.com/yYOkFlH.png
-    :target: https://github.com/phac-nml/bio_hansel
+
+.. |logo| image:: logo.png
+    :target: https://github.com/phac-nml/biohansel
 .. |pypi| image:: https://badge.fury.io/py/bio-hansel.svg
     :target: https://pypi.python.org/pypi/bio_hansel/
 .. |license| image:: https://img.shields.io/badge/License-Apache%20v2.0-blue.svg
     :target: http://www.apache.org/licenses/LICENSE-2.0
-.. |citest|  image:: https://travis-ci.org/phac-nml/bio_hansel.svg?branch=master
-    :target: https://travis-ci.org/phac-nml/bio_hansel
-.. |conda|   image:: https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square
+.. |citest-dev|  image:: https://travis-ci.org/phac-nml/biohansel.svg?branch=development
+    :target: https://travis-ci.org/phac-nml/biohansel
+.. |citest-master| image:: https://travis-ci.org/phac-nml/biohansel.svg?branch=master
+    :target: https://travis-ci.org/phac-nml/biohansel
+.. |conda|   image:: https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg
     :target: https://bioconda.github.io/recipes/bio_hansel/README.html
 .. |nbsp| unicode:: 0xA0
     :trim:
@@ -26,7 +29,7 @@ Works on genome assemblies (FASTA files) or reads (FASTQ files)! Accepts Gzipped
 Citation
 ========
 
-If you find this tool useful, please cite as:
+If you find the ``biohansel`` tool useful, please cite as:
 
 .. epigraph::
 
@@ -35,14 +38,20 @@ If you find this tool useful, please cite as:
     [Manuscript in preparation]
 
 
+Read_The_Docs
+==============
+
+More in-depth information on running and installing biohansel can be found on the `biohansel readthedocs page <https://bio-hansel.readthedocs.io/en/readthedocs/>`_.
+
+
 Requirements and Dependencies
 =============================
 
-This tool has only been tested on Linux (specifically Arch Linux). It may or may not work on OSX.
+Each new build of ``biohansel`` is automatically tested on Linux using `Continuous Integration <https://travis-ci.org/phac-nml/bio_hansel/branches>`_. ``biohansel`` has been confirmed to work on Mac OSX (versions 10.13.5 Beta and 10.12.6) when installed with Conda_.
 
-These are the dependencies required for ``bio_hansel``:
+These are the dependencies required for ``biohansel``:
 
-- Python_ (>=v3.5)
+- Python_ (>=v3.6)
     - numpy_ >=1.12.1
     - pandas_ >=0.20.1
     - pyahocorasick_ >=1.1.6
@@ -55,7 +64,7 @@ Installation
 With Conda_
 -----------
 
-Install ``bio_hansel`` from Bioconda_ with Conda_ (`Conda installation instructions <https://bioconda.github.io/#install-conda>`_):
+Install ``biohansel`` from Bioconda_ with Conda_ (`Conda installation instructions <https://bioconda.github.io/#install-conda>`_):
 
 .. code-block:: bash
 
@@ -63,13 +72,13 @@ Install ``bio_hansel`` from Bioconda_ with Conda_ (`Conda installation instructi
     conda config --add channels defaults
     conda config --add channels conda-forge
     conda config --add channels bioconda
-    # install bio_hansel
+    # install biohansel
     conda install bio_hansel
 
 With pip_ from PyPI_
 ---------------------
 
-Install ``bio_hansel`` from PyPI_ with pip_:
+Install ``biohansel`` from PyPI_ with pip_:
 
 .. code-block:: bash
 
@@ -82,14 +91,14 @@ Or install the latest master branch version directly from Github:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/phac-nml/bio_hansel.git@master
+    pip install git+https://github.com/phac-nml/biohansel.git@master
 
 Install into Galaxy_ (version >= 17.01)
 ---------------------------------------
 
-Install ``bio_hansel`` from the main Galaxy_ toolshed:
+Install ``biohansel`` from the main Galaxy_ toolshed:
 
-https://toolshed.g2.bx.psu.edu/repository?repository_id=59b90ef18cc5dbbc&changeset_revision=4654c51dae72
+https://toolshed.g2.bx.psu.edu/view/nml/biohansel/ba6a0af656a6
 
 
 Usage
@@ -246,6 +255,38 @@ Analysis of all FASTA/FASTQ files in a directory
 ``hansel`` will only attempt to analyze the FASTA/FASTQ files within the specified directory and will not descend into any subdirectories!
 
 
+Development
+===========
+
+
+Get the latest development code using Git from GitHub:
+
+.. code-block:: bash
+
+    git clone https://github.com/phac-nml/biohansel.git
+    cd biohansel/
+    git checkout development
+    # Create a virtual environment (virtualenv) for development
+    virtualenv -p python3 .venv
+    # Activate the newly created virtualenv
+    source .venv/bin/activate
+    # Install biohansel into the virtualenv in "editable" mode
+    pip install -e .
+
+
+Run tests with pytest_:
+
+.. code-block:: bash
+
+    # In the biohansel/ root directory, install pytest for running tests
+    pip install pytest
+    # Run all tests in tests/ directory
+    pytest
+    # Or run a specific test module
+    pytest -s tests/test_qc.py
+
+
+
 Legal
 =====
 
@@ -280,3 +321,4 @@ Contact
 .. _attrs: http://www.attrs.org/en/stable/
 .. _Python: https://www.python.org/
 .. _Galaxy: https://galaxyproject.org/
+.. _pytest: https://docs.pytest.org/en/latest/
