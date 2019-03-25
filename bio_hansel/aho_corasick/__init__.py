@@ -38,9 +38,9 @@ def find_in_fasta(A: Automaton, fasta: str) -> pd.DataFrame:
     """
     res = []
     for contig_header, sequence in parse_fasta(fasta):
-        for idx, (tilename, tile_seq, is_revcomp) in A.iter(sequence):
-            res.append((tilename, tile_seq, is_revcomp, contig_header, idx))
-    df = pd.DataFrame(res, columns=['tilename', 'seq', 'is_revcomp', 'contig_id', 'match_index'])
+        for idx, (kmername, kmer_seq, is_revcomp) in A.iter(sequence):
+            res.append((kmername, kmer_seq, is_revcomp, contig_header, idx))
+    df = pd.DataFrame(res, columns=['kmername', 'seq', 'is_revcomp', 'contig_id', 'match_index'])
     return df
 
 
@@ -54,14 +54,14 @@ def find_in_fastqs(A: Automaton, *fastqs):
     Returns:
         Dataframe with any matches found in input fastq files
     """
-    tile_seq_counts = defaultdict(int)
+    kmer_seq_counts = defaultdict(int)
     for fastq in fastqs:
         for _, sequence in parse_fastq(fastq):
-            for idx, (_, tile_seq, _) in A.iter(sequence):
-                tile_seq_counts[tile_seq] += 1
+            for idx, (_, kmer_seq, _) in A.iter(sequence):
+                kmer_seq_counts[kmer_seq] += 1
     res = []
-    for tile_seq, freq in tile_seq_counts.items():
-        tilename, sequence, _ = A.get(tile_seq)
-        res.append((tilename, tile_seq, freq))
-    df = pd.DataFrame(res, columns=['tilename', 'seq', 'freq'])
+    for kmer_seq, freq in kmer_seq_counts.items():
+        kmername, sequence, _ = A.get(kmer_seq)
+        res.append((kmername, kmer_seq, freq))
+    df = pd.DataFrame(res, columns=['kmername', 'seq', 'freq'])
     return df
