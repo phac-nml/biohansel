@@ -39,7 +39,7 @@ Tutorial
 
 .. |command| image:: usage_statement.png
    :alt: command line commands
-   :width: 900 px   
+   :width: 1200 px   
 
 .. |getdata| image:: get_data.png
    :alt: get data section of Galaxy

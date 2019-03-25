@@ -3,7 +3,7 @@ Command Line
 
 There are three ways to install the latest version of biohansel to run analyses through the use of the command line. These instructions have been tested for linux terminal and thus, no comments on the other operating system instructions can be found here at the moment. MAC should be extremely similar once you install Miniconda following the MAC installation steps. biohansel commands have not been tested for the Windows OS terminal.
 
-biohansel on Miniconda Linux Installation Instructions
+Biohansel on Miniconda Linux Installation Instructions
 ------------------------------------------------------
 
 Miniconda is a mini version of `Anaconda <https://conda.io/projects/conda/en/latest/glossary.html#anaconda-glossary>`_ that includes only conda and its dependencies. If you wish to `install Anaconda <https://docs.continuum.io/anaconda/install.html>`_ then follow the steps found on the Anaconda installation instructions page and join back at step 5. 
@@ -113,7 +113,7 @@ If there are problems running/installing biohansel, check to see if any of the f
     source (conda info --root)/etc/fish/conf.d/conda.fish
 
 |
-biohansel installation with pip from PyPI
+Biohansel installation with pip from PyPI
 -----------------------------------------
 
 If you have pip and python3 installed already onto your machine, then the following steps can be used to install biohansel. If not, follow along and install them as prompted:
@@ -134,7 +134,7 @@ If you have pip and python3 installed already onto your machine, then the follow
     # If not, then python3 may need to be installed with the following:
     apt-install python3.7-minimal
 
-biohansel needs python3 to work correctly. If installed this way, you may need to use the alias command to get the correct version of python active before each run of biohansel
+Biohansel needs python3 to work correctly. If installed this way, you may need to use the alias command to get the correct version of python active before each run of biohansel.
 
 2. Install biohansel with pip. If pip is not installed on your current machine, then follow the `installing pip tutorial <https://pip.pypa.io/en/stable/installing/>`_:
 
@@ -163,7 +163,7 @@ Common problems encountered:
 2. Make sure the correct version of python is being installed to (v3.x)
 
 
-biohansel installation with pip from Github
+Biohansel installation with pip from Github
 -------------------------------------------
 
 Use the following command:

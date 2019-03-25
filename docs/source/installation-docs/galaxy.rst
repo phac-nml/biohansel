@@ -111,6 +111,8 @@ If any problems have occurred or you want to customize/modify settings, view the
 
 12. Additional information on installing tools can be found on the `Galaxy website installing tools tutorial <https://galaxyproject.org/admin/tools/add-tool-from-toolshed-tutorial/>`_.
 
+`link to biohansel repository <https://toolshed.g2.bx.psu.edu/view/nml/biohansel/ba6a0af656a6>`_
+
 
 Installation Instructions for Galaxy Admins
 -------------------------------------------

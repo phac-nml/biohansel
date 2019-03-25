@@ -28,9 +28,9 @@ Subtyping Schemes
 
 This section will cover the subtyping schemes currently used by biohansel for *Salmonella enterica* subspecies enterica serovar Heidelberg and serovar Enteritidis along with providing in depth information on how to create a custom subtyping scheme.
 
-The subtyping schemes developed and used by biohansel are specially developed fasta files that contain many tiles/k-mer pairs of the same length. These k-mer pairs are given a positive or negative label for the subtype that they correspond to allowing analysis to occur through biohansel. See `K-mer_Structure`_ for the exact formatting of the k-mers which is needed for biohansel to run correctly. Depending upon which tiles match the target, the final subtype will be obtained from the output files. 
+The subtyping schemes developed and used by biohansel are specially developed fasta files that contain many k-mer pairs of the same length. These k-mer pairs are given a positive or negative label for the subtype that they correspond to allowing analysis to occur through biohansel. See `K-mer_Structure`_ for the exact formatting of the k-mers which is needed for biohansel to run correctly. Depending upon which of these k-mers match the target, the final subtype will be obtained from the output files. 
 
-The k-mer subtyping process works due to the clonal (very little genomic change/evolution occurs over time) nature of the serovars found in *Salmonella enterica* allowing SNPs to be mapped to subtypes that evolved from the same original lineages. This process can be used to subtype other clonal pathogens with biohansel as soon as a statistically significant subtyping scheme is created for them.  
+The k-mer subtyping process works due to the clonal (very little genomic change/evolution occurs over time) nature of the serovars found in *Salmonella enterica* allowing SNPs to be mapped to subtypes that evolved from the same original lineages. This process can be used to subtype other clonal pathogens with biohansel as soon as a statistically significant subtyping scheme is created and validated for them.  
 
 Heidelberg and Enteritidis Subtyping Schemes 
 --------------------------------------------  
@@ -55,7 +55,7 @@ Creating a Subtyping Scheme
 
 Creating a statistically valid, representative and well established subtyping scheme for biohansel is a large task. Once a scheme is established however, it is easy to modify the scheme to fit the needs of the research and allow for new classifications as they are discovered. When creating a subtyping scheme, keep in mind that the **organism should be clonal**. All of the k-mers identified and created for the subtyping scheme should be found in all/almost all isolates for biohansel to work correctly.
 
-To create a well constructed subtyping scheme the steps below should be followed. However, you do not need to follow the steps to create a subtyping scheme and can create a quick one to identify certain k-mer tiles instead. As long as the k-mer scheme is followed, the tiles and their locations can be identified using the match_results.tab file. 
+To create a well constructed subtyping scheme the steps below should be followed. However, you do not need to follow the steps to create a subtyping scheme and you can create a quick one to identify certain k-mers instead. As long as the k-mer scheme is followed, the tiles and their locations can be identified using the match_results.tab file. 
 
 Detailed Steps
 ##############

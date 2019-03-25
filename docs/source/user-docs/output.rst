@@ -74,7 +74,7 @@ Tech_results.tab is the simplest output file released by running a biohansel ana
 
 
 +---------------+--------------------------------+-------------------------------------------+
-| Sample        | Subtype                        | Avg_tile_coverage                         |
+| Sample        | Subtype                        | Avg_k-mer_coverage                         |
 +===============+================================+===========================================+
 | (Sample Name) | (Corresponding Subtypes Found) | (average tile coverage of all the targets |
 +---------------+--------------------------------+-------------------------------------------+
@@ -107,7 +107,7 @@ If this column does not display a single positive subtype, it will show one of t
 
 |error_no_result|
 
-Average Tile Coverage
+Average K-mer Coverage
 ---------------------
 
 Found only when analyzing raw read FastQ files. It displays the average coverage of all of the targets/k-mers that were present in the sample.
