@@ -139,7 +139,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'Bio_Hansel.tex', 'Bio\\_Hansel Documentation',
+    (master_doc, 'Biohansel.tex', 'Biohansel Documentation',
      'Peter Kruczkiewicz', 'manual'),
 ]
 
@@ -149,7 +149,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'bio_hansel', 'Bio_Hansel Documentation',
+    (master_doc, 'biohansel', 'Biohansel Documentation',
      [author], 1)
 ]
 
@@ -160,8 +160,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'Bio_Hansel', 'Bio_Hansel Documentation',
-     author, 'Bio_Hansel', 'One line description of project.',
+    (master_doc, 'Biohansel', 'Biohansel Documentation',
+     author, 'Biohansel', 'One line description of project.',
      'Miscellaneous'),
 ]
 
