@@ -41,7 +41,7 @@ If you find the ``biohansel`` tool useful, please cite as:
 Read_The_Docs
 ==============
 
-More indepth information on running and installing biohansel can be found on the `biohansel readthedocs page <https://bio-hansel.readthedocs.io/en/readthedocs/>`_.
+More in-depth information on running and installing biohansel can be found on the `biohansel readthedocs page <https://bio-hansel.readthedocs.io/en/readthedocs/>`_.
 
 
 Requirements and Dependencies
@@ -98,7 +98,7 @@ Install into Galaxy_ (version >= 17.01)
 
 Install ``biohansel`` from the main Galaxy_ toolshed:
 
-https://toolshed.g2.bx.psu.edu/repository?repository_id=59b90ef18cc5dbbc&changeset_revision=4654c51dae72
+https://toolshed.g2.bx.psu.edu/view/nml/biohansel/ba6a0af656a6
 
 
 Usage
