@@ -237,6 +237,7 @@ def main():
     if output_tile_results:
         if len(dfs) > 0:
             dfall = pd.concat(dfs)  # type: pd.DataFrame
+            dfall = dfall.sort_values(by='is_pos_tile', ascending=False)
             dfall.to_csv(output_tile_results, **kwargs_for_pd_to_table)
             logging.info('Tile results written to "{}".'.format(output_tile_results))
             if args.json:
