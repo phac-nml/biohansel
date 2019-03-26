@@ -1,6 +1,6 @@
 |logo|
 
-|conda| |nbsp| |pypi| |nbsp| |license| |nbsp| |nbsp| Master:|citest-master| |nbsp| Development:|citest-dev|
+|conda| |nbsp| |pypi| |nbsp| |license| |nbsp| |nbsp| Master:|citest-master| |nbsp| Development:|citest-dev| |rtd|
 
 
 
@@ -18,6 +18,8 @@
     :target: https://bioconda.github.io/recipes/bio_hansel/README.html
 .. |nbsp| unicode:: 0xA0
     :trim:
+.. |rtd| image:: https://readthedocs.org/projects/pip/badge/?version=latest&style=flat
+    :target: https://bio-hansel.readthedocs.io/en/readthedocs/
 
 Subtype microbial whole-genome sequencing (WGS) data using SNV targeting k-mer subtyping schemes.
 
