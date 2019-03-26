@@ -1,7 +1,7 @@
 Usage
 =====
 
-Biohansel subtypes microbial whole-genome sequencing (WGS) data using singe nucleotide variant (SNV) k-mer subtyping schemes.
+Biohansel subtypes microbial whole-genome sequencing (WGS) data using single nucleotide variant (SNV) k-mer subtyping schemes.
 
 SNV k-mer schemes can be created for use by the tool or the included 33 bp k-mer SNV subtyping schemes for Salmonella enterica subsp. enterica serovar Heidelberg and Enteritidis genomes developed by Genevieve Labbe et al. can be used for analysis of Salmonella WGS data. 
 
@@ -73,10 +73,12 @@ This will install biohansel along with the required dependencies.
 
 Check that installation is correct with the command:
 
+
  .. code-block:: bash
 
     hansel -h
     #This will display the usage statement.
+
 
 With pip_ from Github
 ---------------------
@@ -110,7 +112,7 @@ Biohansel uses genome assemblies (FASTA files) or reads (FastQ files) from WGS d
 
 SNV subtyping schemes have to be defined for biohansel to run correctly. Two schemes are currently included in biohansel and user created schemes can be developed by creating SNV k-mer pairs in the FASTA format. See `Creating schemes <subtyping_schemes.html>`_ for more details.
 
-Subtype metadata schemes can be added to the analysis but are not required. Added metadata is joined with the subtype field of the final results. More detailed info on formatting of metadata schemes can be found in the `input section <input.html>`_ along with additional information on all of the other input files biohansel can use. 
+Subtype metadata schemes can be added to the analysis but are not required. Added metadata is joined with the subtype field of the final results. More detailed info on formatting of metadata schemes can be found in the `Input section <input.html>`_ along with additional information on all of the other input files biohansel can use. 
 
 Output Results
 --------------

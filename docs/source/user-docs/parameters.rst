@@ -1,5 +1,5 @@
-Parameters
-==========
+Galaxy Parameters
+=================
 
 .. |tiles| image:: tiles_scheme.png
    :width: 500 px
@@ -14,11 +14,7 @@ Parameters
    :alt: Quality checking thresholds
 
 
-This section will explain how to use the Galaxy parameters of biohansel to get the most out of your analyses. The command line is slightly more complicated then Galaxy but also allows more a bit more customization to it. The command line arguments and parameters that can be changed can be found in the `Command-Line section <command-line.html>`_.
-
-
-Galaxy Parameters
------------------
+This section will explain how to use the Galaxy parameters of biohansel to get the most out of your analyses. The command line is slightly more complicated then Galaxy but also allows more a bit more customization to it. The command line arguments and parameters that can be changed can be found in the `Command-Line section <command-line.html>`_
 
 These are the parameters and their functions using Galaxy. Each of the headers is the name of the section on Galaxy where the underlying parameters can be changed. 
 

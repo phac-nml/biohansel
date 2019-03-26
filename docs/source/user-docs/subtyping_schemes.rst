@@ -28,7 +28,7 @@ Subtyping Schemes
 
 This section will cover the subtyping schemes currently used by biohansel for *Salmonella enterica* subspecies enterica serovar Heidelberg and serovar Enteritidis along with providing in depth information on how to create a custom subtyping scheme.
 
-The subtyping schemes developed and used by biohansel are specially developed fasta files that contain many k-mer pairs of the same length. These k-mer pairs are given a positive or negative label for the subtype that they correspond to allowing analysis to occur through biohansel. See `K-mer_Structure`_ for the exact formatting of the k-mers which is needed for biohansel to run correctly. Depending upon which of these k-mers match the target, the final subtype will be obtained from the output files. 
+The subtyping schemes developed and used by biohansel are specially designed fasta files that contain many k-mer pairs of the same length. These k-mer pairs are given a positive or negative label for the subtype that they correspond to allowing analysis to occur through biohansel. See `K-mer_Structure`_ for the exact formatting of the k-mers which is needed for biohansel to run correctly. Depending upon which of these k-mers match the target, the final subtype will be obtained from the output files. 
 
 The k-mer subtyping process works due to the clonal (very little genomic change/evolution occurs over time) nature of the serovars found in *Salmonella enterica* allowing SNPs to be mapped to subtypes that evolved from the same original lineages. This process can be used to subtype other clonal pathogens with biohansel as soon as a statistically significant subtyping scheme is created and validated for them.  
 
@@ -236,10 +236,14 @@ K-mer_Structure
 
 The structure k-mer pairs are structured as such and must follow the following format to work correctly:
 
-| >[SNP position in ref genome]-[subtype] for the positive tiles
+| **For the Positive Tiles:**
+|
+| >[SNP position in ref genome]-[subtype]
 | AAATTTCAGCTAGCTA\ **G**\ CTAGCAATCACTGATC
 | 
-| >negative[SNP position in ref genome]-[subtype] for the negative tiles
+| **For the Negative Tiles:**
+| 
+| >negative[SNP position in ref genome]-[subtype]
 | AAATTTCAGCTAGCTA\ **T**\ CTAGCAATCACTGATC
 
 An example with real data:

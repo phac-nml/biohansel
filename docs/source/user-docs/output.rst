@@ -67,14 +67,14 @@ This page describes the three different result files will be produced from runni
    :width: 400 px
 
 |
-**Tech results.tab**
+**Tech Results.tab**
 ####################
 
 Tech_results.tab is the simplest output file released by running a biohansel analysis. It contains only the sample name, subtype, and the QC status of the sample allowing this file to be easy to interpret at the cost of not elaborating on any of the specific details of the analysis. Found below are the columns and explanations of the columns for this output file:
 
 
 +---------------+--------------------------------+-------------------------------------------+
-| Sample        | Subtype                        | Avg_k-mer_coverage                         |
+| Sample        | Subtype                        | Avg_tile_coverage                         |
 +===============+================================+===========================================+
 | (Sample Name) | (Corresponding Subtypes Found) | (average tile coverage of all the targets |
 +---------------+--------------------------------+-------------------------------------------+
@@ -87,12 +87,12 @@ Tech_results.tab is the simplest output file released by running a biohansel ana
 
 
 Sample
-------
+""""""
 This column provides the names of samples that were run on biohansel
 
 
 Subtype
--------
+"""""""
 This column gives the subtype of the sample determined by the analysis. This column can display a single positive subtype, a list of positive subtypes, or no subtype depending on the results of the analysis. A good analysis will output the following:
 
 |good_tech|
@@ -108,12 +108,12 @@ If this column does not display a single positive subtype, it will show one of t
 |error_no_result|
 
 Average K-mer Coverage
----------------------
+""""""""""""""""""""""
 
 Found only when analyzing raw read FastQ files. It displays the average coverage of all of the targets/k-mers that were present in the sample.
 
 QC Columns
-----------
+""""""""""
 
 QC Status and QC message are found in full details under their own section as they are a part of all 3 results files. This detailed information is found in the `Quality_Control`_ section.
 
@@ -286,7 +286,7 @@ The location of the input data file.
 
 Scheme
 """"""
-The name of the chosen Scheme used in the analysis.
+The name of the chosen scheme used in the analysis.
 
 Scheme_vers
 """""""""""
@@ -335,25 +335,25 @@ The results.tab output file is almost exactly the same for all inputs. This file
 ================================ ==================== ===========================
 
 Sample
-------
+""""""
 
 Provides the names of samples that were run on biohansel
 
 
 Scheme
-------
+""""""
 
 The name of the chosen Scheme used in the analysis.
 
 
 Scheme_Version
---------------
+""""""""""""""
 
 The version of the chosen scheme used in the analysis.
 
 
 Subtype
--------
+"""""""
 
 Shows the consensus subtype of the sample as determined by the analysis.
 
@@ -361,7 +361,7 @@ This column can display a single positive subtype, a list of positive subtypes, 
 
 
 All_subtypes
-------------
+""""""""""""
 
 All of the subtypes in all the levels of lineage leading to the final subtype.
 
@@ -369,13 +369,13 @@ All of the subtypes in all the levels of lineage leading to the final subtype.
 
 
 tiles_matching_subtype
-----------------------
+""""""""""""""""""""""
 
 Displays the subtype(s) that the most downstream, specific tiles have matched to. For good, non-mixed results it should be the same as the subtype column.
 
 
 are_subtypes_consistent
------------------------
+"""""""""""""""""""""""
 
 1. TRUE - the subtypes are consistent as defined.
 
@@ -389,7 +389,7 @@ Each tile must become more specific to the final subtype while matching all of t
 
 
 inconsistent_subtypes
----------------------
+"""""""""""""""""""""
 
 If "are_subtypes_consistent" is FALSE, it lists subtypes that are inconsistent to parent.
 
@@ -397,7 +397,7 @@ If "are_subtypes_consistent" is FALSE, it lists subtypes that are inconsistent t
 
 
 n_tiles_matching_all
---------------------
+""""""""""""""""""""
 
 Counting all of the actual k-mer matches (both positive and negative) that make up each subtype lineage as defined by the subtyping scheme used/created.
 
@@ -405,7 +405,7 @@ Counting all of the actual k-mer matches (both positive and negative) that make 
 
 
 n_tiles_matching_all_expected
------------------------------
+"""""""""""""""""""""""""""""
 
 The total number k-mer/target matches expected (both positive and negative) that make up each subtype lineage as defined by the subtyping scheme used/created.
 
@@ -415,7 +415,7 @@ Every/almost every k-mer defined in the scheme should match somewhere in the sam
 
 
 n_tiles_matching_positive
--------------------------
+"""""""""""""""""""""""""
 
 The number of positive matches in the sample from all of the upstream lineages of the output subtype as defined by the subtyping scheme.
 
@@ -423,7 +423,7 @@ The number of positive matches in the sample from all of the upstream lineages o
 
 
 n_tiles_matching_positive_expected
-----------------------------------
+""""""""""""""""""""""""""""""""""
 
 The expected number of positive matches from all of the upstream lineages of the output subtype as defined by the subtyping scheme.
 
@@ -431,7 +431,7 @@ For a good analysis, this value should match the sample.
 
 
 n_tiles_matching_subtype
-------------------------
+""""""""""""""""""""""""
 
 The number of positive matches in the sample sublineage only.
 
@@ -439,24 +439,24 @@ The number of positive matches in the sample sublineage only.
 
 
 n_tiles_matching_subtype_expected
----------------------------------
+"""""""""""""""""""""""""""""""""
 
 The expected number of positive matches in the sample sublineage only.
 
 File Path
----------
+"""""""""
 
 The file location of the input data.
 
 
 Avg_tile_coverage
------------------
+"""""""""""""""""
 
 The average frequency of all tiles, both positive and negative, that were found in the sample. This output column is only found for analysis of raw reads FastQ files and it is an indicator that there was a sufficient amount of overlap in the dataset for the results to be significant. 
 
 
 QC Columns
-----------
+""""""""""
 
 QC Status and QC message are found in full details under their own section as they are a part of all 3 results files. This detailed information is found in the `Quality_Control`_ section.
 

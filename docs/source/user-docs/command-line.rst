@@ -60,7 +60,7 @@ Additional
 | \\--max-intermediate-tiles <#>  -->  Decimal proportion of maximum allowable missing tiles
 |       (0.0 - 1.0) to be considered an intermediate subtype (default is 0.05)
 | 
-| -t <#_CPUs>  -->  Number of parallel threads used to run the analysis (default = 1)
+| --threads <#_CPUs>  -->  Number of parallel threads used to run the analysis (default = 1)
 |
 | -v  -->  Verbose: Logs verbosity levels where -v == show warnings and -vv == show debug info
 |
@@ -104,6 +104,9 @@ If you run ``hansel -h``, you will be provided with additional information for m
                             /path/to/user/scheme)
       --scheme-name SCHEME_NAME
                             Custom user-specified SNP substyping scheme name
+      -M SCHEME_METADATA, --scheme-metadata SCHEME_METADATA
+                            Scheme subtype metadata table (CSV or tab-delimited
+                            format; must contain "subtype" column)
       -p forward_reads reverse_reads, --paired-reads forward_reads reverse_reads
                             FASTQ paired-end reads
       -i fasta_path genome_name, --input-fasta-genome-name fasta_path genome_name

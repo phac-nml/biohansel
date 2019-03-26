@@ -90,8 +90,6 @@ Analysis of all of the sequencing files in a directory must include following th
 
 - -s "scheme" where the scheme defined can be one of the two built or a user created one (FASTA format)
 
-- --threads <#_cpu> to specify the number of CPUs wanted to run the analysis. (give a number; like 1 for example)
-
 - Any combination of the results delimiters and names (file names can be changed but must be included after the argument):
  
     - -o results.tab
@@ -99,6 +97,10 @@ Analysis of all of the sequencing files in a directory must include following th
     - -S tech_results.tab
 
 - -D /path/to/directory_with_data
+
+Optionally, you are able to specify the number of threads for an analysis with the --threads argument. If you do not specify this, it will default to 1.
+
+- --threads <#_cpu> to specify the number of CPUs wanted to run the analysis.
 
 An example of a general command for the analysis of a directory of FASTA/FASTQ files:
 
@@ -108,7 +110,7 @@ An example of a general command for the analysis of a directory of FASTA/FASTQ f
 
 The chosen output files can be found in the directory that the command was run from and will contain data from each of the analyzed files run by biohansel. 
 
-Ex. If you had your data directory in the path USER/name of user/biohansel/data and ran your command in the USER/name of user/biohansel folder, then the results of the analysis would end up in the biohansel folder. To run the analysis on the folder in this situation, your command would be as follows:
+Ex. If I was running an analysis on samples stored in my "data" directory found in the path science/user/data, I could cd to my user folder and run the following command:
 
 .. code-block:: bash
 
