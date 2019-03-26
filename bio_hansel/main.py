@@ -192,6 +192,7 @@ def main():
     scheme_name = args.scheme_name  # type: Optional[str]
     scheme_fasta = get_scheme_fasta(scheme)
     scheme_subtype_counts = subtype_counts(scheme_fasta)
+    directory_path = args.input_directory
     logging.debug(args)
     subtyping_params = init_subtyping_params(args, scheme)
     input_contigs, input_reads = collect_inputs(args)
@@ -224,10 +225,14 @@ def main():
 
     dfs = [df for st, df in subtype_results]  # type: List[pd.DataFrame]
     dfsummary = pd.DataFrame([attr.asdict(st) for st, df in subtype_results])
+
     dfsummary = dfsummary[SUBTYPE_SUMMARY_COLS]
 
     if dfsummary['avg_tile_coverage'].isnull().all():
         dfsummary = dfsummary.drop(labels='avg_tile_coverage', axis=1)
+
+    if dfsummary['subtype'].isnull().any():
+        dfsummary['subtype'].fillna(value='#N/A', inplace=True)
 
     if df_md is not None:
         dfsummary = merge_metadata_with_summary_results(dfsummary, df_md)
@@ -246,8 +251,11 @@ def main():
 
     if output_tile_results:
         if len(dfs) > 0:
-            dfall = pd.concat(dfs)  # type: pd.DataFrame
-            dfall = dfall.sort_values(by='is_pos_tile', ascending=False)
+            dfall = pd.concat(dfs, sort=True)  # type: pd.DataFrame
+            if directory_path == None:
+                dfall = dfall.sort_values(by='is_pos_tile', ascending=False)
+            if dfall['subtype'].isnull().any():
+                dfall['subtype'].fillna(value='#N/A', inplace=True)
             dfall.to_csv(output_tile_results, **kwargs_for_pd_to_table)
             logging.info('Tile results written to "{}".'.format(output_tile_results))
             if args.json:
