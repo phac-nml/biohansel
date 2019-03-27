@@ -222,7 +222,7 @@ def main():
         logging.info('Generated %s subtyping results from %s contigs samples', len(reads_results), len(input_reads))
         subtype_results += reads_results
 
-    dfs = [df for st, df in subtype_results]  # type: List[pd.DataFrame]
+    dfs: List[pd.DataFrame] = [df for st, df in subtype_results]  # type: List[pd.DataFrame]
     dfsummary = pd.DataFrame([attr.asdict(st) for st, df in subtype_results])
 
     dfsummary = dfsummary[SUBTYPE_SUMMARY_COLS]
@@ -249,7 +249,7 @@ def main():
 
     if output_tile_results:
         if len(dfs) > 0:
-            dfall = pd.concat([df.sort_values('is_pos_tile', ascending=False) for df in dfs], sort=False)  # type: pd.DataFrame
+            dfall: pd.DataFrame = pd.concat([df.sort_values('is_pos_tile', ascending=False) for df in dfs], sort=False)  # type: pd.DataFrame
             dfall['subtype'].fillna(value='#N/A', inplace=True)
             dfall.to_csv(output_tile_results, **kwargs_for_pd_to_table)
             logging.info('Tile results written to "{}".'.format(output_tile_results))
