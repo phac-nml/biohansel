@@ -31,12 +31,12 @@ def subtype_heidelberg_pass():
                    subtype='2.2.2.2.1.4',
                    are_subtypes_consistent=True,
                    inconsistent_subtypes=None,
-                   n_tiles_matching_all=202,
-                   n_tiles_matching_all_expected='202',
-                   n_tiles_matching_positive=17,
-                   n_tiles_matching_positive_expected='17',
-                   n_tiles_matching_subtype=3,
-                   n_tiles_matching_subtype_expected='3',
+                   n_kmers_matching_all=202,
+                   n_kmers_matching_all_expected='202',
+                   n_kmers_matching_positive=17,
+                   n_kmers_matching_positive_expected='17',
+                   n_kmers_matching_subtype=3,
+                   n_kmers_matching_subtype_expected='3',
                    qc_status=QC.PASS)
 
 
@@ -48,12 +48,12 @@ def subtype_enteritidis_fail_unconfident():
                    subtype='2.1.1',
                    file_path=fasta_enteritidis_unconfident,
                    are_subtypes_consistent=True,
-                   n_tiles_matching_all=154,
-                   n_tiles_matching_all_expected='224',
-                   n_tiles_matching_positive=9,
-                   n_tiles_matching_positive_expected='9',
-                   n_tiles_matching_subtype=1,
-                   n_tiles_matching_subtype_expected='1',
+                   n_kmers_matching_all=154,
+                   n_kmers_matching_all_expected='224',
+                   n_kmers_matching_positive=9,
+                   n_kmers_matching_positive_expected='9',
+                   n_kmers_matching_subtype=1,
+                   n_kmers_matching_subtype_expected='1',
                    qc_status=QC.FAIL)
 
 
@@ -65,12 +65,12 @@ def subtype_enteritidis_fail():
                    subtype='2.1.1',
                    file_path=fasta_enteritidis_fail,
                    are_subtypes_consistent=True,
-                   n_tiles_matching_all=154,
-                   n_tiles_matching_all_expected='224',
-                   n_tiles_matching_positive=9,
-                   n_tiles_matching_positive_expected='9',
-                   n_tiles_matching_subtype=1,
-                   n_tiles_matching_subtype_expected='1',
+                   n_kmers_matching_all=154,
+                   n_kmers_matching_all_expected='224',
+                   n_kmers_matching_positive=9,
+                   n_kmers_matching_positive_expected='9',
+                   n_kmers_matching_subtype=1,
+                   n_kmers_matching_subtype_expected='1',
                    qc_status=QC.FAIL)
 
 
