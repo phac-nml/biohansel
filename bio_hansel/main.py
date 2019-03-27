@@ -231,8 +231,7 @@ def main():
     if dfsummary['avg_tile_coverage'].isnull().all():
         dfsummary = dfsummary.drop(labels='avg_tile_coverage', axis=1)
 
-    if dfsummary['subtype'].isnull().any():
-        dfsummary['subtype'].fillna(value='#N/A', inplace=True)
+    dfsummary['subtype'].fillna(value='#N/A', inplace=True)
 
     if df_md is not None:
         dfsummary = merge_metadata_with_summary_results(dfsummary, df_md)
@@ -254,8 +253,7 @@ def main():
             dfall = pd.concat(dfs, sort=True)  # type: pd.DataFrame
             if directory_path == None:
                 dfall = dfall.sort_values(by='is_pos_tile', ascending=False)
-            if dfall['subtype'].isnull().any():
-                dfall['subtype'].fillna(value='#N/A', inplace=True)
+            dfall['subtype'].fillna(value='#N/A', inplace=True)
             dfall.to_csv(output_tile_results, **kwargs_for_pd_to_table)
             logging.info('Tile results written to "{}".'.format(output_tile_results))
             if args.json:
