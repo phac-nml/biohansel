@@ -202,7 +202,7 @@ def main():
         df_md = read_metadata_table(args.scheme_metadata)
     n_threads = args.threads
 
-    subtype_results = []  # type: List[Tuple[Subtype, pd.DataFrame]]
+    subtype_results: List[Tuple[Subtype, pd.DataFrame]] = []  # type: List[Tuple[Subtype, pd.DataFrame]]
     if len(input_contigs) > 0:
         contigs_results = subtype_contigs_samples(input_genomes=input_contigs,
                                                   scheme=scheme,
