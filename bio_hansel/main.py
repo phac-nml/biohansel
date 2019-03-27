@@ -192,7 +192,6 @@ def main():
     scheme_name = args.scheme_name  # type: Optional[str]
     scheme_fasta = get_scheme_fasta(scheme)
     scheme_subtype_counts = subtype_counts(scheme_fasta)
-    directory_path = args.input_directory
     logging.debug(args)
     subtyping_params = init_subtyping_params(args, scheme)
     input_contigs, input_reads = collect_inputs(args)
@@ -250,9 +249,7 @@ def main():
 
     if output_tile_results:
         if len(dfs) > 0:
-            dfall = pd.concat(dfs, sort=True)  # type: pd.DataFrame
-            if directory_path == None:
-                dfall = dfall.sort_values(by='is_pos_tile', ascending=False)
+            dfall = pd.concat([df.sort_values('is_pos_tile', ascending=False) for df in dfs], sort=False)  # type: pd.DataFrame
             dfall['subtype'].fillna(value='#N/A', inplace=True)
             dfall.to_csv(output_tile_results, **kwargs_for_pd_to_table)
             logging.info('Tile results written to "{}".'.format(output_tile_results))
