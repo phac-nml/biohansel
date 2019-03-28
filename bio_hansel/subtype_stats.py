@@ -21,7 +21,7 @@ class SubtypeCounts:
     def _check_subtype(self, attribute, value):
         if value is None or value == '':
             raise ValueError('Subtype cannot be None or empty string')
-        if len(value) > 1:
+        if len(value) > 2:
             if '.' not in value:
                 raise ValueError(
                     'Invalid subtype specified! "{}" does not numbers delimited by "." (periods)'.format(value))
