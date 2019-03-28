@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 from typing import Dict, List, Set
+import re
 
 import attr
 from collections import defaultdict
@@ -19,12 +20,12 @@ class SubtypeCounts:
 
     @subtype.validator
     def _check_subtype(self, attribute, value):
+        REGEX_SUBTYPE = re.compile(r'^\d[^\d\.]*\d*$')
         if value is None or value == '':
             raise ValueError('Subtype cannot be None or empty string')
-        if len(value) > 2:
-            if '.' not in value:
-                raise ValueError(
-                    'Invalid subtype specified! "{}" does not numbers delimited by "." (periods)'.format(value))
+        if REGEX_SUBTYPE.match(value) == False:
+            raise ValueError(
+                'Invalid subtype specified! "{}" does not numbers delimited by "." (periods)'.format(value))
 
     @subtype_tile_count.validator
     def _check_subtype_tile_count(self, attribute, value):
