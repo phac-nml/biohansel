@@ -7,11 +7,12 @@ import sys
 import re
 import os
 from typing import Optional, List, Any, Tuple
+from pkg_resources import resource_filename
 
 import attr
 import pandas as pd
 
-from . import program_desc, __version__
+from . import program_desc, __version__, program_name
 from .const import SUBTYPE_SUMMARY_COLS, REGEX_FASTQ, REGEX_FASTA, JSON_EXT_TMPL
 from .subtype import Subtype
 from .subtype_stats import subtype_counts
@@ -51,7 +52,7 @@ def init_parser():
                         help='Input genome FASTA/FASTQ files (can be Gzipped)')
     parser.add_argument('-s', '--scheme',
                         default='heidelberg',
-                        help='Scheme to use for subtyping (built-in: "heidelberg", "enteritidis"; OR user-specified: '
+                        help='Scheme to use for subtyping (built-in: "heidelberg", "enteritidis", "typhi", "tuburculosis"; OR user-specified: '
                              '/path/to/user/scheme)')
     parser.add_argument('--scheme-name',
                         help='Custom user-specified SNP substyping scheme name')
@@ -200,6 +201,11 @@ def main():
     df_md = None
     if args.scheme_metadata:
         df_md = read_metadata_table(args.scheme_metadata)
+    if scheme == 'typhi':
+        if df_md is None:
+            df_md = pd.DataFrame()
+        df_md = pd.concat([df_md, read_metadata_table(resource_filename(program_name, 'data/typhi/typhi_scheme_metadata.tsv'))], axis=1)
+        df_md = df_md.loc[:, ~df_md.columns.duplicated()]
     n_threads = args.threads
 
     subtype_results = []  # type: List[Tuple[Subtype, pd.DataFrame]]
