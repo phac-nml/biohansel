@@ -99,14 +99,11 @@ def test_find_inconsistent_subtypes():
         f'All subtypes should be inconsistent with each other in {subtypes_list}'
 
 def test_subtype_regex():
-    assert SubtypeCounts._check_subtype('x', 'x', '1.1.1.1') == '1.1.1.1'
-    assert SubtypeCounts._check_subtype('x', 'x', '10') == '10'
-    assert SubtypeCounts._check_subtype('x', 'x', '77.10.1.9') == '77.10.1.9'
+    good_values = ['1.1.1.1', '10', '77.10.1.9', '17.1.1.1.1.12.4']
+    bad_values = ['1..', '1..1', '1.1..1.1', '1....', '100.', '', ' ', 'a1.1.1', '1.11.1a', 'a']
+    for good_value in good_values:
+        assert SubtypeCounts._check_subtype('x', 'x', good_value) == good_value
     with pytest.raises(ValueError):
-        assert SubtypeCounts._check_subtype('x', 'x', '1..') == ''
-        assert SubtypeCounts._check_subtype('x', 'x', '1..1') == ''
-        assert SubtypeCounts._check_subtype('x', 'x', '1......') == ''
-        assert SubtypeCounts._check_subtype('x', 'x', '100.') == ''
-        assert SubtypeCounts._check_subtype('x', 'x', ' ') == ''
-        assert SubtypeCounts._check_subtype('x', 'x', '') == ''
+        for bad_value in bad_values:
+            assert SubtypeCounts._check_subtype('x', 'x', bad_value) == ''
         
