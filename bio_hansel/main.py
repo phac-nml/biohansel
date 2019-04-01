@@ -52,7 +52,7 @@ def init_parser():
                         help='Input genome FASTA/FASTQ files (can be Gzipped)')
     parser.add_argument('-s', '--scheme',
                         default='heidelberg',
-                        help='Scheme to use for subtyping (built-in: "heidelberg", "enteritidis", "typhi", "tuburculosis"; OR user-specified: '
+                        help='Scheme to use for subtyping (built-in: "heidelberg", "enteritidis", "typhi", "tb_speciation"; OR user-specified: '
                              '/path/to/user/scheme)')
     parser.add_argument('--scheme-name',
                         help='Custom user-specified SNP substyping scheme name')

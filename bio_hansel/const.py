@@ -15,8 +15,8 @@ SCHEME_FASTAS = {'heidelberg': {'file': resource_filename(program_name, 'data/he
                  'typhi': {'file': resource_filename(program_name, 'data/typhi/kmers.fasta'),
                                  'version': '1.1.0',
                                  'subtyping_params': SubtypingParams(low_coverage_depth_freq=20)},
-                 'tuburculosis': {'file': resource_filename(program_name, 'data/tb/kmers.fasta'),
-                                 'version': 'x.x.x;',
+                 'tb_speciation': {'file': resource_filename(program_name, 'data/m.tuberculosis/kmers.fasta'),
+                                 'version': '1.0.0;',
                                  'subtyping_params': SubtypingParams(low_coverage_depth_freq=20)}}
 
 COLUMNS_TO_REMOVE = '''
