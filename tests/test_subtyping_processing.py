@@ -109,3 +109,4 @@ def test_subtype_regex():
         assert SubtypeCounts._check_subtype('x', 'x', '100.') == ''
         assert SubtypeCounts._check_subtype('x', 'x', ' ') == ''
         assert SubtypeCounts._check_subtype('x', 'x', '') == ''
+        
