@@ -25,7 +25,7 @@ class SubtypeCounts:
             raise ValueError('Subtype cannot be None or empty string')
         if not REGEX_SUBTYPE.match(value):
             raise ValueError(
-                'Invalid subtype specified! "{}" does not numbers delimited by "." (periods)'.format(value))
+                'Invalid subtype specified! The "{}" kmer is not formatted correctly. It must be numbers delimited by "." (periods)'.format(value))
         return value 
 
     @subtype_tile_count.validator
