@@ -10,12 +10,18 @@ from . import check_df_fastq_cols, check_subtype_attrs
 genome_name = 'test'
 scheme_heidelberg = 'heidelberg'
 scheme_enteritidis = 'enteritidis'
+scheme_typhi = 'typhi'
+scheme_tuberculosis = 'tb_speciation'
 
 fasta_heidelberg_pass = 'tests/data/SRR1002850_lowercase.fasta'
 fastq_heidelberg_pass = 'tests/data/SRR5646583_SMALL.fastq'
 fastq_gz_heidelberg_pass = 'tests/data/SRR5646583_SMALL.fastq.gz'
 
 fastqs_enteritidis_fail = ['tests/data/inconsistent_reads_fwd.fastq', 'tests/data/inconsistent_reads_rvs.fastq']
+
+fasta_typhi_pass = 'tests/data/AE014613.1.fasta'
+
+fasta_tb_pass = 'tests/data/AP018036.1.fasta'
 
 
 @pytest.fixture()
@@ -67,6 +73,38 @@ def subtype_heidelberg_SRR1002850_pass():
                    n_tiles_matching_subtype_expected='3',
                    qc_status=QC.PASS)
 
+@pytest.fixture()
+def subtype_typhi_AE014613_pass():
+    return Subtype(scheme=scheme_typhi,
+                   scheme_version=SCHEME_FASTAS[scheme_typhi]['version'],
+                   sample=genome_name,
+                   subtype='2.3.6.1',
+                   file_path=fasta_typhi_pass,
+                   are_subtypes_consistent=True,
+                   n_tiles_matching_all=68,
+                   n_tiles_matching_all_expected='68',
+                   n_tiles_matching_positive=4,
+                   n_tiles_matching_positive_expected='4',
+                   n_tiles_matching_subtype=1,
+                   n_tiles_matching_subtype_expected='1',
+                   qc_status=QC.PASS)
+
+@pytest.fixture()
+def subtype_tb_AP018036_pass():
+    return Subtype(scheme=scheme_tuberculosis,
+                   scheme_version=SCHEME_FASTAS[scheme_tuberculosis]['version'],
+                   sample=genome_name,
+                   subtype='2.2.1',
+                   file_path=fasta_tb_pass,
+                   are_subtypes_consistent=True,
+                   n_tiles_matching_all=61,
+                   n_tiles_matching_all_expected='62',
+                   n_tiles_matching_positive=3,
+                   n_tiles_matching_positive_expected='3',
+                   n_tiles_matching_subtype=1,
+                   n_tiles_matching_subtype_expected='1',
+                   qc_status=QC.PASS)
+
 
 def test_heidelberg_scheme_vs_qc_passing_reads_with_ac(subtype_heidelberg_pass):
     st, df = subtype_reads(reads=fastq_heidelberg_pass, genome_name=genome_name, scheme=scheme_heidelberg)
@@ -87,3 +125,14 @@ def test_heidelberg_scheme_and_lowcase_seq_inputs(subtype_heidelberg_SRR1002850_
     assert isinstance(df, DataFrame)
     check_subtype_attrs(st,subtype_heidelberg_SRR1002850_pass)
 
+def test_typhi_scheme(subtype_typhi_AE014613_pass):
+    st, df = subtype_contigs(fasta_path=fasta_typhi_pass, genome_name=genome_name, scheme=scheme_typhi)
+    assert isinstance(st, Subtype)
+    assert isinstance(df, DataFrame)
+    check_subtype_attrs(st,subtype_typhi_AE014613_pass)
+
+def test_tuberculosis_scheme(subtype_tb_AP018036_pass):
+    st, df = subtype_contigs(fasta_path=fasta_tb_pass, genome_name=genome_name, scheme=scheme_tuberculosis)
+    assert isinstance(st, Subtype)
+    assert isinstance(df, DataFrame)
+    check_subtype_attrs(st,subtype_tb_AP018036_pass)
