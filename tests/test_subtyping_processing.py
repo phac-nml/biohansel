@@ -104,6 +104,7 @@ def test_subtype_regex():
     assert SubtypeCounts._check_subtype('x', 'x', '77.10.1.9') == '77.10.1.9'
     with pytest.raises(ValueError):
         assert SubtypeCounts._check_subtype('x', 'x', '1..') == ''
+        assert SubtypeCounts._check_subtype('x', 'x', '1..1') == ''
         assert SubtypeCounts._check_subtype('x', 'x', '1......') == ''
         assert SubtypeCounts._check_subtype('x', 'x', '100.') == ''
         assert SubtypeCounts._check_subtype('x', 'x', ' ') == ''
