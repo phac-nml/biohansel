@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import pytest
 import pandas as pd
 
 from bio_hansel.qc import QC
 from bio_hansel.subtype import Subtype
 from bio_hansel.subtyper import absent_downstream_subtypes, sorted_subtype_ints, count_periods, empty_results
 from bio_hansel.utils import find_inconsistent_subtypes
+from bio_hansel.subtype_stats import SubtypeCounts
 
 
 def test_count_periods():
@@ -95,3 +97,14 @@ def test_find_inconsistent_subtypes():
     inconsistent_subtypes = sorted_subtype_ints(pd.Series(subtypes_list))
     assert set(find_inconsistent_subtypes(inconsistent_subtypes)) == set(subtypes_list), \
         f'All subtypes should be inconsistent with each other in {subtypes_list}'
+
+def test_subtype_regex():
+    assert SubtypeCounts._check_subtype('x', 'x', '1.1.1.1') == '1.1.1.1'
+    assert SubtypeCounts._check_subtype('x', 'x', '10') == '10'
+    assert SubtypeCounts._check_subtype('x', 'x', '77.10.1.9') == '77.10.1.9'
+    with pytest.raises(ValueError):
+        assert SubtypeCounts._check_subtype('x', 'x', '1..') == ''
+        assert SubtypeCounts._check_subtype('x', 'x', '1......') == ''
+        assert SubtypeCounts._check_subtype('x', 'x', '100.') == ''
+        assert SubtypeCounts._check_subtype('x', 'x', ' ') == ''
+        assert SubtypeCounts._check_subtype('x', 'x', '') == ''

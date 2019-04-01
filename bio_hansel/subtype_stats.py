@@ -20,12 +20,13 @@ class SubtypeCounts:
 
     @subtype.validator
     def _check_subtype(self, attribute, value):
-        REGEX_SUBTYPE = re.compile(r'^\d[^\d\.]*\d*$')
+        REGEX_SUBTYPE = re.compile(r'^(\d*[^\d\.]*(\.\d+)*)$')
         if value is None or value == '':
             raise ValueError('Subtype cannot be None or empty string')
-        if REGEX_SUBTYPE.match(value) == False:
+        if not REGEX_SUBTYPE.match(value):
             raise ValueError(
                 'Invalid subtype specified! "{}" does not numbers delimited by "." (periods)'.format(value))
+        return value 
 
     @subtype_tile_count.validator
     def _check_subtype_tile_count(self, attribute, value):
