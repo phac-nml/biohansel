@@ -74,8 +74,8 @@ def init_parser():
                              '(files can be Gzipped)')
     parser.add_argument('-o', '--output-summary',
                         help='Subtyping summary output path (tab-delimited)')
-    parser.add_argument('-O', '--output-tile-results',
-                        help='Subtyping tile matching output path (tab-delimited)')
+    parser.add_argument('-O', '--output-kmer-results',
+                        help='Subtyping kmer matching output path (tab-delimited)')
     parser.add_argument('-S', '--output-simple-summary',
                         help='Subtyping simple summary output path')
     parser.add_argument('--force',
@@ -93,18 +93,18 @@ def init_parser():
     parser.add_argument('--low-cov-depth-freq',
                         type=int,
                         help='Frequencies below this coverage are considered low coverage')
-    parser.add_argument('--max-missing-tiles',
+    parser.add_argument('--max-missing-kmers',
                         type=float,
-                        help='Decimal proportion of maximum allowable missing tiles before being considered an error. (0.0 - 1.0)')
-    parser.add_argument('--min-ambiguous-tiles',
+                        help='Decimal proportion of maximum allowable missing kmers before being considered an error. (0.0 - 1.0)')
+    parser.add_argument('--min-ambiguous-kmers',
                         type=int,
-                        help='Minimum number of missing tiles to be considered an ambiguous result')
+                        help='Minimum number of missing kmers to be considered an ambiguous result')
     parser.add_argument('--low-cov-warning',
                         type=int,
-                        help='Overall tile coverage below this value will trigger a low coverage warning')
-    parser.add_argument('--max-intermediate-tiles',
+                        help='Overall kmer coverage below this value will trigger a low coverage warning')
+    parser.add_argument('--max-intermediate-kmers',
                         type=float,
-                        help='Decimal proportion of maximum allowable missing tiles to be considered an intermediate subtype. (0.0 - 1.0)')
+                        help='Decimal proportion of maximum allowable missing kmers to be considered an intermediate subtype. (0.0 - 1.0)')
     parser.add_argument('-t', '--threads',
                         type=int,
                         default=1,
@@ -184,15 +184,16 @@ def main():
     args = parser.parse_args()
     init_console_logger(args.verbose)
     output_summary_path = args.output_summary
-    output_tile_results = args.output_tile_results
+    output_kmer_results = args.output_kmer_results
     output_simple_summary_path = args.output_simple_summary
     does_file_exist(output_simple_summary_path, args.force)
     does_file_exist(output_summary_path, args.force)
-    does_file_exist(output_tile_results, args.force)
+    does_file_exist(output_kmer_results, args.force)
     scheme = args.scheme  # type: str
     scheme_name = args.scheme_name  # type: Optional[str]
     scheme_fasta = get_scheme_fasta(scheme)
     scheme_subtype_counts = subtype_counts(scheme_fasta)
+    directory_path = args.input_directory
     logging.debug(args)
     subtyping_params = init_subtyping_params(args, scheme)
     input_contigs, input_reads = collect_inputs(args)
@@ -208,7 +209,7 @@ def main():
         df_md = df_md.loc[:, ~df_md.columns.duplicated()]
     n_threads = args.threads
 
-    subtype_results = []  # type: List[Tuple[Subtype, pd.DataFrame]]
+    subtype_results: List[Tuple[Subtype, pd.DataFrame]] = []  # type: List[Tuple[Subtype, pd.DataFrame]]
     if len(input_contigs) > 0:
         contigs_results = subtype_contigs_samples(input_genomes=input_contigs,
                                                   scheme=scheme,
@@ -228,12 +229,15 @@ def main():
         logging.info('Generated %s subtyping results from %s contigs samples', len(reads_results), len(input_reads))
         subtype_results += reads_results
 
-    dfs = [df for st, df in subtype_results]  # type: List[pd.DataFrame]
+    dfs: List[pd.DataFrame] = [df for st, df in subtype_results]  # type: List[pd.DataFrame]
     dfsummary = pd.DataFrame([attr.asdict(st) for st, df in subtype_results])
+
     dfsummary = dfsummary[SUBTYPE_SUMMARY_COLS]
 
-    if dfsummary['avg_tile_coverage'].isnull().all():
-        dfsummary = dfsummary.drop(labels='avg_tile_coverage', axis=1)
+    if dfsummary['avg_kmer_coverage'].isnull().all():
+        dfsummary = dfsummary.drop(labels='avg_kmer_coverage', axis=1)
+
+    dfsummary['subtype'].fillna(value='#N/A', inplace=True)
 
     if df_md is not None:
         dfsummary = merge_metadata_with_summary_results(dfsummary, df_md)
@@ -250,23 +254,23 @@ def main():
         # if no output path specified for the summary results, then print to stdout
         print(dfsummary.to_csv(sep='\t', index=None))
 
-    if output_tile_results:
+    if output_kmer_results:
         if len(dfs) > 0:
-            dfall = pd.concat(dfs)  # type: pd.DataFrame
-            dfall = dfall.sort_values(by='is_pos_tile', ascending=False)
+            dfall: pd.DataFrame = pd.concat([df.sort_values('is_pos_tile', ascending=False) for df in dfs], sort=False)  # type: pd.DataFrame
+            dfall['subtype'].fillna(value='#N/A', inplace=True)
             dfall.to_csv(output_tile_results, **kwargs_for_pd_to_table)
             logging.info('Tile results written to "{}".'.format(output_tile_results))
             if args.json:
-                dfall.to_json(JSON_EXT_TMPL.format(output_tile_results), **kwargs_for_pd_to_json)
+                dfall.to_json(JSON_EXT_TMPL.format(output_kmer_results), **kwargs_for_pd_to_json)
                 logging.info(
-                    'Tile results written to "{}" in JSON format.'.format(JSON_EXT_TMPL.format(output_tile_results)))
+                    'Kmer results written to "{}" in JSON format.'.format(JSON_EXT_TMPL.format(output_kmer_results)))
         else:
             logging.error(
-                'No tile results generated. No tile results file written to "{}".'.format(output_tile_results))
+                'No kmer results generated. No kmer results file written to "{}".'.format(output_kmer_results))
 
     if output_simple_summary_path:
-        if 'avg_tile_coverage' in dfsummary.columns:
-            df_simple_summary = dfsummary[['sample', 'subtype', 'avg_tile_coverage', 'qc_status', 'qc_message']]
+        if 'avg_kmer_coverage' in dfsummary.columns:
+            df_simple_summary = dfsummary[['sample', 'subtype', 'avg_kmer_coverage', 'qc_status', 'qc_message']]
         else:
             df_simple_summary = dfsummary[['sample', 'subtype', 'qc_status', 'qc_message']]
 

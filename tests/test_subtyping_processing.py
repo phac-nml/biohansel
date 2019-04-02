@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import pytest
 import pandas as pd
 
 from bio_hansel.qc import QC
@@ -44,7 +45,7 @@ def test_empty_results():
                                               file_path='tests/data/Retro1000data/10-1358.fastq',
                                               subtype=None,
                                               refposition=None,
-                                              is_pos_tile=None,
+                                              is_pos_kmer=None,
                                               scheme='enteritidis',
                                               scheme_version='0.8.0',
                                               qc_status=QC.FAIL,
@@ -96,3 +97,13 @@ def test_find_inconsistent_subtypes():
     inconsistent_subtypes = sorted_subtype_ints(pd.Series(subtypes_list))
     assert set(find_inconsistent_subtypes(inconsistent_subtypes)) == set(subtypes_list), \
         f'All subtypes should be inconsistent with each other in {subtypes_list}'
+
+def test_subtype_regex():
+    good_values = ['1.1.1.1', '10', '77.10.1.9', '17.1.1.1.1.12.4']
+    bad_values = ['1..', '1..1', '1.1..1.1', '1....', '100.', '', ' ', 'a1.1.1', '1.11.1a', 'a']
+    for good_value in good_values:
+        assert SubtypeCounts._check_subtype('x', 'x', good_value) == good_value
+    with pytest.raises(ValueError):
+        for bad_value in bad_values:
+            assert SubtypeCounts._check_subtype('x', 'x', bad_value) == ''
+        
