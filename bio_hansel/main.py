@@ -203,7 +203,7 @@ def main():
         df_md = read_metadata_table(args.scheme_metadata)
     n_threads = args.threads
 
-    subtype_results = []  # type: List[Tuple[Subtype, pd.DataFrame]]
+    subtype_results: List[Tuple[Subtype, pd.DataFrame]] = []  # type: List[Tuple[Subtype, pd.DataFrame]]
     if len(input_contigs) > 0:
         contigs_results = subtype_contigs_samples(input_genomes=input_contigs,
                                                   scheme=scheme,
@@ -223,12 +223,15 @@ def main():
         logging.info('Generated %s subtyping results from %s contigs samples', len(reads_results), len(input_reads))
         subtype_results += reads_results
 
-    dfs = [df for st, df in subtype_results]  # type: List[pd.DataFrame]
+    dfs: List[pd.DataFrame] = [df for st, df in subtype_results]  # type: List[pd.DataFrame]
     dfsummary = pd.DataFrame([attr.asdict(st) for st, df in subtype_results])
+
     dfsummary = dfsummary[SUBTYPE_SUMMARY_COLS]
 
     if dfsummary['avg_kmer_coverage'].isnull().all():
         dfsummary = dfsummary.drop(labels='avg_kmer_coverage', axis=1)
+
+    dfsummary['subtype'].fillna(value='#N/A', inplace=True)
 
     if df_md is not None:
         dfsummary = merge_metadata_with_summary_results(dfsummary, df_md)
@@ -247,11 +250,10 @@ def main():
 
     if output_kmer_results:
         if len(dfs) > 0:
-            dfall = pd.concat(dfs)  # type: pd.DataFrame
-            if directory_path == None:
-                dfall = dfall.sort_values(by='is_pos_kmer', ascending=False)
-            dfall.to_csv(output_kmer_results, **kwargs_for_pd_to_table)
-            logging.info('Kmer results written to "{}".'.format(output_kmer_results))
+            dfall: pd.DataFrame = pd.concat([df.sort_values('is_pos_tile', ascending=False) for df in dfs], sort=False)  # type: pd.DataFrame
+            dfall['subtype'].fillna(value='#N/A', inplace=True)
+            dfall.to_csv(output_tile_results, **kwargs_for_pd_to_table)
+            logging.info('Tile results written to "{}".'.format(output_tile_results))
             if args.json:
                 dfall.to_json(JSON_EXT_TMPL.format(output_kmer_results), **kwargs_for_pd_to_json)
                 logging.info(
