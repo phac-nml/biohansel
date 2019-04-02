@@ -43,7 +43,7 @@ def test_empty_results():
                                               file_path='tests/data/Retro1000data/10-1358.fastq',
                                               subtype=None,
                                               refposition=None,
-                                              is_pos_tile=None,
+                                              is_pos_kmer=None,
                                               scheme='enteritidis',
                                               scheme_version='0.8.0',
                                               qc_status=QC.FAIL,
