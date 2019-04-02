@@ -256,10 +256,10 @@ def main():
 
     if output_kmer_results:
         if len(dfs) > 0:
-            dfall: pd.DataFrame = pd.concat([df.sort_values('is_pos_tile', ascending=False) for df in dfs], sort=False)  # type: pd.DataFrame
+            dfall: pd.DataFrame = pd.concat([df.sort_values('is_pos_kmer', ascending=False) for df in dfs], sort=False)  # type: pd.DataFrame
             dfall['subtype'].fillna(value='#N/A', inplace=True)
-            dfall.to_csv(output_tile_results, **kwargs_for_pd_to_table)
-            logging.info('Tile results written to "{}".'.format(output_tile_results))
+            dfall.to_csv(output_kmer_results, **kwargs_for_pd_to_table)
+            logging.info('Kmer results written to "{}".'.format(output_kmer_results))
             if args.json:
                 dfall.to_json(JSON_EXT_TMPL.format(output_kmer_results), **kwargs_for_pd_to_json)
                 logging.info(

@@ -81,12 +81,12 @@ def subtype_typhi_AE014613_pass():
                    subtype='2.3.6.1',
                    file_path=fasta_typhi_pass,
                    are_subtypes_consistent=True,
-                   n_tiles_matching_all=68,
-                   n_tiles_matching_all_expected='68',
-                   n_tiles_matching_positive=4,
-                   n_tiles_matching_positive_expected='4',
-                   n_tiles_matching_subtype=1,
-                   n_tiles_matching_subtype_expected='1',
+                   n_kmers_matching_all=68,
+                   n_kmers_matching_all_expected='68',
+                   n_kmers_matching_positive=4,
+                   n_kmers_matching_positive_expected='4',
+                   n_kmers_matching_subtype=1,
+                   n_kmers_matching_subtype_expected='1',
                    qc_status=QC.PASS)
 
 @pytest.fixture()
@@ -97,12 +97,12 @@ def subtype_tb_AP018036_pass():
                    subtype='2.2.1',
                    file_path=fasta_tb_pass,
                    are_subtypes_consistent=True,
-                   n_tiles_matching_all=61,
-                   n_tiles_matching_all_expected='62',
-                   n_tiles_matching_positive=3,
-                   n_tiles_matching_positive_expected='3',
-                   n_tiles_matching_subtype=1,
-                   n_tiles_matching_subtype_expected='1',
+                   n_kmers_matching_all=61,
+                   n_kmers_matching_all_expected='62',
+                   n_kmers_matching_positive=3,
+                   n_kmers_matching_positive_expected='3',
+                   n_kmers_matching_subtype=1,
+                   n_kmers_matching_subtype_expected='1',
                    qc_status=QC.PASS)
 
 
