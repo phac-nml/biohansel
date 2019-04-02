@@ -6,19 +6,19 @@ scheme_version
 sample
 subtype
 are_subtypes_consistent
-n_tiles_matching_all
-n_tiles_matching_all_expected
-n_tiles_matching_positive
-n_tiles_matching_positive_expected
-n_tiles_matching_subtype
-n_tiles_matching_subtype_expected
+n_kmers_matching_all
+n_kmers_matching_all_expected
+n_kmers_matching_positive
+n_kmers_matching_positive_expected
+n_kmers_matching_subtype
+n_kmers_matching_subtype_expected
 qc_status
 """.strip().split('\n')
 
-exp_fasta_cols = ['tilename', 'contig_id', 'refposition', 'seq', 'subtype', 'match_index', 'is_revcomp',
-                  'is_pos_tile', 'sample', 'file_path', 'scheme', 'scheme_version', 'qc_status', 'qc_message']
+exp_fasta_cols = ['kmername', 'contig_id', 'refposition', 'seq', 'subtype', 'match_index', 'is_revcomp',
+                  'is_pos_kmer', 'sample', 'file_path', 'scheme', 'scheme_version', 'qc_status', 'qc_message']
 
-exp_fastq_cols = ['tilename', 'refposition', 'subtype', 'seq', 'freq', 'is_pos_tile', 'is_kmer_freq_okay',
+exp_fastq_cols = ['kmername', 'refposition', 'subtype', 'seq', 'freq', 'is_pos_kmer', 'is_kmer_freq_okay',
                   'sample', 'file_path', 'scheme', 'scheme_version', 'qc_status', 'qc_message']
 
 

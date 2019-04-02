@@ -127,17 +127,17 @@ def subtype_contigs(fasta_path: str,
     df = find_in_fasta(automaton, fasta_path)
 
     if df is None or df.shape[0] == 0:
-        logging.warning('No subtyping tile matches for input "%s" for scheme "%s"', fasta_path, scheme)
+        logging.warning('No subtyping kmer matches for input "%s" for scheme "%s"', fasta_path, scheme)
         st.qc_status = QC.FAIL
         st.qc_message = QC.NO_TARGETS_FOUND
         st.are_subtypes_consistent = False
         return st, empty_results(st)
 
-    refpositions = [x for x, y in df.tilename.str.split('-')]
-    subtypes = [y for x, y in df.tilename.str.split('-')]
+    refpositions = [x for x, y in df.kmername.str.split('-')]
+    subtypes = [y for x, y in df.kmername.str.split('-')]
     df['refposition'] = [int(x.replace('negative', '')) for x in refpositions]
     df['subtype'] = subtypes
-    df['is_pos_tile'] = ~df.tilename.str.contains('negative')
+    df['is_pos_kmer'] = ~df.kmername.str.contains('negative')
     process_subtyping_results(st, df, scheme_subtype_counts)
     st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
 
@@ -271,19 +271,19 @@ def subtype_reads(reads: Union[str, List[str]],
         raise ValueError('Unexpected type "{}" for "reads": {}'.format(type(reads), reads))
 
     if df is None or df.shape[0] == 0:
-        logging.warning('No subtyping tile matches for input "%s" for scheme "%s"', reads, scheme)
+        logging.warning('No subtyping kmer matches for input "%s" for scheme "%s"', reads, scheme)
         st.are_subtypes_consistent = False
         st.qc_status = QC.FAIL
         st.qc_message = QC.NO_TARGETS_FOUND
         return st, empty_results(st)
 
-    refpositions = [x for x, y in df.tilename.str.split('-')]
-    subtypes = [y for x, y in df.tilename.str.split('-')]
+    refpositions = [x for x, y in df.kmername.str.split('-')]
+    subtypes = [y for x, y in df.kmername.str.split('-')]
     df['refposition'] = [int(x.replace('negative', '')) for x in refpositions]
     df['subtype'] = subtypes
-    df['is_pos_tile'] = ~df.tilename.str.contains('negative')
+    df['is_pos_kmer'] = ~df.kmername.str.contains('negative')
     df['is_kmer_freq_okay'] = (df.freq >= subtyping_params.min_kmer_freq) & (df.freq <= subtyping_params.max_kmer_freq)
-    st.avg_tile_coverage = df['freq'].mean()
+    st.avg_kmer_coverage = df['freq'].mean()
     st, df = process_subtyping_results(st, df[df.is_kmer_freq_okay], scheme_subtype_counts)
     st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
     df['file_path'] = str(st.file_path)
@@ -307,7 +307,7 @@ def process_subtyping_results(st: Subtype, df: pd.DataFrame, scheme_subtype_coun
     Returns:
         Tuple of `st` and `df`
     """
-    dfpos = df[df.is_pos_tile]
+    dfpos = df[df.is_pos_kmer]
     dfpos_highest_res = highest_resolution_subtype_results(dfpos)
     subtype_list = [x for x in dfpos_highest_res.subtype.unique()]
     st = set_subtype_results(st, dfpos, subtype_list)
@@ -322,11 +322,11 @@ def set_subtype_results(st: Subtype, df_positive: pd.DataFrame, subtype_list: Li
 
     Args:
         st: Subtype result
-        df_positive: Positive tiles subtyping results
+        df_positive: Positive kmers subtyping results
         subtype_list: List of subtypes found
     """
     st.subtype = '; '.join(subtype_list)
-    st.tiles_matching_subtype = '; '.join(subtype_list)
+    st.kmers_matching_subtype = '; '.join(subtype_list)
     pos_subtypes_str = [x for x in df_positive.subtype.unique()]
     pos_subtypes_str.sort(key=lambda x: len(x))
     st.all_subtypes = '; '.join(pos_subtypes_str)
@@ -341,31 +341,31 @@ def set_subtyping_stats(st: Subtype,
                         scheme_subtype_counts: Dict[str, SubtypeCounts]) -> Subtype:
     """Set subtyping result stats
 
-    - `n_tiles_matching_subtype`: # tiles matching final subtype
-    - `n_tiles_matching_all`: # tiles found
-    - `n_tiles_matching_positive`: # positive tiles found
-    - `n_tiles_matching_negative`:  # negative tiles found
-    - `n_tiles_matching_all_expected`: expected # of all tiles found for each subtype
-    - `n_tiles_matching_positive_expected`: expected # of positive tiles found for each subtype
-    - `n_tiles_matching_subtype_expected`: expected # of subtype-specific tiles found for each subtype
+    - `n_kmers_matching_subtype`: # kmers matching final subtype
+    - `n_kmers_matching_all`: # kmers found
+    - `n_kmers_matching_positive`: # positive kmers found
+    - `n_kmers_matching_negative`:  # negative kmers found
+    - `n_kmers_matching_all_expected`: expected # of all kmers found for each subtype
+    - `n_kmers_matching_positive_expected`: expected # of positive kmers found for each subtype
+    - `n_kmers_matching_subtype_expected`: expected # of subtype-specific kmers found for each subtype
 
     Args:
         st: Subtype result
         df: Subtyping results
-        dfpos: Positive tile subtyping results
+        dfpos: Positive kmer subtyping results
         dfpos_highest_res: Final subtype specific subtyping results
         subtype_list: List of subtypes found
         scheme_subtype_counts: Subtyping scheme summary info
     """
-    st.n_tiles_matching_subtype = dfpos_highest_res.shape[0]
-    st.n_tiles_matching_all = df.tilename.unique().size
-    st.n_tiles_matching_positive = dfpos.tilename.unique().size
-    st.n_tiles_matching_negative = df[~df.is_pos_tile].shape[0]
-    st.n_tiles_matching_all_expected = ';'.join([str(scheme_subtype_counts[x].all_tile_count) for x in subtype_list])
-    st.n_tiles_matching_positive_expected = ';'.join(
-        [str(scheme_subtype_counts[x].positive_tile_count) for x in subtype_list])
-    st.n_tiles_matching_subtype_expected = ';'.join(
-        [str(scheme_subtype_counts[x].subtype_tile_count) for x in subtype_list])
+    st.n_kmers_matching_subtype = dfpos_highest_res.shape[0]
+    st.n_kmers_matching_all = df.kmername.unique().size
+    st.n_kmers_matching_positive = dfpos.kmername.unique().size
+    st.n_kmers_matching_negative = df[~df.is_pos_kmer].shape[0]
+    st.n_kmers_matching_all_expected = ';'.join([str(scheme_subtype_counts[x].all_kmer_count) for x in subtype_list])
+    st.n_kmers_matching_positive_expected = ';'.join(
+        [str(scheme_subtype_counts[x].positive_kmer_count) for x in subtype_list])
+    st.n_kmers_matching_subtype_expected = ';'.join(
+        [str(scheme_subtype_counts[x].subtype_kmer_count) for x in subtype_list])
     return st
 
 
@@ -472,7 +472,7 @@ def empty_results(st: Subtype) -> pd.DataFrame:
                                  file_path=st.file_path,
                                  subtype=st.subtype,
                                  refposition=None,
-                                 is_pos_tile=None,
+                                 is_pos_kmer=None,
                                  scheme=st.scheme,
                                  scheme_version=st.scheme_version,
                                  qc_status=st.qc_status,
