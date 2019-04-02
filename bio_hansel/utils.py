@@ -187,12 +187,12 @@ def init_subtyping_params(args: Optional[Any] = None,
     if args is not None:
         if args.low_cov_depth_freq:
             subtyping_params.low_coverage_depth_freq = args.low_cov_depth_freq
-        if args.max_missing_tiles:
-            subtyping_params.max_perc_missing_tiles = args.max_missing_tiles
-        if args.min_ambiguous_tiles:
-            subtyping_params.min_ambiguous_tiles = args.min_ambiguous_tiles
-        if args.max_intermediate_tiles:
-            subtyping_params.max_perc_intermediate_tiles = args.max_intermediate_tiles
+        if args.max_missing_kmers:
+            subtyping_params.max_perc_missing_kmers = args.max_missing_kmers
+        if args.min_ambiguous_kmers:
+            subtyping_params.min_ambiguous_kmers = args.min_ambiguous_kmers
+        if args.max_intermediate_kmers:
+            subtyping_params.max_perc_intermediate_kmers = args.max_intermediate_kmers
         if args.low_cov_warning:
             subtyping_params.min_coverage_warning = args.low_cov_warning
         if args.min_kmer_freq:

@@ -12,10 +12,10 @@ from .parsers import parse_fasta
 class SubtypeCounts:
     subtype = attr.ib()
     refpositions = attr.ib(default=None)
-    subtype_tile_count = attr.ib(default=0, validator=attr.validators.instance_of(int))
-    positive_tile_count = attr.ib(default=0, validator=attr.validators.instance_of(int))
-    negative_tile_count = attr.ib(default=0, validator=attr.validators.instance_of(int))
-    all_tile_count = attr.ib(default=0, validator=attr.validators.instance_of(int))
+    subtype_kmer_count = attr.ib(default=0, validator=attr.validators.instance_of(int))
+    positive_kmer_count = attr.ib(default=0, validator=attr.validators.instance_of(int))
+    negative_kmer_count = attr.ib(default=0, validator=attr.validators.instance_of(int))
+    all_kmer_count = attr.ib(default=0, validator=attr.validators.instance_of(int))
 
     @subtype.validator
     def _check_subtype(self, attribute, value):
@@ -26,50 +26,50 @@ class SubtypeCounts:
                 raise ValueError(
                     'Invalid subtype specified! "{}" does not numbers delimited by "." (periods)'.format(value))
 
-    @subtype_tile_count.validator
-    def _check_subtype_tile_count(self, attribute, value):
+    @subtype_kmer_count.validator
+    def _check_subtype_kmer_count(self, attribute, value):
         if value == 0:
-            raise ValueError('Subtype tile count cannot be zero!')
+            raise ValueError('Subtype kmer count cannot be zero!')
 
-    @positive_tile_count.validator
-    def _check_positive_tile_count(self, attribute, value):
-        if value < self.subtype_tile_count:
+    @positive_kmer_count.validator
+    def _check_positive_kmer_count(self, attribute, value):
+        if value < self.subtype_kmer_count:
             raise ValueError(
-                'Subtype {}: Number of all subtype positive tiles (n={}) cannot be less than the number of subtype specific tiles (n={})'.format(
+                'Subtype {}: Number of all subtype positive kmers (n={}) cannot be less than the number of subtype specific kmers (n={})'.format(
                     self.subtype,
                     value,
-                    self.subtype_tile_count))
-        if value > self.all_tile_count:
+                    self.subtype_kmer_count))
+        if value > self.all_kmer_count:
             raise ValueError(
-                'Subtype {}: Number of all subtype positive tiles (n={}) cannot exceed number of all matching tiles for subtype (n={})'.format(
+                'Subtype {}: Number of all subtype positive kmers (n={}) cannot exceed number of all matching kmers for subtype (n={})'.format(
                     self.subtype,
                     value,
-                    self.all_tile_count))
+                    self.all_kmer_count))
         if value == 0:
-            raise ValueError('Subtype {}: Number of all subtype positive tiles cannot be zero!'.format(self.subtype))
+            raise ValueError('Subtype {}: Number of all subtype positive kmers cannot be zero!'.format(self.subtype))
 
 
-def _tiles(tiles_fasta: str) -> (Dict[str, List[str]], Dict[str, List[str]], Set[int]):
-    tiles = defaultdict(list)
-    neg_tiles = defaultdict(list)
+def _kmers(kmers_fasta: str) -> (Dict[str, List[str]], Dict[str, List[str]], Set[int]):
+    kmers = defaultdict(list)
+    neg_kmers = defaultdict(list)
     sizes = set()
-    for h, s in parse_fasta(tiles_fasta):
+    for h, s in parse_fasta(kmers_fasta):
         sizes.add(len(s))
         _, st = h.split('-')
         if 'negative' not in h:
-            tiles[st].append(h)
+            kmers[st].append(h)
         else:
-            neg_tiles[st].append(h)
-    return tiles, neg_tiles, sizes
+            neg_kmers[st].append(h)
+    return kmers, neg_kmers, sizes
 
 
 def subtype_counts(scheme_fasta: str) -> Dict[str, SubtypeCounts]:
     subtype_counts = {}
-    tiles, neg_tiles, sizes = _tiles(scheme_fasta)
+    kmers, neg_kmers, sizes = _kmers(scheme_fasta)
     if len(sizes) > 1:
         logging.warning('Not all markers in "%s" of the same size! %s', scheme_fasta, sizes)
-    n_tiles_total = sum([len(vs) for vs in tiles.values()])
-    ks = [x for x in tiles.keys()]
+    n_kmers_total = sum([len(vs) for vs in kmers.values()])
+    ks = [x for x in kmers.keys()]
     ks.sort()
     for k in ks:
         st_pos_count_rest = 0
@@ -79,17 +79,17 @@ def subtype_counts(scheme_fasta: str) -> Dict[str, SubtypeCounts]:
             for i in range(len(r)):
                 sub_k = '.'.join(r[:i + 1])
                 subtypes_set.add(sub_k)
-                pos_tiles = tiles[sub_k]
-                st_pos_count_rest += len(pos_tiles)
-        st_count = len(tiles[k])
+                pos_kmers = kmers[sub_k]
+                st_pos_count_rest += len(pos_kmers)
+        st_count = len(kmers[k])
         st_count_pos = st_pos_count_rest + st_count
-        st_neg_count = sum([len(v) for k,v in neg_tiles.items() if k not in subtypes_set])
+        st_neg_count = sum([len(v) for k,v in neg_kmers.items() if k not in subtypes_set])
 
         subtype_count = SubtypeCounts(subtype=k,
-                                      refpositions={int(v.split('-')[0]) for v in tiles[k]},
-                                      subtype_tile_count=st_count,
-                                      positive_tile_count=st_count_pos,
-                                      negative_tile_count=st_neg_count,
-                                      all_tile_count=st_neg_count + st_count_pos)
+                                      refpositions={int(v.split('-')[0]) for v in kmers[k]},
+                                      subtype_kmer_count=st_count,
+                                      positive_kmer_count=st_count_pos,
+                                      negative_kmer_count=st_neg_count,
+                                      all_kmer_count=st_neg_count + st_count_pos)
         subtype_counts[k] = subtype_count
     return subtype_counts
