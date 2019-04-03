@@ -202,7 +202,7 @@ def main():
 
     df_md = None
     try:
-        df_md = read_metadata_table(resource_filename(program_name, 'data/' + scheme + '/' + 'metadata.tsv'))
+        df_md = read_metadata_table(resource_filename(program_name, f'data/{scheme}/metadata.tsv'))
     except Exception:
         pass
         
