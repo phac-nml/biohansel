@@ -199,14 +199,19 @@ def main():
     input_contigs, input_reads = collect_inputs(args)
     if len(input_contigs) == 0 and len(input_reads) == 0:
         raise Exception('No input files specified!')
+
     df_md = None
+    try:
+        df_md = read_metadata_table(resource_filename(program_name, 'data/' + scheme + '/' + 'metadata.tsv'))
+    except Exception:
+        pass
+        
     if args.scheme_metadata:
-        df_md = read_metadata_table(args.scheme_metadata)
-    if scheme == 'typhi':
         if df_md is None:
-            df_md = pd.DataFrame()
-        df_md = pd.concat([df_md, read_metadata_table(resource_filename(program_name, 'data/typhi/typhi_scheme_metadata.tsv'))], axis=1)
+            df_md = pd. DataFrame()
+        df_md = pd.concat([df_md, read_metadata_table(args.scheme_metadata)], axis=1)
         df_md = df_md.loc[:, ~df_md.columns.duplicated()]
+
     n_threads = args.threads
 
     subtype_results: List[Tuple[Subtype, pd.DataFrame]] = []  # type: List[Tuple[Subtype, pd.DataFrame]]
