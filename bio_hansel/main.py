@@ -7,11 +7,12 @@ import sys
 import re
 import os
 from typing import Optional, List, Any, Tuple
+from pkg_resources import resource_filename
 
 import attr
 import pandas as pd
 
-from . import program_desc, __version__
+from . import program_desc, __version__, program_name
 from .const import SUBTYPE_SUMMARY_COLS, REGEX_FASTQ, REGEX_FASTA, JSON_EXT_TMPL
 from .subtype import Subtype
 from .subtype_stats import subtype_counts
@@ -51,7 +52,7 @@ def init_parser():
                         help='Input genome FASTA/FASTQ files (can be Gzipped)')
     parser.add_argument('-s', '--scheme',
                         default='heidelberg',
-                        help='Scheme to use for subtyping (built-in: "heidelberg", "enteritidis"; OR user-specified: '
+                        help='Scheme to use for subtyping (built-in: "heidelberg", "enteritidis", "typhi", "tb_speciation"; OR user-specified: '
                              '/path/to/user/scheme)')
     parser.add_argument('--scheme-name',
                         help='Custom user-specified SNP substyping scheme name')
@@ -198,9 +199,19 @@ def main():
     input_contigs, input_reads = collect_inputs(args)
     if len(input_contigs) == 0 and len(input_reads) == 0:
         raise Exception('No input files specified!')
+
     df_md = None
+    try:
+        df_md = read_metadata_table(resource_filename(program_name, f'data/{scheme}/metadata.tsv'))
+    except Exception:
+        pass
+        
     if args.scheme_metadata:
-        df_md = read_metadata_table(args.scheme_metadata)
+        if df_md is None:
+            df_md = pd. DataFrame()
+        df_md = pd.concat([df_md, read_metadata_table(args.scheme_metadata)], axis=1)
+        df_md = df_md.loc[:, ~df_md.columns.duplicated()]
+
     n_threads = args.threads
 
     subtype_results: List[Tuple[Subtype, pd.DataFrame]] = []  # type: List[Tuple[Subtype, pd.DataFrame]]
@@ -253,7 +264,7 @@ def main():
             dfall: pd.DataFrame = pd.concat([df.sort_values('is_pos_kmer', ascending=False) for df in dfs], sort=False)  # type: pd.DataFrame
             dfall['subtype'].fillna(value='#N/A', inplace=True)
             dfall.to_csv(output_kmer_results, **kwargs_for_pd_to_table)
-            logging.info('kmer results written to "{}".'.format(output_kmer_results))
+            logging.info('Kmer results written to "{}".'.format(output_kmer_results))
             if args.json:
                 dfall.to_json(JSON_EXT_TMPL.format(output_kmer_results), **kwargs_for_pd_to_json)
                 logging.info(
