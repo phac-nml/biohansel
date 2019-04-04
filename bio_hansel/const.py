@@ -10,7 +10,7 @@ SCHEME_FASTAS = {'heidelberg': {'file': resource_filename(program_name, 'data/he
                                 'version': '0.5.0',
                                 'subtyping_params': SubtypingParams(low_coverage_depth_freq=20)},
                  'enteritidis': {'file': resource_filename(program_name, 'data/enteritidis/kmers.fasta'),
-                                 'version': '0.8.0',
+                                 'version': '1.0.4',
                                  'subtyping_params': SubtypingParams(low_coverage_depth_freq=50)},
                  'typhi': {'file': resource_filename(program_name, 'data/typhi/kmers.fasta'),
                                  'version': '1.1.0',

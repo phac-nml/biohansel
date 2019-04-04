@@ -28,7 +28,7 @@ def test_intermediate_subtype():
     st = Subtype(sample='test',
                  file_path='tests/data/Retro1000data/10-1358.fastq',
                  scheme='enteritidis',
-                 scheme_version='0.8.0',
+                 scheme_version='1.0.4',
                  subtype='2.1.1.2',
                  non_present_subtypes=[],
                  all_subtypes='2; 2.1; 2.1.1; 2.1.1.2',
@@ -109,5 +109,5 @@ def test_unconfident_subtype():
     assert st.qc_status == QC.FAIL
     assert QC.UNCONFIDENT_RESULTS_ERROR_4 in st.qc_message
     assert "kmers for downstream subtype(s)" in st.qc_message
-    assert "'2.1.1.1'" in st.qc_message
-    assert "'2.1.1.2'" in st.qc_message
+    assert "'2.1.5.4.2'" in st.qc_message
+    assert "'2.1.5.4.1'" in st.qc_message

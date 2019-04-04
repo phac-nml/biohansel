@@ -24,8 +24,8 @@ def read_metadata_table(path: str) -> Optional[pd.DataFrame]:
         DataFrame of table file if `path` is one of the acceptable file formats, otherwise, return `None`
     """
     FILE_EXT_TO_PD_READ_FUNC = {
-        '.tab': pd.read_table,
-        '.tsv': pd.read_table,
+        '.tab': pd.read_csv,
+        '.tsv': pd.read_csv,
         '.csv': pd.read_csv
     }
     _, file_ext = os.path.splitext(os.path.basename(path))
@@ -36,7 +36,7 @@ def read_metadata_table(path: str) -> Optional[pd.DataFrame]:
             list(FILE_EXT_TO_PD_READ_FUNC.keys())
         ))
         return None
-    dfmd = FILE_EXT_TO_PD_READ_FUNC[file_ext](path)  # type: pd.DataFrame
+    dfmd = FILE_EXT_TO_PD_READ_FUNC[file_ext](path, sep='\t')  # type: pd.DataFrame
     assert np.any(dfmd.columns == 'subtype'), 'Column with name "subtype" expected in metadata file "{}"'.format(path)
     dfmd.subtype = dfmd.subtype.astype(str)
     logging.info('Read scheme metadata file "{}" into DataFrame with shape {}'.format(path, dfmd.shape))
