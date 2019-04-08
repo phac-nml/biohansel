@@ -314,6 +314,7 @@ def process_subtyping_results(st: Subtype, df: pd.DataFrame, scheme_subtype_coun
     st = set_inconsistent_subtypes(st, find_inconsistent_subtypes(sorted_subtype_ints(dfpos.subtype)))
     st = set_subtyping_stats(st, df, dfpos, dfpos_highest_res, subtype_list, scheme_subtype_counts)
     st.non_present_subtypes = absent_downstream_subtypes(st.subtype, df.subtype, list(scheme_subtype_counts.keys()))
+    st.missing_nested_subtypes = missing_nests(st, st.subtype, dfpos)
     return st, df
 
 
@@ -435,6 +436,37 @@ def absent_downstream_subtypes(subtype: str, subtypes: pd.Series, scheme_subtype
     downstream_subtypes = [s for s in scheme_subtypes if re_subtype.search(s)]
     absentees = [x for x in downstream_subtypes if not (subtypes == x).any()]
     return absentees if len(absentees) > 0 else None
+
+
+def missing_nests(st: Subtype, subtype: str, df_positive: pd.DataFrame) -> Subtype:
+    """Find nested subtypes that are missing from the final subtype call
+
+    Args:
+        subtype: Final subtype result
+        positive_subtypes: List of unique positive subtypes found
+    
+    Returns:
+        List of missing hierarchical subtypes or `None` if there are no missing nested hierarchical subtypes.
+    """
+
+    pos_subtypes_str = [x for x in df_positive.subtype.unique()]
+    broken_subs = re.compile(r'^\d(\d*\.+\d+)*$')
+    primary_subtypes = []
+    for value in range(len(subtype)+1):
+        x = subtype[0:value]
+        z = re.search(broken_subs, x)
+        if z:
+            forms = primary_subtypes.append(x)
+
+    d = {key: 'a' for (key) in primary_subtypes}
+
+    for subs in pos_subtypes_str:
+        try:
+            del d[subs]
+        except:
+            pass
+    missing_nests = (','.join(d.keys()))
+    return missing_nests if d else None
 
 
 def set_inconsistent_subtypes(st: Subtype, inconsistent_subtypes: List[str]) -> Subtype:

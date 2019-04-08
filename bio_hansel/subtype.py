@@ -15,6 +15,7 @@ class Subtype(object):
     scheme_version = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     subtype = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     non_present_subtypes = attr.ib(default=None)  # type: Optional[List[str]]
+    missing_nested_subtypes = attr.ib(default=None) 
     all_subtypes = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     inconsistent_subtypes = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     kmers_matching_subtype = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))

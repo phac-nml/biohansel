@@ -111,3 +111,16 @@ def test_unconfident_subtype():
     assert "kmers for downstream subtype(s)" in st.qc_message
     assert "'2.1.1.1'" in st.qc_message
     assert "'2.1.1.2'" in st.qc_message
+
+def test_missing_hierarchy_levels_in_subtype():
+    scheme = 'heidelberg'
+    fasta= 'tests/data/fail-qc-missing-levels.fasta'
+    st, df = subtype_contigs(fasta_path=fasta, genome_name=genome_name, scheme=scheme)
+    assert isinstance(st, Subtype)
+    assert isinstance(df, pd.DataFrame)
+    assert st.scheme == scheme
+    assert st.qc_status == QC.FAIL
+    assert QC.UNCONFIDENT_RESULTS_ERROR_4 in st.qc_message
+    assert "kmers for nested hierarchical subtype(s)" in st.qc_message
+    assert "2.1" in st.qc_message 
+    assert "2.1.1" in st.qc_message
