@@ -28,7 +28,7 @@ def test_intermediate_subtype():
     st = Subtype(sample='test',
                  file_path='tests/data/Retro1000data/10-1358.fastq',
                  scheme='enteritidis',
-                 scheme_version='1.0.4',
+                 scheme_version='1.0.5',
                  subtype='2.1.1.2',
                  non_present_subtypes=[],
                  all_subtypes='2; 2.1; 2.1.1; 2.1.1.2',
