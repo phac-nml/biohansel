@@ -34,7 +34,7 @@ def test_empty_results():
     st = Subtype(sample='test',
                  file_path='tests/data/Retro1000data/10-1358.fastq',
                  scheme='enteritidis',
-                 scheme_version='0.8.0',
+                 scheme_version='1.0.5',
                  subtype=None,
                  non_present_subtypes=None,
                  all_subtypes=None,
@@ -47,7 +47,7 @@ def test_empty_results():
                                               refposition=None,
                                               is_pos_kmer=None,
                                               scheme='enteritidis',
-                                              scheme_version='0.8.0',
+                                              scheme_version='1.0.5',
                                               qc_status=QC.FAIL,
                                               qc_message=QC.NO_TARGETS_FOUND)}).transpose()
     assert ((df_empty == df_expected_empty) | (df_empty.isnull() == df_expected_empty.isnull())).values.all(), \
