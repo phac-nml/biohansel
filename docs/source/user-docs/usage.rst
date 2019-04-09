@@ -136,10 +136,10 @@ Parameters can be modified for users of both Galaxy and the command line. These 
 
 - Quality Checking Thresholds - Important parameters for the final results of the QC columns
     - QC: Frequency below this coverage are considered low coverage (default 20)
-    - QC: Min number of tiles missing for Ambiguous Result (default 3)
-    - QC: Decimal Proportion of max allowed missing tiles (default 0.05)
-    - QC: Decimal Proportion of max allowed missing tiles for an intermediate subtype (default 0.05)
-    - QC: Overall tile coverage below this value will trigger a low coverage warning (default 20)
+    - QC: Min number of k-mers missing for Ambiguous Result (default 3)
+    - QC: Decimal Proportion of max allowed missing k-mers (default 0.05)
+    - QC: Decimal Proportion of max allowed missing k-mers for an intermediate subtype (default 0.05)
+    - QC: Overall k-mer coverage below this value will trigger a low coverage warning (default 20)
 
 Detailed info on biohansels parameters and their functions can be found in the `parameter section <parameters.html>`_.
 

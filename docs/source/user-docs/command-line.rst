@@ -48,16 +48,16 @@ Additional
 | \\--low-cov-depth-freq <#>  -->  Coverage frequencies of raw read fastq files below this value are
 |       considered as low coverage (default is 20)
 |
-| \\--max-missing-tiles <#>  -->  Decimal proportion of maximum allowable missing tiles before being
+| \\--max-missing-kmers <#>  -->  Decimal proportion of maximum allowable missing kmers before being
 |       considered an error (0.0 - 1.0) (default is 0.05 or 5%)
 |
-| \\--min-ambiguous-tiles <#>  -->  Minimum number of missing tiles to be considered an ambiguous
+| \\--min-ambiguous-kmers <#>  -->  Minimum number of missing kmers to be considered an ambiguous
 |       result (default is 3)
 |
-| \\--low-cov-warning <#>  -->  Overall tile coverage below this value will trigger a low coverage 
+| \\--low-cov-warning <#>  -->  Overall kmer coverage below this value will trigger a low coverage 
 |       warning on raw read fastq files. (default is 20) 
 |
-| \\--max-intermediate-tiles <#>  -->  Decimal proportion of maximum allowable missing tiles
+| \\--max-intermediate-kmers <#>  -->  Decimal proportion of maximum allowable missing kmers
 |       (0.0 - 1.0) to be considered an intermediate subtype (default is 0.05)
 | 
 | --threads <#_CPUs>  -->  Number of parallel threads used to run the analysis (default = 1)
@@ -78,14 +78,14 @@ If you run ``hansel -h``, you will be provided with additional information for m
     usage: hansel [-h] [-s SCHEME] [--scheme-name SCHEME_NAME]
                   [-p forward_reads reverse_reads] [-i fasta_path genome_name]
                   [-D INPUT_DIRECTORY] [-o OUTPUT_SUMMARY]
-                  [-O OUTPUT_TILE_RESULTS] [-S OUTPUT_SIMPLE_SUMMARY] [--force]
+                  [-O OUTPUT_KMER_RESULTS] [-S OUTPUT_SIMPLE_SUMMARY] [--force]
                   [--json] [--min-kmer-freq MIN_KMER_FREQ]
                   [--max-kmer-freq MAX_KMER_FREQ]
                   [--low-cov-depth-freq LOW_COV_DEPTH_FREQ]
-                  [--max-missing-tiles MAX_MISSING_TILES]
-                  [--min-ambiguous-tiles MIN_AMBIGUOUS_TILES]
+                  [--max-missing-kmers MAX_MISSING_KMERS]
+                  [--min-ambiguous-kmers MIN_AMBIGUOUS_KMERS]
                   [--low-cov-warning LOW_COV_WARNING]
-                  [--max-intermediate-tiles MAX_INTERMEDIATE_TILES] [-t THREADS]
+                  [--max-intermediate-kmers MAX_INTERMEDIATE_KMERS] [-t THREADS]
                   [-v] [-V]
                   [F [F ...]]
 
@@ -118,8 +118,8 @@ If you run ``hansel -h``, you will be provided with additional information for m
                             paired) (files can be Gzipped)
       -o OUTPUT_SUMMARY, --output-summary OUTPUT_SUMMARY
                             Subtyping summary output path (tab-delimited)
-      -O OUTPUT_TILE_RESULTS, --output-tile-results OUTPUT_TILE_RESULTS
-                            Subtyping tile matching output path (tab-delimited)
+      -O OUTPUT_KMER_RESULTS, --output-kmer-results OUTPUT_KMER_RESULTS
+                            Subtyping kmer matching output path (tab-delimited)
       -S OUTPUT_SIMPLE_SUMMARY, --output-simple-summary OUTPUT_SIMPLE_SUMMARY
                             Subtyping simple summary output path
       --force               Force existing output files to be overwritten
@@ -131,17 +131,17 @@ If you run ``hansel -h``, you will be provided with additional information for m
       --low-cov-depth-freq LOW_COV_DEPTH_FREQ
                             Frequencies below this coverage are considered low
                             coverage
-      --max-missing-tiles MAX_MISSING_TILES
-                            Decimal proportion of maximum allowable missing tiles
+      --max-missing-kmers MAX_MISSING_KMERS
+                            Decimal proportion of maximum allowable missing kmers
                             before being considered an error. (0.0 - 1.0)
-      --min-ambiguous-tiles MIN_AMBIGUOUS_TILES
-                            Minimum number of missing tiles to be considered an
+      --min-ambiguous-kmers MIN_AMBIGUOUS_KMERS
+                            Minimum number of missing kmers to be considered an
                             ambiguous result
       --low-cov-warning LOW_COV_WARNING
-                            Overall tile coverage below this value will trigger a
+                            Overall kmer coverage below this value will trigger a
                             low coverage warning
-      --max-intermediate-tiles MAX_INTERMEDIATE_TILES
-                            Decimal proportion of maximum allowable missing tiles
+      --max-intermediate-kmers MAX_INTERMEDIATE_KMERS
+                            Decimal proportion of maximum allowable missing kmers
                             to be considered an intermediate subtype. (0.0 - 1.0)
       -t THREADS, --threads THREADS
                             Number of parallel threads to run analysis (default=1)
