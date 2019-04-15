@@ -448,14 +448,17 @@ def missing_nested_subtypes(subtype: str, df_positive: pd.DataFrame) -> Optional
     Returns:
         List of missing hierarchical subtypes or `None` if there are no missing nested hierarchical subtypes.
     """
-
+    primary_subtypes_set = set()
+    subtype = subtype.split(';')
     pos_subtypes_set = set(df_positive.subtype.unique())
-    a = subtype.split('.')
-    primary_subtypes_set = set(a[0])
-    new = a[0]
-    for i in range(len(a)-1):
-        new = new + '.' + a[i+1]
-        primary_subtypes_set.add(new)
+    
+    for i in subtype:
+        st_vals = i.split('.')
+        for j in range(len(st_vals)):
+            sub_subtype = '.'.join(st_vals[0 : j+1])
+            if sub_subtype not in pos_subtypes_set:
+                primary_subtypes_set.add(sub_subtype)
+        
     missing_hier_subtypes = primary_subtypes_set - pos_subtypes_set
     missing_nested_subtypes = (', '.join(missing_hier_subtypes))
     return missing_nested_subtypes if missing_nested_subtypes else None
