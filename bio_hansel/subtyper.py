@@ -458,9 +458,7 @@ def missing_nested_subtypes(subtype: str, df_positive: pd.DataFrame) -> Optional
             sub_subtype = '.'.join(st_vals[0 : j+1])
             if sub_subtype not in pos_subtypes_set:
                 primary_subtypes_set.add(sub_subtype)
-        
-    missing_hier_subtypes = primary_subtypes_set - pos_subtypes_set
-    missing_nested_subtypes = (', '.join(missing_hier_subtypes))
+    missing_nested_subtypes = (', '.join(primary_subtypes_set))
     return missing_nested_subtypes if missing_nested_subtypes else None
 
 
