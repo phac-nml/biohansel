@@ -438,6 +438,24 @@ def absent_downstream_subtypes(subtype: str, subtypes: pd.Series, scheme_subtype
     return absentees if len(absentees) > 0 else None
 
 
+def subtype_sets(st_vals: list, pos_subtypes_set: set, primary_subtypes_set: set) -> Optional[set]:
+    """Compare nested subtypes from the final subtype call to positive subtypes found
+
+    Args:
+        st_vals: List of integers making up subtype split by the "."
+        pos_subtypes_set: Set of positive subtypes
+        primary_subtypes_set: Set of missing nested subtypes
+
+    Returns:
+        Set of missing nested hierarchical subtypes or `None` if there are no missing nested hierarchical subtypes
+    """
+    for i in range(len(st_vals)):
+        sub_subtype = '.'.join(st_vals[0 : i+1])
+        if sub_subtype not in pos_subtypes_set:
+            primary_subtypes_set.add(sub_subtype)
+    return primary_subtypes_set
+
+
 def missing_nested_subtypes(subtype: str, df_positive: pd.DataFrame) -> Optional[str]:
     """Find nested subtypes that are missing from the final subtype call
 
@@ -446,20 +464,16 @@ def missing_nested_subtypes(subtype: str, df_positive: pd.DataFrame) -> Optional
         positive_subtypes: List of unique positive subtypes found
     
     Returns:
-        List of missing hierarchical subtypes or `None` if there are no missing nested hierarchical subtypes.
+        String of missing hierarchical subtypes or `None` if there are no missing nested hierarchical subtypes.
     """
-    primary_subtypes_set = set()
     subtype = subtype.split(';')
     pos_subtypes_set = set(df_positive.subtype.unique())
+    primary_subtypes_set = set()
     
     for i in subtype:
         st_vals = i.split('.')
-        for j in range(len(st_vals)):
-            sub_subtype = '.'.join(st_vals[0 : j+1])
-            if sub_subtype not in pos_subtypes_set:
-                primary_subtypes_set.add(sub_subtype)
-    missing_nested_subtypes = (', '.join(primary_subtypes_set))
-    return missing_nested_subtypes if missing_nested_subtypes else None
+        missing_subtypes_set = subtype_sets(st_vals, pos_subtypes_set, primary_subtypes_set)
+    return '; '.join(missing_subtypes_set)
 
 
 def set_inconsistent_subtypes(st: Subtype, inconsistent_subtypes: List[str]) -> Subtype:
