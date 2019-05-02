@@ -67,7 +67,7 @@ Changes to schemes occur as new classifications are made and then the schemes ar
 
 *Mycobacterium tuberculosis* (TB) scheme:
 -----------------------------------------
-Biohansel now also features a TB scheme developed by Dan Kein that was adapted from a publication by Francesc Coll et al. titled:
+Biohansel now also features a TB scheme developed by Daniel Kein that was adapted from a publication by Francesc Coll et al. titled:
 `"A robust SNP barcode for typing Mycobacterium tuberculosis complex strains" <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4166679/>`_
 This scheme currently features a set of 62 33-mers that distinguish the subtype based on 1-3 SNPs.
 
