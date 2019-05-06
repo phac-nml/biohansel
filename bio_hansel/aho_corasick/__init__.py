@@ -1,28 +1,58 @@
 # -*- coding: utf-8 -*-
 
 from collections import defaultdict
+from itertools import product
+import logging
 
 from ahocorasick import Automaton
 import pandas as pd
 
 from ..parsers import parse_fasta, parse_fastq
 from ..utils import revcomp
+from ..const import bases_dict
+from ..subtyping_params import SubtypingParams
+
+def expand_degenerate_bases(seq):
+    """List all possible kmers for a scheme given a degenerate base
+   
+    Args:
+         Scheme_kmers from SNV scheme fasta file
+
+    Returns:
+         List of all possible kmers given a degenerate base or not
+    """
+
+    return list(map("".join, product(*map(bases_dict.get, seq))))
 
 
-def init_automaton(scheme_fasta):
+def init_automaton(scheme_fasta, subtyping_params):
     """Initialize Aho-Corasick Automaton with kmers from SNV scheme fasta
 
     Args:
         scheme_fasta: SNV scheme fasta file path
+        max_degenerate_kmers: The max kmers that will be allowed
 
     Returns:
          Aho-Corasick Automaton with kmers loaded
     """
     A = Automaton()
     for header, sequence in parse_fasta(scheme_fasta):
-        A.add_word(sequence, (header, sequence, False))
-        A.add_word(revcomp(sequence), (header, sequence, True))
+        kmer_list = expand_degenerate_bases(sequence)
+        for seq in kmer_list:
+            A.add_word(seq, (header, seq, False))
+            A.add_word(revcomp(seq), (header, seq, True))
     A.make_automaton()
+    if len(A) > subtyping_params.max_degenerate_kmers:
+        logging.error(
+            '''
+    Your current scheme contains "{}" kmers which is over the reccomended number of "{}".
+    It is not advised to run this scheme due to the time and memory usage required to give an output with this many kmers loaded.
+    If you still want to run this scheme, set the command line check of "max-degenerate-kmers" to atleast "{}"
+            '''.format(
+                len(A),
+                subtyping_params.max_degenerate_kmers,
+                len(A)+1
+                ))
     return A
 
 

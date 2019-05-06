@@ -19,6 +19,25 @@ SCHEME_FASTAS = {'heidelberg': {'file': resource_filename(program_name, 'data/he
                                  'version': '1.0.1;',
                                  'subtyping_params': SubtypingParams(low_coverage_depth_freq=20)}}
 
+
+bases_dict = {
+'A': ['A'],
+'C': ['C'],
+'G': ['G'],
+'T': ['T'],
+'R': ['A', 'G'],
+'Y': ['C', 'T'],
+'S': ['G', 'C'],
+'W': ['A', 'T'],
+'K': ['G', 'T'],
+'M': ['A', 'C'],
+'B': ['C', 'G', 'T'],
+'D': ['A', 'G', 'T'],
+'H': ['A', 'C', 'T'],
+'V': ['A', 'C', 'G'],
+'N': ['A', 'C', 'G', 'T'],}
+
+
 COLUMNS_TO_REMOVE = '''
 pident
 length

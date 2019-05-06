@@ -10,6 +10,7 @@ class SubtypingParams(object):
     min_kmer_freq = attr.ib(default=8, validator=attr.validators.instance_of((float, int)))
     max_kmer_freq = attr.ib(default=1000, validator=attr.validators.instance_of((float, int)))
     min_coverage_warning = attr.ib(default=20, validator=attr.validators.instance_of((float, int)))
+    max_degenerate_kmers = attr.ib(default=100000, validator=attr.validators.instance_of(int))
 
     @max_perc_missing_kmers.validator
     def _validate_max_perc_missing_kmers(self, attribute, value):

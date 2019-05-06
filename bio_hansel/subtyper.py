@@ -123,7 +123,7 @@ def subtype_contigs(fasta_path: str,
                  scheme_version=scheme_version,
                  scheme_subtype_counts=scheme_subtype_counts)
 
-    automaton = init_automaton(scheme_fasta)
+    automaton = init_automaton(scheme_fasta, subtyping_params)
     df = find_in_fasta(automaton, fasta_path)
 
     if df is None or df.shape[0] == 0:
@@ -262,7 +262,7 @@ def subtype_reads(reads: Union[str, List[str]],
                  scheme_version=scheme_version,
                  scheme_subtype_counts=scheme_subtype_counts)
 
-    automaton = init_automaton(scheme_fasta)
+    automaton = init_automaton(scheme_fasta, subtyping_params)
     if isinstance(reads, str):
         df = find_in_fastqs(automaton, reads)
     elif isinstance(reads, list):
