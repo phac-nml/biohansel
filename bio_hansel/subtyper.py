@@ -8,7 +8,7 @@ from typing import Optional, List, Dict, Union, Tuple
 import pandas as pd
 import re
 
-from .aho_corasick import init_automaton, find_in_fasta, find_in_fastqs
+from .aho_corasick import check_total_kmers, init_automaton, find_in_fasta, find_in_fastqs
 from .const import COLUMNS_TO_REMOVE
 from .qc import perform_quality_check, QC
 from .subtype import Subtype
@@ -123,7 +123,8 @@ def subtype_contigs(fasta_path: str,
                  scheme_version=scheme_version,
                  scheme_subtype_counts=scheme_subtype_counts)
 
-    automaton = init_automaton(scheme_fasta, subtyping_params)
+    check_total_kmers(scheme_fasta, subtyping_params)
+    automaton = init_automaton(scheme_fasta)
     df = find_in_fasta(automaton, fasta_path)
 
     if df is None or df.shape[0] == 0:
@@ -262,7 +263,8 @@ def subtype_reads(reads: Union[str, List[str]],
                  scheme_version=scheme_version,
                  scheme_subtype_counts=scheme_subtype_counts)
 
-    automaton = init_automaton(scheme_fasta, subtyping_params)
+    check_total_kmers(scheme_fasta, subtyping_params)
+    automaton = init_automaton(scheme_fasta)
     if isinstance(reads, str):
         df = find_in_fastqs(automaton, reads)
     elif isinstance(reads, list):

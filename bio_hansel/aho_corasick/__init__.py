@@ -24,8 +24,40 @@ def expand_degenerate_bases(seq):
 
     return list(map("".join, product(*map(bases_dict.get, seq))))
 
+def check_total_kmers(scheme_fasta, subtyping_params):
+    '''Checks that the number of kmers about to be created is not at too high a computation or time cost
 
-def init_automaton(scheme_fasta, subtyping_params):
+    Args:
+         scheme_fasta: Kmer sequences from the SNV scheme
+         Subtyping parameter max_degenerate_kmers: The max kmers allowed by the scheme
+    
+    Returns:
+         None if created kmers < max degenerate kmers argument
+         Exits code with warning if created kmers > max degenerate kmers argument
+    '''
+    kmer_number = 0
+    for header, sequence in parse_fasta(scheme_fasta):
+        value = 1
+        for char in sequence:
+            length_key = len(bases_dict[char])
+            value = value * length_key
+        kmer_number = kmer_number + value
+    if kmer_number*2 > subtyping_params.max_degenerate_kmers:
+        return logging.error(
+            '''
+    Your current scheme contains "{}" kmers which is over the reccomended number of "{}".
+    It is not advised to run this scheme due to the time and memory usage required to give an output with this many kmers loaded.
+    If you still want to run this scheme, set the command line check of "max-degenerate-kmers" to atleast "{}"
+            '''.format(
+                kmer_number,
+                subtyping_params.max_degenerate_kmers,
+                kmer_number*2+1
+                ))
+    else:
+        return None
+
+
+def init_automaton(scheme_fasta):
     """Initialize Aho-Corasick Automaton with kmers from SNV scheme fasta
 
     Args:
@@ -42,17 +74,6 @@ def init_automaton(scheme_fasta, subtyping_params):
             A.add_word(seq, (header, seq, False))
             A.add_word(revcomp(seq), (header, seq, True))
     A.make_automaton()
-    if len(A) > subtyping_params.max_degenerate_kmers:
-        logging.error(
-            '''
-    Your current scheme contains "{}" kmers which is over the reccomended number of "{}".
-    It is not advised to run this scheme due to the time and memory usage required to give an output with this many kmers loaded.
-    If you still want to run this scheme, set the command line check of "max-degenerate-kmers" to atleast "{}"
-            '''.format(
-                len(A),
-                subtyping_params.max_degenerate_kmers,
-                len(A)+1
-                ))
     return A
 
 
