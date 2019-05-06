@@ -62,7 +62,6 @@ def init_automaton(scheme_fasta):
 
     Args:
         scheme_fasta: SNV scheme fasta file path
-        max_degenerate_kmers: The max kmers that will be allowed
 
     Returns:
          Aho-Corasick Automaton with kmers loaded
