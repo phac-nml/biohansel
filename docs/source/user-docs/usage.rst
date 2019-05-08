@@ -1,9 +1,13 @@
 Usage
 =====
 
-Biohansel subtypes microbial whole-genome sequencing (WGS) data using single nucleotide variant (SNV) k-mer subtyping schemes.
+Biohansel subtypes clonal microbial whole-genome sequencing (WGS) data using single nucleotide variant (SNV) k-mer subtyping schemes.
 
-SNV k-mer schemes can be created for use by the tool or the included 33 bp k-mer SNV subtyping schemes for Salmonella enterica subsp. enterica serovar Heidelberg and Enteritidis genomes developed by Genevieve Labbe et al. can be used for analysis of Salmonella WGS data. 
+SNV k-mer subtyping schemes included in biohansel are currently focused on *Salmonella enterica* enterica serovars and 
+include SNV schemes for serovars Heidelberg, Enteritidis, and Typhi developed by Genevieve Labbe et al. These schemes are 
+based around 33-mer k-mer pairs using the SNP to distinguish the subtype.
+
+There is also a subtyping scheme for *Mycobacterium tuberculosis* includded in the latest version.
 
 Biohansel can be installed with Conda, pip, or within an existing Galaxy infrastructure. View the `install guide <../installation-docs/home.html>`_ of your preference for additional details.
 
@@ -26,7 +30,7 @@ Quick Installation
 With Conda_
 -----------
 
-Conda is the easiest way to install and biohansel through the use of the command line.
+Conda is the easiest way to install and run biohansel through the use of the command line.
 
 First, install Conda_ (`Conda installation instructions <https://bioconda.github.io/#install-conda>`_).
 
@@ -58,7 +62,8 @@ Then, install ``biohansel`` through Bioconda_ (64bit linux and MAC OSX) using th
     hansel -h
     #This will display the usage statement
 
-Remember to activate the Conda environment that biohansel is installed into each time you want to run it after opening a new terminal window.
+Remember to activate the Conda environment that biohansel is installed into each time you want to run it after opening a new terminal window
+or you will find that the `hansel` command does not exist.
 
 With pip_ from PyPI_
 ---------------------
@@ -108,27 +113,39 @@ Users can download and set up their own instance of Galaxy following the `get Ga
 Input Data
 ----------
 
-Biohansel uses genome assemblies (FASTA files) or reads (FastQ files) from WGS data as an input. It also accepts these files as their Gzipped FASTA/FASTQ formats. Genomes can be fully assembled or a collection of contigs when analyzed without impacting the output.
+Biohansel uses genome assemblies (FASTA files) or raw reads (FastQ files) from WGS data as an input. 
+It also accepts these files as their Gzipped FASTA/FASTQ formats. Genomes can be fully assembled or a collection 
+of contigs when analyzed without impacting the output.
 
-SNV subtyping schemes have to be defined for biohansel to run correctly. Two schemes are currently included in biohansel and user created schemes can be developed by creating SNV k-mer pairs in the FASTA format. See `Creating schemes <subtyping_schemes.html>`_ for more details.
+SNV subtyping schemes have to be defined for biohansel to run correctly. Four schemes are currently included in biohansel and 
+user created schemes can be developed by creating SNV k-mer pairs in the specified FASTA format used by biohansel. 
+See `Creating schemes <subtyping_schemes.html>`_ for more details.
 
-Subtype metadata schemes can be added to the analysis but are not required. Added metadata is joined with the subtype field of the final results. More detailed info on formatting of metadata schemes can be found in the `Input section <input.html>`_ along with additional information on all of the other input files biohansel can use. 
+Subtype metadata schemes can be optionally added to the analysis. 
+Added metadata is joined with the subtype field of the final results. 
+More detailed info on formatting of metadata schemes can be found in the `Input section <input.html>`_ along with additional 
+information on all of the other input files biohansel can use. 
 
 Output Results
 --------------
 
-Output of the results generated through biohansel will be found in three .tab files in the directory that biohansel was run from or in the Galaxy histories window after analysis is complete. The three files include:
+Output of the results generated through biohansel will be found in three .tab files in the directory that biohansel was run from 
+or in the Galaxy histories window after analysis is complete. The three output files include:
 
-- tech_results.tab -> Most basic results file
-- results.tab -> More advanced information on the results generated
-- match_results.tab -> All k-mer information used to generate the subtype
+- tech_results.tab --> Most basic results file giving the subtype and sample coverage (fastq samples)
+- results.tab --> More advanced information on the results generated including how many k-mers were found and what types.
+- match_results.tab --> All k-mer information used to generate the subtype result with the positive kmers First
 
-Detailed info about the results output can be found in the `output section <output.html>`_.
+All outputs contain a quality control (QC) column along with a "qc_message" column that runs through qc checks to determine if 
+the data is consistent or has any conflicting results that the user should be aware of.
+
+Detailed info about the results outputs and QC can be found in the `output section <output.html>`_.
 
 Parameters
 ----------
 
-Parameters can be modified for users of both Galaxy and the command line. These can be changed based on the users need. Modifiable parameters include:
+Parameters can be modified for users of both Galaxy and the command line. These can be changed based on the users need. 
+Modifiable parameters include:
 
 - K-mer Frequency Thresholds - **only apply to raw reads/.fastq datasets**
     - Min k-mer frequency/coverage (default 8, cannot lower past 8 in current build)
@@ -141,7 +158,11 @@ Parameters can be modified for users of both Galaxy and the command line. These 
     - QC: Decimal Proportion of max allowed missing k-mers for an intermediate subtype (default 0.05)
     - QC: Overall k-mer coverage below this value will trigger a low coverage warning (default 20)
 
-Detailed info on biohansels parameters and their functions can be found in the `parameter section <parameters.html>`_.
+- Command Line Only - Parameters only available on the command line so as to not risk overworking shared Galaxy instances
+    - Max degenerate kmers before program stops to warn you of the dangers of too many kmers (default **WIP**)
+
+Detailed info on biohansels parameters and their functions can be found in the `parameter section <parameters.html>`_ or the
+`command line section <command_line.html>`_.
 
 Running biohansel
 -----------------

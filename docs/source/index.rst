@@ -15,7 +15,8 @@ Biohansel includes 33 base-pair k-mer SNV subtyping schemes focused on *Salmonel
 Heidelberg, Enteritidis, and Typhi which have been created and maintained by Genevieve Labbe et al.
 
 There is also an included * Mycobacterium tuberculosis* scheme that was modified from the Francesc Coll et al. paper titled:
-`"A robust SNP barcode for typing Mycobacterium tuberculosis complex strains" <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4166679/>`_ and was modified for biohansel use by Daniel Kein.
+`"A robust SNP barcode for typing Mycobacterium tuberculosis complex strains" <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4166679/>`_ 
+and was modified for biohansel use by Daniel Kein.
 
 
 Code is available on GitHub under https://github.com/phac-nml/biohansel. 
@@ -38,6 +39,7 @@ Code is available on GitHub under https://github.com/phac-nml/biohansel.
    user-docs/Tutorial
    user-docs/input
    user-docs/subtyping_schemes
+   user-docs/degenerate_base_expansion
    user-docs/output
    user-docs/parameters
    user-docs/command-line
