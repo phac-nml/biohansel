@@ -94,8 +94,28 @@ k-mers number of k-mers can expand with only two degenerate bases.
 In this example, there would end up being a total of 16 different k-mers due to the reverse compliment also being input into biohansel.
 
 
-Expansion of K-mer Numbers:
----------------------------
+Unchecked Expansion of K-mers:
+-------------------------------
 
-As demonstrated, the number of k-mers can grow rapidly and then is multiplied by two to take into account the reverse
-compliment of the 
+As demonstrated, the number of k-mers can grow rapidly and then, at the end of base expansion, the number of k-mers is
+multiplied by two to take into account the reverse compliment (RC) of the sequence.
+
+For example, lets take a look at the following k-mer pair:
+
+| >122231-2.2
+| NNANN
+|
+| >negative122231-2.2
+| NNTNN
+
+N is the most versatile degenerate base as it can be expanded into any of the 4 DNA nucleotides. This pair may not seem big now but if
+we calculate the number of bases that it can be, you can see how quickly degenerate bases run out of control.
+
+The positive k-mer pictured can be thought of as the number of choices that each of the bases could take.
+Say we had a k-mer that was "AATAA". The number of k-mers this simple k-mer would break down in during base expansion would be:
+
+(1)(1)(1)(1)(1) = 1
+
+Now if we look back at our short k-mers, we have a pair of 5 nucleotide sequences. With expansion this would equal:
+
+2 pairs x 2 for RC x ((4)(4)(1)(4)(4)) or 2*2*4^4 = 2*2*256 = 1024 k-mers
