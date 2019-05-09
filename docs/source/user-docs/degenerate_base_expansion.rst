@@ -142,9 +142,84 @@ produced, the **slower the run time**, and the **more RAM is needed to run the s
 Benchmarking Degenerate Bases
 -----------------------------
 
+Expand Degenerate Base Module
+#############################
+
 More degenerate bases = More K-mers = Slower Run Times
 
-Even with the risks, they are included as they are useful. Here is the speed of running the **expand degenerate** 
-**base module** (not biohansel itself) using pythons timeit module and different k-mers.
+In this section we are going to look at the speed of the expand base module and the code itself for different numbers of k-mers.
+
+Here is the speed of running the **expand degenerate bases module** (not biohansel itself) on 1 core using pythons timeit:
+
++--------------------+-------------------------+----------------+  
+| **K-mer Sequence** | **Max K-mers Produced** | **Time**       |
++--------------------+-------------------------+----------------+
+| A                  | 1                       | 1.59 microsec  |
++--------------------+-------------------------+----------------+
+| N                  | 4                       | 1.79 microsec  |
++--------------------+-------------------------+----------------+
+| NN                 | 16                      | 2.47 microsec  |
++--------------------+-------------------------+----------------+
+| NNN                | 64                      | 5.61 microsec  |
++--------------------+-------------------------+----------------+
+| NNNN               | 256                     | 17.50 microsec |
++--------------------+-------------------------+----------------+
+| NNNNN              | 1024                    | 68.30 microsec |
++--------------------+-------------------------+----------------+
+| NNNNNN             | 4096                    | 305.0 microsec |
++--------------------+-------------------------+----------------+
+| NNNNNNN            | 16384                   | 1.41 msec      |
++--------------------+-------------------------+----------------+
+| NNNNNNNN           | 65536                   | 6.15 msec      |
++--------------------+-------------------------+----------------+
+| NNNNNNNNN          | 262144                  | 26.5 msec      |
++--------------------+-------------------------+----------------+
+| NNNNNNNNNN         | 1048576                 | 112.0 msec     |
++--------------------+-------------------------+----------------+
+| NNNNNNNNNNN        | 4194394                 | 470.0 msec     |
++--------------------+-------------------------+----------------+
+| NNNNNNNNNNNN       | 16777216                | 1.950 sec      |
++--------------------+-------------------------+----------------+
+| NNNNNNNNNNNNN      | 67108864                | 8.930 sec      |
++--------------------+-------------------------+----------------+
+| NNNNNNNNNNNNNN     | 268435456               | **Died**       |
++--------------------+-------------------------+----------------+
+
+The higher k-mers are a bit of a stretch but show how much longer the module takes if you are not careful.
+
+Remember, the above chart is for a **singular** k-mer and does not take into account the expansion of the whole scheme.
+If you had a scheme with a lot of these, it would take that amount of time for each k-mer!
 
 
+Whole Biohansel Code
+####################
+
+Benchmarking all of the biohansel code using the same input fasta file but increasing the total k-mer count each time.
+
+Remember that the total number of k-mers if there are no degenerate bases is equal to the number of pairs multiplied by 
+4 to take into account two sequences per pair and the RC of each sequence.
+
+If degenerate bases are present, it is harder to guess the number and running biohansel will tell you if you have over the default ______ and
+allow you to set the value that you deem acceptable with the "--max-degenerate-kmers" command.
+
++---------------------------+--------------------------------+--------------------------+  
+| **Number of Nucleotides** | **Number of Scheme K-mers**    | **Execution Time (sec)** |
++---------------------------+--------------------------------+--------------------------+
+| 4751529                   | 808 --> Base Heidelberg Scheme | 0.613                    |
++---------------------------+--------------------------------+--------------------------+
+| 4751529                   | 4394                           | 0.663                    |
++---------------------------+--------------------------------+--------------------------+
+| 4751529                   | 12074                          | 0.721                    |
++---------------------------+--------------------------------+--------------------------+
+| 4751529                   | 36650                          | 0.873                    |
++---------------------------+--------------------------------+--------------------------+
+| 4751529                   | 69418                          | 0.971                    |
++---------------------------+--------------------------------+--------------------------+
+| 4751529                   | 134954                         | 1.031                    |
++---------------------------+--------------------------------+--------------------------+
+| 4751529                   | 266026                         | 1.502                    |
++---------------------------+--------------------------------+--------------------------+
+| 4751529                   | 528171                         | 2.150                    |
++---------------------------+--------------------------------+--------------------------+
+| 4751529                   | 1052459                        | 3.269                    |
++---------------------------+--------------------------------+--------------------------+
