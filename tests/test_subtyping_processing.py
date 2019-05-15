@@ -5,7 +5,7 @@ import pandas as pd
 
 from bio_hansel.qc import QC
 from bio_hansel.subtype import Subtype
-from bio_hansel.subtyper import absent_downstream_subtypes, sorted_subtype_ints, count_periods, empty_results
+from bio_hansel.subtyper import absent_downstream_subtypes, sorted_subtype_ints, count_periods, empty_results, subtype_sets, missing_nested_subtypes
 from bio_hansel.utils import find_inconsistent_subtypes
 from bio_hansel.subtype_stats import SubtypeCounts
 
@@ -107,3 +107,8 @@ def test_subtype_regex():
         for bad_value in bad_values:
             assert SubtypeCounts._check_subtype('x', 'x', bad_value) == ''
         
+
+def test_subtype_sets():
+    st_vals = ['2', '22', '222', '2222', '22222']
+    pos_subtypes_set = {'2', '2.22.222.2222.22222'}
+    assert subtype_sets(st_vals, pos_subtypes_set, primary_subtypes_set = set()) == {'2.22', '2.22.222', '2.22.222.2222'}
