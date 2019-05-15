@@ -204,6 +204,28 @@ def is_missing_downstream_targets(st: Subtype, *args) -> Tuple[Optional[str], Op
     return None, None
 
 
+def is_missing_hierarchical_kmers(st: Subtype, *args) -> Tuple[Optional[str], Optional[str]]:
+    """Are there any missing nested subtypes in the final subtype call?
+
+    Note:
+        This method will check if there's any missing_nested_subtypes in the result, which would indicate a non confident
+        result. This is due to the fact that if you have a subtyping result of `2.1.1.2` and you're missing `2.1.1` or `2.1`
+        that you can't be sure that the subtype's final call is 2.1.1.2 due to the missing information.
+
+    Args:
+        st: Subtype results
+        args: unused extra args
+
+    Returns:
+        None, None if no missing downstream targets; otherwise, "FAIL", error message
+    """
+    if st.missing_nested_subtypes:
+        return QC.FAIL, f'{QC.UNCONFIDENT_RESULTS_ERROR_4}: Subtype "{st.subtype}" was found, but kmers for ' \
+                        f'nested hierarchical subtype(s) "{st.missing_nested_subtypes}" were missing. Due to missing ' \
+                        f'kmers, there is a lack of confidence in the final subtype call.'
+    return None, None
+
+
 def is_maybe_intermediate_subtype(st: Subtype, df: pd.DataFrame, p: SubtypingParams) -> Tuple[
     Optional[str], Optional[str]]:
     """Is the result a possible intermediate subtype?
