@@ -12,6 +12,7 @@ scheme_heidelberg = 'heidelberg'
 scheme_enteritidis = 'enteritidis'
 scheme_typhi = 'typhi'
 scheme_tuberculosis = 'tb_speciation'
+scheme_typhimurium = 'typhimurium'
 
 fasta_heidelberg_pass = 'tests/data/SRR1002850_lowercase.fasta'
 fastq_heidelberg_pass = 'tests/data/SRR5646583_SMALL.fastq'
@@ -22,6 +23,8 @@ fastqs_enteritidis_fail = ['tests/data/inconsistent_reads_fwd.fastq', 'tests/dat
 fasta_typhi_pass = 'tests/data/AE014613.1.fasta'
 
 fasta_tb_pass = 'tests/data/AP018036.1.fasta'
+
+fasta_typhimurium_pass = 'tests/data/typhimurium2.2.3.3.fasta'
 
 
 @pytest.fixture()
@@ -105,6 +108,22 @@ def subtype_tb_AP018036_pass():
                    n_kmers_matching_subtype_expected='1',
                    qc_status=QC.PASS)
 
+@pytest.fixture()
+def subtype_typhimurium_pass():
+    return Subtype(scheme=scheme_typhimurium,
+                   scheme_version=SCHEME_FASTAS[scheme_typhimurium]['version'],
+                   sample=genome_name,
+                   subtype='2.2.3.3',
+                   file_path=fasta_typhimurium_pass,
+                   are_subtypes_consistent=True,
+                   n_kmers_matching_all=429,
+                   n_kmers_matching_all_expected='430',
+                   n_kmers_matching_positive=19,
+                   n_kmers_matching_positive_expected='19',
+                   n_kmers_matching_subtype=5,
+                   n_kmers_matching_subtype_expected='5',
+                   qc_status=QC.PASS)
+
 
 def test_heidelberg_scheme_vs_qc_passing_reads_with_ac(subtype_heidelberg_pass):
     st, df = subtype_reads(reads=fastq_heidelberg_pass, genome_name=genome_name, scheme=scheme_heidelberg)
@@ -136,3 +155,9 @@ def test_tuberculosis_scheme(subtype_tb_AP018036_pass):
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
     check_subtype_attrs(st,subtype_tb_AP018036_pass)
+
+def test_typhimurium_scheme(subtype_typhimurium_pass):
+    st, df = subtype_contigs(fasta_path=fasta_typhimurium_pass, genome_name=genome_name, scheme=scheme_typhimurium)
+    assert isinstance(st, Subtype)
+    assert isinstance(df, DataFrame)
+    check_subtype_attrs(st,subtype_typhimurium_pass)
