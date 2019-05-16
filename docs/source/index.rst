@@ -12,11 +12,11 @@ Biohansel subtypes clonal microbial whole-genome sequencing (WGS) data using SNV
 This tool works on genome assemblies (FASTA files) or reads (FASTQ files)! Accepts Gzipped FASTA/FASTQ files as input!
 
 Biohansel includes 33 base-pair k-mer SNV subtyping schemes focused on *Salmonella enterica* subsp. enterica serovars. Currently, there are schemes for the following *Salmonella* serovars:
-Heidelberg, Enteritidis, and Typhi which have been created and maintained by Genevieve Labbe et al.
+Heidelberg, Enteritidis, Typhimurium and Typhi which have been created and maintained by Genevieve Labbe et al.
 
 There is also an included * Mycobacterium tuberculosis* scheme that was modified from the Francesc Coll et al. paper titled:
 `"A robust SNP barcode for typing Mycobacterium tuberculosis complex strains" <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4166679/>`_ 
-and was modified for biohansel use by Daniel Kein.
+for biohansel use by Daniel Kein.
 
 
 Code is available on GitHub under https://github.com/phac-nml/biohansel. 
