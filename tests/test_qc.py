@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import pytest
 import pandas as pd
 
 from bio_hansel.qc import is_maybe_intermediate_subtype
@@ -114,7 +115,7 @@ def test_unconfident_subtype():
 
 def test_missing_hierarchy_levels_in_subtype():
     scheme = 'heidelberg'
-    fasta= 'tests/data/fail-qc-missing-levels.fasta'
+    fasta = 'tests/data/fail-qc-missing-levels.fasta'
     st, df = subtype_contigs(fasta_path=fasta, genome_name=genome_name, scheme=scheme)
     assert isinstance(st, Subtype)
     assert isinstance(df, pd.DataFrame)
@@ -124,3 +125,9 @@ def test_missing_hierarchy_levels_in_subtype():
     assert "kmers for nested hierarchical subtype(s)" in st.qc_message
     assert "2.1" in st.qc_message 
     assert "2.1.1" in st.qc_message
+
+def test_too_many_kmers():
+    scheme = 'tests/data/too_many_kmers.fasta'
+    fasta = 'tests/data/fail-qc-missing-levels.fasta'
+    with pytest.raises(SystemExit):
+        assert subtype_contigs(fasta_path=fasta, genome_name=genome_name, scheme=scheme) == SystemExit

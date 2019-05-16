@@ -105,6 +105,9 @@ def init_parser():
     parser.add_argument('--max-intermediate-kmers',
                         type=float,
                         help='Decimal proportion of maximum allowable missing kmers to be considered an intermediate subtype. (0.0 - 1.0)')
+    parser.add_argument('--max-degenerate-kmers',
+                        type=int,
+                        help='Maximum number of scheme k-mers allowed before quitting with a usage warning. Default is 100000')
     parser.add_argument('-t', '--threads',
                         type=int,
                         default=1,
