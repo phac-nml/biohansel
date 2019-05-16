@@ -36,7 +36,7 @@ If you find the ``biohansel`` tool useful, please cite as:
 .. epigraph::
 
     A robust genotyping scheme for *Salmonella enterica* serovar Heidelberg clones circulating in North America.
-    Geneviève Labbé, James Robertson, Peter Kruczkiewicz, Marisa Rankin, Matthew Gopez, Chad R. Laing, Philip Mabon, Kim Ziebell, Aleisha R. Reimer, Lorelee Tschetter, Gary Van Domselaar, Sadjia Bekal, Kimberley A. MacDonald, Linda Hoang, Linda Chui, Danielle Daignault, Durda Slavic, Frank Pollari, E. Jane Parmley, Elissa Giang, Lok Kan Lee, Jonathan Moffat, Joanne MacKinnon, Roger Johnson, John H.E. Nash.
+    Geneviève Labbé, James Robertson, Peter Kruczkiewicz, Marisa Rankin, Matthew Gopez, Chad R. Laing, Philip Mabon, Kim Ziebell, Aleisha R. Reimer, Lorelee Tschetter, Gary Van Domselaar, Sadjia Bekal, Kimberley A. MacDonald, Linda Hoang, Linda Chui, Danielle Daignault, Durda Slavic, Frank Pollari, E. Jane Parmley, David Son, Darian Hole, Elissa Giang, Lok Kan Lee, Jonathan Moffat, Joanne MacKinnon, Roger Johnson, John H.E. Nash.
     [Manuscript in preparation]
 
 
@@ -120,13 +120,14 @@ If you run ``hansel -h``, you should see the following usage statement:
                   [--max-missing-kmers MAX_MISSING_KMERS]
                   [--min-ambiguous-kmers MIN_AMBIGUOUS_KMERS]
                   [--low-cov-warning LOW_COV_WARNING]
-                  [--max-intermediate-kmers MAX_INTERMEDIATE_KMERS] [-t THREADS]
+                  [--max-intermediate-kmers MAX_INTERMEDIATE_KMERS] 
+                  [--max-degenerate-kmers MAX_DEGENERATE_KMERS] [-t THREADS]
                   [-v] [-V]
                   [F [F ...]]
 
     Subtype microbial genomes using SNV targeting k-mer subtyping schemes.
     Includes schemes for Salmonella enterica spp. enterica serovar Heidelberg and Enteritidis subtyping.
-    Developed by Geneviève Labbé, James Robertson, Peter Kruczkiewicz, Marisa Rankin, Matthew Gopez, Chad R. Laing, Philip Mabon, Kim Ziebell, Aleisha R. Reimer, Lorelee Tschetter, Gary Van Domselaar, Sadjia Bekal, Kimberley A. MacDonald, Linda Hoang, Linda Chui, Danielle Daignault, Durda Slavic, Frank Pollari, E. Jane Parmley, Philip Mabon, Elissa Giang, Lok Kan Lee, Jonathan Moffat, Marisa Rankin, Joanne MacKinnon, Roger Johnson, John H.E. Nash.
+    Developed by Geneviève Labbé, James Robertson, Peter Kruczkiewicz, Marisa Rankin, Matthew Gopez, Chad R. Laing, Philip Mabon, Kim Ziebell, Aleisha R. Reimer, Lorelee Tschetter, Gary Van Domselaar, Sadjia Bekal, Kimberley A. MacDonald, Linda Hoang, Linda Chui, Danielle Daignault, Durda Slavic, Frank Pollari, E. Jane Parmley, David Son, Darian Hole, Philip Mabon, Elissa Giang, Lok Kan Lee, Jonathan Moffat, Marisa Rankin, Joanne MacKinnon, Roger Johnson, John H.E. Nash.
 
     positional arguments:
       F                     Input genome FASTA/FASTQ files (can be Gzipped)
