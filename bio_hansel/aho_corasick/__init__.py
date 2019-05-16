@@ -3,6 +3,7 @@
 from collections import defaultdict
 from itertools import product
 import logging
+import sys
 
 from ahocorasick import Automaton
 import pandas as pd
@@ -45,14 +46,14 @@ def check_total_kmers(scheme_fasta, subtyping_params):
     if kmer_number*2 > subtyping_params.max_degenerate_kmers:
         return logging.error(
             '''
-    Your current scheme contains "{}" kmers which is over the reccomended number of "{}".
+    Your current scheme contains "{}" kmers which is over the current max-degenerate-kmers check of "{}" (Maximum recommended k-mers is 100000).
     It is not advised to run this scheme due to the time and memory usage required to give an output with this many kmers loaded.
-    If you still want to run this scheme, set the command line check of "max-degenerate-kmers" to atleast "{}"
+    If you still want to run this scheme, add the command line check of "--max-degenerate-kmers {}" at the end of your previous command.
             '''.format(
-                kmer_number,
+                kmer_number*2,
                 subtyping_params.max_degenerate_kmers,
                 kmer_number*2+1
-                ))
+                )), sys.exit()
     else:
         return None
 
