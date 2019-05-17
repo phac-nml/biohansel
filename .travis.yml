@@ -25,5 +25,7 @@ notifications:
     recipients:
     - mgopez95@gmail.com
     - peter.kruczkiewicz@gmail.com
+    - darian.hole@canada.ca
+    - philip.mabon@canada.ca
     on_success: change
     on_failure: change
