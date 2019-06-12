@@ -39,8 +39,7 @@ Additional
 | \\--json  -->  Output JSON representation of output files
 |
 | \\--min-kmer-freq <#>  -->  Minimum k-mer coverage needed for a raw reads fastq file to be
-|       considered acceptable by the quality control module (default is 8) (cannot lower past 8 in
-|       the current build)
+|       considered acceptable by the quality control module (default is 8)
 |
 | \\--max-kmer-freq <#>  -->  Maximum k-mer coverage for a raw reads fastq file to be considered
 |       acceptable (default is 1000)
