@@ -47,8 +47,8 @@ Additional
 | \\--low-cov-depth-freq <#>  -->  Coverage frequencies of raw read fastq files below this value are
 |       considered as low coverage (default is 20)
 |
-| \\--max-missing-kmers <#>  -->  Decimal proportion of maximum allowable missing kmers before being
-|       considered an error (0.0 - 1.0) (default is 0.05 or 5%)
+| \\--max-missing-kmers <#>  -->  Decimal proportion of maximum allowable missing kmers before
+|       being considered an error (0.0 - 1.0) (default is 0.05 or 5%)
 |
 | \\--min-ambiguous-kmers <#>  -->  Minimum number of missing kmers to be considered an ambiguous
 |       result (default is 3)
