@@ -1,4 +1,4 @@
-from typing import Tuple, Optional, List, Any, Dict
+from typing import Tuple, Optional, List, Any, Dict, Iterable
 
 from pandas import DataFrame
 
