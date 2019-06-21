@@ -140,7 +140,7 @@ def is_mixed_subtype(st: Subtype, df: pd.DataFrame, *args) -> Tuple[Optional[str
     """
     if not st.are_subtypes_consistent:
         return QC.FAIL, f'Mixed subtypes found: "{"; ".join(sorted(st.inconsistent_subtypes))}".'
-    conflicting_kmers = get_conflicting_kmers(st, df)
+    conflicting_kmers = get_conflicting_kmers(st.subtype, df, st.is_fastq_input())
     if conflicting_kmers is None or conflicting_kmers.shape[0] == 0:
         return None, None
 
@@ -250,7 +250,7 @@ def is_maybe_intermediate_subtype(st: Subtype, df: pd.DataFrame, p: SubtypingPar
 
     total_subtype_kmers = int(st.n_kmers_matching_subtype_expected)
     total_subtype_kmers_hits = int(st.n_kmers_matching_subtype)
-    conflicting_kmers = get_conflicting_kmers(st, df)
+    conflicting_kmers = get_conflicting_kmers(st.subtype, df, st.is_fastq_input())
     num_pos_kmers, num_neg_kmers = get_num_pos_neg_kmers(st, df)
     obs = int(st.n_kmers_matching_all)
     exp = int(st.n_kmers_matching_all_expected)
