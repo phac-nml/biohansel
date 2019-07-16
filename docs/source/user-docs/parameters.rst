@@ -24,7 +24,10 @@ the underlying parameters can be changed.
 Sequence Data Type
 ##################
 
-The sequence data type settings in Galaxy allow the user to choose what type of file the analysis will be run on. Picking a file type listed in the subsections below will give a few additional options. These options relate to how many files are being analyzed at once and how the data is output. A single file or multiple files can be run with one execute command. The types of jobs that can be run include:
+The sequence data type settings in Galaxy allow the user to choose what type of file the analysis will be run on.
+Picking a file type listed in the subsections below will give a few additional options. These options relate to how
+many files are being analyzed at once and how the data is output. A single file or multiple files can be run with one
+execute command. The types of jobs that can be run include:
 
 1. A single fasta/fastq file
 
@@ -33,9 +36,6 @@ The sequence data type settings in Galaxy allow the user to choose what type of 
 3. A dataset collection of fasta/fastq files that will generate a single output file
 
 Remember that unlike the command line, you cannot run different file type analyses at once with a single run in Galaxy. 
-Paired-end reads do not have these additional options.
-
-This section must have a file and a file type chosen to run an analysis.
 
 
 Contigs (FASTA)
@@ -101,7 +101,7 @@ This parameter should be adjusted based on the average genome coverage of the da
 Max k-mer frequency/coverage
 """"""""""""""""""""""""""""
 The maximum frequency that all of the k-mers of the chosen subtyping scheme should be found in a raw reads Fastq dataset. 
-If a k-mer is above this chosen frequency, it will not be taken into account. Default is 1000. Make sure that the Max k-mer 
+If a k-mer is above this chosen frequency, it will not be taken into account. Default is 10,000. Make sure that the Max k-mer 
 frequency is at least 5x more then the average genome coverage of the dataset (or estimated average k-mer coverage output by biohansel).
 
 |k-mer_freq|
@@ -110,7 +110,8 @@ frequency is at least 5x more then the average genome coverage of the dataset (o
 Quality Checking Thresholds
 ###########################
 
-These parameters are used to run the quality control (QC) module that determines if the outcome of biohansel is a PASS or a FAIL. Changing them allows for greater control on what the program will allow a pass, whether this is more strict or less strict. 
+These parameters are used to run the quality control (QC) module that determines if the outcome of biohansel is a PASS or a FAIL.
+Changing them allows for greater control on what the program will allow a pass, whether this is more strict or less strict. 
 
 |QC_Thresh|
 

@@ -1,7 +1,9 @@
 Home
 ====
 
-Detailed installation instructions for anyone who wants to run biohansel. These instructions are tailored to linux or MacOS systems where biohansel has been confirmed to work correctly. If installing to the command line, Bioconda is highly suggested as it shows no issues over the span of many tests.
+Detailed installation instructions for anyone who wants to run biohansel. These instructions are tailored to linux or MacOS
+systems where biohansel has been confirmed to work correctly. If installing to the command line, Bioconda is highly suggested
+as it shows no issues over the span of many tests.
 
 Pick the way that you want to run biohansel and follow the detailed instructions given on the following pages:
 
@@ -10,4 +12,7 @@ Pick the way that you want to run biohansel and follow the detailed instructions
 `Galaxy <galaxy.html>`_
 
 
-If errors persist in installation, the suggestion is to try another method. If errors occur in running biohansel, then check that all inputs are correctly specified, all files are in the correct formats (fasta/fastq for samples, .tsv for metadata tables), and no other small issues are present (ex. forgetting a column called subtyping when adding in metadata).
+If errors persist in installation, the suggestion is to try another method. If errors occur in running biohansel,
+then check that all inputs are correctly specified, all files are in the correct formats
+(fasta/fastq for samples, .tsv for metadata tables), and no other small issues are present (ex. forgetting a column called "subtype"
+when adding in metadata).

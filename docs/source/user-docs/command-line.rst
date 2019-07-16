@@ -1,14 +1,16 @@
 Command-Line
 ============
 
-Here, the arguments needed to run biohansel effectively are displayed. The required and additional arguments are shown below to see what must be included in a run. 
+Here, the arguments needed to run biohansel effectively are displayed. The required and additional arguments
+are shown below to see what must be included in a run. 
 
-Required
-########
+**Required**
+############
 
-Make sure to be in the directory containing all of the data needed to run a command or that the path to the input data is put into the command following the argument.
+Make sure to be in the directory containing all of the data needed to run a command or that the path to the
+input data is put into the command following the argument.
 
-- Subtyping Scheme
+- Genotyping Scheme
 
     - use -s "scheme"
 
@@ -17,7 +19,9 @@ Make sure to be in the directory containing all of the data needed to run a comm
     - use -S "filename.tab" | for tech_results.tab
     - use -o "filename.tab" | for results.tab
     - use -O "filename.tab" | for match_results.tab
-    
+
+        - You can also use ".tsv" as the file extension
+
 - Input data
 
     - use -i <path/to/fasta> | to specify fasta file to analyze
@@ -42,7 +46,7 @@ Additional
 |       considered acceptable by the quality control module (default is 8)
 |
 | \\--max-kmer-freq <#>  -->  Maximum k-mer coverage for a raw reads fastq file to be considered
-|       acceptable (default is 1000)
+|       acceptable (default is 10,000)
 |
 | \\--low-cov-depth-freq <#>  -->  Coverage frequencies of raw read fastq files below this value are
 |       considered as low coverage (default is 20)
@@ -57,7 +61,7 @@ Additional
 |       warning on raw read fastq files. (default is 20) 
 |
 | \\--max-intermediate-kmers <#>  -->  Decimal proportion of maximum allowable missing kmers
-|       (0.0 - 1.0) to be considered an intermediate subtype (default is 0.05)
+|       (0.0 - 1.0) to be considered an intermediate genotype (default is 0.05)
 | 
 | --threads <#_CPUs>  -->  Number of parallel threads used to run the analysis (default = 1)
 |
@@ -66,9 +70,9 @@ Additional
 | -V  -->  Displays the version of biohansel installed
 |
 
+
 Hansel Help Command
 ###################
-
 
 If you run ``hansel -h``, you will be provided with additional information for most of the commands along with following usage statement:
 
@@ -88,9 +92,13 @@ If you run ``hansel -h``, you will be provided with additional information for m
                   [-v] [-V]
                   [F [F ...]]
 
-    Subtype microbial genomes using SNV targeting k-mer subtyping schemes.
-    Includes schemes for Salmonella enterica spp. enterica serovar Heidelberg and Enteritidis subtyping.
-    Developed by Geneviève Labbé, James Robertson, Peter Kruczkiewicz, Marisa Rankin, Matthew Gopez, Chad R. Laing, Philip Mabon, Kim Ziebell, Aleisha R. Reimer, Lorelee Tschetter, Gary Van Domselaar, Sadjia Bekal, Kimberley A. MacDonald, Linda Hoang, Linda Chui, Danielle Daignault, Durda Slavic, Frank Pollari, E. Jane Parmley, Philip Mabon, Elissa Giang, Lok Kan Lee, Jonathan Moffat, Marisa Rankin, Joanne MacKinnon, Roger Johnson, John H.E. Nash.
+    Genotype microbial genomes using SNV targeting k-mer genotyping schemes.
+    Includes schemes for Salmonella enterica spp. enterica serovar Heidelberg, Enteritidis, Typhi, and Typhimurium genotyping. And
+    biohansel also includes a Mycobacterium tuberculosis scheme.
+    Schemes developed by Geneviève Labbé, James Robertson, Peter Kruczkiewicz, Marisa Rankin, Matthew Gopez, Chad R. Laing,
+    Philip Mabon, Kim Ziebell, Aleisha R. Reimer, Lorelee Tschetter, Gary Van Domselaar, Sadjia Bekal, Kimberley A. MacDonald,
+    Linda Hoang, Linda Chui, Danielle Daignault, Durda Slavic, Frank Pollari, E. Jane Parmley, Philip Mabon, Elissa Giang,
+    Lok Kan Lee, Jonathan Moffat, Marisa Rankin, Joanne MacKinnon, Roger Johnson, John H.E. Nash.
 
     positional arguments:
       F                     Input genome FASTA/FASTQ files (can be Gzipped)
@@ -98,13 +106,13 @@ If you run ``hansel -h``, you will be provided with additional information for m
     optional arguments:
       -h, --help            show this help message and exit
       -s SCHEME, --scheme SCHEME
-                            Scheme to use for subtyping (built-in: "heidelberg",
-                            "enteritidis"; OR user-specified:
-                            /path/to/user/scheme)
+                            Scheme to use for genotyping (built-in: "heidelberg",
+                            "enteritidis", "typhi", "typhimurium";
+                            OR user-specified: /path/to/user/scheme)
       --scheme-name SCHEME_NAME
                             Custom user-specified SNP substyping scheme name
       -M SCHEME_METADATA, --scheme-metadata SCHEME_METADATA
-                            Scheme subtype metadata table (CSV or tab-delimited
+                            Scheme genotype metadata table (CSV or tab-delimited
                             format; must contain "subtype" column)
       -p forward_reads reverse_reads, --paired-reads forward_reads reverse_reads
                             FASTQ paired-end reads
@@ -116,11 +124,11 @@ If you run ``hansel -h``, you will be provided with additional information for m
                             with "_\d\.(fastq|fq)" postfix to be automatically
                             paired) (files can be Gzipped)
       -o OUTPUT_SUMMARY, --output-summary OUTPUT_SUMMARY
-                            Subtyping summary output path (tab-delimited)
+                            Genotyping summary output path (tab-delimited)
       -O OUTPUT_KMER_RESULTS, --output-kmer-results OUTPUT_KMER_RESULTS
-                            Subtyping kmer matching output path (tab-delimited)
+                            Genotyping kmer matching output path (tab-delimited)
       -S OUTPUT_SIMPLE_SUMMARY, --output-simple-summary OUTPUT_SIMPLE_SUMMARY
-                            Subtyping simple summary output path
+                            Genotyping simple summary output path
       --force               Force existing output files to be overwritten
       --json                Output JSON representation of output files
       --min-kmer-freq MIN_KMER_FREQ
@@ -141,11 +149,9 @@ If you run ``hansel -h``, you will be provided with additional information for m
                             low coverage warning
       --max-intermediate-kmers MAX_INTERMEDIATE_KMERS
                             Decimal proportion of maximum allowable missing kmers
-                            to be considered an intermediate subtype. (0.0 - 1.0)
+                            to be considered an intermediate genotype. (0.0 - 1.0)
       -t THREADS, --threads THREADS
                             Number of parallel threads to run analysis (default=1)
       -v, --verbose         Logging verbosity level (-v == show warnings; -vvv ==
                             show debug info)
       -V, --version         shows the program version number and exit
-
-

@@ -74,16 +74,16 @@ Structure:
 ----------
 
 Tech_results.tab is the simplest output file released by running a biohansel analysis. 
-It contains only the sample name, subtype, and the QC status of the sample allowing this 
+It contains only the sample name, genotype, and the QC status of the sample allowing this 
 file to be easy to interpret at the cost of not elaborating on any of the specific details of the analysis. 
 Found below are the columns and explanations of the columns for this output file:
 
 
-+---------------+--------------------------------+--------------------------------------------+---------------------+----------------------------+ 
-| Sample        | Subtype                        | Avg_kmer_coverage*                         | QC_status           | QC_message                 |
-+---------------+--------------------------------+--------------------------------------------+---------------------+----------------------------+
-| (Sample Name) | (Corresponding Subtypes Found) | (average k-mer coverage of all the targets | (PASS/FAIL/WARNING) | (Corresponding QC message) |
-+---------------+--------------------------------+--------------------------------------------+---------------------+----------------------------+
++---------------+---------------------------------+--------------------------------------------+---------------------+----------------------------+ 
+| Sample        | Genotype                        | Avg_kmer_coverage*                         | QC_status           | QC_message                 |
++---------------+---------------------------------+--------------------------------------------+---------------------+----------------------------+
+| (Sample Name) | (Corresponding Genotypes Found) | (average k-mer coverage of all the targets | (PASS/FAIL/WARNING) | (Corresponding QC message) |
++---------------+---------------------------------+--------------------------------------------+---------------------+----------------------------+
 *Average_kmer_coverage is only found in the output when analyzing fastq files or directories with fastq files.
 
 Sample
@@ -91,16 +91,17 @@ Sample
 This column provides the names of samples that were run on biohansel
 
 
-Subtype
-"""""""
-This column gives the subtype of the sample determined by the analysis. This column can display a single positive subtype, 
-a list of positive subtypes, or no subtype depending on the results of the analysis. A good analysis will output the following:
+Genotype
+""""""""
+This column gives the genotype/subtype of the sample determined by the analysis. This column can display a single positive genotype, 
+a list of positive genotypes, or no genotype depending on the results of the analysis. A good analysis will output the following:
 
 |good_tech|
 
-If this column does not display a single positive subtype, it will show one of the two following situations:
+If this column does not display a single positive genotype, it will show one of the two following situations:
 
-1. Different subtypes if mixed samples are run or there is an error in a user-created scheme. In this case, biohansel will list all different subtypes detected.
+1. Different genotypes if mixed samples are run or there is an error in a user-created scheme.
+In this case, biohansel will list all different genotypes detected.
 
 |mixed_result|
 
@@ -135,11 +136,11 @@ to fit mostly on one page. In the real generated file, they would all found in t
 find detailed information for each column.
 
 
-+------------------------+--------------------------------+--------------+------------------+------------------+-------------------------------+-------------------------+--------------+---------------+-----------------+---------------+------------------+---------------------+----------------------------+  
-| kmername               | Sequence                       | is_revcomp   | Contig_id        | Match_index      | Refposition                   | Subtype                 | is_pos_kmer  | Sample        | File_path       | Scheme        | Scheme_version   | QC_Status           | QC_message                 |
-+------------------------+--------------------------------+--------------+------------------+------------------+-------------------------------+-------------------------+--------------+---------------+-----------------+---------------+------------------+---------------------+----------------------------+
-| (Name of Target/K-mer) | (Corresponding K-mer Sequence) | (TRUE/FALSE) | (Name of Contig) | (Match Position) | (Match Position in reference) | (Subtypes in kmername)  | (TRUE/FALSE) | (Sample Name) | (File Location) | (Scheme Name) | (Scheme Version) | (PASS/FAIL/WARNING) | (Corresponding QC message) |
-+------------------------+--------------------------------+--------------+------------------+------------------+-------------------------------+-------------------------+--------------+---------------+-----------------+---------------+------------------+---------------------+----------------------------+
++------------------------+--------------------------------+--------------+------------------+------------------+-------------------------------+--------------------------+--------------+---------------+-----------------+---------------+------------------+---------------------+----------------------------+  
+| kmername               | Sequence                       | is_revcomp   | Contig_id        | Match_index      | Refposition                   | Genotype                 | is_pos_kmer  | Sample        | File_path       | Scheme        | Scheme_version   | QC_Status           | QC_message                 |
++------------------------+--------------------------------+--------------+------------------+------------------+-------------------------------+--------------------------+--------------+---------------+-----------------+---------------+------------------+---------------------+----------------------------+
+| (Name of Target/K-mer) | (Corresponding K-mer Sequence) | (TRUE/FALSE) | (Name of Contig) | (Match Position) | (Match Position in reference) | (Genotypes in kmername)  | (TRUE/FALSE) | (Sample Name) | (File Location) | (Scheme Name) | (Scheme Version) | (PASS/FAIL/WARNING) | (Corresponding QC message) |
++------------------------+--------------------------------+--------------+------------------+------------------+-------------------------------+--------------------------+--------------+---------------+-----------------+---------------+------------------+---------------------+----------------------------+
 
 **Raw Reads FastQ File Output Structure:**
 ------------------------------------------
@@ -149,11 +150,11 @@ output due to the slight differences in the data that each file contains. The ov
 from a FastQ file looks as such:
 
 
-+------------------------+--------------------------------+---------------------------------+-------------------------------+-------------------------+--------------+-------------------+-----------------+---------------+---------------+------------------+---------------------+----------------------------+  
-| kmername               | Sequence                       | Frequency                       | Refposition                   | Subtype                 | is_pos_kmer  | is_kmer_freq_okay | File_path       | Sample        |Scheme         | Scheme_version   | QC_Status           | QC_message                 |
-+------------------------+--------------------------------+---------------------------------+-------------------------------+-------------------------+--------------+-------------------+-----------------+---------------+---------------+------------------+---------------------+----------------------------+  
-| (Name of Target/K-mer) | (Corresponding K-mer Sequence) | (Number of exact matches found) | (Match Position in reference) | (Subtypes in kmername)  | (TRUE/FALSE) | (TRUE/FALSE)      | (File Location) | (Sample Name) |(Scheme Name)  | (Scheme Version) | (PASS/FAIL/WARNING) | (Corresponding QC message) |
-+------------------------+--------------------------------+---------------------------------+-------------------------------+-------------------------+--------------+-------------------+-----------------+---------------+---------------+------------------+---------------------+----------------------------+
++------------------------+--------------------------------+---------------------------------+-------------------------------+--------------------------+--------------+-------------------+-----------------+---------------+---------------+------------------+---------------------+----------------------------+  
+| kmername               | Sequence                       | Frequency                       | Refposition                   | Genotype                 | is_pos_kmer  | is_kmer_freq_okay | File_path       | Sample        |Scheme         | Scheme_version   | QC_Status           | QC_message                 |
++------------------------+--------------------------------+---------------------------------+-------------------------------+--------------------------+--------------+-------------------+-----------------+---------------+---------------+------------------+---------------------+----------------------------+  
+| (Name of Target/K-mer) | (Corresponding K-mer Sequence) | (Number of exact matches found) | (Match Position in reference) | (Genotypes in kmername)  | (TRUE/FALSE) | (TRUE/FALSE)      | (File Location) | (Sample Name) |(Scheme Name)  | (Scheme Version) | (PASS/FAIL/WARNING) | (Corresponding QC message) |
++------------------------+--------------------------------+---------------------------------+-------------------------------+--------------------------+--------------+-------------------+-----------------+---------------+---------------+------------------+---------------------+----------------------------+
 
 
 
@@ -165,7 +166,7 @@ The detailed information on the meaning of each columns outputs for both files c
 Kmername
 """"""""
 This column gives the name of the target/k-mer that matched to the sample. It will match to the name of the k-mer in the fasta file 
-following the fasta convention as seen in the `input section <input.html>`_. The k-mers that match the sample give the subtype of the sample
+following the fasta convention as seen in the `input section <input.html>`_. The k-mers that match the sample give the genotype of the sample
 
 
 Sequence
@@ -204,19 +205,19 @@ and output of this column would be 12345.
 Refposition
 """""""""""
 Displays the numerical position of the k-mer/k-mers SNP in the reference genome. This information is also found in the 
-description of the k-mer in the subtyping schemes Fasta file. 
+description of the k-mer in the genotyping schemes Fasta file. 
 
 
-Subtype
-"""""""
-Shows the consensus subtype of the sample as determined by the analysis. 
+Genotype
+""""""""
+Shows the consensus genotype of the sample as determined by the analysis. 
 
-This column can display a single positive subtype, a list of positive subtypes, or no subtype depending on the results.
+This column can display a single positive genotype, a list of positive genotypes, or no genotype depending on the results.
 
 
 is_pos_kmer
 """""""""""
-Is the k-mer in question a positive k-mer/target for specific subtype?
+Is the k-mer in question a positive k-mer/target for specific genotype?
 
 1. TRUE - the positive SNP has been found in the sample
 
@@ -265,11 +266,11 @@ information of the analysis and gives the final results of a biohansel run in mo
 The expanded version of all information that can be obtained from this file is as such:
 
 
-+---------------+---------------+---------------------+------------------------+----------------------------+------------------------------------+-------------------------+-----------------------+--------------------------------------+----------------------------------------+-----------------------------------------+-----------------------------------------+--------------------------------------------+--------------------------------------------+-----------------+-----------------------------------+---------------------+---------------------------+
-| Sample        | Sequence      | Scheme_vers         | Subtype                | all_subtype  	            | kmers_matching_subtype             | are_subtypes_consistent | inconsistent_subtypes | n_kmers_matching_all                 | n_kmers_matching_all_expected          | n_kmers_matching_positive               | n_kmers_matching_positive_expected      | n_kmers_matching_subtype                   | n_kmers_matching_subtype_expected          | File path       | avg_kmer_coverage                 | QC status           | QC message                | 
-+---------------+---------------+---------------------+------------------------+----------------------------+------------------------------------+-------------------------+-----------------------+--------------------------------------+----------------------------------------+-----------------------------------------+-----------------------------------------+--------------------------------------------+--------------------------------------------+-----------------+-----------------------------------+---------------------+---------------------------+ 
-| (Sample Name) | (Scheme name) | (Version of Scheme) | (Subtypes in kmername) | (Subtypes in all lineages) | (subtypes that match given k-mers) | (TRUE/FALSE)            | (TRUE/FALSE)          | (Number of actual matches in sample) |  (Expected positive matches in sample) | (Number of matches in targeted lineage) |  (Expected matches in targeted lineage) | (Number of matches in specific sublineage) |  (Expected matches in targeted sublineage) | (File Location) | (Average frequency of all k-mers) | (PASS/FAIL/WARNING) | Corresponding QC message) |
-+---------------+---------------+---------------------+------------------------+----------------------------+------------------------------------+-------------------------+-----------------------+--------------------------------------+----------------------------------------+-----------------------------------------+-----------------------------------------+--------------------------------------------+--------------------------------------------+-----------------+-----------------------------------+---------------------+---------------------------+
++---------------+---------------+---------------------+-------------------------+-----------------------------+-------------------------------------+--------------------------+------------------------+--------------------------------------+---------------------------------------+-----------------------------------------+-----------------------------------------+--------------------------------------------+-------------------------------------------+-----------------+-----------------------------------+---------------------+---------------------------+
+| Sample        | Sequence      | Scheme_vers         | Genotype                | all_genotypes               | kmers_matching_genotype             | are_genotypes_consistent | inconsistent_genotypes | n_kmers_matching_all                 | n_kmers_matching_all_expected         | n_kmers_matching_positive               | n_kmers_matching_positive_expected      | n_kmers_matching_genotype                  | n_kmers_matching_genotype_expected        | File path       | avg_kmer_coverage                 | QC status           | QC message                | 
++---------------+---------------+---------------------+-------------------------+-----------------------------+-------------------------------------+--------------------------+------------------------+--------------------------------------+---------------------------------------+-----------------------------------------+-----------------------------------------+--------------------------------------------+-------------------------------------------+-----------------+-----------------------------------+---------------------+---------------------------+ 
+| (Sample Name) | (Scheme name) | (Version of Scheme) | (Genotypes in kmername) | (Genotypes in all lineages) | (genotypes that match given k-mers) | (TRUE/FALSE)             | (TRUE/FALSE)           | (Number of actual matches in sample) | (Expected positive matches in sample) | (Number of matches in targeted lineage) |  (Expected matches in targeted lineage) | (Number of matches in specific sublineage) | (Expected matches in targeted sublineage) | (File Location) | (Average frequency of all k-mers) | (PASS/FAIL/WARNING) | Corresponding QC message) |
++---------------+---------------+---------------------+-------------------------+-----------------------------+-------------------------------------+--------------------------+------------------------+--------------------------------------+---------------------------------------+-----------------------------------------+-----------------------------------------+--------------------------------------------+-------------------------------------------+-----------------+-----------------------------------+---------------------+---------------------------+
 
 
 Sample
@@ -287,58 +288,58 @@ Scheme_Version
 The version of the chosen scheme used in the analysis.
 
 
-Subtype
-"""""""
-Shows the consensus subtype of the sample as determined by the analysis.
+Genotype
+""""""""
+Shows the consensus genotype of the sample as determined by the analysis.
 
-This column can display a single positive subtype, a list of positive subtypes, or no subtype depending on the results.
+This column can display a single positive genotype, a list of positive genotypes, or no genotype depending on the results.
 
 
-All_subtypes
-""""""""""""
-All of the subtypes in all the levels of lineage leading to the final subtype.
+All_genotypes
+"""""""""""""
+All of the genotypes in all the levels of lineage leading to the final genotype.
 
 |all_subtypes|
 
 
-kmers_matching_subtype
-""""""""""""""""""""""
-Displays the subtype(s) that the most downstream, specific k-mers have matched to. For good, non-mixed results, it should be the 
-same as the subtype column.
-
-
-are_subtypes_consistent
+kmers_matching_genotype
 """""""""""""""""""""""
-1. TRUE - the subtypes are consistent as defined.
+Displays the genotype(s) that the most downstream, specific k-mers have matched to. For good, non-mixed results, it should be the 
+same as the genotype column.
 
-- Consistency -> All positive k-mers within QC parameters have consistent subtypes in downstream sublineages corresponding to parent subtype.
+
+are_genotypes_consistent
+""""""""""""""""""""""""
+1. TRUE - the genotypes are consistent as defined.
+
+- Consistency -> All positive k-mers within QC parameters have consistent genotypes in downstream sublineages corresponding to parent genotype.
 
 |consistent|
 
-Each k-mer must become more specific to the final subtype while matching all of the previous ones to be considered consistent.
+Each k-mer must become more specific to the final genotype while matching all of the previous ones to be considered consistent.
 
-2. FALSE - the subtypes are not consistent.
+2. FALSE - the genotypes are not consistent.
 
 
-inconsistent_subtypes
-"""""""""""""""""""""
-If "are_subtypes_consistent" is FALSE, it lists subtypes that are inconsistent to parent.
+inconsistent_genotypes
+""""""""""""""""""""""
+If "are_genotypes_consistent" is FALSE, it lists genotypes that are inconsistent to parent.
 
 |inconsistent_subtypes_false|
 
 
 n_kmers_matching_all
 """"""""""""""""""""
-Counting all of the actual k-mer matches (both positive and negative) that make up each subtype lineage as defined by 
-the subtyping scheme used/created.
+Counting all of the actual k-mer matches (both positive and negative) that make up each genotype lineage as defined by 
+the genotyping scheme used/created.
 
 |n_all|
 
 
 n_kmers_matching_all_expected
 """""""""""""""""""""""""""""
-The total number k-mer/target matches expected (both positive and negative) that make up each subtype lineage as defined 
-by the subtyping scheme used/created.
+The total number k-mer/target matches expected (both positive and negative) that make up each genotype lineage as defined 
+by the genotyping scheme used/created.
 
 Every/almost every k-mer defined in the scheme should match somewhere in the sample if the sample is of high quality.
 
@@ -347,27 +348,27 @@ Every/almost every k-mer defined in the scheme should match somewhere in the sam
 
 n_kmers_matching_positive
 """""""""""""""""""""""""
-The number of positive matches in the sample from all of the upstream lineages of the output subtype as defined by the subtyping scheme.
+The number of positive matches in the sample from all of the upstream lineages of the output genotype as defined by the genotyping scheme.
 
 |positive|
 
 
 n_kmers_matching_positive_expected
 """"""""""""""""""""""""""""""""""
-The expected number of positive matches from all of the upstream lineages of the output subtype as defined by the subtyping scheme.
+The expected number of positive matches from all of the upstream lineages of the output genotype as defined by the genotyping scheme.
 
 For a good analysis, this value should match the sample.
 
 
-n_kmers_matching_subtype
-""""""""""""""""""""""""
+n_kmers_matching_genotype
+"""""""""""""""""""""""""
 The number of positive matches in the sample sublineage only.
 
 |subtype|
 
 
-n_kmers_matching_subtype_expected
-"""""""""""""""""""""""""""""""""
+n_kmers_matching_genotype_expected
+""""""""""""""""""""""""""""""""""
 The expected number of positive matches in the sample sublineage only.
 
 File Path
@@ -419,8 +420,8 @@ Once the QC module is declared as a pass, there is no information in the QC mess
 The result should be considered a valid analysis.
 
 |
-*"WARNING: Intermediate Subtype"*
-"""""""""""""""""""""""""""""""
+*"WARNING: Intermediate Genotype"*
+""""""""""""""""""""""""""""""""""
 Warnings will be triggered if all four following conditions are met:
    
 **1st condition:** Less than 5% of the k-mers are missing (by default) or more than 95% of the schemes targets are matched 
@@ -428,14 +429,14 @@ Warnings will be triggered if all four following conditions are met:
 
 **2nd condition:** There should be no clash for "+" and "-" targets for the same genome position (above background noise level)
    
-**3rd condition:** Only a fraction of the k-mers are positive for the final subtype 
-("# of k-mers matching subtype expected > # of k-mers matching subtype") 
+**3rd condition:** Only a fraction of the k-mers are positive for the final genotype 
+("# of k-mers matching genotype expected > # of k-mers matching genotype") 
    
 **4th condition:** The targets for the final subtype are a mixture of both "+" and "-" BUT do NOT clash for the same positions.
 
 |
 *"WARNING: Low Coverage"*
-"""""""""""""""""""""""
+"""""""""""""""""""""""""
 If the "Avg k-mer Coverage" is below the parameters given for low coverage (parameters are adjustable) (default min average coverage: 20- fold)
 
 Average coverage calculated from all targets found in the sample (The value is returned to the user)
@@ -462,7 +463,7 @@ coverage for all k-mers that were above the minumum coverage threshold (indicate
 |
 *Error Type 2: Mixed Sample*
 """"""""""""""""""""""""""""
-A mixed sample error is where biohansel is unsure what the final subtype is of the sample due to one of two possible causes:
+A mixed sample error is where biohansel is unsure what the final genotype is of the sample due to one of two possible causes:
 
 1. biohansel came out with an "inconsistent result" designation
 
@@ -480,7 +481,7 @@ Caused by both conditions met:
 
 1. Total matching k-mers is within 5% of the expected value
 
-2. 3 or more k-mers are missing for the final subtype call (Error 3a)
+2. 3 or more k-mers are missing for the final genotype call (Error 3a)
 
 |inconsistent|
 
@@ -491,6 +492,6 @@ Lineage call is uncertain due to missing targets in downstream sublineage.
 
 |unconfident|
 
-.. _schemes: subtyping_schemes.html
+.. _schemes: genotyping_schemes.html
 
 

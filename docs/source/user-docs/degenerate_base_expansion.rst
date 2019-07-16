@@ -5,12 +5,12 @@ Biohansel allows users to input custom schemes containing `IUPAC degenerate base
 These degenerate bases allow for increased flexibility for kmer matches but can come at the cost of computing power.
 
 In this section, we will look at the how to use degenerate bases and where to be careful when dealing with degenerate bases in
-your biohansel subtyping schemes.
+your biohansel genotyping schemes.
 
 Including Degenerate Bases in k-mers:
 -------------------------------------
 
-Any of the degenerate bases can be added anywhere in the subtyping schemes k-mers. Once this happens, when the code is run, the k-mers 
+Any of the degenerate bases can be added anywhere in the genotyping schemes k-mers. Once this happens, when the code is run, the k-mers 
 are expanded into all possible combinations of normal DNA bases (A,G,C,T). These degenerate bases can be anywhere in the k-mer so long as there is
 still a SNP separating the pair, and, if they are not in the SNP location the degenerate base matches in both k-mers of the pair.
 
@@ -26,10 +26,10 @@ that biohansel scheme k-mers can be any length so long as they are the same leng
 | >negative1231-2.2
 | TA\ **C**\ CT
 
-The k-mer with the degenerate base would expand into three separate k-mers for the same subtype at the same position. Once the code was ran, 
+The k-mer with the degenerate base would expand into three separate k-mers for the same genotype at the same position. Once the code was ran, 
 these three positive k-mers would only count as 1 k-mer for the results outputs.
 
-Expanded k-mers where if any of the positive k-mers are found in this set, you have subtype 2.2:
+Expanded k-mers where if any of the positive k-mers are found in this set, you have genotype 2.2:
 
 | >1231-2.2
 | TA\ **A**\ CT
@@ -86,7 +86,7 @@ And for the negative ones:
 
 As you can see, they are still only separated by the **A** SNP in the positive k-mer and the **C** SNP in the negative one.
 Now there are 4 different pairs, with 8 separate sequences making up these 4 pairs. This expanded all from the
-original pair and all of these new pairs would check for subtype 2.2 at position 1231.
+original pair and all of these new pairs would check for genotype 2.2 at position 1231.
 
 In this example, there would end up being a total of 16 different k-mers due to the reverse compliment also being input into biohansel.
 
@@ -128,7 +128,7 @@ the other k-mer must also contain those 4 'N's. This means that there are 512 k-
 
 The 512 k-mers become 1024 due to taking into account the reverse compliment of all of the sequences.
 
-To put this in perspective, the Heidelberg SNP subtyping scheme contains 202 pairs with 404 sequences and once ran, this is expanded
+To put this in perspective, the Heidelberg SNP genotyping scheme contains 202 pairs with 404 sequences and once ran, this is expanded
 to 808 sequences by biohansel due to reverse compliments. The whole scheme has less k-mers than a single SNP pair in this case.
 
 The goal is the remember that even a small number of degenerate bases can lead to a large number of k-mers and longer run times.
