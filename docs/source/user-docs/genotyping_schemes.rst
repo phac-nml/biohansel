@@ -305,17 +305,19 @@ them will be of the negative variety and the positive k-mer pair will need to be
 attached to the correct genotype. This can be done also using a script (currently being worked on) or the following method:
 
     1. Paste the 33-mers into the correct location in the FEHT filtered output spreadsheet next to the corresponding SNPs.  
+|
 
-    2. The 33 bp sequences are expanded using TextWrangler (replace [A,T,C,G] by the same base+tab), then pasted back into excel, 
-    in 33 adjacent columns.  
+    2. The 33 bp sequences are expanded using TextWrangler (replace [A,T,C,G] by the same base+tab), then pasted back into excel, in 33 adjacent columns.  
+|
 
-    3. Replace the 17th column (middle one) with the positive base column, and collapse the 33 columns into one by 
-    removing the tabs in text wrangler.  
+    3. Replace the 17th column (middle one) with the positive base column, and collapse the 33 columns into one by removing the tabs in text wrangler.  
+|
 
     4. Paste back into Excel as the list of “positive k-mers”.  
+|
 
     5. Replace the middle column by the negative base column and repeat the same procedure to obtain the list of “negative k-mers”.
-
+|
 
 15. Create a FASTA file following the K-mer structure found below. Make sure that the headers and sequences are on 
 separate lines. The order of the files in the scheme does not matter for biohansel input.
