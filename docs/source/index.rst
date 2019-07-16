@@ -22,6 +22,7 @@ Currently, there are schemes for the following *Salmonella* serovars:
 - Typhimurium
 
 - Typhi
+
     - Typhi scheme adapted from Wong et al paper titled: `"An extended genotyping framework for Salmonella enterica serovar Typhi, the cause of human typhoid" <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5059462/>`_.
 
 These genotyping schemes have been created, maintained, and/or adapted by Genevieve Labbe et al.
