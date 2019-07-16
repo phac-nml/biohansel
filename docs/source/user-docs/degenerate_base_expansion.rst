@@ -121,22 +121,23 @@ Example sequence is "ACTNNANNTTA"
 | (A) (C) (T) (N) (N) (A) (N) (N) (T) (T) (A)
 | (1) (1) (1) (4) (4) (1) (4) (4) (1) (1) (1) = 256
 
-This example is an example how having only 4 'N' nucleotides expands our one sequence into 256.
+This example is an example how having only 4 'N' nucleotides expands our one sequence into 256 different ones.
 
-These 256 k-mers aren't including the second part of the pair that this sequence has to belong to and as their is a SNP A in the middle, 
-the other k-mer must also contain those 4 'N's. This means that there are 512 k-mers being used for just this pair
+These 256 k-mers aren't including the second part of the pair that this sequence has to belong to and as their is a SNP of "A" in the middle, 
+the other k-mer must also contain those 4 'N's. This means that there are 512 k-mers being used for just this pair alone.
 
-The 512 k-mers become 1024 due to taking into account the reverse compliment of all of the sequences.
+Even then, the 512 k-mers for the positive and negative positions become a total of 1024 different k-mers due to the need to 
+take into account the reverse compliment of all of the sequences.
 
 To put this in perspective, the Heidelberg SNP genotyping scheme contains 202 pairs with 404 sequences and once ran, this is expanded
-to 808 sequences by biohansel due to reverse compliments. The whole scheme has less k-mers than a single SNP pair in this case.
+to 808 sequences by biohansel due to the reverse compliment input. The whole genotyping scheme has less k-mers than a single SNP pair in this case.
 
 The goal is the remember that even a small number of degenerate bases can lead to a large number of k-mers and longer run times.
 'N' is the extreme however and if you were creating a scheme with only the "2" value degenerate bases (ex. 'R'), then you could have
-8 degenerate bases and end up with the same 1024 expanded k-mers from the pair.
+8 degenerate bases for a single pair and end up with the same 1024 expanded k-mers from the pair.
 
-\* The take away is to be careful when including degenerate bases in your scheme. The **more degenerate bases included**, the **more kmers** are 
-produced, the **slower the run time**, and the **more RAM is needed to run the sample**.
+\* The take away here is to be careful when including degenerate bases in your scheme. The **more degenerate bases included**, the
+**more kmers** are that are produced by expansion, the **slower the run time**, and the **more RAM is needed to run the sample**.
 
 
 Benchmarking Degenerate Bases
@@ -185,7 +186,7 @@ Here is the speed of running the **expand degenerate bases module** (not biohans
 | NNNNNNNNNNNNNN     | 268435456               | **Died**       |
 +--------------------+-------------------------+----------------+
 
-The higher k-mers are a bit of a stretch but show how much longer the module takes if you are not careful.
+The higher k-mers are a bit of a stretch but show how much longer the module takes **PER K-MER** if you are not careful.
 
 Remember, the above chart is for a **singular** k-mer and does not take into account the expansion of the whole scheme.
 If you had a scheme with a lot of these, it would take that amount of time for each k-mer!
@@ -199,7 +200,7 @@ Benchmarking all of the biohansel code using the same input fasta file but incre
 Remember that the total number of k-mers if there are no degenerate bases is equal to the number of pairs multiplied by 
 4 to take into account two sequences per pair and the RC of each sequence.
 
-If degenerate bases are present, it is harder to guess the number and running biohansel will tell you if you have over the default ______ and
+If degenerate bases are present, it is harder to guess the number and running biohansel will tell you if you have over the default 100,000 k-mers and
 allow you to set the value that you deem acceptable with the "--max-degenerate-kmers" command.
 
 +---------------------------+--------------------------------+--------------------------+  
@@ -207,19 +208,23 @@ allow you to set the value that you deem acceptable with the "--max-degenerate-k
 +---------------------------+--------------------------------+--------------------------+
 | 4751529                   | 808 --> Base Heidelberg Scheme | 0.613                    |
 +---------------------------+--------------------------------+--------------------------+
-| 4751529                   | 4394                           | 0.663                    |
+| 4751529                   | 4,394                          | 0.663                    |
 +---------------------------+--------------------------------+--------------------------+
-| 4751529                   | 12074                          | 0.721                    |
+| 4751529                   | 12,074                         | 0.721                    |
 +---------------------------+--------------------------------+--------------------------+
-| 4751529                   | 36650                          | 0.873                    |
+| 4751529                   | 36,650                         | 0.873                    |
 +---------------------------+--------------------------------+--------------------------+
-| 4751529                   | 69418                          | 0.971                    |
+| 4751529                   | 69,418                         | 0.971                    |
 +---------------------------+--------------------------------+--------------------------+
-| 4751529                   | 134954                         | 1.031                    |
+| 4751529                   | 134,954                        | 1.031                    |
 +---------------------------+--------------------------------+--------------------------+
-| 4751529                   | 266026                         | 1.502                    |
+| 4751529                   | 266,026                        | 1.502                    |
 +---------------------------+--------------------------------+--------------------------+
-| 4751529                   | 528171                         | 2.150                    |
+| 4751529                   | 528,171                        | 2.150                    |
 +---------------------------+--------------------------------+--------------------------+
-| 4751529                   | 1052459                        | 3.269                    |
+| 4751529                   | 1,052,459                      | 3.269                    |
 +---------------------------+--------------------------------+--------------------------+
+
+This work was done on an assembled fasta file. Not that even with 1,000,000 k-mers, the time it takes to run biohansel is only 3 seconds.
+BUT, if you're using fastq files it is going to be much longer and they haven't been tested for speed with expansion yet! So be careful
+with large expansions on fastq files.

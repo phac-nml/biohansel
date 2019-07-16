@@ -22,10 +22,11 @@ Currently, there are schemes for the following *Salmonella* serovars:
 - Typhimurium
 
 - Typhi
+    - Typhi scheme adapted from Wong et al paper titled: `"An extended genotyping framework for Salmonella enterica serovar Typhi, the cause of human typhoid" <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5059462/>`_.
 
 These genotyping schemes have been created, maintained, and/or adapted by Genevieve Labbe et al.
 
-There is also an included * Mycobacterium tuberculosis* scheme that was modified from the Francesc Coll et al. paper titled:
+There is also an included *Mycobacterium tuberculosis* scheme that was modified from the Francesc Coll et al. paper titled:
 `"A robust SNP barcode for typing Mycobacterium tuberculosis complex strains" <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4166679/>`_ 
 for biohansel use by Daniel Kein.
 
@@ -98,14 +99,9 @@ Code is available on GitHub under https://github.com/phac-nml/biohansel.
    :caption: Contact
 
    contact
- 
+
+Biohansel Read the Docs currently maintained by Darian Hole 
 
 .. toctree::
    :maxdepth: 2
    :caption: poop
-
-
-
-
-
-

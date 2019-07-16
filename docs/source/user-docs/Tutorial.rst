@@ -222,6 +222,8 @@ Additional troubleshooting can be found in the `installation page <../installati
 
 |command|
 
+**Please click the image to view the command**
+
 
 **7.** Figure out what directory you are in (which is most likely User/"*name of user*) using the following command:
 
