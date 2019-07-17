@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-__version__ = '2.2.0'
+__version__ = '2.3.0'
 program_name = 'bio_hansel'
 program_summary = 'Subtype microbial genomes using SNV targeting k-mer subtyping schemes.'
 program_desc = program_summary + '''
