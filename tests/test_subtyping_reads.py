@@ -100,7 +100,7 @@ def subtype_tb_AP018036_pass():
                    subtype='2.2.1',
                    file_path=fasta_tb_pass,
                    are_subtypes_consistent=True,
-                   n_kmers_matching_all=61,
+                   n_kmers_matching_all=62,
                    n_kmers_matching_all_expected='62',
                    n_kmers_matching_positive=3,
                    n_kmers_matching_positive_expected='3',

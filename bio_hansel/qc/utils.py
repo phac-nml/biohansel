@@ -1,11 +1,25 @@
-from typing import Tuple, Optional, List, Any, Dict
+from typing import Tuple, Optional, List, Any, Dict, Iterable
 
 from pandas import DataFrame
 
 from ..subtype import Subtype
 
 
-def get_conflicting_kmers(st: Subtype, df: DataFrame) -> Optional[DataFrame]:
+def component_subtypes(subtype: str) -> Iterable[str]:
+    """Generate component subtypes from a subtype.
+
+    Args:
+        subtype: Subtype string, e.g. "4.2.1.1"
+    Yields:
+        Component subtypes (e.g. for subtype "4.2.1.1", will yield
+        ['4', '4.2', '4.2.1', '4.2.1.1'])
+    """
+    split_subtype = subtype.split('.')
+    for i, x in enumerate(split_subtype):
+        yield '.'.join(split_subtype[:i+1])
+
+
+def get_conflicting_kmers(subtype: str, df: DataFrame, is_fastq_input: bool = True) -> Optional[DataFrame]:
     """ Get positive and negative kmers that both are present for a subtype.
 
     Find positive and negative kmers for the same refposition/target site in the results `df`.
@@ -17,10 +31,9 @@ def get_conflicting_kmers(st: Subtype, df: DataFrame) -> Optional[DataFrame]:
     Returns:
         DataFrame of conflicting positive and negative kmers
     """
-    if st.is_fastq_input():
-        dfst = df[(df['subtype'] == str(st.subtype)) & (df['is_kmer_freq_okay'])]
-    else:  # fasta files
-        dfst = df[(df['subtype'] == str(st.subtype))]
+    dfst = df[(df['subtype'].isin(list(component_subtypes(subtype))))]
+    if is_fastq_input:
+        dfst = dfst[dfst['is_kmer_freq_okay']]
 
     pos_kmer_positions = dfst[dfst['is_pos_kmer']]['refposition']
     neg_kmers = dfst[~dfst['is_pos_kmer']]
