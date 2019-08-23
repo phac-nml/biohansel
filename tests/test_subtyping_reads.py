@@ -11,7 +11,7 @@ genome_name = 'test'
 scheme_heidelberg = 'heidelberg'
 scheme_enteritidis = 'enteritidis'
 scheme_typhi = 'typhi'
-scheme_tuberculosis = 'tb_speciation'
+scheme_tuberculosis = 'tb_lineage'
 scheme_typhimurium = 'typhimurium'
 
 fasta_heidelberg_pass = 'tests/data/SRR1002850_lowercase.fasta'
