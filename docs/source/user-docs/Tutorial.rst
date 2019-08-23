@@ -124,8 +124,8 @@ This can currently be the included Heidelberg or Enteritidis schemes or a user c
 |heidelberg|
 
 
-**5.** Optionally, add a Scheme Subtype Metadata Table to the analysis to be included into the end of
-the results files. This file must be in the .tsv format to be added properly or the analysis may fail
+**5.** Optionally, add a Scheme Subtype Metadata Table can be added to the analysis to be included into the end of
+the results files. This file **must be in the .tsv format** to be added properly or the analysis may fail
 (.csv may work on Galaxy but if the analysis fails change it to .tsv). 
 
 |metadata|
