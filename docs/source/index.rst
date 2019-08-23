@@ -12,8 +12,9 @@ Biohansel genotypes clonal microbial whole-genome sequencing (WGS) data using SN
 
 This tool works on genome assemblies (FASTA files) or reads (FASTQ files)! Accepts Gzipped FASTA/FASTQ files as input!
 
-Biohansel includes 33 base-pair k-mer SNV genotyping schemes focused on *Salmonella enterica* subsp. enterica serovars.
-Currently, there are schemes for the following *Salmonella* serovars:
+Biohansel includes 33 base-pair k-mer SNV genotyping schemes focused on *Salmonella enterica* subsp. enterica serovars. K-mers can be any length as long as they are a odd number.
+
+Currently, there are subtyping schemes for the following *Salmonella* serovars:
 
 - Heidelberg
 
