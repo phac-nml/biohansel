@@ -267,7 +267,7 @@ Arguments
 The other arguments needed to run the command are as follows:
 
 -s -> this command is to specify the scheme used by biohansel for the analysis being done
-("enteritidis", "heidelberg", "typhi", "typhimurium", and "tb_speciation" are the built in schemes right now).
+("enteritidis", "heidelberg", "typhi", "typhimurium", and "tb_lineage" are the built in schemes right now).
 You can also use this to specify a custom scheme and then the path to that scheme.
 
 -vv -> this command is used to display more information from the terminal while the command is running.
