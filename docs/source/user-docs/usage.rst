@@ -122,8 +122,8 @@ SNV genotyping schemes have to be defined for biohansel to run correctly. Four s
 user created schemes can be developed by creating SNV k-mer pairs in the specified FASTA format used by biohansel. 
 See `Creating schemes <genotyping_schemes.html>`_ for more details.
 
-Genotype metadata schemes can be optionally added to the analysis. 
-Added metadata is joined with the genotype field of the final results. 
+Genotype metadata schemes can be optionally added to the analysis using the -M argument and then specifying a tab delimited file in **.tsv** format. 
+The added metadata is then joined with the genotype/subtype field of the final results. 
 More detailed info on formatting of metadata schemes can be found in the `Input section <input.html>`_ along with additional 
 information on all of the other input files biohansel can use. 
 
