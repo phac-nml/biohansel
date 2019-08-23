@@ -11,7 +11,7 @@ The three input files are:
 - A chosen genotyping scheme (heidelberg or enteritidis) or a user created custom genotyping scheme (FASTA).
 More info in the `genotyping schemes section <genotyping_schemes.html>`_.
 
-- A metadata table (**Optional**) to add additional information to results
+- A metadata table (**Optional**) in CSV or TSV (tab-delimited) format to add additional information to the results. A **.tsv file is highly recommended** as csv files are currently unstable
 
 More detailed information on the output of what each results file contains can be found in the `Output section <output.html>`_.
 
@@ -187,4 +187,4 @@ Example: tech_results.tab with metadata:
 
 
 You can add metadata to the analysis with Galaxy by uploading either a .tsv or a .csv
-file to your history and specifying that you want it used in the analysis. A .tsv file is recommended.
+file to your history and specifying that you want it used in the analysis. **A .tsv file is recommended**.
