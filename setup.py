@@ -34,7 +34,7 @@ setup(
     keywords='Salmonella enterica Heidelberg Enteritidis SNP kmer subtyping Aho-Corasick',
     classifiers=classifiers,
     package_dir={program_name: program_name},
-    package_data={program_name: ['data/*/*.fasta',]},
+    package_data={program_name: ['data/*/*.fasta', 'data/*/*.tsv',]},
     install_requires=[
         'numpy>=1.12.1',
         'pandas>=0.20.1',
