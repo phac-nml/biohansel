@@ -76,29 +76,27 @@ Hansel Help Command
 
 If you run ``hansel -h``, you will be provided with additional information for most of the commands along with following usage statement:
 
-.. code-block:: bash
+.. code-block::
 
     usage: hansel [-h] [-s SCHEME] [--scheme-name SCHEME_NAME]
-                  [-p forward_reads reverse_reads] [-i fasta_path genome_name]
-                  [-D INPUT_DIRECTORY] [-o OUTPUT_SUMMARY]
-                  [-O OUTPUT_KMER_RESULTS] [-S OUTPUT_SIMPLE_SUMMARY] [--force]
-                  [--json] [--min-kmer-freq MIN_KMER_FREQ]
+                  [-M SCHEME_METADATA] [-p forward_reads reverse_reads]
+                  [-i fasta_path genome_name] [-D INPUT_DIRECTORY]
+                  [-o OUTPUT_SUMMARY] [-O OUTPUT_KMER_RESULTS]
+                  [-S OUTPUT_SIMPLE_SUMMARY] [--force] [--json]
+                  [--min-kmer-freq MIN_KMER_FREQ]
                   [--max-kmer-freq MAX_KMER_FREQ]
                   [--low-cov-depth-freq LOW_COV_DEPTH_FREQ]
                   [--max-missing-kmers MAX_MISSING_KMERS]
                   [--min-ambiguous-kmers MIN_AMBIGUOUS_KMERS]
                   [--low-cov-warning LOW_COV_WARNING]
-                  [--max-intermediate-kmers MAX_INTERMEDIATE_KMERS] [-t THREADS]
+                  [--max-intermediate-kmers MAX_INTERMEDIATE_KMERS] 
+                  [--max-degenerate-kmers MAX_DEGENERATE_KMERS] [-t THREADS]
                   [-v] [-V]
                   [F [F ...]]
 
-    Genotype microbial genomes using SNV targeting k-mer genotyping schemes.
-    Includes schemes for Salmonella enterica spp. enterica serovar Heidelberg, Enteritidis, Typhi, and Typhimurium genotyping. And
-    biohansel also includes a Mycobacterium tuberculosis scheme.
-    Schemes developed by Geneviève Labbé, James Robertson, Peter Kruczkiewicz, Marisa Rankin, Matthew Gopez, Chad R. Laing,
-    Philip Mabon, Kim Ziebell, Aleisha R. Reimer, Lorelee Tschetter, Gary Van Domselaar, Sadjia Bekal, Kimberley A. MacDonald,
-    Linda Hoang, Linda Chui, Danielle Daignault, Durda Slavic, Frank Pollari, E. Jane Parmley, Philip Mabon, Elissa Giang,
-    Lok Kan Lee, Jonathan Moffat, Marisa Rankin, Joanne MacKinnon, Roger Johnson, John H.E. Nash.
+    Subtype microbial genomes using SNV targeting k-mer subtyping schemes.
+    Includes schemes for Salmonella enterica spp. enterica serovar Heidelberg, Enteritidis, Typhi, and Typhimurium subtyping. Also includes a Mycobacterium tuberculosis scheme called 'tb_lineage'.
+    Developed by Geneviève Labbé, James Robertson, Peter Kruczkiewicz, Marisa Rankin, Matthew Gopez, Chad R. Laing, Philip Mabon, Kim Ziebell, Aleisha R. Reimer, Lorelee Tschetter, Gary Van Domselaar, Sadjia Bekal, Kimberley A. MacDonald, Linda Hoang, Linda Chui, Danielle Daignault, Durda Slavic, Frank Pollari, E. Jane Parmley, David Son, Darian Hole, Philip Mabon, Elissa Giang, Lok Kan Lee, Jonathan Moffat, Marisa Rankin, Joanne MacKinnon, Roger Johnson, John H.E. Nash.
 
     positional arguments:
       F                     Input genome FASTA/FASTQ files (can be Gzipped)
@@ -106,14 +104,14 @@ If you run ``hansel -h``, you will be provided with additional information for m
     optional arguments:
       -h, --help            show this help message and exit
       -s SCHEME, --scheme SCHEME
-                            Scheme to use for genotyping (built-in: "heidelberg",
-                            "enteritidis", "typhi", "typhimurium";
-                            OR user-specified: /path/to/user/scheme)
+                            Scheme to use for subtyping (built-in: "heidelberg",
+                            "enteritidis"; OR user-specified:
+                            /path/to/user/scheme)
       --scheme-name SCHEME_NAME
                             Custom user-specified SNP substyping scheme name
-      -M SCHEME_METADATA, --scheme-metadata SCHEME_METADATA
-                            Scheme genotype metadata table (CSV or tab-delimited
-                            format; must contain "subtype" column)
+      -M SCHEME_METADATA, --scheme-metadata scheme_metadata
+                            Scheme subtype metadata table (CSV or TSV format (TSV
+                            highly recommended!); must contain subtype column)
       -p forward_reads reverse_reads, --paired-reads forward_reads reverse_reads
                             FASTQ paired-end reads
       -i fasta_path genome_name, --input-fasta-genome-name fasta_path genome_name
@@ -124,11 +122,11 @@ If you run ``hansel -h``, you will be provided with additional information for m
                             with "_\d\.(fastq|fq)" postfix to be automatically
                             paired) (files can be Gzipped)
       -o OUTPUT_SUMMARY, --output-summary OUTPUT_SUMMARY
-                            Genotyping summary output path (tab-delimited)
+                            Subtyping summary output path (tab-delimited)
       -O OUTPUT_KMER_RESULTS, --output-kmer-results OUTPUT_KMER_RESULTS
-                            Genotyping kmer matching output path (tab-delimited)
+                            Subtyping kmer matching output path (tab-delimited)
       -S OUTPUT_SIMPLE_SUMMARY, --output-simple-summary OUTPUT_SIMPLE_SUMMARY
-                            Genotyping simple summary output path
+                            Subtyping simple summary output path
       --force               Force existing output files to be overwritten
       --json                Output JSON representation of output files
       --min-kmer-freq MIN_KMER_FREQ
@@ -149,9 +147,12 @@ If you run ``hansel -h``, you will be provided with additional information for m
                             low coverage warning
       --max-intermediate-kmers MAX_INTERMEDIATE_KMERS
                             Decimal proportion of maximum allowable missing kmers
-                            to be considered an intermediate genotype. (0.0 - 1.0)
+                            to be considered an intermediate subtype. (0.0 - 1.0)
+      --max-degenerate-kmers MAX_DEGENERATE_KMERS
+                            Maximum number of scheme k-mers allowed before
+                            quitting with a usage warning. Default is 100,000
       -t THREADS, --threads THREADS
                             Number of parallel threads to run analysis (default=1)
       -v, --verbose         Logging verbosity level (-v == show warnings; -vvv ==
                             show debug info)
-      -V, --version         shows the program version number and exit
+      -V, --version         show program's version number and exit
