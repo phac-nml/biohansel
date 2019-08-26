@@ -157,3 +157,4 @@ If you run ``hansel -h``, you will be provided with additional information for m
                             show debug info)
       -V, --version         show program's version number and exit
       
+.
