@@ -23,7 +23,7 @@
 
 Subtype microbial whole-genome sequencing (WGS) data using SNV targeting k-mer subtyping schemes.
 
-Includes 33 bp k-mer SNV subtyping schemes for *Salmonella enterica* subsp. enterica serovar Heidelberg, Enteritidis, and Typhimurium genomes developed by Genevieve Labbe et al., and for S. ser Typhi adapted from Wong et al. (https://www.nature.com/articles/ncomms12827).
+Includes 33 bp k-mer SNV subtyping schemes for *Salmonella enterica* subsp. enterica serovars Heidelberg, Enteritidis, and Typhimurium genomes developed by Genevieve Labbe et al., and for *S*. ser Typhi adapted from Wong et al. (https://www.nature.com/articles/ncomms12827).
 
 Works on genome assemblies (FASTA files) or reads (FASTQ files)! Accepts Gzipped FASTA/FASTQ files as input!
 
@@ -144,8 +144,8 @@ If you run ``hansel -h``, you should see the following usage statement:
       --scheme-name SCHEME_NAME
                             Custom user-specified SNP substyping scheme name
       -M SCHEME_METADATA, --scheme-metadata scheme_metadata
-                            Scheme subtype metadata table (CSV or TSV format (TSV
-                            highly recommended!); must contain subtype column)
+                            Scheme subtype metadata table (.TSV format accepted;
+                            must contain column called "subtype")
       -p forward_reads reverse_reads, --paired-reads forward_reads reverse_reads
                             FASTQ paired-end reads
       -i fasta_path genome_name, --input-fasta-genome-name fasta_path genome_name
