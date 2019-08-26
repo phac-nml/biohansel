@@ -23,9 +23,11 @@
 
 Subtype microbial whole-genome sequencing (WGS) data using SNV targeting k-mer subtyping schemes.
 
-Includes 33 bp k-mer SNV subtyping schemes for *Salmonella enterica* subsp. enterica serovar Heidelberg and Enteritidis genomes developed by Genevieve Labbe et al.
+Includes 33 bp k-mer SNV subtyping schemes for *Salmonella enterica* subsp. enterica serovar Heidelberg, Enteritidis, Typhi, and Typhimurium genomes developed/adapted by Genevieve Labbe et al.
 
 Works on genome assemblies (FASTA files) or reads (FASTQ files)! Accepts Gzipped FASTA/FASTQ files as input!
+
+Also contains a *Mycobacterium tuberculosis* lineage scheme developed/adapted by Daniel Kein.
 
 
 Citation
@@ -111,10 +113,11 @@ If you run ``hansel -h``, you should see the following usage statement:
 .. code-block::
 
     usage: hansel [-h] [-s SCHEME] [--scheme-name SCHEME_NAME]
-                  [-p forward_reads reverse_reads] [-i fasta_path genome_name]
-                  [-D INPUT_DIRECTORY] [-o OUTPUT_SUMMARY]
-                  [-O OUTPUT_KMER_RESULTS] [-S OUTPUT_SIMPLE_SUMMARY] [--force]
-                  [--json] [--min-kmer-freq MIN_KMER_FREQ]
+                  [-M SCHEME_METADATA] [-p forward_reads reverse_reads]
+                  [-i fasta_path genome_name] [-D INPUT_DIRECTORY]
+                  [-o OUTPUT_SUMMARY] [-O OUTPUT_KMER_RESULTS]
+                  [-S OUTPUT_SIMPLE_SUMMARY] [--force] [--json]
+                  [--min-kmer-freq MIN_KMER_FREQ]
                   [--max-kmer-freq MAX_KMER_FREQ]
                   [--low-cov-depth-freq LOW_COV_DEPTH_FREQ]
                   [--max-missing-kmers MAX_MISSING_KMERS]
@@ -126,7 +129,7 @@ If you run ``hansel -h``, you should see the following usage statement:
                   [F [F ...]]
 
     Subtype microbial genomes using SNV targeting k-mer subtyping schemes.
-    Includes schemes for Salmonella enterica spp. enterica serovar Heidelberg and Enteritidis subtyping.
+    Includes schemes for Salmonella enterica spp. enterica serovar Heidelberg, Enteritidis, Typhi, and Typhimurium subtyping. Also includes a Mycobacterium tuberculosis scheme called 'tb_lineage'.
     Developed by Geneviève Labbé, James Robertson, Peter Kruczkiewicz, Marisa Rankin, Matthew Gopez, Chad R. Laing, Philip Mabon, Kim Ziebell, Aleisha R. Reimer, Lorelee Tschetter, Gary Van Domselaar, Sadjia Bekal, Kimberley A. MacDonald, Linda Hoang, Linda Chui, Danielle Daignault, Durda Slavic, Frank Pollari, E. Jane Parmley, David Son, Darian Hole, Philip Mabon, Elissa Giang, Lok Kan Lee, Jonathan Moffat, Marisa Rankin, Joanne MacKinnon, Roger Johnson, John H.E. Nash.
 
     positional arguments:
@@ -140,6 +143,8 @@ If you run ``hansel -h``, you should see the following usage statement:
                             /path/to/user/scheme)
       --scheme-name SCHEME_NAME
                             Custom user-specified SNP substyping scheme name
+      -M SCHEME_METADATA, --scheme-metadata scheme_metadata
+                            Scheme 
       -p forward_reads reverse_reads, --paired-reads forward_reads reverse_reads
                             FASTQ paired-end reads
       -i fasta_path genome_name, --input-fasta-genome-name fasta_path genome_name
