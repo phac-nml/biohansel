@@ -23,11 +23,11 @@
 
 Subtype microbial whole-genome sequencing (WGS) data using SNV targeting k-mer subtyping schemes.
 
-Includes 33 bp k-mer SNV subtyping schemes for *Salmonella enterica* subsp. enterica serovar Heidelberg, Enteritidis, Typhi, and Typhimurium genomes developed/adapted by Genevieve Labbe et al.
+Includes 33 bp k-mer SNV subtyping schemes for *Salmonella enterica* subsp. enterica serovar Heidelberg, Enteritidis, and Typhimurium genomes developed by Genevieve Labbe et al., and for S. ser Typhi adapted from Wong et al. (https://www.nature.com/articles/ncomms12827).
 
 Works on genome assemblies (FASTA files) or reads (FASTQ files)! Accepts Gzipped FASTA/FASTQ files as input!
 
-Also contains a *Mycobacterium tuberculosis* lineage scheme developed/adapted by Daniel Kein.
+Also includes a *Mycobacterium tuberculosis* lineage scheme adapted from Coll et al. (https://www.nature.com/articles/ncomms5812) by Daniel Kein.
 
 
 Citation
@@ -37,8 +37,8 @@ If you find the ``biohansel`` tool useful, please cite as:
 
 .. epigraph::
 
-    A robust genotyping scheme for *Salmonella enterica* serovar Heidelberg clones circulating in North America.
-    Geneviève Labbé, James Robertson, Peter Kruczkiewicz, Marisa Rankin, Matthew Gopez, Chad R. Laing, Philip Mabon, Kim Ziebell, Aleisha R. Reimer, Lorelee Tschetter, Gary Van Domselaar, Sadjia Bekal, Kimberley A. MacDonald, Linda Hoang, Linda Chui, Danielle Daignault, Durda Slavic, Frank Pollari, E. Jane Parmley, David Son, Darian Hole, Elissa Giang, Lok Kan Lee, Jonathan Moffat, Joanne MacKinnon, Roger Johnson, John H.E. Nash.
+    Rapid and robust genotyping of highly clonal bacterial pathogens using BioHansel, a SNP-based k-mer search pipeline.
+    Geneviève Labbé, Kruczkiewicz, Philip Mabon, James Robertson, Justin Schonfeld, Daniel Kein, Marisa A. Rankin, Matthew Gopez, Darian Hole, David Son, Natalie Knox, Chad R. Laing, Kyrylo Bessonov, Eduardo Taboada, Catherine Yoshida, Roger P. Johnson, Gary Van Domselaar and John H.E. Nash.
     [Manuscript in preparation]
 
 
@@ -139,7 +139,7 @@ If you run ``hansel -h``, you should see the following usage statement:
       -h, --help            show this help message and exit
       -s SCHEME, --scheme SCHEME
                             Scheme to use for subtyping (built-in: "heidelberg",
-                            "enteritidis"; OR user-specified:
+                            "enteritidis", "typhi", "typhimurium", "tb_lineage"; OR user-specified:
                             /path/to/user/scheme)
       --scheme-name SCHEME_NAME
                             Custom user-specified SNP substyping scheme name
