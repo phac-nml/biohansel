@@ -23,9 +23,11 @@
 
 Subtype microbial whole-genome sequencing (WGS) data using SNV targeting k-mer subtyping schemes.
 
-Includes 33 bp k-mer SNV subtyping schemes for *Salmonella enterica* subsp. enterica serovar Heidelberg and Enteritidis genomes developed by Genevieve Labbe et al.
+Includes 33 bp k-mer SNV subtyping schemes for *Salmonella enterica* subsp. enterica serovars Heidelberg, Enteritidis, and Typhimurium genomes developed by Genevieve Labbe et al., and for *S*. ser Typhi adapted from Wong et al. (https://www.nature.com/articles/ncomms12827).
 
 Works on genome assemblies (FASTA files) or reads (FASTQ files)! Accepts Gzipped FASTA/FASTQ files as input!
+
+Also includes a *Mycobacterium tuberculosis* lineage scheme adapted from Coll et al. (https://www.nature.com/articles/ncomms5812) by Daniel Kein.
 
 
 Citation
@@ -35,8 +37,8 @@ If you find the ``biohansel`` tool useful, please cite as:
 
 .. epigraph::
 
-    A robust genotyping scheme for *Salmonella enterica* serovar Heidelberg clones circulating in North America.
-    Geneviève Labbé, James Robertson, Peter Kruczkiewicz, Marisa Rankin, Matthew Gopez, Chad R. Laing, Philip Mabon, Kim Ziebell, Aleisha R. Reimer, Lorelee Tschetter, Gary Van Domselaar, Sadjia Bekal, Kimberley A. MacDonald, Linda Hoang, Linda Chui, Danielle Daignault, Durda Slavic, Frank Pollari, E. Jane Parmley, David Son, Darian Hole, Elissa Giang, Lok Kan Lee, Jonathan Moffat, Joanne MacKinnon, Roger Johnson, John H.E. Nash.
+    Rapid and robust genotyping of highly clonal bacterial pathogens using BioHansel, a SNP-based k-mer search pipeline.
+    Geneviève Labbé, Kruczkiewicz, Philip Mabon, James Robertson, Justin Schonfeld, Daniel Kein, Marisa A. Rankin, Matthew Gopez, Darian Hole, David Son, Natalie Knox, Chad R. Laing, Kyrylo Bessonov, Eduardo Taboada, Catherine Yoshida, Roger P. Johnson, Gary Van Domselaar and John H.E. Nash.
     [Manuscript in preparation]
 
 
@@ -111,10 +113,11 @@ If you run ``hansel -h``, you should see the following usage statement:
 .. code-block::
 
     usage: hansel [-h] [-s SCHEME] [--scheme-name SCHEME_NAME]
-                  [-p forward_reads reverse_reads] [-i fasta_path genome_name]
-                  [-D INPUT_DIRECTORY] [-o OUTPUT_SUMMARY]
-                  [-O OUTPUT_KMER_RESULTS] [-S OUTPUT_SIMPLE_SUMMARY] [--force]
-                  [--json] [--min-kmer-freq MIN_KMER_FREQ]
+                  [-M SCHEME_METADATA] [-p forward_reads reverse_reads]
+                  [-i fasta_path genome_name] [-D INPUT_DIRECTORY]
+                  [-o OUTPUT_SUMMARY] [-O OUTPUT_KMER_RESULTS]
+                  [-S OUTPUT_SIMPLE_SUMMARY] [--force] [--json]
+                  [--min-kmer-freq MIN_KMER_FREQ]
                   [--max-kmer-freq MAX_KMER_FREQ]
                   [--low-cov-depth-freq LOW_COV_DEPTH_FREQ]
                   [--max-missing-kmers MAX_MISSING_KMERS]
@@ -126,7 +129,7 @@ If you run ``hansel -h``, you should see the following usage statement:
                   [F [F ...]]
 
     Subtype microbial genomes using SNV targeting k-mer subtyping schemes.
-    Includes schemes for Salmonella enterica spp. enterica serovar Heidelberg and Enteritidis subtyping.
+    Includes schemes for Salmonella enterica spp. enterica serovar Heidelberg, Enteritidis, Typhi, and Typhimurium subtyping. Also includes a Mycobacterium tuberculosis scheme called 'tb_lineage'.
     Developed by Geneviève Labbé, James Robertson, Peter Kruczkiewicz, Marisa Rankin, Matthew Gopez, Chad R. Laing, Philip Mabon, Kim Ziebell, Aleisha R. Reimer, Lorelee Tschetter, Gary Van Domselaar, Sadjia Bekal, Kimberley A. MacDonald, Linda Hoang, Linda Chui, Danielle Daignault, Durda Slavic, Frank Pollari, E. Jane Parmley, David Son, Darian Hole, Philip Mabon, Elissa Giang, Lok Kan Lee, Jonathan Moffat, Marisa Rankin, Joanne MacKinnon, Roger Johnson, John H.E. Nash.
 
     positional arguments:
@@ -136,10 +139,13 @@ If you run ``hansel -h``, you should see the following usage statement:
       -h, --help            show this help message and exit
       -s SCHEME, --scheme SCHEME
                             Scheme to use for subtyping (built-in: "heidelberg",
-                            "enteritidis"; OR user-specified:
+                            "enteritidis", "typhi", "typhimurium", "tb_lineage"; OR user-specified:
                             /path/to/user/scheme)
       --scheme-name SCHEME_NAME
                             Custom user-specified SNP substyping scheme name
+      -M SCHEME_METADATA, --scheme-metadata scheme_metadata
+                            Scheme subtype metadata table (.TSV format accepted;
+                            must contain column called "subtype")
       -p forward_reads reverse_reads, --paired-reads forward_reads reverse_reads
                             FASTQ paired-end reads
       -i fasta_path genome_name, --input-fasta-genome-name fasta_path genome_name
@@ -176,6 +182,9 @@ If you run ``hansel -h``, you should see the following usage statement:
       --max-intermediate-kmers MAX_INTERMEDIATE_KMERS
                             Decimal proportion of maximum allowable missing kmers
                             to be considered an intermediate subtype. (0.0 - 1.0)
+      --max-degenerate-kmers MAX_DEGENERATE_KMERS
+                            Maximum number of scheme k-mers allowed before
+                            quitting with a usage warning. Default is 100,000
       -t THREADS, --threads THREADS
                             Number of parallel threads to run analysis (default=1)
       -v, --verbose         Logging verbosity level (-v == show warnings; -vvv ==
@@ -255,7 +264,18 @@ Analysis of all FASTA/FASTQ files in a directory
     hansel -s heidelberg -vv --threads <n_cpu> -o results.tab -O match_results.tab -D /path/to/fastas_or_fastqs/
 
 
-``hansel`` will only attempt to analyze the FASTA/FASTQ files within the specified directory and will not descend into any subdirectories!
+``biohansel`` will only attempt to analyze the FASTA/FASTQ files within the specified directory and will not descend into any subdirectories!
+
+Metadata addition to analysis
+-----------------------------
+
+*Works with any of the analyses above
+
+.. code-block:: bash
+
+    hansel -s heidelberg -M <metadata.tsv> -vv --threads <n_cpu> -o results.tab -O match_results.tab -D /path/to/fastas_or_fastqs/
+
+``biohansel`` works best on TSV metadata files. If possible, use a tab separated metadata file or your analysis may fail. 
 
 
 Development
