@@ -225,6 +225,6 @@ allow you to set the value that you deem acceptable with the "--max-degenerate-k
 | 4751529                   | 1,052,459                      | 3.269                    |
 +---------------------------+--------------------------------+--------------------------+
 
-This work was done on an assembled fasta file. Not that even with 1,000,000 k-mers, the time it takes to run biohansel is only 3 seconds.
+This work was done on an assembled fasta file. Note that even with 1,000,000 k-mers, the time it takes to run biohansel is only 3 seconds.
 BUT, if you're using fastq files it is going to be much longer and they haven't been tested for speed with expansion yet! So be careful
 with large expansions on fastq files.
