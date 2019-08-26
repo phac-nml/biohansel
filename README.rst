@@ -144,7 +144,8 @@ If you run ``hansel -h``, you should see the following usage statement:
       --scheme-name SCHEME_NAME
                             Custom user-specified SNP substyping scheme name
       -M SCHEME_METADATA, --scheme-metadata scheme_metadata
-                            Scheme 
+                            Scheme subtype metadata table (CSV or TSV format (TSV
+                            highly recommended!); must contain subtype column)
       -p forward_reads reverse_reads, --paired-reads forward_reads reverse_reads
                             FASTQ paired-end reads
       -i fasta_path genome_name, --input-fasta-genome-name fasta_path genome_name
@@ -181,6 +182,9 @@ If you run ``hansel -h``, you should see the following usage statement:
       --max-intermediate-kmers MAX_INTERMEDIATE_KMERS
                             Decimal proportion of maximum allowable missing kmers
                             to be considered an intermediate subtype. (0.0 - 1.0)
+      --max-degenerate-kmers MAX_DEGENERATE_KMERS
+                            Maximum number of scheme k-mers allowed before
+                            quitting with a usage warning. Default is 100,000
       -t THREADS, --threads THREADS
                             Number of parallel threads to run analysis (default=1)
       -v, --verbose         Logging verbosity level (-v == show warnings; -vvv ==
@@ -260,7 +264,18 @@ Analysis of all FASTA/FASTQ files in a directory
     hansel -s heidelberg -vv --threads <n_cpu> -o results.tab -O match_results.tab -D /path/to/fastas_or_fastqs/
 
 
-``hansel`` will only attempt to analyze the FASTA/FASTQ files within the specified directory and will not descend into any subdirectories!
+``biohansel`` will only attempt to analyze the FASTA/FASTQ files within the specified directory and will not descend into any subdirectories!
+
+Metadata addition to analysis
+-----------------------------
+
+*Works with any of the analyses above
+
+.. code-block:: bash
+
+    hansel -s heidelberg -M <metadata.tsv> -vv --threads <n_cpu> -o results.tab -O match_results.tab -D /path/to/fastas_or_fastqs/
+
+``biohansel`` works best on TSV metadata files. If possible, use a tab separated metadata file or your analysis may fail. 
 
 
 Development
