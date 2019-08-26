@@ -156,3 +156,4 @@ If you run ``hansel -h``, you will be provided with additional information for m
       -v, --verbose         Logging verbosity level (-v == show warnings; -vvv ==
                             show debug info)
       -V, --version         show program's version number and exit
+      
