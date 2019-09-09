@@ -129,7 +129,6 @@ def subtype_contigs(fasta_path: str,
 
     if df is None or df.shape[0] == 0:
         logging.warning('No subtyping kmer matches for input "%s" for scheme "%s"', fasta_path, scheme)
-        st.subtype = 'NA'
         st.qc_status = QC.FAIL
         st.qc_message = QC.NO_TARGETS_FOUND
         st.are_subtypes_consistent = False
@@ -275,7 +274,6 @@ def subtype_reads(reads: Union[str, List[str]],
 
     if df is None or df.shape[0] == 0:
         logging.warning('No subtyping kmer matches for input "%s" for scheme "%s"', reads, scheme)
-        st.subtype = 'NA'
         st.are_subtypes_consistent = False
         st.qc_status = QC.FAIL
         st.qc_message = QC.NO_TARGETS_FOUND
