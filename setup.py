@@ -1,15 +1,14 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from distutils.core import setup
-
-from setuptools import find_packages
+from setuptools import setup, find_packages
 
 from bio_hansel import __version__, program_name, program_desc
 
 classifiers = """
 Development Status :: 3 - Alpha
 Environment :: Console
-License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+License :: OSI Approved :: Apache Software License
 Intended Audience :: Science/Research
 Topic :: Scientific/Engineering
 Topic :: Scientific/Engineering :: Bio-Informatics
@@ -19,19 +18,23 @@ Programming Language :: Python :: Implementation :: CPython
 Operating System :: POSIX :: Linux
 """.strip().split('\n')
 
+with open('README.rst') as readme_file:
+    readme = readme_file.read()
+
 setup(
     name=program_name,
     version=__version__,
     packages=find_packages(exclude=['tests']),
     url='https://github.com/phac-nml/{}'.format(program_name),
-    license='Apache v2.0',
+    license='Apache Software License 2.0',
     author='Peter Kruczkiewicz',
     author_email='peter.kruczkiewicz@gmail.com',
     description=program_desc,
+    long_description=readme,
     keywords='Salmonella enterica Heidelberg Enteritidis SNP kmer subtyping Aho-Corasick',
     classifiers=classifiers,
     package_dir={program_name: program_name},
-    package_data={program_name: ['data/*/*.fasta',]},
+    package_data={program_name: ['data/*/*.fasta', 'data/*/*.tsv',]},
     install_requires=[
         'numpy>=1.12.1',
         'pandas>=0.20.1',
