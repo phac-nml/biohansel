@@ -67,7 +67,7 @@ def init_parser():
                         nargs=2,
                         metavar=('fasta_path', 'genome_name'),
                         action='append',
-                        help='fasta file path to genome name pair')
+                        help='input fasta file path AND genome name')
     parser.add_argument('-D', '--input-directory',
                         help='directory of input fasta files (.fasta|.fa|.fna) or FASTQ files (paired FASTQ should '
                              'have same basename with "_\d\.(fastq|fq)" postfix to be automatically paired) '
