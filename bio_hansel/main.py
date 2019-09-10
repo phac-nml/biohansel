@@ -246,6 +246,7 @@ def main():
         dfsummary = dfsummary.drop(labels='avg_kmer_coverage', axis=1)
 
     dfsummary['subtype'].fillna(value='#N/A', inplace=True)
+    dfsummary['subtype'].replace('','#N/A', inplace=True)
 
     if df_md is not None:
         dfsummary = merge_metadata_with_summary_results(dfsummary, df_md)
