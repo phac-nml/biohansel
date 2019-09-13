@@ -267,6 +267,7 @@ def main():
         if len(dfs) > 0:
             dfall: pd.DataFrame = pd.concat([df.sort_values('is_pos_kmer', ascending=False) for df in dfs], sort=False)  # type: pd.DataFrame
             dfall['subtype'].fillna(value='#N/A', inplace=True)
+            dfall['subtype'].replace('','#N/A', inplace=True)
             dfall.to_csv(output_kmer_results, **kwargs_for_pd_to_table)
             logging.info('Kmer results written to "{}".'.format(output_kmer_results))
             if args.json:
