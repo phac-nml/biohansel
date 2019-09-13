@@ -53,4 +53,5 @@ def merge_metadata_with_summary_results(df_results: pd.DataFrame, df_metadata: p
     Returns:
         Subtyping results with subtype metadata merged in if metadata is present for subtype results.
     """
+    df_results.subtype = df_results.subtype.astype(str)
     return pd.merge(df_results, df_metadata, how='left', on='subtype')
