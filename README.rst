@@ -38,7 +38,7 @@ If you find the ``biohansel`` tool useful, please cite as:
 .. epigraph::
 
     Rapid and robust genotyping of highly clonal bacterial pathogens using BioHansel, a SNP-based k-mer search pipeline.
-    Geneviève Labbé, Kruczkiewicz, Philip Mabon, James Robertson, Justin Schonfeld, Daniel Kein, Marisa A. Rankin, Matthew Gopez, Darian Hole, David Son, Natalie Knox, Chad R. Laing, Kyrylo Bessonov, Eduardo Taboada, Catherine Yoshida, Roger P. Johnson, Gary Van Domselaar and John H.E. Nash.
+    Geneviève Labbé, Peter Kruczkiewicz, Philip Mabon, James Robertson, Justin Schonfeld, Daniel Kein, Marisa A. Rankin, Matthew Gopez, Darian Hole, David Son, Natalie Knox, Chad R. Laing, Kyrylo Bessonov, Eduardo Taboada, Catherine Yoshida, Roger P. Johnson, Gary Van Domselaar and John H.E. Nash.
     [Manuscript in preparation]
 
 
