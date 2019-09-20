@@ -151,7 +151,8 @@ def collect_fasta_from_dir(input_directory: str) -> List[Tuple[str, str]]:
     return input_genomes
 
 
-NT_SUB = {x: y for x, y in zip('acgtrymkswhbvdnxACGTRYMKSWHBVDNX', 'tgcayrkmswdvbhnxTGCAYRKMSWDVBHNX')}
+NT_SUB = str.maketrans('acgtrymkswhbvdnxACGTRYMKSWHBVDNX',
+                       'tgcayrkmswdvbhnxTGCAYRKMSWDVBHNX')
 
 
 def revcomp(s):
@@ -163,7 +164,7 @@ def revcomp(s):
     Returns:
         str: reverse complement of `s` nucleotide sequence
     """
-    return ''.join([NT_SUB[c] for c in s[::-1]])
+    return s.translate(NT_SUB)[::-1]
 
 
 def is_gzipped(p: str) -> bool:
