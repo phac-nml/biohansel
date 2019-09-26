@@ -31,11 +31,7 @@ setup(
         'Topic :: Scientific/Engineering'
     ],
     description='Subtype microbial whole-genome sequencing (WGS) data using SNV targeting k-mer subtyping schemes.',
-    entry_points={
-        'console_scripts': [
-            'hansel={}.main:main'.format(program_name),
-        ],
-    },
+    entry_points={'console_scripts': ['hansel=bio_hansel.main:main']},
     install_requires=requirements,
     keywords='Salmonella enterica Heidelberg Enteritidis SNP kmer subtyping Aho-Corasick',
     license='Apache Software License 2.0',
