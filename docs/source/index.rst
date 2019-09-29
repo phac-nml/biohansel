@@ -6,7 +6,7 @@
 Welcome to Biohansel's Read the Docs!
 =====================================
 
-**Currently changing Subtype to Genotype in all outputs and as such, they are synonymous for biohansel in the current version (2.2.0)**
+**Currently debating on changing Subtype to Genotype in all outputs and as such, they are synonymous for biohansel in the current version (2.2.0) and in this manual**
 
 Biohansel genotypes clonal microbial whole-genome sequencing (WGS) data using SNV targeting k-mer genotyping schemes.
 
@@ -101,8 +101,6 @@ Code is available on GitHub under https://github.com/phac-nml/biohansel.
    :caption: Contact
 
    contact
-
-Biohansel Read the Docs currently maintained by Darian Hole 
 
 .. toctree::
    :maxdepth: 2
