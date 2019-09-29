@@ -6,7 +6,7 @@
 Welcome to Biohansel's Read the Docs!
 =====================================
 
-**Currently debating on changing Subtype to Genotype in all outputs and as such, they are synonymous for biohansel in the current version (2.2.0) and in this manual**
+**Currently debating on changing Subtype to Genotype in all outputs and as such, they are synonymous for biohansel in the current version (2.4.0) and in this manual**
 
 Biohansel genotypes clonal microbial whole-genome sequencing (WGS) data using SNV targeting k-mer genotyping schemes.
 
