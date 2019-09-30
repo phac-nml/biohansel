@@ -36,15 +36,16 @@ def read_metadata_table(path: str) -> Optional[pd.DataFrame]:
             list(FILE_EXT_TO_PD_READ_FUNC.keys())
         ))
         return None
-    dfmd = FILE_EXT_TO_PD_READ_FUNC[file_ext](path)  # type: pd.DataFrame
+    dfmd: pd.DataFrame = FILE_EXT_TO_PD_READ_FUNC[file_ext](path)
     assert np.any(dfmd.columns == 'subtype'), 'Column with name "subtype" expected in metadata file "{}"'.format(path)
+    dfmd.subtype.fillna('#N/A', inplace=True)
     dfmd.subtype = dfmd.subtype.astype(str)
     logging.info('Read scheme metadata file "{}" into DataFrame with shape {}'.format(path, dfmd.shape))
     return dfmd
 
 
-def merge_metadata_with_summary_results(df_results: pd.DataFrame, df_metadata: pd.DataFrame) -> pd.DataFrame:
-    """Merge subtype metadata table into subtype results table.
+def merge_results_with_metadata(df_results: pd.DataFrame, df_metadata: pd.DataFrame) -> pd.DataFrame:
+    """Merge subtype results table with metadata table.
 
     Args:
         df_results: Subtyping results table.
@@ -53,6 +54,4 @@ def merge_metadata_with_summary_results(df_results: pd.DataFrame, df_metadata: p
     Returns:
         Subtyping results with subtype metadata merged in if metadata is present for subtype results.
     """
-    df_results.subtype = df_results.subtype.fillna('')
-    df_results.subtype = df_results.subtype.astype(str)
     return pd.merge(df_results, df_metadata, how='left', on='subtype')
