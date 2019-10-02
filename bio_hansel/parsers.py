@@ -94,7 +94,7 @@ def parse_fastq(filepath):
         with os.popen('zcat < {}'.format(filepath)) as f:
             yield from _parse_fastq(f)
     else:
-        with open(filepath, 'rU') as f:
+        with open(filepath, 'r') as f:
             yield from _parse_fastq(f)
 
 
