@@ -7,6 +7,8 @@ import os
 import re
 from collections import defaultdict
 
+import pandas as pd
+
 from .const import SCHEME_FASTAS, REGEX_FASTQ, REGEX_FASTA
 from .subtyping_params import SubtypingParams
 
@@ -204,3 +206,10 @@ def init_subtyping_params(args: Optional[Any] = None,
             subtyping_params.max_degenerate_kmers = args.max_degenerate_kmers
 
     return subtyping_params
+
+
+def df_field_fillna(df: pd.DataFrame, field:str = 'subtype', na: str = '#N/A') -> pd.DataFrame:
+    df[field].replace('', na, inplace=True)
+    df[field].fillna(value=na, inplace=True)
+    df[field] = df[field].astype(str)
+    return df
