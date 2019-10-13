@@ -19,15 +19,9 @@ from .subtype_stats import subtype_counts
 from .subtyper import \
     subtype_contigs_samples, \
     subtype_reads_samples
-from .metadata import read_metadata_table, merge_metadata_with_summary_results
-from .utils import \
-    genome_name_from_fasta_path, \
-    get_scheme_fasta, \
-    does_file_exist, \
-    collect_fastq_from_dir, \
-    group_fastqs, \
-    collect_fasta_from_dir, \
-    init_subtyping_params
+from .metadata import read_metadata_table, merge_results_with_metadata
+from .utils import (genome_name_from_fasta_path, get_scheme_fasta, does_file_exist, collect_fastq_from_dir,
+                    group_fastqs, collect_fasta_from_dir, init_subtyping_params, df_field_fillna)
 
 SCRIPT_NAME = 'hansel'
 LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
@@ -52,12 +46,12 @@ def init_parser():
                         help='Input genome FASTA/FASTQ files (can be Gzipped)')
     parser.add_argument('-s', '--scheme',
                         default='heidelberg',
-                        help='Scheme to use for subtyping (built-in: "heidelberg", "enteritidis", "typhi", "typhimurium", "tb_speciation"; OR user-specified: '
+                        help='Scheme to use for subtyping (built-in: "heidelberg", "enteritidis", "typhi", "typhimurium", "tb_lineage"; OR user-specified: '
                              '/path/to/user/scheme)')
     parser.add_argument('--scheme-name',
                         help='Custom user-specified SNP substyping scheme name')
     parser.add_argument('-M', '--scheme-metadata',
-                        help='Scheme subtype metadata table (CSV or tab-delimited format; must contain "subtype" column)')
+                        help='Scheme subtype metadata table (tab-delimited file with ".tsv" or ".tab" extension or CSV with ".csv" extension format accepted; MUST contain column called "subtype")')
     parser.add_argument('-p', '--paired-reads',
                         nargs=2,
                         metavar=('forward_reads', 'reverse_reads'),
@@ -67,10 +61,10 @@ def init_parser():
                         nargs=2,
                         metavar=('fasta_path', 'genome_name'),
                         action='append',
-                        help='fasta file path to genome name pair')
+                        help='input fasta file path AND genome name')
     parser.add_argument('-D', '--input-directory',
                         help='directory of input fasta files (.fasta|.fa|.fna) or FASTQ files (paired FASTQ should '
-                             'have same basename with "_\d\.(fastq|fq)" postfix to be automatically paired) '
+                             'have same basename with "_\\d\\.(fastq|fq)" postfix to be automatically paired) '
                              '(files can be Gzipped)')
     parser.add_argument('-o', '--output-summary',
                         help='Subtyping summary output path (tab-delimited)')
@@ -126,7 +120,7 @@ def collect_inputs(args: Any) -> Tuple[List[Tuple[str, str]], List[Tuple[List[st
     """Collect all input files for analysis
 
     Sample names are derived from the base filename with no extensions.
-    Sequencing reads are paired if they share a common filename name without "_\d".
+    Sequencing reads are paired if they share a common filename name without "_\\d".
     Filepaths for contigs and reads files are collected from an input directory if provided.
 
     Args:
@@ -172,7 +166,7 @@ def collect_inputs(args: Any) -> Tuple[List[Tuple[str, str]], List[Tuple[List[st
                 continue
             filenames = [os.path.basename(y) for y in x]
             common_prefix = os.path.commonprefix(filenames)
-            genome_name = re.sub(r'[\W\_]+$', r'', common_prefix)
+            genome_name = re.sub(r'[\W_]+$', r'', common_prefix)
             if genome_name == '':
                 genome_name = filenames[0]
             reads.append((x, genome_name))
@@ -192,11 +186,10 @@ def main():
     does_file_exist(output_simple_summary_path, args.force)
     does_file_exist(output_summary_path, args.force)
     does_file_exist(output_kmer_results, args.force)
-    scheme = args.scheme  # type: str
-    scheme_name = args.scheme_name  # type: Optional[str]
+    scheme: str = args.scheme
+    scheme_name: Optional[str] = args.scheme_name
     scheme_fasta = get_scheme_fasta(scheme)
     scheme_subtype_counts = subtype_counts(scheme_fasta)
-    directory_path = args.input_directory
     logging.debug(args)
     subtyping_params = init_subtyping_params(args, scheme)
     input_contigs, input_reads = collect_inputs(args)
@@ -204,20 +197,20 @@ def main():
         raise Exception('No input files specified!')
 
     df_md = None
-    try:
-        df_md = read_metadata_table(resource_filename(program_name, f'data/{scheme}/metadata.tsv'))
-    except Exception:
-        pass
-        
+    md_path = resource_filename(program_name, f'data/{scheme}/metadata.tsv')
+    if os.path.exists(md_path):
+        df_md = read_metadata_table(md_path)
+
     if args.scheme_metadata:
         if df_md is None:
-            df_md = pd. DataFrame()
-        df_md = pd.concat([df_md, read_metadata_table(args.scheme_metadata)], axis=1)
-        df_md = df_md.loc[:, ~df_md.columns.duplicated()]
+            df_md = read_metadata_table(args.scheme_metadata)
+        else:
+            df_md = pd.concat([df_md, read_metadata_table(args.scheme_metadata)], axis=1)
+            df_md = df_md.loc[:, ~df_md.columns.duplicated()]
 
     n_threads = args.threads
 
-    subtype_results: List[Tuple[Subtype, pd.DataFrame]] = []  # type: List[Tuple[Subtype, pd.DataFrame]]
+    subtype_results: List[Tuple[Subtype, pd.DataFrame]] = []
     if len(input_contigs) > 0:
         contigs_results = subtype_contigs_samples(input_genomes=input_contigs,
                                                   scheme=scheme,
@@ -237,7 +230,7 @@ def main():
         logging.info('Generated %s subtyping results from %s contigs samples', len(reads_results), len(input_reads))
         subtype_results += reads_results
 
-    dfs: List[pd.DataFrame] = [df for st, df in subtype_results]  # type: List[pd.DataFrame]
+    dfs: List[pd.DataFrame] = [df for st, df in subtype_results]
     dfsummary = pd.DataFrame([attr.asdict(st) for st, df in subtype_results])
 
     dfsummary = dfsummary[SUBTYPE_SUMMARY_COLS]
@@ -245,10 +238,10 @@ def main():
     if dfsummary['avg_kmer_coverage'].isnull().all():
         dfsummary = dfsummary.drop(labels='avg_kmer_coverage', axis=1)
 
-    dfsummary['subtype'].fillna(value='#N/A', inplace=True)
+    dfsummary = df_field_fillna(dfsummary)
 
     if df_md is not None:
-        dfsummary = merge_metadata_with_summary_results(dfsummary, df_md)
+        dfsummary = merge_results_with_metadata(dfsummary, df_md)
 
     kwargs_for_pd_to_table = dict(sep='\t', index=None, float_format='%.3f')
     kwargs_for_pd_to_json = dict(orient='records')
@@ -264,8 +257,8 @@ def main():
 
     if output_kmer_results:
         if len(dfs) > 0:
-            dfall: pd.DataFrame = pd.concat([df.sort_values('is_pos_kmer', ascending=False) for df in dfs], sort=False)  # type: pd.DataFrame
-            dfall['subtype'].fillna(value='#N/A', inplace=True)
+            dfall: pd.DataFrame = pd.concat([df.sort_values('is_pos_kmer', ascending=False) for df in dfs], sort=False)
+            dfall = df_field_fillna(dfall)
             dfall.to_csv(output_kmer_results, **kwargs_for_pd_to_table)
             logging.info('Kmer results written to "{}".'.format(output_kmer_results))
             if args.json:
@@ -283,7 +276,7 @@ def main():
             df_simple_summary = dfsummary[['sample', 'subtype', 'qc_status', 'qc_message']]
 
         if df_md is not None:
-            df_simple_summary = merge_metadata_with_summary_results(df_simple_summary, df_md)
+            df_simple_summary = merge_results_with_metadata(df_simple_summary, df_md)
 
         df_simple_summary.to_csv(output_simple_summary_path, **kwargs_for_pd_to_table)
         if args.json:
