@@ -269,13 +269,51 @@ Analysis of all FASTA/FASTQ files in a directory
 Metadata addition to analysis
 -----------------------------
 
-*Works with any of the analyses above
+Add subtype metadata to your analysis results with `-M your-subtype-metadata.tsv`:
 
 .. code-block:: bash
 
-    hansel -s heidelberg -M <metadata.tsv> -vv --threads <n_cpu> -o results.tab -O match_results.tab -D /path/to/fastas_or_fastqs/
+    hansel -s heidelberg \
+      -M your-subtype-metadata.tsv \
+      -o results.tab \
+      -O match_results.tab \
+      -D ~/your-reads-directory/
 
-``biohansel`` works best on TSV metadata files. If possible, use a tab separated metadata file or your analysis may fail. 
+Your metadata table **must** contain a field with the field name `subtype`, e.g.
+
+.. list-table::
+   :header-rows: 1
+
+   * - subtype
+     - host_association
+     - geoloc
+     - genotype_alternative
+   * - 1
+     - human
+     - Canada
+     - A
+   * - 2
+     - cow
+     - USA
+     - B
+
+``biohansel`` accepts metadata table files with the following formats and extensions:
+
+.. list-table:: 
+   :header-rows: 1
+
+   * - Format
+     - Extension
+     - Example Filename
+   * - Tab-delimited table/tab-separated values (TSV)
+     - `.tsv`
+     - `my-metadata-table.tsv`
+   * - Tab-delimited table/tab-separated values (TSV)
+     - `.tab`
+     - `my-metadata-table.tab`
+   * - Comma-separated values (CSV)
+     - `.csv`
+     - `my-metadata-table.csv`
 
 
 Development

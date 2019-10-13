@@ -51,7 +51,7 @@ def init_parser():
     parser.add_argument('--scheme-name',
                         help='Custom user-specified SNP substyping scheme name')
     parser.add_argument('-M', '--scheme-metadata',
-                        help='Scheme subtype metadata table (.TSV format accepted; contain column called "subtype")')
+                        help='Scheme subtype metadata table (tab-delimited file with ".tsv" or ".tab" extension or CSV with ".csv" extension format accepted; MUST contain column called "subtype")')
     parser.add_argument('-p', '--paired-reads',
                         nargs=2,
                         metavar=('forward_reads', 'reverse_reads'),
