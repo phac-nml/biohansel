@@ -102,8 +102,8 @@ def test_enteritidis_scheme_vs_qc_failing_contigs_unconfident_ac(subtype_enterit
     assert isinstance(stgz, Subtype)
     assert isinstance(dfgz, DataFrame)
     check_subtype_attrs(st, stgz, subtype_enteritidis_fail_unconfident)
-    assert 'Unconfident Results Error 4' in st.qc_message
-    assert 'Unconfident Results Error 4' in stgz.qc_message
+    assert 'Inconclusive Results Error 4' in st.qc_message
+    assert 'Inconclusive Results Error 4' in stgz.qc_message
     check_df_fasta_cols(df)
     check_df_fasta_cols(dfgz)
 
