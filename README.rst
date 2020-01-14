@@ -37,9 +37,9 @@ If you find the ``biohansel`` tool useful, please cite as:
 
 .. epigraph::
 
-    Rapid and robust genotyping of highly clonal bacterial pathogens using BioHansel, a SNP-based k-mer search pipeline.
-    Geneviève Labbé, Peter Kruczkiewicz, Philip Mabon, James Robertson, Justin Schonfeld, Daniel Kein, Marisa A. Rankin, Matthew Gopez, Darian Hole, David Son, Natalie Knox, Chad R. Laing, Kyrylo Bessonov, Eduardo Taboada, Catherine Yoshida, Roger P. Johnson, Gary Van Domselaar and John H.E. Nash.
-    [Manuscript in preparation]
+    Rapid and accurate SNP genotyping of clonal bacterial pathogens with BioHansel.
+    Geneviève Labbé, Peter Kruczkiewicz, Philip Mabon, James Robertson, Justin Schonfeld, Daniel Kein, Marisa A. Rankin, Matthew Gopez, Darian Hole, David Son, Natalie Knox, Chad R. Laing, Kyrylo Bessonov, Eduardo Taboada, Catherine Yoshida, Kim Ziebell, Anil Nichani, Roger P. Johnson, Gary Van Domselaar and John H.E. Nash.
+    bioRxiv 2020.01.10.902056; doi: https://doi.org/10.1101/2020.01.10.902056
 
 
 Read_The_Docs
@@ -130,7 +130,7 @@ If you run ``hansel -h``, you should see the following usage statement:
 
     Subtype microbial genomes using SNV targeting k-mer subtyping schemes.
     Includes schemes for Salmonella enterica spp. enterica serovar Heidelberg, Enteritidis, Typhi, and Typhimurium subtyping. Also includes a Mycobacterium tuberculosis scheme called 'tb_lineage'.
-    Developed by Geneviève Labbé, James Robertson, Peter Kruczkiewicz, Marisa Rankin, Matthew Gopez, Chad R. Laing, Philip Mabon, Kim Ziebell, Aleisha R. Reimer, Lorelee Tschetter, Gary Van Domselaar, Sadjia Bekal, Kimberley A. MacDonald, Linda Hoang, Linda Chui, Danielle Daignault, Durda Slavic, Frank Pollari, E. Jane Parmley, David Son, Darian Hole, Philip Mabon, Elissa Giang, Lok Kan Lee, Jonathan Moffat, Marisa Rankin, Joanne MacKinnon, Roger Johnson, John H.E. Nash.
+    Developed by Geneviève Labbé, Peter Kruczkiewicz, Philip Mabon, James Robertson, Justin Schonfeld, Daniel Kein, Marisa A. Rankin, Matthew Gopez, Darian Hole, David Son, Natalie Knox, Chad R. Laing, Kyrylo Bessonov, Eduardo Taboada, Catherine Yoshida, Kim Ziebell, Anil Nichani, Roger P. Johnson, Gary Van Domselaar and John H.E. Nash.
 
     positional arguments:
       F                     Input genome FASTA/FASTQ files (can be Gzipped)
@@ -369,7 +369,7 @@ specific language governing permissions and limitations under the License.
 Contact
 =======
 
-**Gary van Domselaar**: gary.vandomselaar@phac-aspc.gc.ca
+**Gary van Domselaar**: gary.vandomselaar@canada.ca
 
 
 .. _PyPI: https://pypi.org/project/bio-hansel/
