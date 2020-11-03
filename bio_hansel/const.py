@@ -13,7 +13,7 @@ SCHEME_FASTAS = {'heidelberg': {'file': resource_filename(program_name, 'data/he
                                  'version': '1.0.7',
                                  'subtyping_params': SubtypingParams(low_coverage_depth_freq=20)},
                  'typhi': {'file': resource_filename(program_name, 'data/typhi/kmers.fasta'),
-                                 'version': '1.2.0',
+                                 'version': '1.3.0',
                                  'subtyping_params': SubtypingParams(low_coverage_depth_freq=20)},
                  'tb_lineage': {'file': resource_filename(program_name, 'data/tb_lineage/kmers.fasta'),
                                  'version': '1.0.5',
