@@ -32,7 +32,7 @@ subspecies enterica serovar Heidelberg, Typhimurium, Typhi, and Enteritidis. Bio
 in depth information on how to create a custom genotyping scheme.
 
 The genotyping schemes developed and used by biohansel are specifically designed fasta files that contain many k-mer pairs (split k-mers)
-of the same length. These k-mer pairs are given a positive (e.g. inclusive) or negative (e.g. exlusive) label for the genotype that
+of the same length. These k-mer pairs are given a positive (e.g. inclusive) or negative (e.g. exclusive) label for the genotype that
 they correspond to, allowing analysis to occur through biohansel to determine what the samples genotype is based on the scheme.
 If you want to see the exact structure, you can click on `K-mer_Structure`_ for the exact formatting. k-mers must be formatted
 this way for biohansel to run correctly. Depending upon which of these k-mers match the target, the final genotype will be obtained.
