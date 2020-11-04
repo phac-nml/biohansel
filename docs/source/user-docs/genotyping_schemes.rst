@@ -381,17 +381,22 @@ k-mers shown above and looks like such:
 
 
 **Notes**
-- The k-mer length can be variable, and the length of the positive and negative k-mers within a pair does not need to be the same.
 
-- BioHansel can work using a list of positive k-mers exclusively, but then the user will not benefit from the quality
-	controls that are performed in BioHansel using k-mer pairs.
+- **The k-mer length can be variable**
+The length of the positive and negative k-mers within a pair does not need to be the same.
 
-- The target canonical SNP can be located anywhere within the k-mer; it does not need to be in the center of the k-mer sequence.
+- **BioHansel can work using a list of positive k-mers exclusively**
+In that case however, the user will not benefit from the quality controls that are performed in BioHansel using k-mer pairs.
 
-- Since the tool relies on finding exact k-mer matches, the positive k-mer sequence could in theory target an indel sequence that is conserved
-	in a lineage and absent in the rest of the pathogen population. In that case, the corresponding negative k-mer should be found in
-	the rest of the population and not in that lineage (for example, the negative k-mer sequence could be spanning the insertion or
-	deletion site in the rest of the population).  
+- **The target canonical SNP can be located anywhere within the k-mer**
+The target SNP does not need to be in the center of the k-mer sequence.
+
+- Since the tool relies on finding exact k-mer matches, **the positive k-mer sequence could in theory target an indel sequence**
+The target k-mer sequence needs to be conserved in a lineage and absent in the rest of the pathogen population. If there is an indel
+sequence that is conserved in a lineage and present only in that lineage, the corresponding negative k-mer should be found in the rest
+of the population and absent in the lineage containing the positive k-mer indel sequence (for example, the negative k-mer sequence could
+be spanning the target insertion or deletion site in the genome in the rest of the population, if that genome region is unchanged across
+the rest of the population).  
 
 
 16. Test the created scheme by running biohansel to verify that all of the expected positive target sequences are present in the
