@@ -381,14 +381,18 @@ k-mers shown above and looks like such:
 
 
 **Notes**
--The k-mer length can be variable, and the length of the positive and negative k-mers within a pair does not need to be the same.
--BioHansel can work using a list of positive k-mers exclusively, but then the user will not benefit from the quality
-controls that are performed in BioHansel using k-mer pairs.
--The target canonical SNP can be located anywhere within the k-mer; it does not need to be in the center of the k-mer sequence.
--Since the tool relies on finding exact k-mer matches, the positive k-mer sequence could in theory target an indel sequence that is conserved
-in a lineage and absent in the rest of the pathogen population. In that case, the corresponding negative k-mer should be found in
-the rest of the population and not in that lineage (for example, the negative k-mer sequence could be spanning the insertion or
-deletion site in the rest of the population).  
+- The k-mer length can be variable, and the length of the positive and negative k-mers within a pair does not need to be the same.
+
+- BioHansel can work using a list of positive k-mers exclusively, but then the user will not benefit from the quality
+	controls that are performed in BioHansel using k-mer pairs.
+
+- The target canonical SNP can be located anywhere within the k-mer; it does not need to be in the center of the k-mer sequence.
+
+- Since the tool relies on finding exact k-mer matches, the positive k-mer sequence could in theory target an indel sequence that is conserved
+	in a lineage and absent in the rest of the pathogen population. In that case, the corresponding negative k-mer should be found in
+	the rest of the population and not in that lineage (for example, the negative k-mer sequence could be spanning the insertion or
+	deletion site in the rest of the population).  
+
 
 16. Test the created scheme by running biohansel to verify that all of the expected positive target sequences are present in the
 corresponding strains. Eliminate targeted k-mers from the scheme that do not work well and verify that the targeted k-mers pairs created
