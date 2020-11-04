@@ -27,23 +27,23 @@ Genotyping Schemes
    :width: 600 px
 
 This section will cover the genotyping (**previously called subtyping**) schemes used by biohansel for *Salmonella enterica*
-subspecies enterica serovar Heidelberg, Typhi, and Enteritidis. Biohansel also includes a genotyping scheme for
+subspecies enterica serovar Heidelberg, Typhimurium, Typhi, and Enteritidis. Biohansel also includes a genotyping scheme for
 *Mycobacterium tuberculosis*. Along with these 4 schemes included in biohansel, this section will provide you with
 in depth information on how to create a custom genotyping scheme.
 
-The genotyping schemes developed and used by biohansel are specifically designed fasta files that contain many k-mer pairs of the same length. 
-These k-mer pairs are given a positive or negative label for the genotype that they correspond to allowing analysis to occur through biohansel
-to determine what the samples genotype is based on the scheme. If you want to see the exact structure, you can click on
-`K-mer_Structure`_ for the exact formatting. k-mers must be formated this way for biohansel to run correctly. 
-Depending upon which of these k-mers match the target, the final genotype will be obtained.
+The genotyping schemes developed and used by biohansel are specifically designed fasta files that contain many k-mer pairs (split k-mers)
+of the same length. These k-mer pairs are given a positive (e.g. inclusive) or negative (e.g. exlusive) label for the genotype that
+they correspond to, allowing analysis to occur through biohansel to determine what the samples genotype is based on the scheme.
+If you want to see the exact structure, you can click on `K-mer_Structure`_ for the exact formatting. k-mers must be formatted
+this way for biohansel to run correctly. Depending upon which of these k-mers match the target, the final genotype will be obtained.
 
 The k-mer genotyping process works due to the clonal (very little genomic change/evolution occurs over time) nature of the 
 serovars found in *Salmonella enterica* or other clonal pathogens. This clonal nature allows SNPs to be mapped to 
-different genotypes that evolved from different lineages over the expanse of a couple of years. *Salmonella* is a good candidate for this type of
-genotyping as it is hard to determine a genotype in the lab through conventional means due to all *Salmonella* genotypes being genetically similar.
+different genotypes that evolved from different lineages over the expanse of a few years (e.g. recent clonal expansions).
+*Salmonella* serovars are good candidates for this type of genotyping as it is hard to determine a genotype in the lab through
+conventional means due to all genotypes being genetically similar within the most prevalent *Salmonella* serovars.
 
-This process can be used to genotype other clonal pathogens with biohansel as soon as a statistically 
-significant genotyping scheme is created and validated for them.  
+This process can be used to genotype other clonal pathogens with biohansel as soon as a genotyping scheme is created and validated for them.  
 
 
 Heidelberg, Typhi, Typhimurium, and Enteritidis Genotyping Schemes 
@@ -58,10 +58,16 @@ The **Enteritidis** scheme (version 1.0.7) features
 a similar set of 317 33-mer pairs that follow the same style as the Heidelberg scheme to classify and identify different 
 enteritidis serovar genotypes. It specifies one of 117 genotyoes with its scheme.
 
-The **Typhi** genotyping scheme is a new scheme that follows a similar structure to the other two schemes. It features a classification list 
-of 68 k-mers which define 68 genomes. This scheme was adapted by Genevieve Labbe from a publication
-by Vanessa Wong et al. titled: `"An extended genotyping framework for Salmonella enterica serovar Typhi, the cause of human typhoid" <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5059462/>`_.
-When running the Typhi scheme, the previous hierarchical codes are automatically appended to the results to allow better comparison.
+The **Typhi** genotyping scheme (version 1.3.0) is a new scheme that follows a similar structure to the other two schemes. It features a
+classification list of 75 k-mer pairs which define 75 possible genotypes. This scheme was adapted by Geneviève Labbé from a publication
+by Vanessa Wong et al. titled: `"An extended genotyping framework for Salmonella enterica serovar Typhi, the cause of human typhoid" <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5059462/>`_, and more recent publications by `Britto et al. <https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0006408>`_, `Rahman et al. <https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0008036>`_, and `Klemm et al. <https://mbio.asm.org/content/9/1/e00105-18>`_
+When running the Typhi scheme, the previously published hierarchical codes are automatically appended to the results to allow
+better comparison.  In addition to the published genotyping codes, metadata relevant to each genotype is provided to the user
+based on an analysis of ~8,100 public *S.* Typhi datasets from the NCBI SRA (manuscript in preparation). The genotype metadata includes
+the number of WGS datasets found to be part of this genotype out of 5,088 *S.* Typhi isolates (under the header "count") which passed QC
+and had sufficient source data provided; as well as the earliest year and latest year in which a sample corresponding to this genotype
+was collected (under the headers "earliest_year_collected" and "latest_year_collected"), and the most predominant geographic source for
+this genotype (under the header "top_geo_loc_name").
 
 The **Typhimurium** genotyping scheme (version 0.5.5) is a scheme that features 430 k-mer pairs and follows the same characterisitics of the other schemes above.
 This scheme is more robust at detecting SNPs and contamination as it has more k-mers for each genotype leading to it being a more
@@ -97,9 +103,9 @@ determining which lineage the isolate is from (1 or 2 in this case). After the m
 determined based on all of the matching positive k-mers found in the sample as it follows along the path to the specific genotype. 
 It is important that all/most positive and negative k-mers match a spot in the sample to allow correct genotyping and not generate errors!
 
-It is important to note that for a given genomic SNP position defining a lineage, the "positive" k-mer means that the SNP base is present
-"inside" the lineage for all of that lineage and nested ones. The "negative" k-mers include the SNP bases present "outside" of that lineage
-such that that specific SNP is not found in any of the hierarchical lineages.
+It is important to note that for a given genomic SNP position defining a lineage, the "positive" (e.g. inclusive) k-mer means that
+the SNP base is present "inside" the lineage for all of that lineage and nested ones. The "negative" (e.g. exclusive) k-mers include
+the SNP bases present "outside" of that lineage such that that specific SNP is not found in any of the hierarchical lineages.
 
 The `Output section <output.html>`_ contains more details on the errors that can be run into when running a sample.
 
@@ -108,8 +114,14 @@ Creating a Genotyping Scheme
 
 Creating a statistically valid, representative, and well established genotyping/subtyping scheme for biohansel is a large task. 
 Once a scheme is established however, it is easy to modify the scheme to fit the needs of the research and allow for 
-new classifications as they are discovered. When creating a genotyping scheme, keep in mind that the **organism should be clonal**. 
-All of the k-mers identified and created for the genotyping scheme should be found in all/almost all isolates for biohansel to work correctly.
+new classifications as they are discovered. When creating a genotyping scheme, keep in mind that the **organism should be clonal**,
+meaning that the majority of the target pathogen population should belong to a recent clonal expansion, or should represent a pathogen with
+a very slow genetic evolution (e.g. *M. tuberculosis*).  BioHansel functions by finding exact matches to the k-mers defined in the scheme, 
+so populations with a high genetic diversity will not have a sufficient number of k-mer pairs (or split k-mers) that are conserved across
+the whole population, leading to entire lineages that could fail BioHansel QC. All of the k-mers pairs identified and created for the
+genotyping scheme should be found in all or almost all the isolates for biohansel to work correctly. If the genetic diversity of the target
+population is higher (e.g. >3,000 SNPs across the core genome between isolates), a wgMLST or cgMLST scheme would be more appropriate
+than a SNP-based scheme, as is the case for *Salmonella* serotyping.  
 
 To create a well constructed genotyping scheme the steps below should be followed. 
 However, you do not need to follow the steps to create a genotyping scheme and you can create a quick one to identify certain k-mers 
@@ -131,7 +143,7 @@ from the test samples run. The steps are:
 - de-duplicate the dataset
 
 
-2. Choose an available reference genome for the organism (ideally closed). 
+2. Choose an available reference genome for the organism (ideally a closed/complete genome). 
 
 
 3. Subdivide the population into closely related clonal groups using MASH followed by SNP analysis. 
@@ -140,7 +152,7 @@ included schemes is `Mash version 2 <https://mash.readthedocs.io/en/latest/>`_.
 The SNP analysis can be done with a number of tools including `SNVPhyl <https://snvphyl.readthedocs.io/en/latest/>`_, 
 `parsnp <https://github.com/marbl/parsnp>`_, `snippy <https://github.com/tseemann/snippy>`_, or any tool that you prefer.
 
-- Aim for groups that are less than 3000SNPs between strains over more than 80% of the reference genome
+- Aim for groups that are less than 3,000 SNPs between strains over more than 80% of the reference genome
 
 |mash_results|
 
@@ -190,7 +202,7 @@ and `MEGA <https://www.megasoftware.net/webhelp/helpfile.htm#contexthelp_hc/hc_m
 
 - Tree branches are at least 2 SNPs long
 
-	- Longer the branch the better as there will be more SNP positions to choose from for defining that genotype. 
+	- The longer the branch, the better, as there will be more SNP positions to choose from for defining that genotype. 
     You can look at a SNP file generated previously to look at the SNPs from regions that don't feature any indels 
     and are isolated by at least 15 (preferably 20) nucleotides on each side.
 
@@ -329,25 +341,30 @@ They should all be the same size with position 17 (or the middle position if usi
 K-mer_Structure
 ###############
 
-The structure k-mer pairs are structured as such and must follow the following format to work correctly:
+The structure k-mer pairs (split k-mers) are structured as such and the headers must follow the following format to work correctly:
 
 | **For the Positive k-mers:**
-|
+
 | >[SNP position in ref genome]-[genotype]
 | AAATTTCAGCTAGCTA\ **G**\ CTAGCAATCACTGATC
-| 
+|
+
 | **For the Negative k-mers:**
-| 
+
 | >negative[SNP position in ref genome]-[genotype]
 | AAATTTCAGCTAGCTA\ **T**\ CTAGCAATCACTGATC
+|
 
 An example with real data:
 
 | >2981-2.2.3.1.4
 | ACTGCCGCCGGAGCCG\ **T**\ GTGAAAATATTGTTTA
-| 
+|
+
 | >negative2981-2.2.3.1.4
 | ACTGCCGCCGGAGCCG\ **C**\ GTGAAAATATTGTTTA
+|
+
 
 
 ***The first distinction between genotypes 1 and 2 (or potentially more genotypes) does not have a negative condition 
@@ -356,9 +373,24 @@ k-mers shown above and looks like such:
 
 | >717-1
 | ATGCAGAGTCAGTCAG\ **A**\ TCAACATGCACCCACA
-| 
+|
+
 | >717-2
 | ATGCAGAGTCAGTCAG\ **T**\ TCAACATGCACCCACA
+|
 
 
-16. Test the created scheme by running biohansel to verify that all of the expected positive target sequences are present in the corresponding strains. Eliminate targeted k-mers from the scheme that do not work well and verify that the targeted k-mers created are present in most of the dataset. Finally test the scheme on a de novo assembly along with raw Illumina sequencing reads to make sure it holds true for both.
+**Notes**
+-The k-mer length can be variable, and the length of the positive and negative k-mers within a pair does not need to be the same.
+-BioHansel can work using a list of positive k-mers exclusively, but then the user will not benefit from the quality
+controls that are performed in BioHansel using k-mer pairs.
+-The target canonical SNP can be located anywhere within the k-mer; it does not need to be in the center of the k-mer sequence.
+-Since the tool relies on finding exact k-mer matches, the positive k-mer sequence could in theory target an indel sequence that is conserved
+in a lineage and absent in the rest of the pathogen population. In that case, the corresponding negative k-mer should be found in
+the rest of the population and not in that lineage (for example, the negative k-mer sequence could be spanning the insertion or
+deletion site in the rest of the population).  
+
+16. Test the created scheme by running biohansel to verify that all of the expected positive target sequences are present in the
+corresponding strains. Eliminate targeted k-mers from the scheme that do not work well and verify that the targeted k-mers pairs created
+are present in most of the dataset. Finally test the scheme on a de novo assembly along with raw Illumina sequencing reads to make
+sure it holds true for both.
