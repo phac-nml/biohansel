@@ -335,7 +335,6 @@ attached to the correct genotype. This can be done also using a script (currentl
 separate lines. The order of the files in the scheme does not matter for biohansel input.
 
 It is important that the K-mers follow the exact format or the analysis will generate errors and potentially fail. 
-They should all be the same size with position 17 (or the middle position if using a smaller k-mer size) containing the SNP.
 
 
 K-mer_Structure
