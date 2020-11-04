@@ -23,11 +23,11 @@
 
 Subtype microbial whole-genome sequencing (WGS) data using SNV targeting k-mer subtyping schemes.
 
-Includes 33 bp k-mer SNV subtyping schemes for *Salmonella enterica* subsp. enterica serovars Heidelberg, Enteritidis, and Typhimurium genomes developed by Genevieve Labbe et al., and for *S*. ser Typhi adapted from Wong et al. (https://www.nature.com/articles/ncomms12827), Britto et al. (https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0006408), Rahman et al. (https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0008036), and Klemm et al. (https://mbio.asm.org/content/9/1/e00105-18).
+Includes 33 bp k-mer SNV subtyping schemes for *Salmonella enterica* subsp. enterica serovars Heidelberg, Enteritidis, and Typhimurium genomes developed by Genevieve Labbe et al., and for *S*. ser Typhi adapted from `Wong et al. <https://www.nature.com/articles/ncomms12827)>`_, `Britto et al. <https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0006408>`_, `Rahman et al. <https://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0008036>`_, and `Klemm et al. <https://mbio.asm.org/content/9/1/e00105-18>`_.
 
 Works on genome assemblies (FASTA files) or reads (FASTQ files)! Accepts Gzipped FASTA/FASTQ files as input!
 
-Also includes a *Mycobacterium tuberculosis* lineage scheme adapted from Coll et al. (https://www.nature.com/articles/ncomms5812) by Daniel Kein.
+Also includes a *Mycobacterium tuberculosis* lineage scheme adapted from `Coll et al. <https://www.nature.com/articles/ncomms5812>`_ by Daniel Kein.
 
 
 Citation
