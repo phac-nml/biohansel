@@ -486,7 +486,7 @@ Caused by both conditions met:
 |inconsistent|
 
 |
-*"Error Type 4: Unconfident/Not confident result"*
+*"Error Type 4: Unconfident/Inconclusive result"*
 """"""""""""""""""""""""""""""""""""""""""""""""""
 Lineage call is uncertain due to missing targets in downstream sublineage.
 
