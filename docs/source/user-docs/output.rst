@@ -101,9 +101,22 @@ a list of positive genotypes, or no genotype depending on the results of the ana
 If this column does not display a single positive genotype, it will show one of the two following situations:
 
 1. Different genotypes if mixed samples are run or there is an error in a user-created scheme.
-In this case, biohansel will list all different genotypes detected.
+In this case, biohansel can list multiple different genotypes that were detected.  
+
+**Genotype assignment**
+
+Genotype assignment uses only the identified positive k-mers and the overall genotype is determined by the most resolved
+genotyping k-mer(s) identified (e.g. the k-mer(s) associated with the genotype(s) that have the **highest** number of hierarchical
+levels).  In the case of a mixed sample, it can result in two or more genotypes being assigned, if they have the same number of
+hierarchical levels (e.g.: 1.1.1 and 1.1.2; which both have 3 hierarchical levels).
+
+**Troubleshooting note**
+
+The genotype with the highest number of hierarchical levels could correspond to a contaminant, rather than the genotype with
+the highest genome coverage, in a mixed sample.
 
 |mixed_result|
+
 
 2. If no positive target is detected, the column will be blank and the qc_message will state that no k-mers/targets were found.
 
@@ -486,7 +499,7 @@ Caused by both conditions met:
 |inconsistent|
 
 |
-*"Error Type 4: Unconfident/Not confident result"*
+*"Error Type 4: Unconfident/Inconclusive result"*
 """"""""""""""""""""""""""""""""""""""""""""""""""
 Lineage call is uncertain due to missing targets in downstream sublineage.
 

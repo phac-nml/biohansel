@@ -8,7 +8,7 @@ The three input files are:
 
 - The WGS data/assembled genome added as a FASTQ or FASTA file
 
-- A chosen genotyping scheme (heidelberg or enteritidis) or a user created custom genotyping scheme (FASTA).
+- A chosen genotyping scheme (heidelberg, enteritidis, typhimurium, typhi, or tb_lineage) or a user-created custom genotyping scheme (FASTA).
 More info in the `genotyping schemes section <genotyping_schemes.html>`_.
 
 - A metadata table (**Optional**) in CSV or TSV (tab-delimited) format to add additional information to the results. A **.tsv file is highly recommended** as csv files are currently unstable
@@ -30,8 +30,8 @@ through another program/tool. To run the command, the arguments that must be spe
 - Any combination of the results delimiters and names (file names can be changed but must be included after the argument):
 
     - -o results.tab
-    - -O match_results.tab
-    - -S tech_results.tab
+    - -O detailed_results.tab
+    - -S simple_summary.tab
 
 - The name of the FASTA file at the end of the command
 
@@ -39,14 +39,14 @@ An example command for the analysis of a single FASTA file called SRR1002850.fas
 
 .. code-block:: bash
 
-    hansel -s heidelberg -vv -o results.tab -O match_results.tab /path/to/SRR1002850.fasta
+    hansel -s heidelberg -vv -o results.tab -O detailed_results.tab /path/to/SRR1002850.fasta
 
 Or, if you have already changed to the directory containing the dataset, you can use the following
 command where you do not have to specify the path to the data:
 
 .. code-block:: bash
 
-    hansel -s heidelberg -vv -o results.tab -O match_results.tab SRR1002850.fasta
+    hansel -s heidelberg -vv -o results.tab -O detailed_results.tab SRR1002850.fasta
 
 The output of the biohansel tool can be found in the directory that the command was run from.
 
@@ -62,8 +62,8 @@ Analysis of a single FASTQ readset would be run on raw sequencing data. To run t
 - Any combination of the results delimiters and names (file names can be changed but must be included after the argument):
  
     - -o results.tab
-    - -O match_results.tab
-    - -S tech_results.tab
+    - -O detailed_results.tab
+    - -S simple_summary.tab
 
 - The name of the FASTQ file(s) at the end of the command
     - For single-end reads include the one file 
@@ -73,14 +73,14 @@ An example command for the analysis of a single single-end reads run dataset wou
 
 .. code-block:: bash
 
-    hansel -s heidelberg -vv -t 4 -o results.tab -O match_results.tab SRR5646583.fastqsanger
+    hansel -s heidelberg -vv -t 4 -o results.tab -O detailed_results.tab SRR5646583.fastqsanger
 
 
 An example command for the analysis of a single paired-end reads run dataset would look like:
 
 .. code-block:: bash
 
-    hansel -s heidelberg -vv -t 4 -o results.tab -O match_results.tab -p SRR5646583_forward.fastqsanger SRR5646583_reverse.fastqsanger
+    hansel -s heidelberg -vv -t 4 -o results.tab -O detailed_results.tab -p SRR5646583_forward.fastqsanger SRR5646583_reverse.fastqsanger
 
 
 Analysis of all FASTA/FASTQ files in a directory
@@ -101,8 +101,8 @@ Analysis of all of the sequencing files in a directory must include following th
 - Any combination of the results delimiters and names (file names can be changed but must be included after the argument):
  
     - -o results.tab
-    - -O match_results.tab
-    - -S tech_results.tab
+    - -O detailed_results.tab
+    - -S simple_summary.tab
 
 - -D /path/to/directory_with_data
 
@@ -115,7 +115,7 @@ An example of a general command for the analysis of a directory of FASTA/FASTQ f
 
 .. code-block:: bash
 
-    hansel -s heidelberg -vv --threads <n_cpu> -o results.tab -O match_results.tab -D /path/to/fastas_or_fastqs/
+    hansel -s heidelberg -vv --threads <n_cpu> -o results.tab -O detailed_results.tab -D /path/to/fastas_or_fastqs/
 
 The chosen output files can be found in the directory that the command was run from or that was specified in the output
 names and it will contain data from each of the analyzed files run by biohansel. 
@@ -125,7 +125,7 @@ I could cd to my user folder and run the following command:
 
 .. code-block:: bash
 
-    hansel -s heidelberg -vv --threads 1 -o results.tab -O match_results.tab -D data/
+    hansel -s heidelberg -vv --threads 1 -o results.tab -O detailed_results.tab -D data/
 
 
 Genotype Metadata Table (Optional)
@@ -143,7 +143,7 @@ A command that incorporates the -M command for analysis would be structured foll
 
 .. code-block:: bash
 
-    hansel -s heidelberg -M <metadata_scheme.tsv> -vv -o results.tab -O match_results.tab <data>
+    hansel -s heidelberg -M <metadata_scheme.tsv> -vv -o results.tab -O detailed_results.tab <data>
 
 
 The biohansel results table will be joined with the genotype metadata table based if a genotype on the metadata
@@ -166,9 +166,9 @@ Example metadata table (called metadata.tsv):
 
 ***When naming a metadata table make sure there are no spaces or parentheses and that its extension is .tsv or the analysis may fail.*** 
 
-The added metadata will appear at then end of the results.tab and the tech_results.tab files.
+The added metadata will appear at then end of the results.tab and the simple_summary.tab files.
 
-Example: tech_results.tab without metadata added:
+Example: simple_summary.tab without metadata added:
 
 +----------+-----------+-----------+------------+ 
 | sample   | subtype   | qc_status | qc_message | 
@@ -177,7 +177,7 @@ Example: tech_results.tab without metadata added:
 +----------+-----------+-----------+------------+ 
 
 
-Example: tech_results.tab with metadata:
+Example: simple_summary.tab with metadata:
 
 +----------+-----------+-----------+------------+-------+--------+----------+ 
 | sample   | subtype   | qc_status | qc_message | Clade | Source | Symptoms | 

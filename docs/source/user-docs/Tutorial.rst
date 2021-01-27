@@ -117,7 +117,7 @@ the type of data being analyzed
 
 
 **4.** For the "SNP Subtyping Scheme", select the proper scheme corresponding to the organism in your samples.
-This can currently be the included Heidelberg or Enteritidis schemes or a user created FASTA file
+This can currently be the included *Salmonella* serovars Heidelberg, Enteritidis, Typhimurium, and Typhi schemes, or the *M. tuberculosis* scheme, or a user created FASTA file
 
     (For verification: select the "Salmonella Heidelberg subtype scheme")
        
@@ -126,7 +126,7 @@ This can currently be the included Heidelberg or Enteritidis schemes or a user c
 
 **5.** Optionally, add a Scheme Subtype Metadata Table can be added to the analysis to be included into the end of
 the results files. This file **must be in the .tsv format** to be added properly or the analysis may fail
-(.csv may work on Galaxy but if the analysis fails change it to .tsv). 
+(.csv may work on Galaxy but if the analysis fails, change it to .tsv). 
 
 |metadata|
 
