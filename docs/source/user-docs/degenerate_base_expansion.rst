@@ -18,7 +18,7 @@ Degenerate Base as a SNP:
 #########################
 
 Example k-mer pair with a single degenerate base as the SNP separating the pair. Here the SNP is bolded to try to make it easier to see. Remember
-that biohansel scheme k-mers can be any length so long as they are the same length throughout the scheme:
+that biohansel scheme k-mers can be any length, but should be long enough to be specific for a particular genome location:
 
 | >1231-2.2
 | TA\ **D**\ CT
