@@ -1,4 +1,4 @@
 Contact
 =======
 
-**Gary van Domselaar**: gary.vandomselaar@phac-aspc.gc.ca
+**Gary van Domselaar**: gary.vandomselaar@canada.ca
