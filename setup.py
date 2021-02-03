@@ -43,6 +43,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/phac-nml/biohansel',
-    version='2.4.0',
+    version='2.5.0',
     zip_safe=False,
 )
