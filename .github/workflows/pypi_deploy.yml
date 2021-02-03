@@ -1,0 +1,20 @@
+name: PyPI Deploy
+
+on:
+  push:
+    tags:
+      - v*.*.*
+jobs:
+  pypi_deploy:
+    name: PyPI Deploy
+    runs-on: ubuntu-latest
+    # Only run for the phac-nml/biohansel repo, for releases and pushes to master
+    if: ${{ github.repository == 'phac-nml/biohansel' }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - uses: casperdcl/deploy-pypi@v2
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+        with:
+          password: ${{ secrets.pypi_token }}
+          build: true
