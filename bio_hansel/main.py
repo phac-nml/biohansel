@@ -81,6 +81,9 @@ def init_parser():
     parser.add_argument('--min-kmer-freq',
                         type=int,
                         help='Min k-mer freq/coverage')
+    parser.add_argument('--min-kmer-frac',
+                        type=float,
+                        help='Proportion of k-mer required for detection (0.0 - 1)')
     parser.add_argument('--max-kmer-freq',
                         type=int,
                         help='Max k-mer freq/coverage')

@@ -228,6 +228,24 @@ def parallel_query_reads(reads: List[Tuple[List[str], str]],
     outputs = [x.get() for x in res]
     return outputs
 
+def filter_by_kmer_fraction(df,min_kmer_frac=0.05):
+    """Filter out noisy kmers from high coverage datasets
+
+    Args:
+        df: BioHansel k-mer frequence pandas df
+        min_kmer_frac: float 0 - 1 on the minimum fraction a kmer needs to be to be considered valid
+
+    Returns:
+        - pd.DataFrame with k-mers which satisfy the min-fraction
+    """
+    position_counts = df['refposition'].value_counts().rename_axis('position').reset_index(name='counts')
+    valid_indexes = []
+    for index,row in df.iterrows():
+        frac = row['refposition'] / position_counts.loc[position_counts['position'] == row['refposition'], 'counts'].iloc[0]
+        if frac > min_kmer_frac:
+            valid_indexes.append(index)
+    return df[df.index.isin(valid_indexes)]
+
 
 def subtype_reads(reads: Union[str, List[str]],
                   genome_name: str,
@@ -285,6 +303,9 @@ def subtype_reads(reads: Union[str, List[str]],
     df['subtype'] = subtypes
     df['is_pos_kmer'] = ~df.kmername.str.contains('negative')
     df['is_kmer_freq_okay'] = (df.freq >= subtyping_params.min_kmer_freq) & (df.freq <= subtyping_params.max_kmer_freq)
+    #apply a scaled approach for filtering of k-mers required for high coverage amplicon data
+    df = filter_by_kmer_fraction(df,subtyping_params.min_kmer_frac)
+
     st.avg_kmer_coverage = df['freq'].mean()
     st, df = process_subtyping_results(st, df[df.is_kmer_freq_okay], scheme_subtype_counts)
     st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)

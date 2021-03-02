@@ -8,6 +8,7 @@ class SubtypingParams(object):
     min_ambiguous_kmers = attr.ib(default=3, validator=attr.validators.instance_of(int))
     max_perc_intermediate_kmers = attr.ib(default=0.05, validator=attr.validators.instance_of(float))
     min_kmer_freq = attr.ib(default=8, validator=attr.validators.instance_of((float, int)))
+    min_kmer_frac = attr.ib(default=0.05, validator=attr.validators.instance_of(float))
     max_kmer_freq = attr.ib(default=1000000, validator=attr.validators.instance_of((float, int)))
     min_coverage_warning = attr.ib(default=20, validator=attr.validators.instance_of((float, int)))
     max_degenerate_kmers = attr.ib(default=10000000, validator=attr.validators.instance_of(int))
