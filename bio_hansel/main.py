@@ -258,6 +258,8 @@ def main():
     if output_kmer_results:
         if len(dfs) > 0:
             dfall: pd.DataFrame = pd.concat([df.sort_values('is_pos_kmer', ascending=False) for df in dfs], sort=False)
+            #Error message is redundant accross each of the k-mers
+            dfall.drop(columns=['qc_message'])
             dfall = df_field_fillna(dfall)
             dfall.to_csv(output_kmer_results, **kwargs_for_pd_to_table)
             logging.info('Kmer results written to "{}".'.format(output_kmer_results))
