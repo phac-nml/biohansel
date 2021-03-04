@@ -228,25 +228,29 @@ def parallel_query_reads(reads: List[Tuple[List[str], str]],
     outputs = [x.get() for x in res]
     return outputs
 
-def filter_by_kmer_fraction(df,min_kmer_frac=0.05):
-    """Filter out low frequency kmers from high coverage datasets which are likely the result of sequencing error
-        Positions will be variably covered in a dataset so the total number of kmers for each position are summed
-        and any k-mer which accounts for less than the min_kmer_frac will be removed from the df
+def calc_kmer_fraction(df,min_kmer_frac=0.05):
+    """Calculate the percentage each k-mer frequence represents for a given position
 
     Args:
         df: BioHansel k-mer frequence pandas df
         min_kmer_frac: float 0 - 1 on the minimum fraction a kmer needs to be to be considered valid
 
     Returns:
-        - pd.DataFrame with k-mers which satisfy the min-fraction
+        - pd.DataFrame with k-mers with kmer_fraction column
     """
     position_frequencies = df[['refposition','freq']].groupby(['refposition']).sum().reset_index()
-    valid_indexes = []
+    percentages = []
+    total_refposition_kmer_frequencies = []
     for index,row in df.iterrows():
-        frac = row['freq'] / position_frequencies.loc[position_frequencies['refposition'] == row['refposition'], 'freq'].iloc[0]
-        if frac > min_kmer_frac:
-            valid_indexes.append(index)
-    return df[df.index.isin(valid_indexes)]
+        total_freq = position_frequencies.loc[position_frequencies['refposition'] == row['refposition'], 'freq'].iloc[0]
+        if total_freq > 0:
+            percentages.append(row['freq'] / total_freq)
+        else:
+            percentages.append(0.0)
+        total_refposition_kmer_frequencies.append(total_freq)
+    df['kmer_fraction'] = percentages
+    df['total_refposition_kmer_frequency'] = total_refposition_kmer_frequencies
+    return df
 
 
 def subtype_reads(reads: Union[str, List[str]],
@@ -306,11 +310,11 @@ def subtype_reads(reads: Union[str, List[str]],
     df['is_pos_kmer'] = ~df.kmername.str.contains('negative')
     df['is_kmer_freq_okay'] = (df.freq >= subtyping_params.min_kmer_freq) & (df.freq <= subtyping_params.max_kmer_freq)
     #apply a scaled approach for filtering of k-mers required for high coverage amplicon data
-    df = filter_by_kmer_fraction(df,subtyping_params.min_kmer_frac)
-
+    df = calc_kmer_fraction(df,subtyping_params.min_kmer_frac)
+    df['is_kmer_fraction_okay'] = df.kmer_fraction >= subtyping_params.min_kmer_frac
     st.avg_kmer_coverage = df['freq'].mean()
-    st, df = process_subtyping_results(st, df[df.is_kmer_freq_okay], scheme_subtype_counts)
-    st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
+    st, filtered_df = process_subtyping_results(st, df[(df.is_kmer_freq_okay & df.is_kmer_fraction_okay)], scheme_subtype_counts)
+    st.qc_status, st.qc_message = perform_quality_check(st, filtered_df, subtyping_params)
     df['file_path'] = str(st.file_path)
     df['sample'] = genome_name
     df['scheme'] = scheme_name or scheme
