@@ -200,6 +200,8 @@ def init_subtyping_params(args: Optional[Any] = None,
             subtyping_params.min_coverage_warning = args.low_cov_warning
         if args.min_kmer_freq:
             subtyping_params.min_kmer_freq = args.min_kmer_freq
+        if args.min_kmer_frac:
+            subtyping_params.min_kmer_frac = args.min_kmer_frac
         if args.max_kmer_freq:
             subtyping_params.max_kmer_freq = args.max_kmer_freq
         if args.max_degenerate_kmers:
