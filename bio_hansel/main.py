@@ -12,15 +12,15 @@ from pkg_resources import resource_filename
 import attr
 import pandas as pd
 
-from . import program_desc, __version__, program_name
-from .const import SUBTYPE_SUMMARY_COLS, REGEX_FASTQ, REGEX_FASTA, JSON_EXT_TMPL
-from .subtype import Subtype
-from .subtype_stats import subtype_counts
-from .subtyper import \
+from bio_hansel import program_desc, __version__, program_name
+from bio_hansel.const import SUBTYPE_SUMMARY_COLS, REGEX_FASTQ, REGEX_FASTA, JSON_EXT_TMPL
+from bio_hansel.subtype import Subtype
+from bio_hansel.subtype_stats import subtype_counts
+from bio_hansel.subtyper import \
     subtype_contigs_samples, \
     subtype_reads_samples
-from .metadata import read_metadata_table, merge_results_with_metadata
-from .utils import (genome_name_from_fasta_path, get_scheme_fasta, does_file_exist, collect_fastq_from_dir,
+from bio_hansel.metadata import read_metadata_table, merge_results_with_metadata
+from bio_hansel.utils import (genome_name_from_fasta_path, get_scheme_fasta, does_file_exist, collect_fastq_from_dir,
                     group_fastqs, collect_fasta_from_dir, init_subtyping_params, df_field_fillna)
 
 SCRIPT_NAME = 'hansel'
@@ -81,6 +81,9 @@ def init_parser():
     parser.add_argument('--min-kmer-freq',
                         type=int,
                         help='Min k-mer freq/coverage')
+    parser.add_argument('--min-kmer-frac',
+                        type=float,
+                        help='Proportion of k-mer required for detection (0.0 - 1)')
     parser.add_argument('--max-kmer-freq',
                         type=int,
                         help='Max k-mer freq/coverage')
@@ -258,6 +261,8 @@ def main():
     if output_kmer_results:
         if len(dfs) > 0:
             dfall: pd.DataFrame = pd.concat([df.sort_values('is_pos_kmer', ascending=False) for df in dfs], sort=False)
+            #Error message is redundant accross each of the k-mers
+            dfall = dfall.drop(columns=['qc_message'])
             dfall = df_field_fillna(dfall)
             dfall.to_csv(output_kmer_results, **kwargs_for_pd_to_table)
             logging.info('Kmer results written to "{}".'.format(output_kmer_results))

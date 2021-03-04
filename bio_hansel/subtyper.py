@@ -228,6 +228,32 @@ def parallel_query_reads(reads: List[Tuple[List[str], str]],
     outputs = [x.get() for x in res]
     return outputs
 
+def get_kmer_fraction(row):
+    """Calculate the percentage frequency of a given position
+
+    Args:
+        df: BioHansel k-mer frequence pandas df row
+    Returns:
+        - float of percentage abundance
+    """
+    total_freq = row.total_refposition_kmer_frequency
+    return row.freq / total_freq if total_freq > 0 else 0.0
+
+def calc_kmer_fraction(df):
+    """Calculate the percentage each k-mer frequency represents for a given position
+
+    Args:
+        df: BioHansel k-mer frequence pandas df
+
+    Returns:
+        - pd.DataFrame with k-mers with kmer_fraction and total_refposition_kmer_frequency columns added
+    """
+    position_frequencies = df[['refposition','freq']].groupby(['refposition']).sum().to_dict()
+    df['total_refposition_kmer_frequency'] =  df.apply(lambda row: position_frequencies['freq'].get(row.refposition, 0), axis=1)
+    df['kmer_fraction'] = df.apply(get_kmer_fraction, axis=1)
+
+    return df
+
 
 def subtype_reads(reads: Union[str, List[str]],
                   genome_name: str,
@@ -285,9 +311,12 @@ def subtype_reads(reads: Union[str, List[str]],
     df['subtype'] = subtypes
     df['is_pos_kmer'] = ~df.kmername.str.contains('negative')
     df['is_kmer_freq_okay'] = (df.freq >= subtyping_params.min_kmer_freq) & (df.freq <= subtyping_params.max_kmer_freq)
+    #apply a scaled approach for filtering of k-mers required for high coverage amplicon data
+    df = calc_kmer_fraction(df)
+    df['is_kmer_fraction_okay'] = df.kmer_fraction >= subtyping_params.min_kmer_frac
     st.avg_kmer_coverage = df['freq'].mean()
-    st, df = process_subtyping_results(st, df[df.is_kmer_freq_okay], scheme_subtype_counts)
-    st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
+    st, filtered_df = process_subtyping_results(st, df[(df.is_kmer_freq_okay & df.is_kmer_fraction_okay)], scheme_subtype_counts)
+    st.qc_status, st.qc_message = perform_quality_check(st, filtered_df, subtyping_params)
     df['file_path'] = str(st.file_path)
     df['sample'] = genome_name
     df['scheme'] = scheme_name or scheme

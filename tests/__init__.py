@@ -19,6 +19,7 @@ exp_fasta_cols = ['kmername', 'contig_id', 'refposition', 'seq', 'subtype', 'mat
                   'is_pos_kmer', 'sample', 'file_path', 'scheme', 'scheme_version', 'qc_status', 'qc_message']
 
 exp_fastq_cols = ['kmername', 'refposition', 'subtype', 'seq', 'freq', 'is_pos_kmer', 'is_kmer_freq_okay',
+                  'kmer_fraction','total_refposition_kmer_frequency','is_kmer_fraction_okay',
                   'sample', 'file_path', 'scheme', 'scheme_version', 'qc_status', 'qc_message']
 
 
