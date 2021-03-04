@@ -4,7 +4,7 @@ from pandas import DataFrame
 from bio_hansel.const import SCHEME_FASTAS
 from bio_hansel.qc.const import QC
 from bio_hansel.subtype import Subtype
-from bio_hansel.subtyper import subtype_reads,subtype_contigs
+from bio_hansel.subtyper import subtype_reads, subtype_contigs
 from . import check_df_fastq_cols, check_subtype_attrs
 
 genome_name = 'test'
@@ -60,6 +60,7 @@ def subtype_enteritidis_fail():
                    n_kmers_matching_subtype_expected='6',
                    qc_status=QC.FAIL)
 
+
 @pytest.fixture()
 def subtype_heidelberg_SRR1002850_pass():
     return Subtype(scheme=scheme_heidelberg,
@@ -75,6 +76,7 @@ def subtype_heidelberg_SRR1002850_pass():
                    n_kmers_matching_subtype=3,
                    n_kmers_matching_subtype_expected='3',
                    qc_status=QC.PASS)
+
 
 @pytest.fixture()
 def subtype_typhi_AE014613_pass():
@@ -92,6 +94,7 @@ def subtype_typhi_AE014613_pass():
                    n_kmers_matching_subtype_expected='1',
                    qc_status=QC.PASS)
 
+
 @pytest.fixture()
 def subtype_tb_AP018036_pass():
     return Subtype(scheme=scheme_tuberculosis,
@@ -107,6 +110,7 @@ def subtype_tb_AP018036_pass():
                    n_kmers_matching_subtype=1,
                    n_kmers_matching_subtype_expected='1',
                    qc_status=QC.PASS)
+
 
 @pytest.fixture()
 def subtype_typhimurium_pass():
@@ -137,27 +141,29 @@ def test_heidelberg_scheme_vs_qc_passing_reads_with_ac(subtype_heidelberg_pass):
     check_df_fastq_cols(dfgz)
 
 
-
 def test_heidelberg_scheme_and_lowcase_seq_inputs(subtype_heidelberg_SRR1002850_pass):
     st, df = subtype_contigs(fasta_path=fasta_heidelberg_pass, genome_name=genome_name, scheme=scheme_heidelberg)
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
-    check_subtype_attrs(st,subtype_heidelberg_SRR1002850_pass)
+    check_subtype_attrs(st, subtype_heidelberg_SRR1002850_pass)
+
 
 def test_typhi_scheme(subtype_typhi_AE014613_pass):
     st, df = subtype_contigs(fasta_path=fasta_typhi_pass, genome_name=genome_name, scheme=scheme_typhi)
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
-    check_subtype_attrs(st,subtype_typhi_AE014613_pass)
+    check_subtype_attrs(st, subtype_typhi_AE014613_pass)
+
 
 def test_tuberculosis_scheme(subtype_tb_AP018036_pass):
     st, df = subtype_contigs(fasta_path=fasta_tb_pass, genome_name=genome_name, scheme=scheme_tuberculosis)
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
-    check_subtype_attrs(st,subtype_tb_AP018036_pass)
+    check_subtype_attrs(st, subtype_tb_AP018036_pass)
+
 
 def test_typhimurium_scheme(subtype_typhimurium_pass):
     st, df = subtype_contigs(fasta_path=fasta_typhimurium_pass, genome_name=genome_name, scheme=scheme_typhimurium)
     assert isinstance(st, Subtype)
     assert isinstance(df, DataFrame)
-    check_subtype_attrs(st,subtype_typhimurium_pass)
+    check_subtype_attrs(st, subtype_typhimurium_pass)

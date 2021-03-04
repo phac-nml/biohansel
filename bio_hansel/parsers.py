@@ -24,15 +24,60 @@ VALID_NUCLEOTIDES = {'A', 'a',
 REGEX_GZIPPED = re.compile(r'^.+\.gz$')
 
 
+# SimpleFastaParser function from BioPython
+# https://github.com/biopython/biopython/blob/92c07ce7dce91078edc9b77fb71dbbe5646565bb/Bio/SeqIO/FastaIO.py#L24
+def SimpleFastaParser(handle):
+    """Iterate over Fasta records as string tuples.
+    Arguments:
+     - handle - input stream opened in text mode
+    For each record a tuple of two strings is returned, the FASTA title
+    line (without the leading '>' character), and the sequence (with any
+    whitespace removed). The title line is not divided up into an
+    identifier (the first word) and comment or description.
+    >>> with open("Fasta/dups.fasta") as handle:
+    ...     for values in SimpleFastaParser(handle):
+    ...         print(values)
+    ...
+    ('alpha', 'ACGTA')
+    ('beta', 'CGTC')
+    ('gamma', 'CCGCC')
+    ('alpha (again - this is a duplicate entry to test the indexing code)', 'ACGTA')
+    ('delta', 'CGCGC')
+    """
+    # Skip any text before the first record (e.g. blank lines, comments)
+    for line in handle:
+        if line[0] == ">":
+            title = line[1:].rstrip()
+            break
+    else:
+        # no break encountered - probably an empty file
+        return
+
+    # Main logic
+    # Note, remove trailing whitespace, and any internal spaces
+    # (and any embedded \r which are possible in mangled files
+    # when not opened in universal read lines mode)
+    lines = []
+    for line in handle:
+        if line[0] == ">":
+            yield title, "".join(lines).replace(" ", "").replace("\r", "").upper()
+            lines = []
+            title = line[1:].rstrip()
+            continue
+        lines.append(line.rstrip())
+
+    yield title, "".join(lines).replace(" ", "").replace("\r", "").upper()
+
+
 def parse_fasta(filepath):
-    '''Parse a FASTA/FASTA.GZ file returning a generator yielding tuples of fasta headers to sequences.
+    """Parse a FASTA/FASTA.GZ file returning a generator yielding tuples of fasta headers to sequences.
 
     Args:
         filepath (str): Fasta file path
 
     Returns:
         generator: yields tuples of (<fasta header>, <fasta sequence>)
-    '''
+    """
     if REGEX_GZIPPED.match(filepath):
         logging.debug('Opening "%s" as gzipped file', filepath)
         # using os.popen with zcat since it is much faster than gzip.open or gzip.open(io.BufferedReader)
@@ -40,40 +85,10 @@ def parse_fasta(filepath):
         # assumes Linux os with zcat installed
         import os
         with os.popen('zcat < {}'.format(filepath)) as f:
-            yield from _parse_fasta(f, filepath)
+            yield from SimpleFastaParser(f)
     else:
         with open(filepath, 'r') as f:
-            yield from _parse_fasta(f, filepath)
-
-
-def _parse_fasta(f, filepath):
-    seqs = []
-    header = ''
-    line_count = 0
-    for line in f:
-        if isinstance(line, bytes):
-            line = line.decode()
-        line = line.strip()
-        if line == '':
-            continue
-        if line[0] == '>':
-            if header == '':
-                header = line.replace('>', '')
-            else:
-                yield header, ''.join(seqs)
-                seqs = []
-                header = line.replace('>', '')
-        else:
-            non_nucleotide_chars_in_line = set(line) - VALID_NUCLEOTIDES
-            if len(non_nucleotide_chars_in_line) > 0:
-                msg = '{file}: Line {line} contains the following non-nucleotide characters: {chars}'.format(
-                    file=filepath,
-                    line=line_count,
-                    chars=', '.join([str(x) for x in non_nucleotide_chars_in_line]))
-                logging.warning(msg)
-            seqs.append(line.upper())
-        line_count += 1
-    yield header, ''.join(seqs)
+            yield from SimpleFastaParser(f)
 
 
 def parse_fastq(filepath):

@@ -2,9 +2,7 @@
 
 import pandas as pd
 
-
 from bio_hansel.qc.utils import get_mixed_subtype_kmer_counts, component_subtypes, get_conflicting_kmers
-
 
 fail_tsv = 'tests/data/qc/conflicting_subtypes/fail.tsv'
 pass_tsv = 'tests/data/qc/conflicting_subtypes/pass.tsv'
@@ -23,10 +21,10 @@ def test_get_mixed_subtype_kmer_counts():
     st_pos_kmers = get_mixed_subtype_kmer_counts(df, subtype_list)
 
     assert (isinstance(st_pos_kmers, dict))
-    assert(len(st_pos_kmers) == 3)
-    assert(int(st_pos_kmers.get('2.1')) == 5)
-    assert(int(st_pos_kmers.get('2.2')) == 3)
-    assert(int(st_pos_kmers.get('0')) == 1)
+    assert (len(st_pos_kmers) == 3)
+    assert (int(st_pos_kmers.get('2.1')) == 5)
+    assert (int(st_pos_kmers.get('2.2')) == 3)
+    assert (int(st_pos_kmers.get('0')) == 1)
 
 
 def test_component_subtypes():

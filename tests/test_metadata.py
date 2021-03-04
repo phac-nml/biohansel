@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from bio_hansel.metadata import read_metadata_table, merge_results_with_metadata
 from bio_hansel.utils import df_field_fillna

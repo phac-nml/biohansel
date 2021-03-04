@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from typing import List, Any, Optional, Tuple, Union
-
 import os
 import re
 from collections import defaultdict
+from itertools import product
+from typing import List, Any, Optional, Tuple, Union
 
 import pandas as pd
 
-from .const import SCHEME_FASTAS, REGEX_FASTQ, REGEX_FASTA
+from .const import SCHEME_FASTAS, REGEX_FASTQ, REGEX_FASTA, bases_dict
+from .parsers import parse_fasta
 from .subtyping_params import SubtypingParams
 
 
 def does_file_exist(filepath: str, force: bool):
     if filepath and os.path.exists(filepath):
         if not force:
-            file_exists_err_fmt = 'File "{}" already exists! If you want to overwrite this output file run with opt "--force"'
-            raise OSError(file_exists_err_fmt.format(filepath))
+            msg = f'File "{filepath}" already exists! If you want to overwrite this output file run with opt "--force"'
+            raise OSError(msg)
         else:
-            logging.warning('File "{}" already exists, overwriting with "--force" - uh oh :S')
+            logging.warning(f'File "{filepath}" already exists, overwriting with "--force"')
 
 
 def genome_name_from_fasta_path(fasta_path: str) -> str:
@@ -47,10 +48,7 @@ def genome_name_from_fasta_path(fasta_path: str) -> str:
 
 
 def compare_subtypes(a: List[Any], b: List[Any]) -> bool:
-    for x, y in zip(a, b):
-        if x != y:
-            return False
-    return True
+    return all(x == y for x, y in zip(a, b))
 
 
 def find_inconsistent_subtypes(subtypes: List[List[int]]) -> List[str]:
@@ -106,7 +104,7 @@ def collect_fastq_from_dir(input_directory: str) -> List[Union[str, Tuple[List[s
         full_file_path = os.path.abspath(os.path.join(input_directory, x))
         if os.path.isfile(full_file_path) and REGEX_FASTQ.match(x):
             fastqs.append(full_file_path)
-    if len(fastqs) > 0:
+    if fastqs:
         logging.info('Found %s FASTQ files in %s',
                      len(fastqs),
                      input_directory)
@@ -210,8 +208,51 @@ def init_subtyping_params(args: Optional[Any] = None,
     return subtyping_params
 
 
-def df_field_fillna(df: pd.DataFrame, field:str = 'subtype', na: str = '#N/A') -> pd.DataFrame:
+def df_field_fillna(df: pd.DataFrame, field: str = 'subtype', na: str = '#N/A') -> pd.DataFrame:
     df[field].replace('', na, inplace=True)
     df[field].fillna(value=na, inplace=True)
     df[field] = df[field].astype(str)
     return df
+
+
+def check_total_kmers(scheme_fasta, max_degenerate_kmers):
+    """Checks that the number of kmers about to be created is not at too high a computation or time cost
+
+    Args:
+         scheme_fasta: Kmer sequences from the SNV scheme
+         max_degenerate_kmers:  The max kmers allowed by the scheme
+
+    Raises:
+        ValueError if number of created kmers is greater than the max degenerate kmers argument
+    """
+    kmer_number = 0
+    for header, sequence in parse_fasta(scheme_fasta):
+        value = 1
+        for char in sequence:
+            length_key = len(bases_dict[char])
+            value *= length_key
+        kmer_number += value
+    if kmer_number * 2 > max_degenerate_kmers:
+        raise ValueError(f'Your current scheme contains "{kmer_number * 2}" '
+                         f'kmers which is over the current max degenerate '
+                         f'kmers check of "{max_degenerate_kmers}" '
+                         f'(Maximum recommended k-mers is 100,000). '
+                         f'It is not advised to run this scheme due to the '
+                         f'time and memory usage required to give an output '
+                         f'with this many kmers loaded. If you still want to '
+                         f'run this scheme, add the command line check of '
+                         f'"--max-degenerate-kmers {kmer_number * 2 + 1}" '
+                         f'at the end of your previous command.')
+
+
+def expand_degenerate_bases(seq):
+    """List all possible kmers for a scheme given a degenerate base
+
+    Args:
+         Scheme_kmers from SNV scheme fasta file
+
+    Returns:
+         List of all possible kmers given a degenerate base or not
+    """
+
+    return list(map("".join, product(*map(bases_dict.get, seq))))

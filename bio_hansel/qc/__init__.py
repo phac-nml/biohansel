@@ -4,9 +4,6 @@ from typing import List, Callable, Tuple
 
 from pandas import DataFrame
 
-from ..subtype import Subtype
-from ..subtyping_params import SubtypingParams
-from ..qc.const import QC
 from ..qc.checks import \
     is_missing_kmers, \
     is_mixed_subtype, \
@@ -15,16 +12,19 @@ from ..qc.checks import \
     is_missing_downstream_targets, \
     is_missing_hierarchical_kmers, \
     is_overall_coverage_low
+from ..qc.const import QC
+from ..subtype import Subtype
+from ..subtyping_params import SubtypingParams
 
-
-CHECKS = [is_missing_kmers,
-          is_mixed_subtype,
-          is_missing_too_many_target_sites,
-          is_missing_downstream_targets,
-          is_missing_hierarchical_kmers,
-          is_maybe_intermediate_subtype,
-          is_overall_coverage_low
-          ] # type: List[Callable[[Subtype, DataFrame, SubtypingParams], Tuple[str, str]]]
+CHECKS: List[Callable[[Subtype, DataFrame, SubtypingParams], Tuple[str, str]]] = [
+    is_missing_kmers,
+    is_mixed_subtype,
+    is_missing_too_many_target_sites,
+    is_missing_downstream_targets,
+    is_missing_hierarchical_kmers,
+    is_maybe_intermediate_subtype,
+    is_overall_coverage_low
+]
 
 
 def perform_quality_check(st: Subtype, df: DataFrame, subtyping_params: SubtypingParams) -> Tuple[str, str]:
@@ -35,7 +35,7 @@ def perform_quality_check(st: Subtype, df: DataFrame, subtyping_params: Subtypin
     Args:
         st: Subtyping results.
         df: DataFrame containing subtyping results.
-        p: Subtyping/QC parameters
+        subtyping_params: Subtyping/QC parameters
 
     Returns:
         (QC status, QC messages)
