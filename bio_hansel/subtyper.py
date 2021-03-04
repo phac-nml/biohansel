@@ -229,7 +229,9 @@ def parallel_query_reads(reads: List[Tuple[List[str], str]],
     return outputs
 
 def filter_by_kmer_fraction(df,min_kmer_frac=0.05):
-    """Filter out noisy kmers from high coverage datasets
+    """Filter out low frequency kmers from high coverage datasets which are likely the result of sequencing error
+        Positions will be variably covered in a dataset so the total number of kmers for each position are summed
+        and any k-mer which accounts for less than the min_kmer_frac will be removed from the df
 
     Args:
         df: BioHansel k-mer frequence pandas df
