@@ -240,10 +240,10 @@ def filter_by_kmer_fraction(df,min_kmer_frac=0.05):
     Returns:
         - pd.DataFrame with k-mers which satisfy the min-fraction
     """
-    position_counts = df['refposition'].value_counts().rename_axis('position').reset_index(name='counts')
+    position_frequencies = df[['refposition','freq']].groupby(['refposition']).sum().reset_index()
     valid_indexes = []
     for index,row in df.iterrows():
-        frac = row['refposition'] / position_counts.loc[position_counts['position'] == row['refposition'], 'counts'].iloc[0]
+        frac = row['freq'] / position_frequencies.loc[position_frequencies['refposition'] == row['refposition'], 'freq'].iloc[0]
         if frac > min_kmer_frac:
             valid_indexes.append(index)
     return df[df.index.isin(valid_indexes)]
