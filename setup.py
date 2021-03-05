@@ -14,10 +14,6 @@ requirements = [
     'rich'
 ]
 
-setup_requirements = ['pytest-runner', ]
-
-test_requirements = ['pytest', ]
-
 setup(
     author='Peter Kruczkiewicz',
     author_email='peter.kruczkiewicz@gmail.com',
@@ -38,7 +34,10 @@ setup(
     ],
     description='Subtype microbial whole-genome sequencing (WGS) '
                 'data using SNV targeting k-mer subtyping schemes.',
-    entry_points={'console_scripts': ['hansel=bio_hansel.main:main']},
+    entry_points={'console_scripts': [
+        'hansel=bio_hansel.main:main',
+        'biohansel=bio_hansel.main:main',
+    ]},
     install_requires=requirements,
     keywords='Salmonella enterica Heidelberg Enteritidis SNP kmer subtyping Aho-Corasick',
     license='Apache Software License 2.0',
@@ -46,10 +45,8 @@ setup(
     name='bio_hansel',
     package_data={'bio_hansel': ['data/*/*.fasta', 'data/*/*.tsv',]},
     packages=find_packages(exclude=['test_*.py', 'tests']),
-    setup_requires=setup_requirements,
     test_suite='tests',
-    tests_require=test_requirements,
     url='https://github.com/phac-nml/biohansel',
-    version='2.6.0',
+    version='2.6.1',
     zip_safe=False,
 )

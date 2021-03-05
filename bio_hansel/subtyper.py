@@ -481,7 +481,7 @@ def missing_nested_subtypes(subtype_result: str, positive_subtypes: Set[str]) ->
     Args:
         subtype_result: Final subtype result
         positive_subtypes: Set of unique positive subtypes found
-    
+
     Returns:
         String of missing hierarchical subtypes or `None` if there are no missing nested hierarchical subtypes.
     """
