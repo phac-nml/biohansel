@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import pytest
 import pandas as pd
+import pytest
 
 from bio_hansel.qc import is_maybe_intermediate_subtype
 from bio_hansel.qc.const import QC
@@ -91,12 +91,10 @@ def test_mixed_subtype_positive_negative_kmers_same_target():
     assert st.scheme == scheme
     assert st.qc_status == QC.FAIL
     expected_qc_msg = ('FAIL: Mixed subtype; the positive and negative kmers were found for the same '
-                      'target sites 202001, 600783, 1049933, 1193219, 2778621, 2904061, '
-                      '3278067, 3867228, 4499501, 4579224, 4738855, 202001, '
-                      '600783, 1049933, 1193219, 2778621, 2904061, 3278067, '
-                      '3867228, 4499501, 4579224, 4738855 for subtype "1.1".')
-    print(st.qc_message)
-    print(expected_qc_msg)
+                       'target sites 202001, 600783, 1049933, 1193219, 2778621, 2904061, '
+                       '3278067, 3867228, 4499501, 4579224, 4738855, 202001, '
+                       '600783, 1049933, 1193219, 2778621, 2904061, 3278067, '
+                       '3867228, 4499501, 4579224, 4738855 for subtype "1.1".')
     assert expected_qc_msg in st.qc_message
 
 
@@ -113,6 +111,7 @@ def test_unconfident_subtype():
     assert "'2.1.5.4.2'" in st.qc_message
     assert "'2.1.5.4.1'" in st.qc_message
 
+
 def test_missing_hierarchy_levels_in_subtype():
     scheme = 'heidelberg'
     fasta = 'tests/data/fail-qc-missing-levels.fasta'
@@ -123,11 +122,12 @@ def test_missing_hierarchy_levels_in_subtype():
     assert st.qc_status == QC.FAIL
     assert QC.UNCONFIDENT_RESULTS_ERROR_4 in st.qc_message
     assert "kmers for nested hierarchical subtype(s)" in st.qc_message
-    assert "2.1" in st.qc_message 
+    assert "2.1" in st.qc_message
     assert "2.1.1" in st.qc_message
 
+
 def test_too_many_kmers():
-    scheme = 'tests/data/too_many_kmers.fasta'
-    fasta = 'tests/data/fail-qc-missing-levels.fasta'
-    with pytest.raises(SystemExit):
-        assert subtype_contigs(fasta_path=fasta, genome_name=genome_name, scheme=scheme) == SystemExit
+    import bio_hansel.utils
+    with pytest.raises(ValueError):
+        scheme = 'tests/data/too_many_kmers.fasta'
+        assert bio_hansel.utils.check_total_kmers(scheme, 100000)

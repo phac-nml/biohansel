@@ -16,7 +16,7 @@ def component_subtypes(subtype: str) -> Iterable[str]:
     """
     split_subtype = subtype.split('.')
     for i, x in enumerate(split_subtype):
-        yield '.'.join(split_subtype[:i+1])
+        yield '.'.join(split_subtype[:i + 1])
 
 
 def get_conflicting_kmers(subtype: str, df: DataFrame, is_fastq_input: bool = True) -> Optional[DataFrame]:
@@ -25,8 +25,9 @@ def get_conflicting_kmers(subtype: str, df: DataFrame, is_fastq_input: bool = Tr
     Find positive and negative kmers for the same refposition/target site in the results `df`.
 
     Args:
-        st: Subtype results summary
+        subtype: Subtype results summary
         df: Detailed subtyping results
+        is_fastq_input: FASTQ input?
 
     Returns:
         DataFrame of conflicting positive and negative kmers

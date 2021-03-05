@@ -3,12 +3,12 @@
 Functions for subtyping of reads (e.g. FASTQ) and contigs (e.g. FASTA) using bio_hansel-compatible subtyping schemes.
 """
 import logging
-from typing import Optional, List, Dict, Union, Tuple
+import re
+from typing import Optional, List, Dict, Union, Tuple, Set
 
 import pandas as pd
-import re
 
-from .aho_corasick import check_total_kmers, init_automaton, find_in_fasta, find_in_fastqs
+from .aho_corasick import init_automaton, find_in_fasta, find_in_fastqs
 from .const import COLUMNS_TO_REMOVE
 from .qc import perform_quality_check, QC
 from .subtype import Subtype
@@ -95,8 +95,8 @@ def subtype_contigs(fasta_path: str,
                     scheme: str,
                     subtyping_params: Optional[SubtypingParams] = None,
                     scheme_name: Optional[str] = None,
-                    scheme_subtype_counts: Optional[Dict[str, SubtypeCounts]] = None) -> Tuple[
-    Subtype, pd.DataFrame]:
+                    scheme_subtype_counts: Optional[Dict[str, SubtypeCounts]] = None) \
+        -> Tuple[Subtype, pd.DataFrame]:
     """Subtype input contigs using a particular scheme.
 
     Args:
@@ -123,7 +123,6 @@ def subtype_contigs(fasta_path: str,
                  scheme_version=scheme_version,
                  scheme_subtype_counts=scheme_subtype_counts)
 
-    check_total_kmers(scheme_fasta, subtyping_params)
     automaton = init_automaton(scheme_fasta)
     df = find_in_fasta(automaton, fasta_path)
 
@@ -188,8 +187,7 @@ def parallel_query_contigs(input_genomes: List[Tuple[str, str]],
                                               scheme_subtype_counts))
            for input_fasta, genome_name in input_genomes]
     logging.info('Parallel analysis complete! Retrieving analysis results')
-    outputs = [x.get() for x in res]
-    return outputs
+    return [x.get() for x in res]
 
 
 def parallel_query_reads(reads: List[Tuple[List[str], str]],
@@ -225,8 +223,36 @@ def parallel_query_reads(reads: List[Tuple[List[str], str]],
                                             scheme_subtype_counts))
            for fastqs, genome_name in reads]
     logging.info('Parallel analysis complete! Retrieving analysis results')
-    outputs = [x.get() for x in res]
-    return outputs
+    return [x.get() for x in res]
+
+
+def get_kmer_fraction(row):
+    """Calculate the percentage frequency of a given position
+
+    Args:
+        row: BioHansel k-mer frequence pandas df row
+    Returns:
+        - float of percentage abundance
+    """
+    total_freq = row.total_refposition_kmer_frequency
+    return row.freq / total_freq if total_freq > 0 else 0.0
+
+
+def calc_kmer_fraction(df):
+    """Calculate the percentage each k-mer frequency represents for a given position
+
+    Args:
+        df: BioHansel k-mer frequence pandas df
+
+    Returns:
+        - pd.DataFrame with k-mers with kmer_fraction and total_refposition_kmer_frequency columns added
+    """
+    position_frequencies = df[['refposition', 'freq']].groupby(['refposition']).sum().to_dict()
+    df['total_refposition_kmer_frequency'] = df.apply(lambda row: position_frequencies['freq'].get(row.refposition, 0),
+                                                      axis=1)
+    df['kmer_fraction'] = df.apply(get_kmer_fraction, axis=1)
+
+    return df
 
 
 def subtype_reads(reads: Union[str, List[str]],
@@ -234,8 +260,8 @@ def subtype_reads(reads: Union[str, List[str]],
                   scheme: str,
                   scheme_name: Optional[str] = None,
                   subtyping_params: Optional[SubtypingParams] = None,
-                  scheme_subtype_counts: Optional[Dict[str, SubtypeCounts]] = None) -> Tuple[
-    Subtype, Optional[pd.DataFrame]]:
+                  scheme_subtype_counts: Optional[Dict[str, SubtypeCounts]] = None) \
+        -> Tuple[Subtype, Optional[pd.DataFrame]]:
     """Subtype input reads using a particular scheme.
 
     Args:
@@ -263,7 +289,6 @@ def subtype_reads(reads: Union[str, List[str]],
                  scheme_version=scheme_version,
                  scheme_subtype_counts=scheme_subtype_counts)
 
-    check_total_kmers(scheme_fasta, subtyping_params)
     automaton = init_automaton(scheme_fasta)
     if isinstance(reads, str):
         df = find_in_fastqs(automaton, reads)
@@ -285,9 +310,13 @@ def subtype_reads(reads: Union[str, List[str]],
     df['subtype'] = subtypes
     df['is_pos_kmer'] = ~df.kmername.str.contains('negative')
     df['is_kmer_freq_okay'] = (df.freq >= subtyping_params.min_kmer_freq) & (df.freq <= subtyping_params.max_kmer_freq)
+    # apply a scaled approach for filtering of k-mers required for high coverage amplicon data
+    df = calc_kmer_fraction(df)
+    df['is_kmer_fraction_okay'] = df.kmer_fraction >= subtyping_params.min_kmer_frac
     st.avg_kmer_coverage = df['freq'].mean()
-    st, df = process_subtyping_results(st, df[df.is_kmer_freq_okay], scheme_subtype_counts)
-    st.qc_status, st.qc_message = perform_quality_check(st, df, subtyping_params)
+    st, filtered_df = process_subtyping_results(st, df[(df.is_kmer_freq_okay & df.is_kmer_fraction_okay)],
+                                                scheme_subtype_counts)
+    st.qc_status, st.qc_message = perform_quality_check(st, filtered_df, subtyping_params)
     df['file_path'] = str(st.file_path)
     df['sample'] = genome_name
     df['scheme'] = scheme_name or scheme
@@ -298,8 +327,9 @@ def subtype_reads(reads: Union[str, List[str]],
     return st, df
 
 
-def process_subtyping_results(st: Subtype, df: pd.DataFrame, scheme_subtype_counts: Dict[str, SubtypeCounts]) -> Tuple[
-    Subtype, pd.DataFrame]:
+def process_subtyping_results(st: Subtype,
+                              df: pd.DataFrame,
+                              scheme_subtype_counts: Dict[str, SubtypeCounts]) -> Tuple[Subtype, pd.DataFrame]:
     """Process the subtyping results to get the final subtype result and summary stats
 
     Args:
@@ -316,7 +346,7 @@ def process_subtyping_results(st: Subtype, df: pd.DataFrame, scheme_subtype_coun
     st = set_inconsistent_subtypes(st, find_inconsistent_subtypes(sorted_subtype_ints(dfpos.subtype)))
     st = set_subtyping_stats(st, df, dfpos, dfpos_highest_res, subtype_list, scheme_subtype_counts)
     st.non_present_subtypes = absent_downstream_subtypes(st.subtype, df.subtype, list(scheme_subtype_counts.keys()))
-    st.missing_nested_subtypes = missing_nested_subtypes(st.subtype, dfpos)
+    st.missing_nested_subtypes = missing_nested_subtypes(st.subtype, set(dfpos.subtype.unique()))
     return st, df
 
 
@@ -372,23 +402,6 @@ def set_subtyping_stats(st: Subtype,
     return st
 
 
-def count_periods(s: str) -> int:
-    """Count the number of periods in a string.
-
-    Examples:
-
-        count_periods("2.1.1") => 2
-        count_periods("1") => 0
-
-    Args:
-        s: Some string with periods
-
-    Returns:
-        The number of periods found in the input string.
-    """
-    return sum((1 for c in list(s) if c == '.'))
-
-
 def highest_resolution_subtype_results(df: pd.DataFrame) -> pd.DataFrame:
     """Get the highest resolution subtype results
 
@@ -400,7 +413,8 @@ def highest_resolution_subtype_results(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         Highest resolution (most periods in subtype) subtyping results
     """
-    subtype_lens = df.subtype.apply(count_periods)
+    subtype_series: pd.Series = df.subtype
+    subtype_lens = subtype_series.str.count(r'\.')
     max_subtype_strlen = subtype_lens.max()
     return df[subtype_lens == max_subtype_strlen]
 
@@ -421,7 +435,9 @@ def sorted_subtype_ints(subtypes: pd.Series) -> List[List[int]]:
     return subtypes_ints
 
 
-def absent_downstream_subtypes(subtype: str, subtypes: pd.Series, scheme_subtypes: List[str]) -> Optional[List[str]]:
+def absent_downstream_subtypes(subtype: str,
+                               subtypes: pd.Series,
+                               scheme_subtypes: List[str]) -> Optional[List[str]]:
     """Find the downstream subtypes that are not present in the results
 
     Args:
@@ -437,44 +453,43 @@ def absent_downstream_subtypes(subtype: str, subtypes: pd.Series, scheme_subtype
     re_subtype = re.compile(r'^{}\.\d+$'.format(escaped_subtype))
     downstream_subtypes = [s for s in scheme_subtypes if re_subtype.search(s)]
     absentees = [x for x in downstream_subtypes if not (subtypes == x).any()]
-    return absentees if len(absentees) > 0 else None
+    return absentees if absentees else None
 
 
-def subtype_sets(st_vals: list, pos_subtypes_set: set, primary_subtypes_set: set) -> Optional[set]:
+def get_missing_internal_subtypes(st_vals: List[str],
+                                  pos_subtypes_set: Set[str]) -> Set[str]:
     """Compare nested subtypes from the final subtype call to positive subtypes found
 
     Args:
-        st_vals: List of integers making up subtype split by the "."
+        st_vals: Hierarchical subtype values
         pos_subtypes_set: Set of positive subtypes
-        primary_subtypes_set: Set of missing nested subtypes
 
     Returns:
-        Set of missing nested hierarchical subtypes or `None` if there are no missing nested hierarchical subtypes
+        Set of missing nested hierarchical subtypes
     """
+    out = set()
     for i in range(len(st_vals)):
-        sub_subtype = '.'.join(st_vals[0 : i+1])
+        sub_subtype = '.'.join(st_vals[0: i + 1])
         if sub_subtype not in pos_subtypes_set:
-            primary_subtypes_set.add(sub_subtype)
-    return primary_subtypes_set
+            out.add(sub_subtype)
+    return out
 
 
-def missing_nested_subtypes(subtype: str, df_positive: pd.DataFrame) -> Optional[str]:
+def missing_nested_subtypes(subtype_result: str, positive_subtypes: Set[str]) -> Optional[str]:
     """Find nested subtypes that are missing from the final subtype call
 
     Args:
-        subtype: Final subtype result
-        positive_subtypes: List of unique positive subtypes found
+        subtype_result: Final subtype result
+        positive_subtypes: Set of unique positive subtypes found
     
     Returns:
         String of missing hierarchical subtypes or `None` if there are no missing nested hierarchical subtypes.
     """
-    subtype = subtype.split(';')
-    pos_subtypes_set = set(df_positive.subtype.unique())
-    primary_subtypes_set = set()
-    
-    for i in subtype:
-        st_vals = i.split('.')
-        missing_subtypes_set = subtype_sets(st_vals, pos_subtypes_set, primary_subtypes_set)
+    subtypes = subtype_result.split(';')
+    missing_subtypes_set = set()
+    for subtype in subtypes:
+        st_vals = subtype.split('.')
+        missing_subtypes_set |= get_missing_internal_subtypes(st_vals, positive_subtypes)
     return '; '.join(missing_subtypes_set)
 
 
@@ -488,7 +503,7 @@ def set_inconsistent_subtypes(st: Subtype, inconsistent_subtypes: List[str]) -> 
     Returns:
 
     """
-    if len(inconsistent_subtypes) > 0:
+    if inconsistent_subtypes:
         st.are_subtypes_consistent = False
         st.inconsistent_subtypes = inconsistent_subtypes
     else:

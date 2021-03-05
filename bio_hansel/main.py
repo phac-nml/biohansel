@@ -3,37 +3,44 @@
 
 import argparse
 import logging
-import sys
-import re
 import os
+import re
+import sys
 from typing import Optional, List, Any, Tuple
-from pkg_resources import resource_filename
 
 import attr
 import pandas as pd
+from pkg_resources import resource_filename
+from rich.logging import RichHandler
 
-from . import program_desc, __version__, program_name
-from .const import SUBTYPE_SUMMARY_COLS, REGEX_FASTQ, REGEX_FASTA, JSON_EXT_TMPL
-from .subtype import Subtype
-from .subtype_stats import subtype_counts
-from .subtyper import \
+from bio_hansel import program_desc, __version__, program_name
+from bio_hansel.const import SUBTYPE_SUMMARY_COLS, REGEX_FASTQ, REGEX_FASTA, JSON_EXT_TMPL
+from bio_hansel.metadata import read_metadata_table, merge_results_with_metadata
+from bio_hansel.subtype import Subtype
+from bio_hansel.subtype_stats import subtype_counts
+from bio_hansel.subtyper import \
     subtype_contigs_samples, \
     subtype_reads_samples
-from .metadata import read_metadata_table, merge_results_with_metadata
-from .utils import (genome_name_from_fasta_path, get_scheme_fasta, does_file_exist, collect_fastq_from_dir,
-                    group_fastqs, collect_fasta_from_dir, init_subtyping_params, df_field_fillna)
+import bio_hansel.utils
 
 SCRIPT_NAME = 'hansel'
-LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
 
 
 def init_console_logger(logging_verbosity=3):
+    from rich.traceback import install
+
+    install(show_locals=True, width=120, word_wrap=True)
+
     logging_levels = [logging.ERROR, logging.WARN, logging.INFO, logging.DEBUG]
     if logging_verbosity > (len(logging_levels) - 1):
         logging_verbosity = 3
     lvl = logging_levels[logging_verbosity]
 
-    logging.basicConfig(format=LOG_FORMAT, level=lvl)
+    logging.basicConfig(format='%(message)s',
+                        datefmt='[%Y-%m-%d %X]',
+                        level=lvl,
+                        handlers=[RichHandler(rich_tracebacks=True,
+                                              tracebacks_show_locals=True)])
 
 
 def init_parser():
@@ -81,6 +88,9 @@ def init_parser():
     parser.add_argument('--min-kmer-freq',
                         type=int,
                         help='Min k-mer freq/coverage')
+    parser.add_argument('--min-kmer-frac',
+                        type=float,
+                        help='Proportion of k-mer required for detection (0.0 - 1)')
     parser.add_argument('--max-kmer-freq',
                         type=int,
                         help='Max k-mer freq/coverage')
@@ -135,18 +145,18 @@ def collect_inputs(args: Any) -> Tuple[List[Tuple[str, str]], List[Tuple[List[st
     if args.files:
         fastas = [x for x in args.files if REGEX_FASTA.match(x)]
         fastqs = [x for x in args.files if REGEX_FASTQ.match(x)]
-        if len(fastas) > 0:
+        if fastas:
             logging.info('# of input fastas %s', len(fastas))
             for fasta_path in fastas:
                 fasta_path = os.path.abspath(fasta_path)
                 if os.path.exists(fasta_path):
-                    genome_name = genome_name_from_fasta_path(fasta_path)
+                    genome_name = bio_hansel.utils.genome_name_from_fasta_path(fasta_path)
                     input_genomes.append((fasta_path, genome_name))
                 else:
                     logging.error('Input fasta "%s" does not exist!', fasta_path)
-        if len(fastqs) > 0:
+        if fastqs:
             logging.info('# of input fastqs %s', len(fastqs))
-            grouped_fastqs = group_fastqs(fastqs)
+            grouped_fastqs = bio_hansel.utils.group_fastqs(fastqs)
             logging.info('Grouped %s fastqs into %s groups',
                          len(fastqs),
                          len(grouped_fastqs))
@@ -156,9 +166,9 @@ def collect_inputs(args: Any) -> Tuple[List[Tuple[str, str]], List[Tuple[List[st
             input_genomes.append((os.path.abspath(fasta_path), genome_name))
     if args.input_directory:
         logging.info('Searching dir "%s" for FASTA files', args.input_directory)
-        input_genomes += collect_fasta_from_dir(args.input_directory)
+        input_genomes += bio_hansel.utils.collect_fasta_from_dir(args.input_directory)
         logging.info('Searching dir "%s" for FASTQ files', args.input_directory)
-        reads += collect_fastq_from_dir(args.input_directory)
+        reads += bio_hansel.utils.collect_fastq_from_dir(args.input_directory)
     if args.paired_reads:
         for x in args.paired_reads:
             if not isinstance(x, (list, tuple)):
@@ -183,15 +193,16 @@ def main():
     output_summary_path = args.output_summary
     output_kmer_results = args.output_kmer_results
     output_simple_summary_path = args.output_simple_summary
-    does_file_exist(output_simple_summary_path, args.force)
-    does_file_exist(output_summary_path, args.force)
-    does_file_exist(output_kmer_results, args.force)
+    bio_hansel.utils.does_file_exist(output_simple_summary_path, args.force)
+    bio_hansel.utils.does_file_exist(output_summary_path, args.force)
+    bio_hansel.utils.does_file_exist(output_kmer_results, args.force)
     scheme: str = args.scheme
     scheme_name: Optional[str] = args.scheme_name
-    scheme_fasta = get_scheme_fasta(scheme)
+    scheme_fasta = bio_hansel.utils.get_scheme_fasta(scheme)
     scheme_subtype_counts = subtype_counts(scheme_fasta)
     logging.debug(args)
-    subtyping_params = init_subtyping_params(args, scheme)
+    subtyping_params = bio_hansel.utils.init_subtyping_params(args, scheme)
+    bio_hansel.utils.check_total_kmers(scheme_fasta, subtyping_params.max_degenerate_kmers)
     input_contigs, input_reads = collect_inputs(args)
     if len(input_contigs) == 0 and len(input_reads) == 0:
         raise Exception('No input files specified!')
@@ -238,7 +249,7 @@ def main():
     if dfsummary['avg_kmer_coverage'].isnull().all():
         dfsummary = dfsummary.drop(labels='avg_kmer_coverage', axis=1)
 
-    dfsummary = df_field_fillna(dfsummary)
+    dfsummary = bio_hansel.utils.df_field_fillna(dfsummary)
 
     if df_md is not None:
         dfsummary = merge_results_with_metadata(dfsummary, df_md)
@@ -253,12 +264,14 @@ def main():
         logging.info('Wrote subtyping output summary to %s', output_summary_path)
     else:
         # if no output path specified for the summary results, then print to stdout
-        print(dfsummary.to_csv(sep='\t', index=None))
+        print(dfsummary.to_csv(sep='\t', index=False))
 
     if output_kmer_results:
-        if len(dfs) > 0:
+        if dfs:
             dfall: pd.DataFrame = pd.concat([df.sort_values('is_pos_kmer', ascending=False) for df in dfs], sort=False)
-            dfall = df_field_fillna(dfall)
+            # Error message is redundant accross each of the k-mers
+            dfall = dfall.drop(columns=['qc_message'])
+            dfall = bio_hansel.utils.df_field_fillna(dfall)
             dfall.to_csv(output_kmer_results, **kwargs_for_pd_to_table)
             logging.info('Kmer results written to "{}".'.format(output_kmer_results))
             if args.json:
