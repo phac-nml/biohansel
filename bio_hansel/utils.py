@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import argparse
 import logging
 import os
 import re
@@ -44,7 +45,7 @@ def genome_name_from_fasta_path(fasta_path: str) -> str:
     """
     filename = os.path.basename(fasta_path)
     filename = re.sub(r'\.gz$', '', filename)
-    return re.sub(r'\.(fa|fas|fasta|fna|\w{1,})(\.gz)?$', '', filename)
+    return re.sub(r'\.(fa|fas|fasta|fna|\w+)(\.gz)?$', '', filename)
 
 
 def compare_subtypes(a: List[Any], b: List[Any]) -> bool:
@@ -61,12 +62,12 @@ def find_inconsistent_subtypes(subtypes: List[List[int]]) -> List[str]:
             is_consistent = compare_subtypes(a, b)
             if not is_consistent:
                 incon.append((a, b))
-    l = []
+    all_inconsistent_subtypes = []
     for a, b in incon:
         astr = '.'.join([str(x) for x in a])
         bstr = '.'.join([str(x) for x in b])
-        l += [astr, bstr]
-    c = Counter(l)
+        all_inconsistent_subtypes += [astr, bstr]
+    c = Counter(all_inconsistent_subtypes)
     incon_subtypes = []
     for subtype, freq in c.most_common():
         if freq >= 1:
@@ -171,7 +172,7 @@ def is_gzipped(p: str) -> bool:
     return bool(re.match(r'^.+\.gz$', p))
 
 
-def init_subtyping_params(args: Optional[Any] = None,
+def init_subtyping_params(args: Optional[argparse.Namespace] = None,
                           scheme: Optional[str] = None) -> SubtypingParams:
     """Initialize subtyping parameters based on command-line arguments and scheme defaults
 
@@ -182,10 +183,8 @@ def init_subtyping_params(args: Optional[Any] = None,
     Returns:
         SubtypingParams with user-supplied values then scheme defaults then global defaults loaded
     """
-    subtyping_params = get_scheme_params(scheme)
-    if subtyping_params is None:
-        subtyping_params = SubtypingParams()
-    if args is not None:
+    subtyping_params = get_scheme_params(scheme) or SubtypingParams()
+    if args:
         if args.low_cov_depth_freq:
             subtyping_params.low_coverage_depth_freq = args.low_cov_depth_freq
         if args.max_missing_kmers:
