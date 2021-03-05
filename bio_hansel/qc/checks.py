@@ -17,7 +17,9 @@ def is_overall_coverage_low(st: Subtype, df: pd.DataFrame, p: SubtypingParams) -
         return None, None
 
     if st.avg_kmer_coverage < p.min_coverage_warning:
-        return QC.WARNING, f'Low coverage for all kmers ({st.avg_kmer_coverage:.3f} < {p.min_coverage_warning} expected)'
+        return QC.WARNING, f'Low coverage for all kmers ' \
+                           f'({st.avg_kmer_coverage:.3f} < {p.min_coverage_warning} ' \
+                           f'expected)'
     return None, None
 
 
@@ -25,8 +27,8 @@ def is_missing_kmers(st: Subtype, df: pd.DataFrame, p: SubtypingParams) -> Tuple
     """Are there more missing kmers than tolerated?
 
     Note:
-        For reads, calculate the average coverage depth from the kmers that are present and provide an adequate
-        error message based on the coverage.
+        For reads, calculate the average coverage depth from the kmers that
+        are present and provide an adequate error message based on the coverage.
 
     Args:
         st: Subtype results
@@ -47,18 +49,15 @@ def is_missing_kmers(st: Subtype, df: pd.DataFrame, p: SubtypingParams) -> Tuple
                                        p=p)
     else:
         message_list = []
-
         subtype_list = st.subtype.split(';')
         n_kmers_matching_expected = st.n_kmers_matching_all_expected.split(';')
-
         dfpos = df[df.is_pos_kmer]
         mixed_subtype_counts = get_mixed_subtype_kmer_counts(dfpos=dfpos,
                                                              subtype_list=subtype_list)
-
         kmers_matching_negative = st.n_kmers_matching_negative
         for curr_subtype, exp in zip(subtype_list, n_kmers_matching_expected):
-            # We can omit the status because there will be a fail status already from non consistent subtypes.
-
+            # We can omit the status because there will be a fail status
+            # already from non consistent subtypes.
             obs = mixed_subtype_counts.get(curr_subtype) + int(kmers_matching_negative)
             _, curr_messages = check_for_missing_kmers(is_fastq=st.is_fastq_input(),
                                                        subtype_result=curr_subtype,
@@ -69,9 +68,7 @@ def is_missing_kmers(st: Subtype, df: pd.DataFrame, p: SubtypingParams) -> Tuple
                                                        p=p)
 
             message_list.append(curr_messages)
-
         error_messages = ' | '.join(filter(None.__ne__, message_list))
-
         return QC.FAIL, error_messages
 
 
@@ -102,19 +99,23 @@ def check_for_missing_kmers(is_fastq: bool,
     messages = None
 
     # proportion of missing kmers
-    p_missing = (exp - obs) / exp  # type: float
+    p_missing: float = (exp - obs) / exp
     if p_missing > p.max_perc_missing_kmers:
         status = QC.FAIL
         if is_fastq:
-            kmers_with_hits = df[df['is_kmer_freq_okay']]  # type: pd.DataFrame
+            kmers_with_hits: pd.DataFrame = df[df['is_kmer_freq_okay']]
             depth = kmers_with_hits['freq'].mean()
             if depth < p.low_coverage_depth_freq:
-                coverage_msg = f'Low coverage depth ({depth:.1f} < {float(p.low_coverage_depth_freq):.1f} expected); ' \
-                               f'you may need more WGS data.'
+                coverage_msg = f'Low coverage depth ({depth:.1f} ' \
+                               f'< {float(p.low_coverage_depth_freq):.1f} ' \
+                               f'expected); you may need more WGS data.'
             else:
-                coverage_msg = f'Okay coverage depth ({depth:.1f} >= {float(p.low_coverage_depth_freq):.1f} expected), ' \
-                               f'but this may be the wrong serovar or species for scheme "{scheme}"'
-            messages = f'{p_missing:.2%} missing kmers; more than {p.max_perc_missing_kmers:.2%} missing ' \
+                coverage_msg = f'Okay coverage depth ({depth:.1f} ' \
+                               f'>= {float(p.low_coverage_depth_freq):.1f} ' \
+                               f'expected), but this may be the wrong serovar ' \
+                               f'or species for scheme "{scheme}"'
+            messages = f'{p_missing:.2%} missing kmers; more than ' \
+                       f'{p.max_perc_missing_kmers:.2%} missing ' \
                        f'kmers threshold. {coverage_msg}'
         else:
             messages = f'{p_missing:.2%} missing kmers for subtype "{subtype_result}"; more than ' \
@@ -150,8 +151,10 @@ def is_mixed_subtype(st: Subtype, df: pd.DataFrame, *args) -> Tuple[Optional[str
                     f'the same target site{s} {positions} for subtype "{st.subtype}".'
 
 
-def is_missing_too_many_target_sites(st: Subtype, df: pd.DataFrame, p: SubtypingParams) -> Tuple[
-    Optional[str], Optional[str]]:
+def is_missing_too_many_target_sites(st: Subtype,
+                                     df: pd.DataFrame,
+                                     p: SubtypingParams) \
+        -> Tuple[Optional[str], Optional[str]]:
     """Are there too many missing target sites for an expected subtype?
 
     Check if there are any refpositions missing from the subtyping scheme in the result.
@@ -208,9 +211,11 @@ def is_missing_hierarchical_kmers(st: Subtype, *args) -> Tuple[Optional[str], Op
     """Are there any missing nested subtypes in the final subtype call?
 
     Note:
-        This method will check if there's any missing_nested_subtypes in the result, which would indicate a non confident
-        result. This is due to the fact that if you have a subtyping result of `2.1.1.2` and you're missing `2.1.1` or `2.1`
-        that you can't be sure that the subtype's final call is 2.1.1.2 due to the missing information.
+        This method will check if there's any missing_nested_subtypes in the
+        result, which would indicate a non confident result. This is due to
+        the fact that if you have a subtyping result of `2.1.1.2` and
+        you're missing `2.1.1` or `2.1` that you can't be sure that the
+        subtype's final call is 2.1.1.2 due to the missing information.
 
     Args:
         st: Subtype results
@@ -226,8 +231,10 @@ def is_missing_hierarchical_kmers(st: Subtype, *args) -> Tuple[Optional[str], Op
     return None, None
 
 
-def is_maybe_intermediate_subtype(st: Subtype, df: pd.DataFrame, p: SubtypingParams) -> Tuple[
-    Optional[str], Optional[str]]:
+def is_maybe_intermediate_subtype(st: Subtype,
+                                  df: pd.DataFrame,
+                                  p: SubtypingParams) \
+        -> Tuple[Optional[str], Optional[str]]:
     """Is the result a possible intermediate subtype?
 
     Return a WARNING message if all the conditions are true:

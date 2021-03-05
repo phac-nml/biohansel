@@ -53,12 +53,17 @@ def init_parser():
                         help='Input genome FASTA/FASTQ files (can be Gzipped)')
     parser.add_argument('-s', '--scheme',
                         default='heidelberg',
-                        help='Scheme to use for subtyping (built-in: "heidelberg", "enteritidis", "typhi", "typhimurium", "tb_lineage"; OR user-specified: '
-                             '/path/to/user/scheme)')
+                        help='Scheme to use for subtyping (built-in: '
+                             '"heidelberg", "enteritidis", "typhi", '
+                             '"typhimurium", "tb_lineage"; '
+                             'OR user-specified: /path/to/user/scheme)')
     parser.add_argument('--scheme-name',
                         help='Custom user-specified SNP substyping scheme name')
     parser.add_argument('-M', '--scheme-metadata',
-                        help='Scheme subtype metadata table (tab-delimited file with ".tsv" or ".tab" extension or CSV with ".csv" extension format accepted; MUST contain column called "subtype")')
+                        help='Scheme subtype metadata table (tab-delimited '
+                             'file with ".tsv" or ".tab" extension or CSV '
+                             'with ".csv" extension format accepted; MUST '
+                             'contain column called "subtype")')
     parser.add_argument('-p', '--paired-reads',
                         nargs=2,
                         metavar=('forward_reads', 'reverse_reads'),
@@ -99,7 +104,9 @@ def init_parser():
                         help='Frequencies below this coverage are considered low coverage')
     parser.add_argument('--max-missing-kmers',
                         type=float,
-                        help='Decimal proportion of maximum allowable missing kmers before being considered an error. (0.0 - 1.0)')
+                        help='Decimal proportion of maximum allowable missing'
+                             ' kmers before being considered an error. '
+                             '(0.0 - 1.0)')
     parser.add_argument('--min-ambiguous-kmers',
                         type=int,
                         help='Minimum number of missing kmers to be considered an ambiguous result')
@@ -108,10 +115,13 @@ def init_parser():
                         help='Overall kmer coverage below this value will trigger a low coverage warning')
     parser.add_argument('--max-intermediate-kmers',
                         type=float,
-                        help='Decimal proportion of maximum allowable missing kmers to be considered an intermediate subtype. (0.0 - 1.0)')
+                        help='Decimal proportion of maximum allowable '
+                             'missing kmers to be considered an '
+                             'intermediate subtype. (0.0 - 1.0)')
     parser.add_argument('--max-degenerate-kmers',
                         type=int,
-                        help='Maximum number of scheme k-mers allowed before quitting with a usage warning. Default is 100000')
+                        help='Maximum number of scheme k-mers allowed before '
+                             'quitting with a usage warning. Default is 100000')
     parser.add_argument('-t', '--threads',
                         type=int,
                         default=1,

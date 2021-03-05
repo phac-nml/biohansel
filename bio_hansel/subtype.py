@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+import os
 from typing import List, Optional
 
 import attr
-import os
 
 from .const import REGEX_FASTQ
 
@@ -15,7 +15,7 @@ class Subtype(object):
     scheme_version = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     subtype = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     non_present_subtypes = attr.ib(default=None)  # type: Optional[List[str]]
-    missing_nested_subtypes = attr.ib(default=None) 
+    missing_nested_subtypes = attr.ib(default=None)
     all_subtypes = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     inconsistent_subtypes = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
     kmers_matching_subtype = attr.ib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
@@ -46,7 +46,7 @@ class Subtype(object):
                 if not os.path.exists(x):
                     raise OSError('Input file "{}" does not exist!'.format(x))
         else:
-            raise ValueError('Unexpected type for input file path "{}": {}'.format(type(value), value))
+            raise ValueError(f'Unexpected type for input file path "{type(value)}": {value}')
 
     def is_fastq_input(self):
         if isinstance(self.file_path, str):
@@ -54,4 +54,4 @@ class Subtype(object):
         elif isinstance(self.file_path, list):
             return all(bool(REGEX_FASTQ.match(x)) for x in self.file_path)
         else:
-            raise ValueError('Unexpected type "{}" for "file_path": {}'.format(type(self.file_path), self.file_path))
+            raise ValueError(f'Unexpected type "{self.file_path}" for "file_path": {self.file_path}')
