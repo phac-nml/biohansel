@@ -121,19 +121,27 @@ If you run ``hansel -h``, you should see the following usage statement:
                   [-i fasta_path genome_name] [-D INPUT_DIRECTORY]
                   [-o OUTPUT_SUMMARY] [-O OUTPUT_KMER_RESULTS]
                   [-S OUTPUT_SIMPLE_SUMMARY] [--force] [--json]
-                  [--min-kmer-freq MIN_KMER_FREQ]
+                  [--min-kmer-freq MIN_KMER_FREQ] [--min-kmer-frac MIN_KMER_FRAC]
                   [--max-kmer-freq MAX_KMER_FREQ]
                   [--low-cov-depth-freq LOW_COV_DEPTH_FREQ]
                   [--max-missing-kmers MAX_MISSING_KMERS]
                   [--min-ambiguous-kmers MIN_AMBIGUOUS_KMERS]
                   [--low-cov-warning LOW_COV_WARNING]
-                  [--max-intermediate-kmers MAX_INTERMEDIATE_KMERS] 
-                  [--max-degenerate-kmers MAX_DEGENERATE_KMERS] [-t THREADS]
-                  [-v] [-V]
+                  [--max-intermediate-kmers MAX_INTERMEDIATE_KMERS]
+                  [--max-degenerate-kmers MAX_DEGENERATE_KMERS] [-t THREADS] [-v]
+                  [-V]
                   [F [F ...]]
 
-    Subtype microbial genomes using SNV targeting k-mer subtyping schemes.
-    Includes schemes for Salmonella enterica spp. enterica serovar Heidelberg, Enteritidis, Typhi, and Typhimurium subtyping. Also includes a Mycobacterium tuberculosis scheme called 'tb_lineage'.
+    BioHansel version 2.5.1: Subtype microbial genomes using SNV targeting k-mer subtyping schemes.
+
+    Built-in schemes:
+
+    * heidelberg:  Salmonella enterica spp. enterica serovar Heidelberg
+    * enteritidis: Salmonella enterica spp. enterica serovar Enteritidis
+    * typhimurium: Salmonella enterica spp. enterica serovar Typhimurium
+    * typhi:       Salmonella enterica spp. enterica serovar Typhi
+    * tb_lineage:  Mycobacterium tuberculosis
+
     Developed by Geneviève Labbé, Peter Kruczkiewicz, Philip Mabon, James Robertson, Justin Schonfeld, Daniel Kein, Marisa A. Rankin, Matthew Gopez, Darian Hole, David Son, Natalie Knox, Chad R. Laing, Kyrylo Bessonov, Eduardo Taboada, Catherine Yoshida, Kim Ziebell, Anil Nichani, Roger P. Johnson, Gary Van Domselaar and John H.E. Nash.
 
     positional arguments:
@@ -143,17 +151,19 @@ If you run ``hansel -h``, you should see the following usage statement:
       -h, --help            show this help message and exit
       -s SCHEME, --scheme SCHEME
                             Scheme to use for subtyping (built-in: "heidelberg",
-                            "enteritidis", "typhi", "typhimurium", "tb_lineage"; OR user-specified:
-                            /path/to/user/scheme)
+                            "enteritidis", "typhi", "typhimurium", "tb_lineage";
+                            OR user-specified: /path/to/user/scheme)
       --scheme-name SCHEME_NAME
                             Custom user-specified SNP substyping scheme name
-      -M SCHEME_METADATA, --scheme-metadata scheme_metadata
-                            Scheme subtype metadata table (.TSV format accepted;
-                            must contain column called "subtype")
+      -M SCHEME_METADATA, --scheme-metadata SCHEME_METADATA
+                            Scheme subtype metadata table (tab-delimited file with
+                            ".tsv" or ".tab" extension or CSV with ".csv"
+                            extension format accepted; MUST contain column called
+                            "subtype")
       -p forward_reads reverse_reads, --paired-reads forward_reads reverse_reads
                             FASTQ paired-end reads
       -i fasta_path genome_name, --input-fasta-genome-name fasta_path genome_name
-                            fasta file path to genome name pair
+                            input fasta file path AND genome name
       -D INPUT_DIRECTORY, --input-directory INPUT_DIRECTORY
                             directory of input fasta files (.fasta|.fa|.fna) or
                             FASTQ files (paired FASTQ should have same basename
@@ -169,6 +179,8 @@ If you run ``hansel -h``, you should see the following usage statement:
       --json                Output JSON representation of output files
       --min-kmer-freq MIN_KMER_FREQ
                             Min k-mer freq/coverage
+      --min-kmer-frac MIN_KMER_FRAC
+                            Proportion of k-mer required for detection (0.0 - 1)
       --max-kmer-freq MAX_KMER_FREQ
                             Max k-mer freq/coverage
       --low-cov-depth-freq LOW_COV_DEPTH_FREQ
@@ -188,13 +200,12 @@ If you run ``hansel -h``, you should see the following usage statement:
                             to be considered an intermediate subtype. (0.0 - 1.0)
       --max-degenerate-kmers MAX_DEGENERATE_KMERS
                             Maximum number of scheme k-mers allowed before
-                            quitting with a usage warning. Default is 100,000
+                            quitting with a usage warning. Default is 100000
       -t THREADS, --threads THREADS
                             Number of parallel threads to run analysis (default=1)
       -v, --verbose         Logging verbosity level (-v == show warnings; -vvv ==
                             show debug info)
       -V, --version         show program's version number and exit
-
 
 
 

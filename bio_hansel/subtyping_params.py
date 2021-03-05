@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import attr
 
+
 @attr.s
 class SubtypingParams(object):
     low_coverage_depth_freq = attr.ib(default=20.0, validator=attr.validators.instance_of((float, int)))
@@ -16,4 +17,5 @@ class SubtypingParams(object):
     @max_perc_missing_kmers.validator
     def _validate_max_perc_missing_kmers(self, attribute, value):
         if 0.0 > value > 1.0:
-            raise AttributeError('Max % misssing kmers was {} expected to be decimal between 0.0 and 1.0 inclusive'.format(value))
+            raise AttributeError(f'Max % misssing kmers was {value} expected '
+                                 f'to be decimal between 0.0 and 1.0 inclusive')
