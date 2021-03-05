@@ -47,6 +47,6 @@ setup(
     packages=find_packages(exclude=['test_*.py', 'tests']),
     test_suite='tests',
     url='https://github.com/phac-nml/biohansel',
-    version='2.6.0',
+    version='2.6.1',
     zip_safe=False,
 )
