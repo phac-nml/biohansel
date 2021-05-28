@@ -37,8 +37,6 @@ Code is available on GitHub under https://github.com/phac-nml/biohansel.
 
 * :ref:`user-docs`
 * :ref:`installation-docs`
-* :ref:`examples-docs`
-* :ref:`evaluation-docs`
 * :ref:`legal`
 * :ref:`contact`
 
@@ -66,25 +64,8 @@ Code is available on GitHub under https://github.com/phac-nml/biohansel.
 
    installation-docs/home
    installation-docs/command-line
-   installation-docs/virtual_machine
    installation-docs/galaxy
    installation-docs/versions
-
-.. _examples-docs:
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Examples
-   
-   examples-docs/certain_bacteria
-
-.. _evaluation-docs:
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Evaluation
-
-   evaluation-docs/benchmarking
 
 .. _legal:
 
